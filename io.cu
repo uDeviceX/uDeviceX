@@ -1,14 +1,14 @@
 
-// Editable compilation unit for scheme/system and I/O clients.
 
 
-// Grouped editable compilation unit for scheme and simulation-system code.
 
 
-// Grouped editable compilation unit for force, time, move, and restraint schemes.
 
 
-// Grouped editable compilation unit for force and time schemes.
+
+
+
+
 
 
 #include "config.cuh"
@@ -21,10 +21,10 @@ struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -65,23 +65,23 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -89,7 +89,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -100,7 +100,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -133,49 +133,49 @@ struct Coords;
 void bforce_ini(BForce **p);
 void bforce_fin(BForce *p);
 
-void bforce_set_none(/**/ BForce *p);            // <1>
-void bforce_set_cste(float3 f, /**/ BForce *p);  // <2>
-void bforce_set_dp(float a, /**/ BForce *p);     // <3>
-void bforce_set_shear(float a, /**/ BForce *p);  // <4>
-void bforce_set_rol(float a, /**/ BForce *p);    // <5>
-void bforce_set_rad(float a, /**/ BForce *p);    // <6>
+void bforce_set_none(     BForce *p);
+void bforce_set_cste(float3 f,      BForce *p);
+void bforce_set_dp(float a,      BForce *p);
+void bforce_set_shear(float a,      BForce *p);
+void bforce_set_rol(float a,      BForce *p);
+void bforce_set_rad(float a,      BForce *p);
 
-void bforce_set_conf(const Config *cfg, /**/ BForce *bf);
+void bforce_set_conf(const Config *cfg,      BForce *bf);
 
-void bforce_adjust(float3 f, /**/ BForce *fpar); // <1>
-void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Particle *pp, /**/ Force *ff); // <2>
+void bforce_adjust(float3 f,      BForce *fpar);
+void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Particle *pp,      Force *ff);
 
-void bforce_set_conf(const Config *cfg, /**/ BForce *bf) {
+void bforce_set_conf(const Config *cfg,      BForce *bf) {
     const char *type;
-    UC(conf_lookup_string(cfg, "bforce.type", /**/ &type));
+    UC(conf_lookup_string(cfg, "bforce.type",      &type));
 
     if      (same_str(type, "none")) {
-        bforce_set_none(/**/ bf);
+        bforce_set_none(     bf);
     }
     else if (same_str(type, "constant")) {
         float3 f;
-        UC(conf_lookup_float3(cfg, "bforce.f", /**/ &f));
-        UC(bforce_set_cste(f, /**/ bf));
+        UC(conf_lookup_float3(cfg, "bforce.f",      &f));
+        UC(bforce_set_cste(f,      bf));
     }
     else if (same_str(type, "double_poiseuille")) {
         float a;
-        UC(conf_lookup_float(cfg, "bforce.a", /**/ &a));
-        UC(bforce_set_dp(a, /**/ bf));
+        UC(conf_lookup_float(cfg, "bforce.a",      &a));
+        UC(bforce_set_dp(a,      bf));
     }
     else if (same_str(type, "shear")) {
         float a;
-        UC(conf_lookup_float(cfg, "bforce.a", /**/ &a));
-        UC(bforce_set_shear(a, /**/ bf));
+        UC(conf_lookup_float(cfg, "bforce.a",      &a));
+        UC(bforce_set_shear(a,      bf));
     }
     else if (same_str(type, "four_roller")) {
         float a;
-        UC(conf_lookup_float(cfg, "bforce.a", /**/ &a));
-        UC(bforce_set_rol(a, /**/ bf));
+        UC(conf_lookup_float(cfg, "bforce.a",      &a));
+        UC(bforce_set_rol(a,      bf));
     }
     else if (same_str(type, "rad")) {
         float a;
-        UC(conf_lookup_float(cfg, "bforce.a", /**/ &a));
-        UC(bforce_set_rad(a, /**/ bf));
+        UC(conf_lookup_float(cfg, "bforce.a",      &a));
+        UC(bforce_set_rad(a,      bf));
     }
     else {
         ERR("Unrecognized type <%s>", type);
@@ -187,33 +187,33 @@ void bforce_set_conf(const Config *cfg, /**/ BForce *bf) {
 
 #include <stdio.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -226,10 +226,10 @@ void bforce_set_conf(const Config *cfg, /**/ BForce *bf) {
 #define UDX_SIM_OBJECTS_TYPE_COMMON
 #include "types.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -238,38 +238,38 @@ void bforce_set_conf(const Config *cfg, /**/ BForce *bf) {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
 struct Coords_v {
-    int xc, yc, zc; /* rank coordinates        */
-    int xd, yd, zd; /* rank sizes              */
-    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+    int xc, yc, zc;
+    int xd, yd, zd;
+    int Lx, Ly, Lz;
 };
-/* domain sizes */
+
 
 static __device__ int xdomain(const Coords_v c) {
     return c.Lx * c.xd;
@@ -283,7 +283,7 @@ static __device__ int zdomain(const Coords_v c) {
     return c.Lz * c.zd;
 }
 
-/* [l]ocal to [c]enter */
+
 
 static __device__ float xl2xc(const Coords_v c, float xl) {
     return xl - 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
@@ -297,13 +297,13 @@ static __device__ float zl2zc(const Coords_v c, float zl) {
     return zl - 0.5f * c.Lz * (c.zd - 2 * c.zc - 1);
 }
 
-static __device__ void local2center(const Coords_v c, float3 rl, /**/ float3 *rc) {
+static __device__ void local2center(const Coords_v c, float3 rl,      float3 *rc) {
     rc->x = xl2xc(c, rl.x);
     rc->y = yl2yc(c, rl.y);
     rc->z = zl2zc(c, rl.z);
 }
 
-/* [c]enter to [l]ocal  */
+
 
 static __device__ float xc2xl(const Coords_v c, float xc) {
     return xc + 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
@@ -317,13 +317,13 @@ static __device__ float zc2zl(const Coords_v c, float zc) {
     return zc + 0.5f * c.Lz * (c.zd - 2.f * c.zc - 1);
 }
 
-static __device__ void center2local(Coords_v c, float3 rc, /**/ float3 *rl) {
+static __device__ void center2local(Coords_v c, float3 rc,      float3 *rl) {
     rl->x = xc2xl(c, rc.x);
     rl->y = yc2yl(c, rc.y);
     rl->z = zc2zl(c, rc.z);
 }
 
-/* [l]ocal to [g]lobal */
+
 
 static __device__ float xl2xg(const Coords_v c, float xl) {
     return (c.xc + 0.5f) * c.Lx + xl;
@@ -337,13 +337,13 @@ static __device__ float zl2zg(const Coords_v c, float zl) {
     return (c.zc + 0.5f) * c.Lz + zl;
 }
 
-static __device__ void local2global(const Coords_v c, float3 rl, /**/ float3 *rg) {
+static __device__ void local2global(const Coords_v c, float3 rl,      float3 *rg) {
     rg->x = xl2xg(c, rl.x);
     rg->y = yl2yg(c, rl.y);
     rg->z = zl2zg(c, rl.z);
 }
 
-/* [g]lobal to [l]ocal */
+
 
 static __device__ float xg2xl(const Coords_v c, float xg) {
     return xg - (c.xc + 0.5f) * c.Lx;
@@ -357,7 +357,7 @@ static __device__ float zg2zl(const Coords_v c, float zg) {
     return zg - (c.zc + 0.5f) * c.Lz;
 }
 
-static __device__ void global2local(const Coords_v c, float3 rg, /**/ float3 *rl) {
+static __device__ void global2local(const Coords_v c, float3 rg,      float3 *rl) {
     rl->x = xg2xl(c, rg.x);
     rl->y = yg2yl(c, rg.y);
     rl->z = zg2zl(c, rg.z);
@@ -377,24 +377,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -409,13 +409,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 #ifndef UDX_SIM_SCHEME_DEVICE_API_COMMON
@@ -428,7 +428,7 @@ int coords_size(const Coords *c);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -439,7 +439,7 @@ int coords_size(const Coords *c);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -467,10 +467,10 @@ void error_print_stack();
 #endif
 #ifndef UDX_SCHEME_CC_COMMON
 #define UDX_SCHEME_CC_COMMON
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -478,7 +478,7 @@ void error_print_stack();
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -491,34 +491,34 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #endif
 
 
 
-/* "view" structures: to be passed to device funtions */
 
-/* constant force f */
+
+
 struct BForce_cste_v {
     float3 a;
 };
 
-/* double poiseuille */
+
 struct BForce_dp_v {
     float a;
 };
 
-/* shear force fx = a * (y - yc) */
+
 struct BForce_shear_v {
     float a;
 };
 
-/* 4 rollers mill */
+
 struct BForce_rol_v {
     float a;
 };
 
-/* radial force decaying as 1/r */
+
 struct BForce_rad_v {
     float a;
 };
@@ -544,12 +544,12 @@ struct BForce_v {
     BForceParam_v p;
     int type;
 };
-/* cste */
+
 static __device__ float3 get_gp(Coords_v, BForce_cste_v par, Particle) {
     return par.a;
 }
 
-/* double poiseuille */
+
 static __device__ float3 get_gp(Coords_v c, BForce_dp_v par, Particle p) {
     enum {X, Y, Z};
     float d, f;
@@ -558,7 +558,7 @@ static __device__ float3 get_gp(Coords_v c, BForce_dp_v par, Particle p) {
     return make_float3(f, 0, 0);
 }
 
-/* shear */
+
 static __device__ float3 get_gp(Coords_v c, BForce_shear_v par, Particle p) {
     enum {X, Y, Z};
     float d, f;
@@ -567,7 +567,7 @@ static __device__ float3 get_gp(Coords_v c, BForce_shear_v par, Particle p) {
     return make_float3(f, 0, 0);
 }
 
-/* 4 roller mills */
+
 static __device__ float3 get_gp(Coords_v c, BForce_rol_v par, Particle p) {
     enum {X, Y, Z};
     float x, y, lx, ly;
@@ -589,7 +589,7 @@ static __device__ float3 get_gp(Coords_v c, BForce_rol_v par, Particle p) {
     return f;
 }
 
-/* radial */
+
 static __device__ float3 get_gp(Coords_v c, BForce_rad_v par, Particle p) {
     enum {X, Y, Z};
     float x, y, fact;
@@ -606,14 +606,14 @@ static __device__ float3 get_gp(Coords_v c, BForce_rad_v par, Particle p) {
     return f;
 }
 
-/* common */
+
 template <typename P>
-__global__ void force(Coords_v c, P par, float mass, int n, const Particle *pp, /**/ Force *ff) {
+__global__ void force(Coords_v c, P par, float mass, int n, const Particle *pp,      Force *ff) {
     enum {X, Y, Z};
     int i;
     Particle p;
-    float3 gp; // pressure gradient
-    float *f; // force
+    float3 gp;
+    float *f;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;
 
@@ -625,31 +625,31 @@ __global__ void force(Coords_v c, P par, float mass, int n, const Particle *pp, 
     f[Y] += mass * gp.y;
     f[Z] += mass * gp.z;
 }
-/* structure containing parameters on host */
 
-/* constant force f */
+
+
 struct BForce_cste {
-    float3 a; // acceleration vector
+    float3 a;
 };
 
-/* double poiseuille */
+
 struct BForce_dp {
-    float a; // acceleration in x direction
+    float a;
 };
 
-/* shear force fx = a * (y - yc) */
+
 struct BForce_shear {
-    float a; // acceleration is a * y in x direction
+    float a;
 };
 
-/* 4 rollers mill */
+
 struct BForce_rol {
-    float a;  // intensity of the acceleration
+    float a;
 };
 
-/* radial force decaying as 1/r */
+
 struct BForce_rad {
-    float a; // radial acceleartion is a / r
+    float a;
 };
 
 enum {
@@ -676,35 +676,35 @@ struct BForce {
 void bforce_ini(BForce **p) { EMALLOC(1, p); }
 void bforce_fin(BForce *p)  { EFREE(p);      }
 
-void bforce_set_none(/**/ BForce *p) {
+void bforce_set_none(     BForce *p) {
     p->type = BODY_FORCE_NONE;
 }
 
-void bforce_set_cste(float3 f, /**/ BForce *p) {
+void bforce_set_cste(float3 f,      BForce *p) {
     p->type = BODY_FORCE_CSTE;
     p->p.cste.a = f;
 }
 
-void bforce_set_dp(float a, /**/ BForce *p) {
+void bforce_set_dp(float a,      BForce *p) {
     p->type = BODY_FORCE_DP;
     p->p.dp.a = a;
 }
 
-void bforce_set_shear(float a, /**/ BForce *p) {
+void bforce_set_shear(float a,      BForce *p) {
     p->type = BODY_FORCE_SHEAR;
     p->p.shear.a = a;
 }
 
-void bforce_set_rol(float a, /**/ BForce *p) {
+void bforce_set_rol(float a,      BForce *p) {
     p->type = BODY_FORCE_ROL;
     p->p.rol.a = a;
 }
 
-void bforce_set_rad(float a, /**/ BForce *p) {
+void bforce_set_rad(float a,      BForce *p) {
     p->type = BODY_FORCE_RAD;
     p->p.rad.a = a;
 }
-void bforce_adjust(float3 f, /**/ BForce *bforce) {
+void bforce_adjust(float3 f,      BForce *bforce) {
     int type;
     BForceParam *p;
     type = bforce->type;
@@ -717,7 +717,7 @@ void bforce_adjust(float3 f, /**/ BForce *bforce) {
         p->cste.a = f;
         break;
     case BODY_FORCE_RAD:
-        /* do not control radial and z directions */
+
         p->rad.a = f.x;
         break;
     case BODY_FORCE_DP:
@@ -754,7 +754,7 @@ static void get_view(BForce_rad bf, BForce_v *v) {
     v->p.rad.a = bf.a;
 }
 
-static void bforce_get_view(const BForce *bforce, /**/ BForce_v *view) {
+static void bforce_get_view(const BForce *bforce,      BForce_v *view) {
     int type;
     BForceParam p;
     type = bforce->type;
@@ -765,19 +765,19 @@ static void bforce_get_view(const BForce *bforce, /**/ BForce_v *view) {
         view->type = BODY_FORCE_V_NONE;
         break;
     case BODY_FORCE_CSTE:
-        get_view(p.cste, /**/ view);
+        get_view(p.cste,      view);
         break;
     case BODY_FORCE_DP:
-        get_view(p.dp, /**/ view);
+        get_view(p.dp,      view);
         break;
     case BODY_FORCE_SHEAR:
-        get_view(p.shear, /**/ view);
+        get_view(p.shear,      view);
         break;
     case BODY_FORCE_ROL:
-        get_view(p.rol, /**/ view);
+        get_view(p.rol,      view);
         break;
     case BODY_FORCE_RAD:
-        get_view(p.rad, /**/ view);
+        get_view(p.rad,      view);
         break;
     default:
         ERR("wrong type");
@@ -785,7 +785,7 @@ static void bforce_get_view(const BForce *bforce, /**/ BForce_v *view) {
     };
 }
 
-void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Particle *pp, /**/ Force *ff) {
+void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Particle *pp,      Force *ff) {
     int type;
     BForce_v view;
     BForceParam_v p;
@@ -794,7 +794,7 @@ void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Pa
     coords_get_view(c, &coordsv);
 
     view.type = BODY_FORCE_V_NONE;
-    bforce_get_view(bf, /**/ &view);
+    bforce_get_view(bf,      &view);
 
     type = view.type;
     p    = view.p;
@@ -803,19 +803,19 @@ void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Pa
     case BODY_FORCE_V_NONE:
         break;
     case BODY_FORCE_V_CSTE:
-        KL(force, (k_cnf(n)), (coordsv, p.cste, mass, n, pp, /**/ ff));
+        KL(force, (k_cnf(n)), (coordsv, p.cste, mass, n, pp,      ff));
         break;
     case BODY_FORCE_V_DP:
-        KL(force, (k_cnf(n)), (coordsv, p.dp, mass, n, pp, /**/ ff));
+        KL(force, (k_cnf(n)), (coordsv, p.dp, mass, n, pp,      ff));
         break;
     case BODY_FORCE_V_SHEAR:
-        KL(force, (k_cnf(n)), (coordsv, p.shear, mass, n, pp, /**/ ff));
+        KL(force, (k_cnf(n)), (coordsv, p.shear, mass, n, pp,      ff));
         break;
     case BODY_FORCE_V_ROL:
-        KL(force, (k_cnf(n)), (coordsv, p.rol, mass, n, pp, /**/ ff));
+        KL(force, (k_cnf(n)), (coordsv, p.rol, mass, n, pp,      ff));
         break;
     case BODY_FORCE_V_RAD:
-        KL(force, (k_cnf(n)), (coordsv, p.rad, mass, n, pp, /**/ ff));
+        KL(force, (k_cnf(n)), (coordsv, p.rad, mass, n, pp,      ff));
         break;
     default:
         ERR("wrong type <%d>", type);
@@ -826,7 +826,7 @@ void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Pa
 
 
 
-// Grouped editable compilation unit for time-line and time-step schemes.
+
 
 
 
@@ -834,15 +834,15 @@ void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Pa
 #include <stdio.h>
 #include <math.h>
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -853,7 +853,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -875,21 +875,21 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
 struct Coords;
@@ -906,10 +906,10 @@ enum {RESTART_BEGIN=RESTART_FINAL};
 typedef void (*StreamWriter)(const void*, FILE*);
 typedef void (*StreamReader)(FILE*, void*);
 
-void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
-void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
-void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
-void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp);
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter);
 
 void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
 void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
@@ -918,24 +918,24 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
 
 struct TimeLine;
 
-void time_line_ini(float start, /**/ TimeLine**);
+void time_line_ini(float start,      TimeLine**);
 void time_line_fin(TimeLine*);
 
-void time_line_advance(float dt, TimeLine*);           // <1>
-int  time_line_cross(const TimeLine*, float interval); // <2>
+void time_line_advance(float dt, TimeLine*);
+int  time_line_cross(const TimeLine*, float interval);
 
-void time_line_strt_dump(MPI_Comm, const char *base, int id, const TimeLine*); // <1>
-void time_line_strt_read(const char *base, int id, TimeLine*); // <2>
+void time_line_strt_dump(MPI_Comm, const char *base, int id, const TimeLine*);
+void time_line_strt_read(const char *base, int id, TimeLine*);
 
-float time_line_get_current  (const TimeLine*); // <1>
-long  time_line_get_iteration(const TimeLine*); // <2>
+float time_line_get_current  (const TimeLine*);
+long  time_line_get_iteration(const TimeLine*);
 
 struct TimeLine {
     float t, t0;
     float dt, dt0;
     long iteration;
 };
-void time_line_ini(float t, /**/ TimeLine** pq) {
+void time_line_ini(float t,      TimeLine** pq) {
     TimeLine *q;
     EMALLOC(1, &q);
     q->t = q->t0 = t;
@@ -1012,33 +1012,33 @@ void time_line_strt_read(const char *base, int id, TimeLine *t) {
 #include <mpi.h>
 #include <math.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -1052,10 +1052,10 @@ struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -1096,17 +1096,17 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -1117,7 +1117,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -1139,23 +1139,23 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -1165,7 +1165,7 @@ void check(int code, const char *file, int line);
 
 struct Force;
 
-/* sqrt(max(fx^2 + fy^2 + fz^2)) */
+
 float force_stat_max(int n, const Force*);
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -1209,7 +1209,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -1222,26 +1222,26 @@ struct TimeStepAccel;
 struct Force;
 struct Config;
 
-void time_step_accel_ini(/**/ TimeStepAccel**);
+void time_step_accel_ini(     TimeStepAccel**);
 void time_step_accel_fin(TimeStepAccel*);
 
-void time_step_accel_push(TimeStepAccel*, float m, int n, Force*); // <1>
-void time_step_accel_reset(TimeStepAccel*); // <2>
+void time_step_accel_push(TimeStepAccel*, float m, int n, Force*);
+void time_step_accel_reset(TimeStepAccel*);
 
 
-void time_step_ini(const Config*, /**/ TimeStep**); // <1>
+void time_step_ini(const Config*,      TimeStep**);
 void time_step_fin(TimeStep*);
 
-float time_step_dt(TimeStep*, MPI_Comm, TimeStepAccel*); // <1>
-float time_step_dt0(TimeStep*);                          // <2>
-void time_step_log(TimeStep*);                           // <3>
+float time_step_dt(TimeStep*, MPI_Comm, TimeStepAccel*);
+float time_step_dt0(TimeStep*);
+void time_step_log(TimeStep*);
 
 enum { MAX_ACCEL_NUM = 9 };
 struct TimeStepAccel {
     float  mm[MAX_ACCEL_NUM];
     int    nn[MAX_ACCEL_NUM];
     Force *fff[MAX_ACCEL_NUM];
-    int k; /* number of forces */
+    int k;
 };
 
 struct TimeStep {
@@ -1250,7 +1250,7 @@ struct TimeStep {
     float dt;
     float dx;
 
-    /* to log */
+
     float accel[MAX_ACCEL_NUM];
     int k;
 };
@@ -1269,14 +1269,14 @@ static void reduce(MPI_Comm comm, const void *sendbuf0, void *recvbuf, int count
     const void *sendbuf = (m::is_master(comm) ? MPI_IN_PLACE : sendbuf0);
     MC(m::Reduce(sendbuf, recvbuf, count, datatype, op, root, comm));
 }
-#endif /* UDX_SCHEME_IO_REDUCE_COMMON */
+#endif
 
-static void max_float(MPI_Comm comm, /*io*/ float *v) {
+static void max_float(MPI_Comm comm,        float *v) {
     int count = 1;
     UC(reduce(comm, v, v, count, MPI_FLOAT, MPI_MAX));
 }
 
-static float accel_max(MPI_Comm comm, TimeStepAccel *q, /**/ float *accel) {
+static float accel_max(MPI_Comm comm, TimeStepAccel *q,      float *accel) {
     int n, i;
     float force, mass, max;
     Force *ff;
@@ -1290,7 +1290,7 @@ static float accel_max(MPI_Comm comm, TimeStepAccel *q, /**/ float *accel) {
     UC(max_float(comm, &max));
     return max;
 }
-void time_step_accel_ini(/**/ TimeStepAccel **pq) {
+void time_step_accel_ini(     TimeStepAccel **pq) {
     TimeStepAccel *q;
     EMALLOC(1, &q);
     q->k = 0;
@@ -1308,7 +1308,7 @@ void time_step_accel_push(TimeStepAccel *q, float m, int n, Force *ff) {
 }
 void time_step_accel_reset(TimeStepAccel *q) { q->k = 0; }
 
-void time_step_ini(const Config *c, /**/ TimeStep **pq) {
+void time_step_ini(const Config *c,      TimeStep **pq) {
     const char *type;
     int l;
     TimeStep *q;
@@ -1338,7 +1338,7 @@ static float disp_dt(TimeStep *q, MPI_Comm comm, TimeStepAccel *a) {
     float dt_new, dx, dt_max, accel;
     dt_max = q->dt;
     dx     = q->dx;
-    accel = accel_max(comm, a, /**/ q->accel);
+    accel = accel_max(comm, a,      q->accel);
     q->k  = a->k;
     if (accel == 0) return dt_max;
     dt_new = sqrtf(2.*dx/accel);
@@ -1370,40 +1370,40 @@ float time_step_dt0(TimeStep *q) { return q->dt; };
 
 
 
-// Grouped editable compilation unit for move and restraint schemes.
+
 
 
 
 #include <stdio.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -1417,13 +1417,13 @@ float time_step_dt0(TimeStep *q) { return q->dt; };
 #define UDX_SIM_SCHEME_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
-/* function and variable type [q]ualifiers */
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -1449,8 +1449,8 @@ float time_step_dt0(TimeStep *q) { return q->dt; };
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -1524,14 +1524,14 @@ static int   warpSize = 1;
 #define UDX_SIM_OBJECTS_DEF_COMMON
 #include "constants.cuh"
 #endif
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #ifndef UDX_SCHEME_CC_COMMON
 #define UDX_SCHEME_CC_COMMON
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -1539,7 +1539,7 @@ void msg_print(const char *fmt, ...); // <2>
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -1552,7 +1552,7 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #endif
 
 #ifndef UDX_SCHEME_KL_COMMON
@@ -1563,10 +1563,10 @@ void check(int rc, const char *file, int line);
 #define UDX_SIM_OBJECTS_TYPE_COMMON
 #include "types.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -1575,40 +1575,40 @@ void check(int rc, const char *file, int line);
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
 struct Force;
 struct Particle;
 
-void scheme_move_apply(float dt, float mass, int n, const Force*, Particle*); // <1>
-void scheme_move_clear_vel(int n, Particle*); // <2>
+void scheme_move_apply(float dt, float mass, int n, const Force*, Particle*);
+void scheme_move_clear_vel(int n, Particle*);
 
 namespace scheme_move_dev {
-static __device__ void update0(float dt, float m, const float *f, /**/ float *r, float *v) {
+static __device__ void update0(float dt, float m, const float *f,      float *r, float *v) {
     enum {X, Y, Z};
     v[X] += f[X]/m*dt;
     v[Y] += f[Y]/m*dt;
@@ -1628,22 +1628,22 @@ __global__ void update(float dt, float mass, Particle* pp, const Force *ff, int 
     r = pp[pid].r;
     v = pp[pid].v;
     f = ff[pid].f;
-    update0(dt, mass, f, /**/ r, v);
+    update0(dt, mass, f,      r, v);
 }
 
-__global__ void clear_vel(int n, /**/ Particle *pp)  {
+__global__ void clear_vel(int n,      Particle *pp)  {
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     for(int c = 0; c < 3; ++c) pp[pid].v[c] = 0;
 }
-} /* namespace */
+}
 
 void scheme_move_apply(float dt, float mass, int n, const Force *ff, Particle *pp) {
     KL(scheme_move_dev::update, (k_cnf(n)), (dt, mass, pp, ff, n));
 }
 
-void scheme_move_clear_vel(int n, /**/ Particle *pp) {
-    KL(scheme_move_dev::clear_vel, (k_cnf(n)), (n, /**/ pp));
+void scheme_move_clear_vel(int n,      Particle *pp) {
+    KL(scheme_move_dev::clear_vel, (k_cnf(n)), (n,      pp));
 }
 
 
@@ -1653,21 +1653,21 @@ void scheme_move_clear_vel(int n, /**/ Particle *pp) {
 #include <stdio.h>
 #include <mpi.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -1675,7 +1675,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -1686,7 +1686,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -1712,10 +1712,10 @@ struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -1756,8 +1756,8 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 
 struct Particle;
 struct Config;
@@ -1771,14 +1771,14 @@ struct SchemeQQ {
 void scheme_restrain_ini(Restrain**);
 void scheme_restrain_fin(Restrain*);
 
-void scheme_restrain_set_red(Restrain*); // <1>
-void scheme_restrain_set_rbc(Restrain*); // <2>
-void scheme_restrain_set_none(Restrain*); // <3>
-void scheme_restrain_set_freq(int freq, Restrain*); // <4>
+void scheme_restrain_set_red(Restrain*);
+void scheme_restrain_set_rbc(Restrain*);
+void scheme_restrain_set_none(Restrain*);
+void scheme_restrain_set_freq(int freq, Restrain*);
 
 void scheme_restrain_set_conf(const Config*, Restrain*);
 
-void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain *r, SchemeQQ qq);
+void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it,      Restrain *r, SchemeQQ qq);
 
 void scheme_restrain_set_conf(const Config *cfg, Restrain *r) {
     const char *kind;
@@ -1804,33 +1804,33 @@ void scheme_restrain_set_conf(const Config *cfg, Restrain *r) {
 #include <mpi.h>
 #include <stdio.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -1844,10 +1844,10 @@ void scheme_restrain_set_conf(const Config *cfg, Restrain *r) {
 #define UDX_SIM_OBJECTS_TYPE_COMMON
 #include "types.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -1856,29 +1856,29 @@ void scheme_restrain_set_conf(const Config *cfg, Restrain *r) {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_SIM_OBJECTS_DEF_COMMON
@@ -1928,7 +1928,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -1942,7 +1942,7 @@ int status2errcode(MPI_Status *status);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -1953,7 +1953,7 @@ int status2errcode(MPI_Status *status);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -1976,14 +1976,14 @@ void error_abort();
 
 void error_print_stack();
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #ifndef UDX_SCHEME_CC_COMMON
 #define UDX_SCHEME_CC_COMMON
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -1991,7 +1991,7 @@ void msg_print(const char *fmt, ...); // <2>
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -2004,9 +2004,9 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #endif
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -2038,14 +2038,14 @@ _I_ T shfl(T val, unsigned int width) {
 #define _I_ static __device__
 
 template <typename T>
-_I_ T warpReduceSum(T v)  // <1>
+_I_ T warpReduceSum(T v)
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-_I_ float2 warpReduceSum(float2 val)  // <2>
+_I_ float2 warpReduceSum(float2 val)
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -2054,7 +2054,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-_I_ float3 warpReduceSum(float3 val)  // <3>
+_I_ float3 warpReduceSum(float3 val)
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -2088,7 +2088,7 @@ static __device__ int valid_p(const MapColor m, int i) {
 }
 
 template <typename Map>
-__global__ void sum(Map m, int n, const Particle *pp, /**/ int *ntot, float3 *vtot) {
+__global__ void sum(Map m, int n, const Particle *pp,      int *ntot, float3 *vtot) {
     enum {X, Y, Z};
     int i, good, ngood;
     float3 v;
@@ -2117,7 +2117,7 @@ __global__ void sum(Map m, int n, const Particle *pp, /**/ int *ntot, float3 *vt
 }
 
 template <typename Map>
-__global__ void shift(Map m, float3 v, int n, /**/ Particle *pp) {
+__global__ void shift(Map m, float3 v, int n,      Particle *pp) {
     enum {X, Y, Z};
     int i, good;
     i = threadIdx.x + blockDim.x * blockIdx.x;
@@ -2144,7 +2144,7 @@ struct Restrain {
     int kind;
     int freq;
 
-    /* pinned */
+
     int *n;
     float3 *v;
 };
@@ -2218,14 +2218,14 @@ static float3 all_reduce(MPI_Comm comm, float3 v) {
 }
 
 template <typename Map>
-static void apply(MPI_Comm comm, Map m, int np, /**/ Particle *pp, Restrain *r) {
+static void apply(MPI_Comm comm, Map m, int np,      Particle *pp, Restrain *r) {
     int n;
     float3 v;
     float scale;
 
-    reini( /**/ r);
-    KL(restrain_dev::sum, (k_cnf(np)), (m, np, pp, /**/ r->n, r->v));
-    dSync(); /* wait for n and v to be computed */
+    reini(      r);
+    KL(restrain_dev::sum, (k_cnf(np)), (m, np, pp,      r->n, r->v));
+    dSync();
 
     n = *(r->n);
     v = *(r->v);
@@ -2238,13 +2238,13 @@ static void apply(MPI_Comm comm, Map m, int np, /**/ Particle *pp, Restrain *r) 
     v.y *= scale;
     v.z *= scale;
 
-    KL(restrain_dev::shift, (k_cnf(np)), (m, v, np, /**/ pp));
+    KL(restrain_dev::shift, (k_cnf(np)), (m, v, np,      pp));
 
     *(r->v) = v;
     *(r->n) = n;
 }
 
-void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain *r, SchemeQQ qq) {
+void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it,      Restrain *r, SchemeQQ qq) {
     int kind;
     kind = r->kind;
     switch (kind) {
@@ -2254,12 +2254,12 @@ void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain 
         restrain_dev::MapColor mc;
         mc.cc = cc;
         mc.color = RED_COLOR;
-        apply(comm, mc, qq.on, /**/ qq.o, r);
+        apply(comm, mc, qq.on,      qq.o, r);
         report(r, it);
         break;
     case RSTR_RBC:
         restrain_dev::MapGrey mg;
-        apply(comm, mg, qq.rn, /**/ qq.r, r);
+        apply(comm, mg, qq.rn,      qq.r, r);
         report(r, it);
         break;
     default:
@@ -2272,13 +2272,13 @@ void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain 
 
 
 
-// Grouped editable compilation unit for simulation options, objects, and walls.
 
 
-// Grouped editable compilation unit for simulation options and objects.
 
 
-// Grouped editable compilation unit for simulation objects and interactions.
+
+
+
 
 
 
@@ -2287,33 +2287,33 @@ void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain 
 #include <string.h>
 #include <vector_types.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -2330,10 +2330,10 @@ void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain 
 #define UDX_SIM_OBJECTS_DEF_COMMON
 #include "constants.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -2342,29 +2342,29 @@ void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain 
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
@@ -2414,7 +2414,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -2428,7 +2428,7 @@ int status2errcode(MPI_Status *status);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2439,7 +2439,7 @@ int status2errcode(MPI_Status *status);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2461,16 +2461,16 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void os_mkdir(const char* path); // <1>
-long os_time();                  // <2>
-void os_srand(long int seedval); // <3>
-double os_drand();               // <4>
-void os_sleep(unsigned int seconds); // <5>
-void os_malloc_stats();              // TODO
-/* [c]uda [c]heck macros */
+void os_mkdir(const char* path);
+long os_time();
+void os_srand(long int seedval);
+double os_drand();
+void os_sleep(unsigned int seconds);
+void os_malloc_stats();
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -2478,7 +2478,7 @@ void os_malloc_stats();              // TODO
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -2491,8 +2491,8 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
-/* [m]pi [c]heck macros */
+
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -2508,12 +2508,12 @@ struct int3;
 struct Coords;
 
 enum {
-    DBG_POS,      // <1>
-    DBG_POS_SOFT, // <2>
-    DBG_VEL,      // <3>
-    DBG_FORCES,   // <4>
-    DBG_COLORS,   // <5>
-    DBG_CLIST,    // <6>
+    DBG_POS,
+    DBG_POS_SOFT,
+    DBG_VEL,
+    DBG_FORCES,
+    DBG_COLORS,
+    DBG_CLIST,
     DBG_NKIND_
 };
 
@@ -2534,23 +2534,23 @@ void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *db
 void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
 void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 struct Particle;
 struct Positioncp;
@@ -2558,13 +2558,13 @@ struct float4;
 
 void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr);
 void convert_pp2rr_previous(long n, const Particle *pp, Positioncp *rr);
-void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp);
+void convert_pp2f4_pos(int n, const float *pp,      float4 *zpp);
 
 struct Coords;
 struct Config;
 
-void coords_ini(MPI_Comm cart, int Lx, int Ly, int Lz, Coords **c); // <1>
-void coords_fin(Coords *c); // <2>
+void coords_ini(MPI_Comm cart, int Lx, int Ly, int Lz, Coords **c);
+void coords_fin(Coords *c);
 
 void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c);
 
@@ -2582,24 +2582,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -2614,13 +2614,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 struct PairParams;
@@ -2635,8 +2635,8 @@ struct PairAdhesion;
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
 
-void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
-void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p);
+void pair_set_lj(float sigma, float eps, PairParams *p);
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
@@ -2666,15 +2666,15 @@ void parray_push_cc(const int *cc, PaArray *a);
 
 bool parray_is_colored(const PaArray *a);
 
-void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
-void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+void parray_get_view(const PaArray *a, PaArray_v *v);
+void parray_get_view(const PaArray *a, PaCArray_v *v);
 #endif
 #ifndef UDX_SIM_OBJECTS_FARRAY_COMMON
 #define UDX_SIM_OBJECTS_FARRAY_COMMON
 struct FoArray {
     bool stress;
     float *ff;
-    float *ss; /* stress */
+    float *ss;
 };
 
 struct FoArray_v;
@@ -2689,8 +2689,8 @@ void farray_clear(FoArray *);
 
 bool farray_has_stress(const FoArray *a);
 
-void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
-void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+void farray_get_view(const FoArray *a, FoArray_v *v);
+void farray_get_view(const FoArray *a, FoSArray_v *v);
 #endif
 #ifndef UDX_SIM_OBJECTS_PFARRAYS_COMMON
 #define UDX_SIM_OBJECTS_PFARRAYS_COMMON
@@ -2720,12 +2720,12 @@ enum {
     DEAD  = 1
 };
 
-/* structure of particle                           */
-/* optional "deathlist" for particles to be killed */
+
+
 
 struct PartList {
-    const Particle *pp;   /* particles array          */
-    const int *deathlist; /* what pp is dead or alive */
+    const Particle *pp;
+    const int *deathlist;
 };
 struct Triangles {
     int4 *tt;
@@ -2734,15 +2734,15 @@ struct Triangles {
 struct Triangles;
 struct MeshRead;
 
-void triangles_ini(MeshRead*, /**/ Triangles**);
+void triangles_ini(MeshRead*,      Triangles**);
 void triangles_fin(Triangles*);
 struct Clist;
 struct ClistMap;
 
-void clist_ini(int LX, int LY, int LZ, /**/ Clist **c);
-void clist_fin(/**/ Clist *c);
+void clist_ini(int LX, int LY, int LZ,      Clist **c);
+void clist_fin(     Clist *c);
 
-void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
+void clist_ini_map(int maxp, int nA, const Clist *c,      ClistMap **m);
 void clist_fin_map(ClistMap *m);
 
 const int* clists_get_ss(const Clist *c);
@@ -2752,31 +2752,31 @@ int        clists_get_n(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
 
 void clist_ini_counts(Clist *c);
-void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m);
+void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-/* special for fluid distribution */
-void clist_subindex_local(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_subindex_remote(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
 
-void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout, /**/ Particle *ppout);
-void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout, /**/ int *iiout);
+void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
-/* quick cell build for single array */
-void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
+void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
+void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
+
+
+void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 
 struct Particle;
 struct float3;
-void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi);
+void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
 
 struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -2817,8 +2817,8 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 struct Coords;
 struct float3;
 void io_com_dump(MPI_Comm, const Coords*, const char *name, long id, int n, const int *ii, const float3 *rr);
@@ -2851,8 +2851,8 @@ struct Vectors;
 enum {MESH_WRITE_EDGE, MESH_WRITE_CENTER};
 #endif
 
-void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite**);
-void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead*, const char *directory, /**/ MeshWrite**);
+void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory,      MeshWrite**);
+void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead*, const char *directory,      MeshWrite**);
 
 void mesh_write_particles(MeshWrite*, MPI_Comm, const Coords*, int nm, const Particle*, int id);
 void mesh_write_vectors(MeshWrite*, MPI_Comm, int nm, Vectors *pos, Vectors *vel, int id);
@@ -2872,10 +2872,10 @@ enum {RESTART_BEGIN=RESTART_FINAL};
 typedef void (*StreamWriter)(const void*, FILE*);
 typedef void (*StreamReader)(FILE*, void*);
 
-void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
-void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
-void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
-void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp);
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter);
 
 void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
 void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
@@ -2926,13 +2926,13 @@ struct AreaVolume;
 struct Particle;
 
 struct RbcQuants {
-    int n, nc;               /* number of particles, cells                */
-    int nt, nv;              /* number of triangles and vertices per mesh */
-    int md;                  /* maximum valence of the mesh               */
-    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
-    bool ids;                /* global ids active ?                       */
-    int *ii;                 /* global ids on host                        */
-    AreaVolume *area_volume; /* to compute area and volume */
+    int n, nc;
+    int nt, nv;
+    int md;
+    Particle *pp, *pp_hst;
+    bool ids;
+    int *ii;
+    AreaVolume *area_volume;
 };
 
 struct Coords;
@@ -2941,10 +2941,10 @@ struct MeshRead;
 void rbc_ini(long maxnc, bool ids, const MeshRead*, RbcQuants*);
 void rbc_fin(RbcQuants*);
 
-void rbc_gen_mesh(const Coords*, MPI_Comm, const MeshRead*, const char *ic, /**/ RbcQuants*); // <1>
-void rbc_gen_freeze(MPI_Comm, /**/ RbcQuants*);                                               // <2>
-void rbc_strt_quants(MPI_Comm, const MeshRead*, const char *base, const char *name, const int id, RbcQuants*);  // <3>
-void rbc_strt_dump(MPI_Comm, const char *base, const char *name, int id, const RbcQuants *q); // <4>
+void rbc_gen_mesh(const Coords*, MPI_Comm, const MeshRead*, const char *ic,      RbcQuants*);
+void rbc_gen_freeze(MPI_Comm,      RbcQuants*);
+void rbc_strt_quants(MPI_Comm, const MeshRead*, const char *base, const char *name, const int id, RbcQuants*);
+void rbc_strt_dump(MPI_Comm, const char *base, const char *name, int id, const RbcQuants *q);
 
 struct RbcParams;
 struct RbcForce;
@@ -2956,55 +2956,55 @@ struct RbcQuants;
 void rbc_force_ini(const MeshRead*, RbcForce**);
 void rbc_force_fin(RbcForce*);
 
-void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce*); // <1>
-void rbc_force_set_stressfree(const char *fname, /**/ RbcForce*);    // <2>
+void rbc_force_set_stressful(int nt, float totArea,      RbcForce*);
+void rbc_force_set_stressfree(const char *fname,      RbcForce*);
 
-void rbc_force_set_rnd0(RbcForce*);           // <3>
-void rbc_force_set_rnd1(int seed, RbcForce*); // <4>
+void rbc_force_set_rnd0(RbcForce*);
+void rbc_force_set_rnd1(int seed, RbcForce*);
 void rbc_force_set_bending(const MeshRead*, const char*, RbcForce*);
 
 void rbc_force_set_conf(const MeshRead*, const Config *cfg, const char *name, RbcForce*);
 
-void rbc_force_apply(RbcForce*, const RbcParams*, float dt, const RbcQuants*, /**/ Force*); // <1>
-void rbc_force_stat(/**/ float *pArea, float *pVolume); // <2>
+void rbc_force_apply(RbcForce*, const RbcParams*, float dt, const RbcQuants*,      Force*);
+void rbc_force_stat(     float *pArea, float *pVolume);
 struct AreaVolume;
 struct Particle;
 struct int4;
 
-void area_volume_ini(int nv, int nt, const int4 *tt, int max_cell, AreaVolume**); // <1>
+void area_volume_ini(int nv, int nt, const int4 *tt, int max_cell, AreaVolume**);
 void area_volume_fin(AreaVolume*);
 
-void area_volume_compute(AreaVolume*, int nm, const Particle*, /**/ float **av); // <2>
-void area_volume_host(AreaVolume*, /**/ float **av); // <3>
+void area_volume_compute(AreaVolume*, int nm, const Particle*,      float **av);
+void area_volume_host(AreaVolume*,      float **av);
 struct RbcStretch;
 struct Force;
 
-void rbc_stretch_ini(const char *path, int nv, /**/ RbcStretch**); /* `nv` is for error check */
+void rbc_stretch_ini(const char *path, int nv,      RbcStretch**);
 void rbc_stretch_fin(RbcStretch*);
-void rbc_stretch_apply(int nm, const RbcStretch*, /**/ Force*);
+void rbc_stretch_apply(int nm, const RbcStretch*,      Force*);
 struct RbcCom;
 struct float3;
 struct Particle;
 
-void rbc_com_ini(int nv, int nm_max, /**/ RbcCom**);
-void rbc_com_fin(/**/ RbcCom*);
-void rbc_com_apply(RbcCom*, int nm, const Particle*, /**/ float3 **rr, float3 **vv);
+void rbc_com_ini(int nv, int nm_max,      RbcCom**);
+void rbc_com_fin(     RbcCom*);
+void rbc_com_apply(RbcCom*, int nm, const Particle*,      float3 **rr, float3 **vv);
 
 struct RigQuants {
-    int n, ns, nps;              /* number of particles (total), solid, particle per solid        */
-    Particle *pp_hst, *pp;       /* particles on hst and device                                   */
-    Rigid    *ss_hst, *ss;       /* rigid strutures                                               */
-    float   *rr0_hst, *rr0;      /* frozen particle templates                                     */
+    int n, ns, nps;
+    Particle *pp_hst, *pp;
+    Rigid    *ss_hst, *ss;
+    float   *rr0_hst, *rr0;
 
-    /* mesh related quantities */
-    int nt, nv;                   /* number of [t]riangles and [v]ertices                          */
-    int4 *dtt;                    /* triangle indices on device                                    */
-    float *dvv;                   /* vertices on device (template)                                 */
-    Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
+
+    int nt, nv;
+    int4 *dtt;
+    float *dvv;
+    Particle *i_pp_hst, *i_pp;
 
     Rigid *ss_dmp;
 
-    long maxp; /* maximum particle number */
+    long maxp;
 };
 
 struct Coords;
@@ -3014,35 +3014,35 @@ struct MeshRead;
 void rig_ini(long maxs, long maxp, const MeshRead*, RigQuants*);
 void rig_fin(RigQuants *q);
 
-void rig_gen_mesh(const Coords*, MPI_Comm, const MeshRead*, const char *ic, /**/ RigQuants *); // <1>
+void rig_gen_mesh(const Coords*, MPI_Comm, const MeshRead*, const char *ic,      RigQuants *);
 void rig_gen_freeze(const Coords*, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo*,
-                    MPI_Comm, const MeshRead*, Particle *opp, int *on, RigQuants *q);          // <2>
-void rig_strt_quants(MPI_Comm, const MeshRead*, const char *base, const char *name, const int id, RigQuants *q); // <3>
+                    MPI_Comm, const MeshRead*, Particle *opp, int *on, RigQuants *q);
+void rig_strt_quants(MPI_Comm, const MeshRead*, const char *base, const char *name, const int id, RigQuants *q);
 
-void rig_strt_dump_templ(MPI_Comm, const char *base, const char *name, const RigQuants *q);         // <1>
-void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, const RigQuants *q); // <2>
+void rig_strt_dump_templ(MPI_Comm, const char *base, const char *name, const RigQuants *q);
+void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, const RigQuants *q);
 struct RigPinInfo;
 struct int3;
 struct Config;
 
 enum {NOT_PERIODIC = -1};
 
-void rig_pininfo_ini(RigPinInfo **); // <1>
-void rig_pininfo_fin(RigPinInfo *); // <2>
-void rig_pininfo_set(int3 com, int3 axis, RigPinInfo *); // <3>
-void rig_pininfo_set_pdir(int pdir, RigPinInfo *); // <4>
-void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *); // <5>
+void rig_pininfo_ini(RigPinInfo **);
+void rig_pininfo_fin(RigPinInfo *);
+void rig_pininfo_set(int3 com, int3 axis, RigPinInfo *);
+void rig_pininfo_set_pdir(int pdir, RigPinInfo *);
+void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *);
 
-int rig_pininfo_get_pdir(const RigPinInfo *); // <6>
+int rig_pininfo_get_pdir(const RigPinInfo *);
 
 struct Particle;
 struct Rigid;
 struct Force;
 
-void rig_reinit_ft(const int ns, /**/ Rigid *ss); // <1>
-void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns, /**/ Particle *pp, Rigid *ss); // <2>
-void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0, /**/ Particle *pp); // <3>
-void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv, /**/ Particle *pp); // <4>
+void rig_reinit_ft(const int ns,      Rigid *ss);
+void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns,      Particle *pp, Rigid *ss);
+void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0,      Particle *pp);
+void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,      Particle *pp);
 
 
 #ifndef UDX_SIM_WALLS_COMMON
@@ -3058,9 +3058,9 @@ struct float4;
 struct Config;
 
 struct WallQuants {
-    float4 *pp; /* particle positions xyzo xyzo ... */
-    int n;      /* number of particles              */
-    int3 L;     /* subdomain size                   */
+    float4 *pp;
+    int n;
+    int3 L;
 };
 
 struct WallTicket;
@@ -3073,30 +3073,30 @@ void wall_ini_ticket(int3 L, WallTicket**);
 void wall_fin_quants(WallQuants*);
 void wall_fin_ticket(WallTicket*);
 
-void wall_gen_quants(MPI_Comm, int numdensity, int maxn, const Sdf*, /* io */ int *o_n, Particle *o_pp, /**/ WallQuants*); // <1>
-void wall_gen_ticket(const WallQuants*, WallTicket*); // <2>
+void wall_gen_quants(MPI_Comm, int numdensity, int maxn, const Sdf*,          int *o_n, Particle *o_pp,      WallQuants*);
+void wall_gen_ticket(const WallQuants*, WallTicket*);
 
-void wall_strt_quants(MPI_Comm, const char *base, int maxn, WallQuants*); // <1>
-void wall_strt_dump_templ(MPI_Comm, const char *base, const WallQuants*); // <2>
+void wall_strt_quants(MPI_Comm, const char *base, int maxn, WallQuants*);
+void wall_strt_dump_templ(MPI_Comm, const char *base, const WallQuants*);
 
 void wall_force(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
-                const WallTicket*, int n, const PaArray*, const FoArray*); // <1>
+                const WallTicket*, int n, const PaArray*, const FoArray*);
 
 void wall_force_adhesion(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
-                         const WallTicket*, int n, const PaArray*, const FoArray*); // <2>
+                         const WallTicket*, int n, const PaArray*, const FoArray*);
 
-void wall_repulse(const Sdf*, const WallRepulsePrm*, long n, const PaArray*, const FoArray*); // <3>
+void wall_repulse(const Sdf*, const WallRepulsePrm*, long n, const PaArray*, const FoArray*);
 
-void wall_repulse_prm_ini(float lambda, WallRepulsePrm**); // <1>
-void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**); // <2>
-void wall_repulse_prm_fin(WallRepulsePrm*); // <3>
+void wall_repulse_prm_ini(float lambda, WallRepulsePrm**);
+void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**);
+void wall_repulse_prm_fin(WallRepulsePrm*);
 #endif
 
 struct Force;
 struct Particle;
 
-void scheme_move_apply(float dt, float mass, int n, const Force*, Particle*); // <1>
-void scheme_move_clear_vel(int n, Particle*); // <2>
+void scheme_move_apply(float dt, float mass, int n, const Force*, Particle*);
+void scheme_move_clear_vel(int n, Particle*);
 struct Particle;
 struct Force;
 struct BForce;
@@ -3107,72 +3107,72 @@ struct Coords;
 void bforce_ini(BForce **p);
 void bforce_fin(BForce *p);
 
-void bforce_set_none(/**/ BForce *p);            // <1>
-void bforce_set_cste(float3 f, /**/ BForce *p);  // <2>
-void bforce_set_dp(float a, /**/ BForce *p);     // <3>
-void bforce_set_shear(float a, /**/ BForce *p);  // <4>
-void bforce_set_rol(float a, /**/ BForce *p);    // <5>
-void bforce_set_rad(float a, /**/ BForce *p);    // <6>
+void bforce_set_none(     BForce *p);
+void bforce_set_cste(float3 f,      BForce *p);
+void bforce_set_dp(float a,      BForce *p);
+void bforce_set_shear(float a,      BForce *p);
+void bforce_set_rol(float a,      BForce *p);
+void bforce_set_rad(float a,      BForce *p);
 
-void bforce_set_conf(const Config *cfg, /**/ BForce *bf);
+void bforce_set_conf(const Config *cfg,      BForce *bf);
 
-void bforce_adjust(float3 f, /**/ BForce *fpar); // <1>
-void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Particle *pp, /**/ Force *ff); // <2>
+void bforce_adjust(float3 f,      BForce *fpar);
+void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Particle *pp,      Force *ff);
 struct TimeStep;
 struct TimeStepAccel;
 struct Force;
 struct Config;
 
-void time_step_accel_ini(/**/ TimeStepAccel**);
+void time_step_accel_ini(     TimeStepAccel**);
 void time_step_accel_fin(TimeStepAccel*);
 
-void time_step_accel_push(TimeStepAccel*, float m, int n, Force*); // <1>
-void time_step_accel_reset(TimeStepAccel*); // <2>
+void time_step_accel_push(TimeStepAccel*, float m, int n, Force*);
+void time_step_accel_reset(TimeStepAccel*);
 
 
-void time_step_ini(const Config*, /**/ TimeStep**); // <1>
+void time_step_ini(const Config*,      TimeStep**);
 void time_step_fin(TimeStep*);
 
-float time_step_dt(TimeStep*, MPI_Comm, TimeStepAccel*); // <1>
-float time_step_dt0(TimeStep*);                          // <2>
-void time_step_log(TimeStep*);                           // <3>
+float time_step_dt(TimeStep*, MPI_Comm, TimeStepAccel*);
+float time_step_dt0(TimeStep*);
+void time_step_log(TimeStep*);
 
 typedef unsigned char data_t;
 
 enum {
-    NFRAGS = 26, /* number of fragments for one halo */
-    BULK   = 26, /* bulk id                          */
-    NBAGS  = 27, /* fragments + bulk                 */
+    NFRAGS = 26,
+    BULK   = 26,
+    NBAGS  = 27,
 };
 
-/* Allocation mod for bags */
+
 enum AllocMod {
-    HST_ONLY,   /* only host bags allocated                 */
-    DEV_ONLY,   /* only device bags allocated               */
-    PINNED,     /* both host and device pinned              */
-    PINNED_HST, /* host pinned; no device memory            */
-    PINNED_DEV, /* host pinned; device global memory on gpu */
-    NONE        /* no allocation                            */
+    HST_ONLY,
+    DEV_ONLY,
+    PINNED,
+    PINNED_HST,
+    PINNED_DEV,
+    NONE
 };
 
 struct dBags {
-    data_t *data[NBAGS]; /* data on the device         */
+    data_t *data[NBAGS];
 };
 
 struct hBags {
-    data_t *data[NBAGS]; /* data on the host                    */
-    int         *counts; /* size of the data                    */
-    int capacity[NBAGS]; /* capacity of each frag (elem number) */
-    size_t bsize;        /* size of one datum in bytes          */
+    data_t *data[NBAGS];
+    int         *counts;
+    int capacity[NBAGS];
+    size_t bsize;
 };
 
 struct Comm;
 struct CommBuffer;
 
-void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-void comm_ini(MPI_Comm cart, /**/ Comm **c);
-void comm_fin(/**/ Comm *c);
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS],      hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod,      hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart,      Comm **c);
+void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
@@ -3180,27 +3180,27 @@ void comm_buffer_fin(CommBuffer*);
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-void comm_post_recv(hBags *b, Comm *c);           // <1>
-void comm_post_send(const hBags *b, Comm *c);     // <2>
+void comm_post_recv(hBags *b, Comm *c);
+void comm_post_send(const hBags *b, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
-void comm_wait_send(Comm *c);                     // <4>
+void comm_wait_recv(Comm *c,      hBags *b);
+void comm_wait_send(Comm *c);
 
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_recv(Comm *c,      CommBuffer *cb);
 void comm_wait_send(Comm *c);
 
-int    comm_get_number_capacity(int i, const hBags *b); // <1>
-size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+int    comm_get_number_capacity(int i, const hBags *b);
+size_t comm_get_byte_capacity(int i, const hBags *b);
 
 struct DRbcPack;
 struct DRbcComm;
 struct DRbcUnpack;
 
 void drbc_pack_ini(bool ids, int3 L, int maxc, int nv, DRbcPack **p);
-void drbc_comm_ini(MPI_Comm comm, /**/ DRbcComm **c);
+void drbc_comm_ini(MPI_Comm comm,      DRbcComm **c);
 void drbc_unpack_ini(bool ids, int3 L, int maxc, int nv, DRbcUnpack **u);
 
 void drbc_pack_fin(DRbcPack *p);
@@ -3208,7 +3208,7 @@ void drbc_comm_fin(DRbcComm *c);
 void drbc_unpack_fin(DRbcUnpack *u);
 
 void drbc_build_map(int nc, int nv, const Particle *pp, DRbcPack *p);
-void drbc_pack(const RbcQuants *q, /**/ DRbcPack *p);
+void drbc_pack(const RbcQuants *q,      DRbcPack *p);
 void drbc_download(DRbcPack *p);
 
 void drbc_post_recv(DRbcComm *c, DRbcUnpack *u);
@@ -3216,22 +3216,22 @@ void drbc_post_send(DRbcPack *p, DRbcComm *c);
 void drbc_wait_recv(DRbcComm *c, DRbcUnpack *u);
 void drbc_wait_send(DRbcComm *c);
 
-void drbc_unpack_bulk(const DRbcPack *p, /**/ RbcQuants *q);
-void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q);
+void drbc_unpack_bulk(const DRbcPack *p,      RbcQuants *q);
+void drbc_unpack_halo(const DRbcUnpack *u,      RbcQuants *q);
 struct DRigPack;
 struct DRigComm;
 struct DRigUnpack;
 
 void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **p);
-void drig_comm_ini(MPI_Comm comm, /**/ DRigComm **c);
+void drig_comm_ini(MPI_Comm comm,      DRigComm **c);
 void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **u);
 
 void drig_pack_fin(DRigPack *p);
 void drig_comm_fin(DRigComm *c);
 void drig_unpack_fin(DRigUnpack *u);
 
-void drig_build_map(int ns, const Rigid *ss, /**/ DRigPack *p);
-void drig_pack(int ns, int nv, const Rigid *ss, const Particle *ipp, /**/ DRigPack *p);
+void drig_build_map(int ns, const Rigid *ss,      DRigPack *p);
+void drig_pack(int ns, int nv, const Rigid *ss, const Particle *ipp,      DRigPack *p);
 void drig_download(DRigPack *p);
 
 void drig_post_recv(DRigComm *c, DRigUnpack *u);
@@ -3239,8 +3239,8 @@ void drig_post_send(DRigPack *p, DRigComm *c);
 void drig_wait_recv(DRigComm *c, DRigUnpack *u);
 void drig_wait_send(DRigComm *c);
 
-void drig_unpack_bulk(const DRigPack *p, /**/ RigQuants *q);
-void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q);
+void drig_unpack_bulk(const DRigPack *p,      RigQuants *q);
+void drig_unpack_halo(const DRigUnpack *u,      RigQuants *q);
 struct EMeshPack;
 struct EMeshComm;
 struct EMeshUnpack;
@@ -3248,20 +3248,20 @@ struct EMeshPackM;
 struct EMeshCommM;
 struct EMeshUnpackM;
 
-/* mesh exchanger */
+
 
 void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **p);
-void emesh_comm_ini(MPI_Comm comm, /**/ EMeshComm **c);
+void emesh_comm_ini(MPI_Comm comm,      EMeshComm **c);
 void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **u);
 
 void emesh_pack_fin(EMeshPack *p);
 void emesh_comm_fin(EMeshComm *c);
 void emesh_unpack_fin(EMeshUnpack *u);
 
-void emesh_build_map(int nm, int nv, const Particle *pp, /**/ EMeshPack *p);
+void emesh_build_map(int nm, int nv, const Particle *pp,      EMeshPack *p);
 
-void emesh_pack_pp(int nv, const Particle *pp, /**/ EMeshPack *p);
-void emesh_pack_rrcp(int nv, const Positioncp *rr, /**/ EMeshPack *p);
+void emesh_pack_pp(int nv, const Particle *pp,      EMeshPack *p);
+void emesh_pack_rrcp(int nv, const Positioncp *rr,      EMeshPack *p);
 void emesh_download(EMeshPack *p);
 
 void emesh_post_recv(EMeshComm *c, EMeshUnpack *u);
@@ -3269,22 +3269,22 @@ void emesh_post_send(EMeshPack *p, EMeshComm *c);
 void emesh_wait_recv(EMeshComm *c, EMeshUnpack *u);
 void emesh_wait_send(EMeshComm *c);
 
-void emesh_unpack_pp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp);
-void emesh_unpack_rrcp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Positioncp *rr);
+void emesh_unpack_pp(int nv, const EMeshUnpack *u,      int *nmhalo, Particle *pp);
+void emesh_unpack_rrcp(int nv, const EMeshUnpack *u,      int *nmhalo, Positioncp *rr);
 
-void emesh_get_num_frag_mesh(const EMeshUnpack *u, /**/ int cc[NFRAGS]);
+void emesh_get_num_frag_mesh(const EMeshUnpack *u,      int cc[NFRAGS]);
 
-/* optional: (back) momentum exchanger */
+
 
 void emesh_packm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshPackM **p);
-void emesh_commm_ini(MPI_Comm comm, /**/ EMeshCommM **c);
+void emesh_commm_ini(MPI_Comm comm,      EMeshCommM **c);
 void emesh_unpackm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshUnpackM **u);
 
 void emesh_packm_fin(EMeshPackM *p);
 void emesh_commm_fin(EMeshCommM *c);
 void emesh_unpackm_fin(EMeshUnpackM *u);
 
-void emesh_packM(int nt, const int counts[NFRAGS], const Momentum *mm, /**/ EMeshPackM *p);
+void emesh_packM(int nt, const int counts[NFRAGS], const Momentum *mm,      EMeshPackM *p);
 void emesh_downloadM(const int counts[NFRAGS], EMeshPackM *p);
 
 void emesh_post_recv(EMeshCommM *c, EMeshUnpackM *u);
@@ -3293,8 +3293,8 @@ void emesh_wait_recv(EMeshCommM *c, EMeshUnpackM *u);
 void emesh_wait_send(EMeshCommM *c);
 
 void emesh_upload(EMeshUnpackM *u);
-void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Momentum *mm);
-//#include "meshbb/imp.h"
+void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u,      Momentum *mm);
+
 struct MeshBB;
 
 struct Particle;
@@ -3309,18 +3309,18 @@ struct MeshInfo {
     const int4 *tt;
 };
 
-void mesh_bounce_ini(int maxpp, /**/ MeshBB **d);
-void mesh_bounce_fin(/**/ MeshBB *d);
+void mesh_bounce_ini(int maxpp,      MeshBB **d);
+void mesh_bounce_fin(     MeshBB *d);
 
-void mesh_bounce_reini(int n, /**/ MeshBB *d);  // <1>
+void mesh_bounce_reini(int n,      MeshBB *d);
 void mesh_bounce_find_collisions(float dt, int nm, MeshInfo meshinfo, const Positioncp *i_rr, int3 L,
-                                 const int *starts, const int *counts, const Particle *pp, const Particle *pp0, /**/ MeshBB *d);  // <2>
-void mesh_bounce_select_collisions(int n, /**/ MeshBB *d);  // <3>
+                                 const int *starts, const int *counts, const Particle *pp, const Particle *pp0,      MeshBB *d);
+void mesh_bounce_select_collisions(int n,      MeshBB *d);
 void mesh_bounce_bounce(float dt, float mass, int n, const MeshBB *d, MeshInfo meshinfo,
-                        const Positioncp *i_rr, const Particle *pp0, /**/ Particle *pp, Momentum *mm);  // <4>
+                        const Positioncp *i_rr, const Particle *pp0,      Particle *pp, Momentum *mm);
 
-void mesh_bounce_collect_rig_momentum(int ns, MeshInfo meshinfo, const Particle *pp, const Momentum *mm, /**/ Rigid *ss); // <1>
-void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Momentum *mm, /**/ Particle *pp);            // <2>
+void mesh_bounce_collect_rig_momentum(int ns, MeshInfo meshinfo, const Particle *pp, const Momentum *mm,      Rigid *ss);
+void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Momentum *mm,      Particle *pp);
 struct float3;
 struct Particle;
 struct int4;
@@ -3328,11 +3328,11 @@ struct Triangles;
 
 int collision_inside_1p(int spdir, const float *r, const float *vv, const int4 *tt, const int nt);
 
-void collision_label_ini(long n, int lab_out, /**/ int *labels);
+void collision_label_ini(long n, int lab_out,      int *labels);
 void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri,
                      int nv, int nm, const Particle *i_pp,
                      const float3 *minext, const float3 *maxext,
-                     int lab_in, /**/ int *labels);
+                     int lab_in,      int *labels);
 
 struct Sdf;
 struct Sdf_v;
@@ -3344,23 +3344,23 @@ struct int3;
 void sdf_ini(int3 L, Sdf**);
 void sdf_fin(Sdf*);
 
-void sdf_gen(const Coords*, MPI_Comm cart, bool dump, Sdf*); // <1>
-void sdf_get_view(const Sdf*, /**/ Sdf_v*);                  // <2>
+void sdf_gen(const Coords*, MPI_Comm cart, bool dump, Sdf*);
+void sdf_get_view(const Sdf*,      Sdf_v*);
 
-void sdf_bulk_wall(const Sdf*, /*io*/ int *s_n, Particle *s_pp, /*o*/ int *w_n, Particle *w_pp); // <1>
-int  sdf_who_stays(const Sdf*, int n, const Particle*, int nc, int nv, /**/ int *stay);          // <2>
-double sdf_compute_volume(MPI_Comm, int3 L, const Sdf*, long nsamples);                          // <3>
+void sdf_bulk_wall(const Sdf*,        int *s_n, Particle *s_pp,       int *w_n, Particle *w_pp);
+int  sdf_who_stays(const Sdf*, int n, const Particle*, int nc, int nv,      int *stay);
+double sdf_compute_volume(MPI_Comm, int3 L, const Sdf*, long nsamples);
 
-void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**/ Particle*);
+void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n,      Particle*);
 
 #ifndef UDX_SIM_OBJECTS_OPT_COMMON
 #define UDX_SIM_OBJECTS_OPT_COMMON
-/* solvent options */
+
 struct OptFlu {
     bool colors, ids, ss, push;
 };
 
-/* common parameters for membranes and rigid objects */
+
 struct OptObj {
     bool push, bounce;
     int shifttype;
@@ -3370,14 +3370,14 @@ struct OptObj {
     char name[FILENAME_MAX];
 };
 
-/* membrane options */
+
 struct OptMbr : OptObj {
     bool ids, stretch, dump_com;
     int substeps;
     char stretch_file[FILENAME_MAX];
 };
 
-/* rigid options */
+
 struct OptRig : OptObj {
     bool empty_pp;
 };
@@ -3386,11 +3386,11 @@ struct OptWall {
     bool active;
 };
 
-/* global physical parameters */
+
 struct OptParams {
-    int3 L;          /* subdomain sizes */
-    float kBT;       /* temperature     */
-    int numdensity;  /* number density  */
+    int3 L;
+    float kBT;
+    int numdensity;
 };
 
 struct OptDump {
@@ -3441,94 +3441,94 @@ void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, O
 void objects_fin(Objects*);
 
 void objects_save_mesh(Objects*);
-void objects_clear_vel(Objects*);         // <1>
-void objects_advance(float dt, Objects*); // <2>
-void objects_distribute(Objects*);        // <3>
-void objects_update_dpd_prms(float dt, float kBT, Objects*); // <4>
+void objects_clear_vel(Objects*);
+void objects_advance(float dt, Objects*);
+void objects_distribute(Objects*);
+void objects_update_dpd_prms(float dt, float kBT, Objects*);
 
-void objects_clear_forces(Objects*);                 // <1>
-void objects_body_forces(const BForce*, Objects *o); // <2>
+void objects_clear_forces(Objects*);
+void objects_body_forces(const BForce*, Objects *o);
 
-void objects_mesh_dump(Objects*);                    // <1>
-void objects_diag_dump(float t, Objects*);           // <2>
-void objects_part_dump(long id, Objects*, IoBop*);   // <3>
+void objects_mesh_dump(Objects*);
+void objects_diag_dump(float t, Objects*);
+void objects_part_dump(long id, Objects*, IoBop*);
 
-void objects_strt_templ(const char *base, Objects*);         // <4>
-void objects_strt_dump(const char *base, long id, Objects*); // <5>
+void objects_strt_templ(const char *base, Objects*);
+void objects_strt_dump(const char *base, long id, Objects*);
 
 bool objects_have_bounce(const Objects*);
 
-void objects_get_particles_all(Objects*, PFarrays*);    // <1>
-void objects_get_particles_mbr(Objects*, PFarrays*);    // <2>
-void objects_get_accel(const Objects*, TimeStepAccel*); // <3>
+void objects_get_particles_all(Objects*, PFarrays*);
+void objects_get_particles_mbr(Objects*, PFarrays*);
+void objects_get_accel(const Objects*, TimeStepAccel*);
 
-void objects_get_params_fsi(const Objects*, const PairParams*[]);           // <4>
-void objects_get_params_adhesion(const Objects*, const PairParams*[]);      // <5>
-void objects_get_params_repulsion(const Objects*, const WallRepulsePrm*[]); // <6>
-void objects_get_params_cnt(const Objects*, const PairParams***);           // <7>
+void objects_get_params_fsi(const Objects*, const PairParams*[]);
+void objects_get_params_adhesion(const Objects*, const PairParams*[]);
+void objects_get_params_repulsion(const Objects*, const WallRepulsePrm*[]);
+void objects_get_params_cnt(const Objects*, const PairParams***);
 
-void objects_gen_mesh(Objects*);                           // <1>
-void objects_remove_from_wall(const Sdf *sdf, Objects *o); // <2>
-void objects_gen_freeze(PFarray*, Objects*);               // <3>
+void objects_gen_mesh(Objects*);
+void objects_remove_from_wall(const Sdf *sdf, Objects *o);
+void objects_gen_freeze(PFarray*, Objects*);
 
 void objects_restart(Objects*);
 
 void objects_activate_mbr_bounce(Objects*);
-void objects_bounce(float dt, float flu_mass, const Clist *flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, Objects *obj); // <1>
-void objects_recolor_flu(Objects*, PFarray *flu); // <2>
-double objects_mbr_tot_volume(const Objects*);    // <3>
+void objects_bounce(float dt, float flu_mass, const Clist *flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, Objects *obj);
+void objects_recolor_flu(Objects*, PFarray *flu);
+double objects_mbr_tot_volume(const Objects*);
 
 void objects_check_size(const Objects*);
 void objects_check_vel(const Objects*, const Dbg*, float dt);
 void objects_check_forces(const Objects*, const Dbg*, float dt);
 
-/* membrane distribution */
+
 struct MbrDistr {
     DRbcPack *p;
     DRbcComm *c;
     DRbcUnpack *u;
 };
 
-/* rigid distribution */
+
 struct RigDistr {
     DRigPack *p;
     DRigComm *c;
     DRigUnpack *u;
 };
 
-/* mesh exchanger */
+
 struct MeshExch {
     EMeshPack *p;
     EMeshComm *c;
     EMeshUnpack *u;
 };
 
-/* mesh momentum exchanger */
+
 struct MeshMomExch {
     EMeshPackM *p;
     EMeshCommM *c;
     EMeshUnpackM *u;
 };
 
-/* workspace for solvent coloring */
+
 struct Colorer {
-    Particle *pp_mesh; /* particle workspace */
-    float3 *lo, *hi;   /* bounding boxes     */
+    Particle *pp_mesh;
+    float3 *lo, *hi;
 };
 
-/* workspace for mesh bounce back */
+
 struct BounceBackData {
     Positioncp *rr_cp;
     MeshMomExch *e;
     Momentum *mm;
 };
 
-/* common parts for membranes and rigid objects */
+
 struct Obj {
     char name[FILENAME_MAX];
     char ic_file[FILENAME_MAX];
-    float mass;           /* mass of one particle                      */
-    MeshRead   *mesh;     /* cell template                             */
+    float mass;
+    MeshRead   *mesh;
     MeshWrite  *mesh_write;
     MeshExch   *mesh_exch;
     BounceBackData *bbdata;
@@ -3538,23 +3538,23 @@ struct Obj {
     WallRepulsePrm *wall_rep_prm;
 };
 
-/* data holder for cell membranes */
+
 struct Mbr : Obj {
     RbcQuants q;
     MbrDistr d;
-    Force *ff;            /* large time scale forces                   */
-    Force *ff_fast;       /* small time scale forces                   */
-    RbcForce   *force;    /* helper to compute membrane forces         */
-    RbcParams  *params;   /* model parameters                          */
-    RbcCom     *com;      /* helper to compute center of masses        */
-    RbcStretch *stretch;  /* helper to apply stretching force to cells */
-    Triangles  *tri;      /* triangles for one cell on devices         */
+    Force *ff;
+    Force *ff_fast;
+    RbcForce   *force;
+    RbcParams  *params;
+    RbcCom     *com;
+    RbcStretch *stretch;
+    Triangles  *tri;
 
     bool active_bounce;
     Colorer  *colorer;
 };
 
-/* data holder for rigid objects */
+
 struct Rig : Obj {
     RigQuants q;
     Force *ff;
@@ -3564,7 +3564,7 @@ struct Rig : Obj {
 };
 
 struct Dump {
-    Particle *pp; /* workspace on host */
+    Particle *pp;
     long id, id_diag;
 };
 
@@ -3577,7 +3577,7 @@ struct Objects {
     Coords *coords;
     MPI_Comm cart;
     MeshBB *bb;
-    bool active; /* false before completely generated */
+    bool active;
     PairParams **cnt_params;
 };
 static void gen_name_mesh_dir(const char *name, char *mesh_dir) {
@@ -3585,37 +3585,37 @@ static void gen_name_mesh_dir(const char *name, char *mesh_dir) {
     strcat(mesh_dir, name);
 }
 
-static void ini_mbr_distr(bool ids, int nv, MPI_Comm comm, int3 L, /**/ MbrDistr *d) {
-    UC(drbc_pack_ini(ids, L, MAX_CELL_NUM, nv, /**/ &d->p));
-    UC(drbc_comm_ini(comm, /**/ &d->c));
-    UC(drbc_unpack_ini(ids, L, MAX_CELL_NUM, nv, /**/ &d->u));
+static void ini_mbr_distr(bool ids, int nv, MPI_Comm comm, int3 L,      MbrDistr *d) {
+    UC(drbc_pack_ini(ids, L, MAX_CELL_NUM, nv,      &d->p));
+    UC(drbc_comm_ini(comm,      &d->c));
+    UC(drbc_unpack_ini(ids, L, MAX_CELL_NUM, nv,      &d->u));
 }
 
-static void ini_rig_distr(int nv, MPI_Comm comm, int3 L, /**/ RigDistr *d) {
-    UC(drig_pack_ini(L, MAX_SOLIDS, nv, /**/ &d->p));
-    UC(drig_comm_ini(comm, /**/ &d->c));
-    UC(drig_unpack_ini(L,MAX_SOLIDS, nv, /**/ &d->u));
+static void ini_rig_distr(int nv, MPI_Comm comm, int3 L,      RigDistr *d) {
+    UC(drig_pack_ini(L, MAX_SOLIDS, nv,      &d->p));
+    UC(drig_comm_ini(comm,      &d->c));
+    UC(drig_unpack_ini(L,MAX_SOLIDS, nv,      &d->u));
 }
 
-static void ini_mesh_exch(int3 L, int nv, int max_m, MPI_Comm comm, /**/ MeshExch **me) {
+static void ini_mesh_exch(int3 L, int nv, int max_m, MPI_Comm comm,      MeshExch **me) {
     MeshExch *e;
     EMALLOC(1, me);
     e = *me;
-    UC(emesh_pack_ini(L, nv, max_m, /**/ &e->p));
-    UC(emesh_comm_ini(comm, /**/ &e->c));
-    UC(emesh_unpack_ini(L, nv, max_m, /**/ &e->u));
+    UC(emesh_pack_ini(L, nv, max_m,      &e->p));
+    UC(emesh_comm_ini(comm,      &e->c));
+    UC(emesh_unpack_ini(L, nv, max_m,      &e->u));
 }
 
-static void ini_mesh_mom_exch(int nt, int max_m, MPI_Comm comm, /**/ MeshMomExch **mme) {
+static void ini_mesh_mom_exch(int nt, int max_m, MPI_Comm comm,      MeshMomExch **mme) {
     MeshMomExch *e;
     EMALLOC(1, mme);
     e = *mme;
-    UC(emesh_packm_ini(nt, max_m, /**/ &e->p));
-    UC(emesh_commm_ini(comm, /**/ &e->c));
-    UC(emesh_unpackm_ini(nt, max_m, /**/ &e->u));
+    UC(emesh_packm_ini(nt, max_m,      &e->p));
+    UC(emesh_commm_ini(comm,      &e->c));
+    UC(emesh_unpackm_ini(nt, max_m,      &e->u));
 }
 
-static void ini_bbdata(int nt, int nv, int max_m, MPI_Comm cart, /**/ BounceBackData **bbdata) {
+static void ini_bbdata(int nt, int nv, int max_m, MPI_Comm cart,      BounceBackData **bbdata) {
     BounceBackData *bb;
     EMALLOC(1, bbdata);
     bb = *bbdata;
@@ -3624,7 +3624,7 @@ static void ini_bbdata(int nt, int nv, int max_m, MPI_Comm cart, /**/ BounceBack
     Dalloc(&bb->rr_cp, max_m * nv);
 }
 
-static void ini_colorer(int nv, int max_m, /**/ Colorer **col) {
+static void ini_colorer(int nv, int max_m,      Colorer **col) {
     Colorer *c;
     EMALLOC(1, col);
     c = *col;
@@ -3677,7 +3677,7 @@ static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, 
     gen_name_mesh_dir(obj->name, mesh_dir);
 
     UC(read_mesh(opt->templ_file, &obj->mesh));
-    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, obj->mesh, mesh_dir, /**/ &obj->mesh_write));
+    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, obj->mesh, mesh_dir,      &obj->mesh_write));
 
     obj->mass = opt->mass;
 
@@ -3692,13 +3692,13 @@ static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, 
     obj->bbdata    = NULL;
 
     if (opt->bounce) {
-        UC(ini_bbdata(nt, nv, max_m, cart, /**/ &obj->bbdata));
-        UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &obj->mesh_exch));
+        UC(ini_bbdata(nt, nv, max_m, cart,      &obj->bbdata));
+        UC(ini_mesh_exch(L, nv, max_m, cart,      &obj->mesh_exch));
     }
 }
 
 static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
-                    bool recolor, /**/ Mbr **membrane) {
+                    bool recolor,      Mbr **membrane) {
     int nv, max_m;
     Mbr *m;
     EMALLOC(1, membrane);
@@ -3718,27 +3718,27 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     Dalloc(&m->ff,      max_m * nv);
     Dalloc(&m->ff_fast, max_m * nv);
 
-    UC(triangles_ini(m->mesh, /**/ &m->tri));
+    UC(triangles_ini(m->mesh,      &m->tri));
     UC(rbc_ini(max_m, opt->ids, m->mesh, &m->q));
-    UC(ini_mbr_distr(opt->ids, nv, cart, L, /**/ &m->d));
+    UC(ini_mbr_distr(opt->ids, nv, cart, L,      &m->d));
 
-    if (opt->dump_com) UC(rbc_com_ini(nv, max_m, /**/ &m->com));
-    if (opt->stretch)  UC(rbc_stretch_ini(opt->stretch_file, nv, /**/ &m->stretch));
+    if (opt->dump_com) UC(rbc_com_ini(nv, max_m,      &m->com));
+    if (opt->stretch)  UC(rbc_stretch_ini(opt->stretch_file, nv,      &m->stretch));
 
     UC(rbc_params_ini(&m->params));
     UC(rbc_params_set_conf(cfg, m->name, m->params));
 
-    UC(rbc_force_ini(m->mesh, /**/ &m->force));
+    UC(rbc_force_ini(m->mesh,      &m->force));
     UC(rbc_force_set_conf(m->mesh, cfg, m->name, m->force));
 
     if (recolor) {
         if (!m->mesh_exch)
-            UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &m->mesh_exch));
-        UC(ini_colorer(nv, max_m, /**/ &m->colorer));
+            UC(ini_mesh_exch(L, nv, max_m, cart,      &m->mesh_exch));
+        UC(ini_colorer(nv, max_m,      &m->colorer));
     }
 }
 
-static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
+static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L,      Rig **rigid) {
     Rig *r;
     long max_m = MAX_SOLIDS;
     int nv;
@@ -3753,7 +3753,7 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
 
     nv = r->q.nv;
 
-    UC(ini_rig_distr(nv, cart, L, /**/ &r->d));
+    UC(ini_rig_distr(nv, cart, L,      &r->d));
 
     UC(rig_pininfo_ini(&r->pininfo));
     UC(rig_pininfo_set_conf(cfg, r->name, r->pininfo));
@@ -3862,45 +3862,45 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
     for (i = 0; i < obj->nrig; ++i) UC(ini_rig(cfg, &opt->rig[i], cart, maxp, L, &obj->rig[i]));
 
     if (need_bb(opt->nmbr, opt->nrig, opt->mbr, opt->rig))
-        UC(mesh_bounce_ini(maxp, /**/ &obj->bb));
+        UC(mesh_bounce_ini(maxp,      &obj->bb));
 
     UC(ini_dump(maxp, &obj->dump));
     UC(ini_cnt_params(cfg, obj->nmbr, obj->nrig, obj->mbr, obj->rig, &obj->cnt_params));
 }
-static void fin_mbr_distr(/**/ MbrDistr *d) {
-    UC(drbc_pack_fin(/**/ d->p));
-    UC(drbc_comm_fin(/**/ d->c));
-    UC(drbc_unpack_fin(/**/ d->u));
+static void fin_mbr_distr(     MbrDistr *d) {
+    UC(drbc_pack_fin(     d->p));
+    UC(drbc_comm_fin(     d->c));
+    UC(drbc_unpack_fin(     d->u));
 }
 
-static void fin_rig_distr(/**/ RigDistr *d) {
-    UC(drig_pack_fin(/**/ d->p));
-    UC(drig_comm_fin(/**/ d->c));
-    UC(drig_unpack_fin(/**/ d->u));
+static void fin_rig_distr(     RigDistr *d) {
+    UC(drig_pack_fin(     d->p));
+    UC(drig_comm_fin(     d->c));
+    UC(drig_unpack_fin(     d->u));
 }
 
-static void fin_mesh_exch(/**/ MeshExch *e) {
-    UC(emesh_pack_fin(   /**/ e->p));
-    UC(emesh_comm_fin(   /**/ e->c));
-    UC(emesh_unpack_fin( /**/ e->u));
+static void fin_mesh_exch(     MeshExch *e) {
+    UC(emesh_pack_fin(        e->p));
+    UC(emesh_comm_fin(        e->c));
+    UC(emesh_unpack_fin(      e->u));
     EFREE(e);
 }
 
-static void fin_mesh_mom_exch(/**/ MeshMomExch *e) {
-    UC(emesh_packm_fin(   /**/ e->p));
-    UC(emesh_commm_fin(   /**/ e->c));
-    UC(emesh_unpackm_fin( /**/ e->u));
+static void fin_mesh_mom_exch(     MeshMomExch *e) {
+    UC(emesh_packm_fin(        e->p));
+    UC(emesh_commm_fin(        e->c));
+    UC(emesh_unpackm_fin(      e->u));
     EFREE(e);
 }
 
-static void fin_bbdata(/**/ BounceBackData *bb) {
-    UC(fin_mesh_mom_exch(/**/ bb->e));
+static void fin_bbdata(     BounceBackData *bb) {
+    UC(fin_mesh_mom_exch(     bb->e));
     Dfree(bb->mm);
     Dfree(bb->rr_cp);
     EFREE(bb);
 }
 
-static void fin_colorer(/**/ Colorer *c) {
+static void fin_colorer(     Colorer *c) {
     Dfree(c->pp_mesh);
     Dfree(c->lo);
     Dfree(c->hi);
@@ -3921,19 +3921,19 @@ static void fin_mbr(Mbr *m) {
     UC(rbc_fin(&m->q));
     UC(rbc_force_fin(m->force));
 
-    UC(fin_mbr_distr(/**/ &m->d));
+    UC(fin_mbr_distr(     &m->d));
 
     Dfree(m->ff);
     Dfree(m->ff_fast);
     UC(triangles_fin(m->tri));
 
-    if (m->com)     UC(rbc_com_fin(/**/ m->com));
-    if (m->stretch) UC(rbc_stretch_fin(/**/ m->stretch));
+    if (m->com)     UC(rbc_com_fin(     m->com));
+    if (m->stretch) UC(rbc_stretch_fin(     m->stretch));
 
     UC(rbc_params_fin(m->params));
 
-    if (m->colorer)   UC(fin_colorer(/**/ m->colorer));
-    if (m->mesh_exch) UC(fin_mesh_exch(/**/ m->mesh_exch));
+    if (m->colorer)   UC(fin_colorer(     m->colorer));
+    if (m->mesh_exch) UC(fin_mesh_exch(     m->mesh_exch));
 
     UC(fin_obj_common(m));
 
@@ -3944,7 +3944,7 @@ static void fin_rig(Rig *r) {
     UC(rig_fin(&r->q));
     Dfree(r->ff);
 
-    UC(fin_rig_distr(/**/ &r->d));
+    UC(fin_rig_distr(     &r->d));
     UC(rig_pininfo_fin(r->pininfo));
 
     if (r->bbdata) UC(fin_bbdata(r->bbdata));
@@ -3976,7 +3976,7 @@ void objects_fin(Objects *obj) {
     for (i = 0; i < obj->nrig; ++i) UC(fin_rig(obj->rig[i]));
     if (obj->nmbr) EFREE(obj->mbr);
     if (obj->nrig) EFREE(obj->rig);
-    if (obj->bb)  UC(mesh_bounce_fin(/**/ obj->bb));
+    if (obj->bb)  UC(mesh_bounce_fin(     obj->bb));
     UC(fin_cnt_params(obj->nmbr, obj->nrig, obj->cnt_params));
     UC(fin_dump(obj->dump));
     UC(coords_fin(obj->coords));
@@ -4039,7 +4039,7 @@ static void clear_mbr_forces(Mbr *m) {
 
 static void clear_rig_forces(Rig *r) {
     UC(clear_forces(r->q.n, r->ff));
-    UC(rig_reinit_ft(r->q.ns, /**/ r->q.ss));
+    UC(rig_reinit_ft(r->q.ns,      r->q.ss));
 }
 
 void objects_clear_forces(Objects *obj) {
@@ -4049,18 +4049,18 @@ void objects_clear_forces(Objects *obj) {
     for (i = 0; i < obj->nrig; ++i) UC(clear_rig_forces(obj->rig[i]));
 }
 
-// used in main.h
+
 static void internal_forces_mbr(float dt, const OptMbr *opt, Mbr *m) {
-    UC(rbc_force_apply(m->force, m->params, dt, &m->q, /**/ m->ff_fast));
-    if (opt->stretch) UC(rbc_stretch_apply(m->q.nc, m->stretch, /**/ m->ff_fast));
+    UC(rbc_force_apply(m->force, m->params, dt, &m->q,      m->ff_fast));
+    if (opt->stretch) UC(rbc_stretch_apply(m->q.nc, m->stretch,      m->ff_fast));
 }
 
 static void bforce_mbr(const Coords *c, const BForce *bf, Mbr *m) {
-    UC(bforce_apply(c, m->mass, bf, m->q.n, m->q.pp, /**/ m->ff));
+    UC(bforce_apply(c, m->mass, bf, m->q.n, m->q.pp,      m->ff));
 }
 
 static void bforce_rig(const Coords *c, const BForce *bf, Rig *r) {
-    UC(bforce_apply(c, r->mass, bf, r->q.n, r->q.pp, /**/ r->ff));
+    UC(bforce_apply(c, r->mass, bf, r->q.n, r->q.pp,      r->ff));
 }
 
 void objects_body_forces(const BForce *bf, Objects *o) {
@@ -4111,8 +4111,8 @@ void objects_clear_vel(Objects *obj) {
 static void advance_rig(float dt, Rig *r) {
     if (!r->q.n) return;
     RigQuants *q = &r->q;
-    UC(rig_update(r->pininfo, dt, q->n, r->ff, q->rr0, q->ns, /**/ q->pp, q->ss));
-    UC(rig_update_mesh(dt, q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp));
+    UC(rig_update(r->pininfo, dt, q->n, r->ff, q->rr0, q->ns,      q->pp, q->ss));
+    UC(rig_update_mesh(dt, q->ns, q->ss, q->nv, q->dvv,      q->i_pp));
 }
 
 static void ini_mbr_fast_forces(Mbr *m) {
@@ -4143,19 +4143,19 @@ static void distribute_mbr(Mbr *m) {
     RbcQuants *q = &m->q;
     MbrDistr  *d = &m->d;
 
-    UC(drbc_build_map(q->nc, q->nv, q->pp, /**/ d->p));
-    UC(drbc_pack(q, /**/ d->p));
-    UC(drbc_download(/**/d->p));
+    UC(drbc_build_map(q->nc, q->nv, q->pp,      d->p));
+    UC(drbc_pack(q,      d->p));
+    UC(drbc_download(    d->p));
 
     UC(drbc_post_send(d->p, d->c));
     UC(drbc_post_recv(d->c, d->u));
 
-    UC(drbc_unpack_bulk(d->p, /**/ q));
+    UC(drbc_unpack_bulk(d->p,      q));
 
     UC(drbc_wait_send(d->c));
     UC(drbc_wait_recv(d->c, d->u));
 
-    UC(drbc_unpack_halo(d->u, /**/ q));
+    UC(drbc_unpack_halo(d->u,      q));
     dSync();
 }
 
@@ -4164,22 +4164,22 @@ static void distribute_rig(Rig *r) {
     RigDistr  *d = &r->d;
     int nv = q->nv;
 
-    UC(drig_build_map(q->ns, q->ss, /**/ d->p));
-    UC(drig_pack(q->ns, nv, q->ss, q->i_pp, /**/ d->p));
-    UC(drig_download(/**/d->p));
+    UC(drig_build_map(q->ns, q->ss,      d->p));
+    UC(drig_pack(q->ns, nv, q->ss, q->i_pp,      d->p));
+    UC(drig_download(    d->p));
 
     UC(drig_post_send(d->p, d->c));
     UC(drig_post_recv(d->c, d->u));
 
-    UC(drig_unpack_bulk(d->p, /**/ q));
+    UC(drig_unpack_bulk(d->p,      q));
 
     UC(drig_wait_send(d->c));
     UC(drig_wait_recv(d->c, d->u));
 
-    UC(drig_unpack_halo(d->u, /**/ q));
+    UC(drig_unpack_halo(d->u,      q));
 
     q->n = q->ns * q->nps;
-    UC(rig_generate(q->ns, q->ss, q->nps, q->rr0, /**/ q->pp));
+    UC(rig_generate(q->ns, q->ss, q->nps, q->rr0,      q->pp));
     dSync();
 }
 
@@ -4191,7 +4191,7 @@ void objects_distribute (Objects *obj) {
 }
 
 static void update_dpd_prms(float dt, float kBT, Obj *o) {
-    if (o->fsi) UC(pair_compute_dpd_sigma(kBT, dt, /**/ o->fsi));
+    if (o->fsi) UC(pair_compute_dpd_sigma(kBT, dt,      o->fsi));
 }
 
 void objects_update_dpd_prms(float dt, float kBT, Objects *obj) {
@@ -4203,7 +4203,7 @@ void objects_update_dpd_prms(float dt, float kBT, Objects *obj) {
     ninter = n*(n+1)/2;
     for (i = 0; i < ninter; ++i) {
         if (obj->cnt_params[i])
-            UC(pair_compute_dpd_sigma(kBT, dt, /**/ obj->cnt_params[i]));
+            UC(pair_compute_dpd_sigma(kBT, dt,      obj->cnt_params[i]));
     }
 }
 
@@ -4352,8 +4352,8 @@ static void mesh_pack_and_send_mbr(Mbr *m) {
     const RbcQuants *q = &m->q;
     MeshExch *e = m->mesh_exch;
 
-    UC(emesh_build_map(q->nc, q->nv, q->pp, /**/ e->p));
-    UC(emesh_pack_rrcp(q->nv, m->bbdata->rr_cp, /**/ e->p));
+    UC(emesh_build_map(q->nc, q->nv, q->pp,      e->p));
+    UC(emesh_pack_rrcp(q->nv, m->bbdata->rr_cp,      e->p));
     UC(emesh_download(e->p));
 
     UC(emesh_post_send(e->p, e->c));
@@ -4364,8 +4364,8 @@ static void mesh_pack_and_send_rig(Rig *r) {
     const RigQuants *q = &r->q;
     MeshExch  *e = r->mesh_exch;
 
-    UC(emesh_build_map(q->ns, q->nv, q->i_pp, /**/ e->p));
-    UC(emesh_pack_rrcp(q->nv, r->bbdata->rr_cp, /**/ e->p));
+    UC(emesh_build_map(q->ns, q->nv, q->i_pp,      e->p));
+    UC(emesh_pack_rrcp(q->nv, r->bbdata->rr_cp,      e->p));
     UC(emesh_download(e->p));
 
     UC(emesh_post_send(e->p, e->c));
@@ -4379,8 +4379,8 @@ static int mesh_recv_unpack_mbr(Mbr *m) {
     UC(emesh_wait_send(e->c));
     UC(emesh_wait_recv(e->c, e->u));
 
-    /* unpack at the end of current mesh buffer */
-    UC(emesh_unpack_rrcp(q->nv, e->u, /**/ &nmhalo, m->bbdata->rr_cp + q->n));
+
+    UC(emesh_unpack_rrcp(q->nv, e->u,      &nmhalo, m->bbdata->rr_cp + q->n));
     return nmhalo;
 }
 
@@ -4391,8 +4391,8 @@ static int mesh_recv_unpack_rig(Rig *r) {
     UC(emesh_wait_send(e->c));
     UC(emesh_wait_recv(e->c, e->u));
 
-    /* unpack at the end of current mesh buffer */
-    UC(emesh_unpack_rrcp(q->nv, e->u, /**/ &nmhalo, r->bbdata->rr_cp + q->ns * q->nv));
+
+    UC(emesh_unpack_rrcp(q->nv, e->u,      &nmhalo, r->bbdata->rr_cp + q->ns * q->nv));
     return nmhalo;
 }
 
@@ -4417,8 +4417,8 @@ static void find_and_select_collisions_rig(float dt, long nflu, const Clist *cfl
                                    clists_get_dim(cflu),
                                    clists_get_ss(cflu),
                                    clists_get_cc(cflu),
-                                   flu_pp, flu_pp0, /**/ bb));
-    UC(mesh_bounce_select_collisions(nflu, /**/ bb));
+                                   flu_pp, flu_pp0,      bb));
+    UC(mesh_bounce_select_collisions(nflu,      bb));
 }
 
 static void find_and_select_collisions_mbr(float dt, long nflu, const Clist *cflu, const Particle *flu_pp, const Particle *flu_pp0, int nm, Mbr *m, MeshBB *bb) {
@@ -4427,18 +4427,18 @@ static void find_and_select_collisions_mbr(float dt, long nflu, const Clist *cfl
                                    clists_get_dim(cflu),
                                    clists_get_ss(cflu),
                                    clists_get_cc(cflu),
-                                   flu_pp, flu_pp0, /**/ bb));
-    UC(mesh_bounce_select_collisions(nflu, /**/ bb));
+                                   flu_pp, flu_pp0,      bb));
+    UC(mesh_bounce_select_collisions(nflu,      bb));
 }
 
 static void bounce_mbr(float dt, float flu_mass, const MeshBB *bb, long n, const Particle *pp0, Particle *pp, Mbr *m) {
     MeshInfo mi = mesh_info_mbr(m);
-    UC(mesh_bounce_bounce(dt, flu_mass, n, bb, mi, m->bbdata->rr_cp, pp0, /**/ pp, m->bbdata->mm));
+    UC(mesh_bounce_bounce(dt, flu_mass, n, bb, mi, m->bbdata->rr_cp, pp0,      pp, m->bbdata->mm));
 }
 
 static void bounce_rig(float dt, float flu_mass, const MeshBB *bb, long n, const Particle *pp0, Particle *pp, Rig *r) {
     MeshInfo mi = mesh_info_rig(r);
-    UC(mesh_bounce_bounce(dt, flu_mass, n, bb, mi, r->bbdata->rr_cp, pp0, /**/ pp, r->bbdata->mm));
+    UC(mesh_bounce_bounce(dt, flu_mass, n, bb, mi, r->bbdata->rr_cp, pp0,      pp, r->bbdata->mm));
 }
 
 static void mom_pack_and_send_mbr(Mbr *m) {
@@ -4447,9 +4447,9 @@ static void mom_pack_and_send_mbr(Mbr *m) {
     MeshMomExch *e = bb->e;
     int counts[NFRAGS];
 
-    UC(emesh_get_num_frag_mesh(m->mesh_exch->u, /**/ counts));
-    UC(emesh_packM(q->nt, counts, bb->mm + q->n, /**/ e->p));
-    UC(emesh_downloadM(counts, /**/ e->p));
+    UC(emesh_get_num_frag_mesh(m->mesh_exch->u,      counts));
+    UC(emesh_packM(q->nt, counts, bb->mm + q->n,      e->p));
+    UC(emesh_downloadM(counts,      e->p));
 
     UC(emesh_post_recv(e->c, e->u));
     UC(emesh_post_send(e->p, e->c));
@@ -4461,9 +4461,9 @@ static void mom_pack_and_send_rig(Rig *r) {
     MeshMomExch *e = bb->e;
     int counts[NFRAGS];
 
-    UC(emesh_get_num_frag_mesh(r->mesh_exch->u, /**/ counts));
-    UC(emesh_packM(q->nt, counts, bb->mm + q->ns * q->nt, /**/ e->p));
-    UC(emesh_downloadM(counts, /**/ e->p));
+    UC(emesh_get_num_frag_mesh(r->mesh_exch->u,      counts));
+    UC(emesh_packM(q->nt, counts, bb->mm + q->ns * q->nt,      e->p));
+    UC(emesh_downloadM(counts,      e->p));
 
     UC(emesh_post_recv(e->c, e->u));
     UC(emesh_post_send(e->p, e->c));
@@ -4479,7 +4479,7 @@ static void mom_recv_unpack_mbr(Mbr *m) {
     UC(emesh_wait_send(e->c));
 
     UC(emesh_upload(e->u));
-    UC(emesh_unpack_mom(q->nt, meshe->p, e->u, /**/ bb->mm));
+    UC(emesh_unpack_mom(q->nt, meshe->p, e->u,      bb->mm));
 }
 
 static void mom_recv_unpack_rig(Rig *r) {
@@ -4492,7 +4492,7 @@ static void mom_recv_unpack_rig(Rig *r) {
     UC(emesh_wait_send(e->c));
 
     UC(emesh_upload(e->u));
-    UC(emesh_unpack_mom(q->nt, meshe->p, e->u, /**/ bb->mm));
+    UC(emesh_unpack_mom(q->nt, meshe->p, e->u,      bb->mm));
 }
 
 static void collect_mom_mbr(float dt, Mbr *m) {
@@ -4500,7 +4500,7 @@ static void collect_mom_mbr(float dt, Mbr *m) {
     BounceBackData *bb = m->bbdata;
     MeshInfo mi = mesh_info_mbr(m);
 
-    UC(mesh_bounce_collect_rbc_momentum(m->mass, q->nc, mi, bb->mm, /**/ q->pp));
+    UC(mesh_bounce_collect_rbc_momentum(m->mass, q->nc, mi, bb->mm,      q->pp));
 }
 
 static void collect_mom_rig(Rig *r) {
@@ -4508,10 +4508,10 @@ static void collect_mom_rig(Rig *r) {
     BounceBackData *bb = r->bbdata;
     MeshInfo mi = mesh_info_rig(r);
 
-    UC(mesh_bounce_collect_rig_momentum(q->ns, mi, q->i_pp, bb->mm, /**/ q->ss));
+    UC(mesh_bounce_collect_rig_momentum(q->ns, mi, q->i_pp, bb->mm,      q->ss));
 }
 
-/* TODO less brutal implementation */
+
 static void bounce_mbr(float dt, float flu_mass, const Clist *flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, MeshBB *bb, Mbr *m) {
     int nmhalo;
     if (!m->bbdata || !m->active_bounce) return;
@@ -4519,12 +4519,12 @@ static void bounce_mbr(float dt, float flu_mass, const Clist *flu_cells, long n,
     mesh_pack_and_send_mbr(m);
     nmhalo = mesh_recv_unpack_mbr(m);
 
-    UC(mesh_bounce_reini(n, /**/ bb));
+    UC(mesh_bounce_reini(n,      bb));
     clear_momentum_mbr(nmhalo, m);
 
     find_and_select_collisions_mbr(dt, n, flu_cells, flu_pp, flu_pp0, nmhalo + m->q.nc, m, bb);
 
-    bounce_mbr(dt, flu_mass, bb, n, flu_pp0, /**/ flu_pp, m);
+    bounce_mbr(dt, flu_mass, bb, n, flu_pp0,      flu_pp, m);
 
     mom_pack_and_send_mbr(m);
     mom_recv_unpack_mbr(m);
@@ -4538,12 +4538,12 @@ static void bounce_rig(float dt, float flu_mass, const Clist *flu_cells, long n,
     mesh_pack_and_send_rig(r);
     nmhalo = mesh_recv_unpack_rig(r);
 
-    UC(mesh_bounce_reini(n, /**/ bb));
+    UC(mesh_bounce_reini(n,      bb));
     clear_momentum_rig(nmhalo, r);
 
     find_and_select_collisions_rig(dt, n, flu_cells, flu_pp, flu_pp0, nmhalo + r->q.ns, r, bb);
 
-    bounce_rig(dt, flu_mass, bb, n, flu_pp0, /**/ flu_pp, r);
+    bounce_rig(dt, flu_mass, bb, n, flu_pp0,      flu_pp, r);
 
     mom_pack_and_send_rig(r);
     mom_recv_unpack_rig(r);
@@ -4583,7 +4583,7 @@ void objects_bounce(float dt, float flu_mass, const Clist *flu_cells, long n, co
         bounce_rig(dt, flu_mass, flu_cells, n, flu_pp0, flu_pp, bb, obj->rig[i]);
 }
 static void reini_colors(PFarray *flu) {
-    UC(collision_label_ini(flu->n, BLUE_COLOR, /**/ (int*) flu->p.cc));
+    UC(collision_label_ini(flu->n, BLUE_COLOR,      (int*) flu->p.cc));
 }
 
 static int exchange_mesh_mbr(Mbr *m, Particle *pp) {
@@ -4593,8 +4593,8 @@ static int exchange_mesh_mbr(Mbr *m, Particle *pp) {
     nm = q->nc;
     nv = q->nv;
 
-    UC(emesh_build_map(nm, nv, q->pp, /**/ e->p));
-    UC(emesh_pack_pp(nv, q->pp, /**/ e->p));
+    UC(emesh_build_map(nm, nv, q->pp,      e->p));
+    UC(emesh_pack_pp(nv, q->pp,      e->p));
     UC(emesh_download(e->p));
 
     UC(emesh_post_send(e->p, e->c));
@@ -4605,7 +4605,7 @@ static int exchange_mesh_mbr(Mbr *m, Particle *pp) {
     UC(emesh_wait_send(e->c));
     UC(emesh_wait_recv(e->c, e->u));
 
-    UC(emesh_unpack_pp(nv, e->u, /**/ &nmhalo, pp + nm * nv));
+    UC(emesh_unpack_pp(nv, e->u,      &nmhalo, pp + nm * nv));
     return nm + nmhalo;
 }
 
@@ -4618,10 +4618,10 @@ static void recolor_flu_from_mbr(Mbr *m, PFarray *flu) {
     nv = m->q.nv;
     nm = exchange_mesh_mbr(m, c->pp_mesh);
 
-    UC(minmax(c->pp_mesh, nv, nm, /**/ c->lo, c->hi));
+    UC(minmax(c->pp_mesh, nv, nm,      c->lo, c->hi));
 
     UC(collision_label(NOT_PERIODIC, flu->n, (const Particle*) flu->p.pp, m->tri, nv, nm,
-                       c->pp_mesh, c->lo, c->hi, RED_COLOR, /**/ (int*) flu->p.cc));
+                       c->pp_mesh, c->lo, c->hi, RED_COLOR,      (int*) flu->p.cc));
 }
 
 void objects_recolor_flu(Objects *obj, PFarray *flu) {
@@ -4661,7 +4661,7 @@ static void dump_diag_mbr(MPI_Comm cart, const Coords *coords, Mbr *m, Dump *d) 
     long nc = q->nc;
     float3 *rr, *vv;
     if (m->com) {
-        UC(rbc_com_apply(m->com, nc, q->pp, /**/ &rr, &vv));
+        UC(rbc_com_apply(m->com, nc, q->pp,      &rr, &vv));
         UC(io_com_dump(cart, coords, m->name, d->id_diag, nc, q->ii, rr));
     }
 }
@@ -4707,12 +4707,12 @@ void objects_strt_dump(const char *base, long id, Objects *o) {
 }
 static void gen_mesh_mbr(Coords *coords, MPI_Comm cart, Mbr *m) {
     MeshRead *mesh = m->mesh;
-    UC(rbc_gen_mesh(coords, cart, mesh, m->ic_file, /**/ &m->q));
+    UC(rbc_gen_mesh(coords, cart, mesh, m->ic_file,      &m->q));
 }
 
 static void gen_mesh_rig(Coords *coords, MPI_Comm cart, Rig *r) {
     MeshRead *mesh = r->mesh;
-    UC(rig_gen_mesh(coords, cart, mesh, r->ic_file, /**/ &r->q));
+    UC(rig_gen_mesh(coords, cart, mesh, r->ic_file,      &r->q));
 }
 
 void objects_gen_mesh(Objects *o) {
@@ -4723,7 +4723,7 @@ void objects_gen_mesh(Objects *o) {
 
 template <typename T>
 static void remove(T *data, int nv, int *stay, int nc) {
-    int c; /* c: cell index */
+    int c;
     for (c = 0; c < nc; c++)
         cA2A(data + nv*c, data + nv * stay[c], nv);
 }
@@ -4731,7 +4731,7 @@ static void remove(T *data, int nv, int *stay, int nc) {
 static void remove_mbr(const Sdf *sdf, Mbr *m) {
     int nc0, stay[MAX_CELL_NUM];
     RbcQuants *q = &m->q;
-    q->nc = sdf_who_stays(sdf, q->n, q->pp, nc0 = q->nc, q->nv, /**/ stay);
+    q->nc = sdf_who_stays(sdf, q->n, q->pp, nc0 = q->nc, q->nv,      stay);
     q->n = q->nc * q->nv;
     remove(q->pp, q->nv, stay, q->nc);
     msg_print("%s: %d/%d survived", m->name, q->nc, nc0);
@@ -4741,7 +4741,7 @@ static void remove_rig(const Sdf *sdf, Rig *r) {
     int nip, ns0, stay[MAX_SOLIDS];
     RigQuants *q = &r->q;
     nip = q->ns * q->nv;
-    q->ns = sdf_who_stays(sdf, nip, q->i_pp, ns0 = q->ns, q->nv, /**/ stay);
+    q->ns = sdf_who_stays(sdf, nip, q->i_pp, ns0 = q->ns, q->nv,      stay);
     q->n  = q->ns * q->nps;
     remove(q->pp,       q->nps,      stay, q->ns);
     remove(q->pp_hst,   q->nps,      stay, q->ns);
@@ -4762,7 +4762,7 @@ void objects_remove_from_wall(const Sdf *sdf, Objects *o) {
 }
 
 static void gen_freeze_mbr(MPI_Comm cart, Mbr *m) {
-    UC(rbc_gen_freeze(cart, /**/ &m->q));
+    UC(rbc_gen_freeze(cart,      &m->q));
 }
 
 static void gen_freeze_rig(const Coords *coords, MPI_Comm cart, bool empty_pp, int numdensity, PFarray *flu, Rig *r) {
@@ -4772,7 +4772,7 @@ static void gen_freeze_rig(const Coords *coords, MPI_Comm cart, bool empty_pp, i
     n = flu->n;
 
     UC(rig_gen_freeze(coords, empty_pp, numdensity, r->mass, r->pininfo,
-                      cart, mesh, pp, &n, /**/ &r->q));
+                      cart, mesh, pp, &n,      &r->q));
 
     flu->n = n;
 }
@@ -4798,33 +4798,33 @@ void objects_gen_freeze(PFarray *flu, Objects *o) {
 #include <mpi.h>
 #include <vector_types.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -4842,21 +4842,21 @@ void objects_gen_freeze(PFarray *flu, Objects *o) {
 #include "constants.cuh"
 #endif
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -4864,7 +4864,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -4875,7 +4875,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -4897,10 +4897,10 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -4908,7 +4908,7 @@ void error_print_stack();
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -4921,8 +4921,8 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
-/* [m]pi [c]heck macros */
+
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -4972,7 +4972,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -4998,15 +4998,15 @@ void parray_push_cc(const int *cc, PaArray *a);
 
 bool parray_is_colored(const PaArray *a);
 
-void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
-void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+void parray_get_view(const PaArray *a, PaArray_v *v);
+void parray_get_view(const PaArray *a, PaCArray_v *v);
 #endif
 #ifndef UDX_SIM_OBJECTS_FARRAY_COMMON
 #define UDX_SIM_OBJECTS_FARRAY_COMMON
 struct FoArray {
     bool stress;
     float *ff;
-    float *ss; /* stress */
+    float *ss;
 };
 
 struct FoArray_v;
@@ -5021,8 +5021,8 @@ void farray_clear(FoArray *);
 
 bool farray_has_stress(const FoArray *a);
 
-void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
-void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+void farray_get_view(const FoArray *a, FoArray_v *v);
+void farray_get_view(const FoArray *a, FoSArray_v *v);
 #endif
 #ifndef UDX_SIM_OBJECTS_PFARRAYS_COMMON
 #define UDX_SIM_OBJECTS_PFARRAYS_COMMON
@@ -5060,8 +5060,8 @@ struct PairAdhesion;
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
 
-void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
-void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p);
+void pair_set_lj(float sigma, float eps, PairParams *p);
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
@@ -5078,22 +5078,22 @@ struct Contact;
 struct int3;
 struct PairParams;
 
-void cnt_ini(int maxp, int rank, int3 L, int nobj, /**/ Contact **c);
+void cnt_ini(int maxp, int rank, int3 L, int nobj,      Contact **c);
 void cnt_fin(Contact *c);
 
-void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw, /**/ Contact *c); // <1>
-void cnt_bulk(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw); // <2>
-void cnt_halo(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw, Pap26 all_pp, Fop26 all_ff, const int *all_counts); // <3>
+void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw,      Contact *c);
+void cnt_bulk(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw);
+void cnt_halo(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw, Pap26 all_pp, Fop26 all_ff, const int *all_counts);
 struct RNDunif;
 struct Fsi;
 struct int3;
 
-void fsi_ini(int rank, int3 L, /**/ Fsi **fsi);
+void fsi_ini(int rank, int3 L,      Fsi **fsi);
 void fsi_fin(Fsi *fsi);
 
-void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts, /**/ Fsi *fsi);  // <1>
-void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw); // <2>
-void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all_ff, const int *all_counts); // <3>
+void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts,      Fsi *fsi);
+void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw);
+void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all_ff, const int *all_counts);
 
 struct EObjPack;
 struct EObjComm;
@@ -5104,16 +5104,16 @@ struct EObjCommF;
 struct EObjUnpackF;
 
 void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **p);
-void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **c);
+void eobj_comm_ini(MPI_Comm cart,      EObjComm **c);
 void eobj_unpack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjUnpack **u);
 
 void eobj_pack_fin(EObjPack *p);
 void eobj_comm_fin(EObjComm *c);
 void eobj_unpack_fin(EObjUnpack *u);
 
-void eobj_build_map(int nw, const PaWrap *ww, /**/ EObjPack *p);
+void eobj_build_map(int nw, const PaWrap *ww,      EObjPack *p);
 
-void eobj_pack(int nw, const PaWrap *ww, /**/ EObjPack *p);
+void eobj_pack(int nw, const PaWrap *ww,      EObjPack *p);
 void eobj_download(int nw, EObjPack *p);
 
 void eobj_post_recv(EObjComm *c, EObjUnpack *u);
@@ -5121,14 +5121,14 @@ void eobj_post_send(EObjPack *p, EObjComm *c);
 void eobj_wait_recv(EObjComm *c, EObjUnpack *u);
 void eobj_wait_send(EObjComm *c);
 
-int26 eobj_get_counts(EObjUnpack *u); // <1>
+int26 eobj_get_counts(EObjUnpack *u);
 void  eobj_get_all_counts(int nw, EObjUnpack *u, int *all_counts);
-Pap26 eobj_upload_shift(EObjUnpack *u); // <2>
-Fop26 eobj_reini_ff(const EObjUnpack *u, EObjPackF *pf); // <3>
+Pap26 eobj_upload_shift(EObjUnpack *u);
+Fop26 eobj_reini_ff(const EObjUnpack *u, EObjPackF *pf);
 
 
 void eobj_packf_ini(int3 L, int maxd, int maxpsolid, EObjPackF **p);
-void eobj_commf_ini(MPI_Comm cart, /**/ EObjCommF **c);
+void eobj_commf_ini(MPI_Comm cart,      EObjCommF **c);
 void eobj_unpackf_ini(int3 L, int maxd, int maxpsolid, EObjUnpackF **u);
 
 void eobj_packf_fin(EObjPackF *p);
@@ -5142,16 +5142,16 @@ void eobj_post_send_ff(EObjPackF *p, EObjCommF *c);
 void eobj_wait_recv_ff(EObjCommF *c, EObjUnpackF *u);
 void eobj_wait_send_ff(EObjCommF *c);
 
-void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww);
+void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw,      FoWrap *ww);
 
 #ifndef UDX_SIM_OBJECTS_OPT_COMMON
 #define UDX_SIM_OBJECTS_OPT_COMMON
-/* solvent options */
+
 struct OptFlu {
     bool colors, ids, ss, push;
 };
 
-/* common parameters for membranes and rigid objects */
+
 struct OptObj {
     bool push, bounce;
     int shifttype;
@@ -5161,14 +5161,14 @@ struct OptObj {
     char name[FILENAME_MAX];
 };
 
-/* membrane options */
+
 struct OptMbr : OptObj {
     bool ids, stretch, dump_com;
     int substeps;
     char stretch_file[FILENAME_MAX];
 };
 
-/* rigid options */
+
 struct OptRig : OptObj {
     bool empty_pp;
 };
@@ -5177,11 +5177,11 @@ struct OptWall {
     bool active;
 };
 
-/* global physical parameters */
+
 struct OptParams {
-    int3 L;          /* subdomain sizes */
-    float kBT;       /* temperature     */
-    int numdensity;  /* number density  */
+    int3 L;
+    float kBT;
+    int numdensity;
 };
 
 struct OptDump {
@@ -5220,11 +5220,11 @@ struct Opt;
 struct PFarray;
 struct PFarrays;
 
-void obj_inter_ini(const Config*, const Opt*, MPI_Comm, float dt, int maxp, /**/ ObjInter**);
+void obj_inter_ini(const Config*, const Opt*, MPI_Comm, float dt, int maxp,      ObjInter**);
 void obj_inter_fin(ObjInter*);
 
-void obj_inter_forces(ObjInter*, const PairParams **fsi_prms, const PairParams **cnt_prms, PFarray *flu, const int *flu_start, PFarrays *obj); // <1>
-/* object exchanger for forces */
+void obj_inter_forces(ObjInter*, const PairParams **fsi_prms, const PairParams **cnt_prms, PFarray *flu, const int *flu_start, PFarrays *obj);
+
 struct ObjExch {
     EObjPack *p;
     EObjComm *c;
@@ -5235,29 +5235,29 @@ struct ObjExch {
     EObjUnpackF *uf;
 };
 
-/* helper for computing object interactions */
+
 struct ObjInter {
     ObjExch *e;
     Contact *cnt;
     Fsi     *fsi;
 };
 
-static void ini_obj_exch(MPI_Comm comm, int3 L, /**/ ObjExch **oe) {
+static void ini_obj_exch(MPI_Comm comm, int3 L,      ObjExch **oe) {
     ObjExch *e;
     int maxpsolid = MAX_PSOLID_NUM;
     EMALLOC(1, oe);
     e = *oe;
 
-    UC(eobj_pack_ini   (L, MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->p));
-    UC(eobj_comm_ini   (comm,                                         /**/ &e->c));
-    UC(eobj_unpack_ini (L, MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
+    UC(eobj_pack_ini   (L, MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid,      &e->p));
+    UC(eobj_comm_ini   (comm,                                              &e->c));
+    UC(eobj_unpack_ini (L, MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid,      &e->u));
 
-    UC(eobj_packf_ini  (L, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->pf));
-    UC(eobj_commf_ini  (comm,                          /**/ &e->cf));
-    UC(eobj_unpackf_ini(L, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->uf));
+    UC(eobj_packf_ini  (L, MAX_OBJ_DENSITY, maxpsolid,      &e->pf));
+    UC(eobj_commf_ini  (comm,                               &e->cf));
+    UC(eobj_unpackf_ini(L, MAX_OBJ_DENSITY, maxpsolid,      &e->uf));
 }
 
-void obj_inter_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, float dt, int maxp, /**/ ObjInter **oi) {
+void obj_inter_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, float dt, int maxp,      ObjInter **oi) {
     int rank;
     ObjInter *o;
     int3 L = opt->params.L;
@@ -5271,19 +5271,19 @@ void obj_inter_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, float dt, i
     o->fsi = NULL;
 
     int nobj = opt->nmbr + opt->nrig;
-    UC(cnt_ini(maxp, rank, L, nobj, /**/ &o->cnt));
-    UC(fsi_ini(rank, L, /**/ &o->fsi));
+    UC(cnt_ini(maxp, rank, L, nobj,      &o->cnt));
+    UC(fsi_ini(rank, L,      &o->fsi));
 }
 
 
-static void fin_obj_exch(/**/ ObjExch *e) {
-    UC(eobj_pack_fin   (/**/ e->p));
-    UC(eobj_comm_fin   (/**/ e->c));
-    UC(eobj_unpack_fin (/**/ e->u));
+static void fin_obj_exch(     ObjExch *e) {
+    UC(eobj_pack_fin   (     e->p));
+    UC(eobj_comm_fin   (     e->c));
+    UC(eobj_unpack_fin (     e->u));
 
-    UC(eobj_packf_fin  (/**/ e->pf));
-    UC(eobj_commf_fin  (/**/ e->cf));
-    UC(eobj_unpackf_fin(/**/ e->uf));
+    UC(eobj_packf_fin  (     e->pf));
+    UC(eobj_commf_fin  (     e->cf));
+    UC(eobj_unpackf_fin(     e->uf));
     EFREE(e);
 }
 
@@ -5312,11 +5312,11 @@ static void fill_wrappers(PFarrays *obj, int *nwrappers, PaWrap *pw, FoWrap *fw)
 }
 
 static void bind_solvent(PFarray *flu, const int *starts, Fsi *fsi) {
-    UC(fsi_bind_solvent(flu->p, (Force*) flu->f.ff, flu->n, starts, /**/ fsi));
+    UC(fsi_bind_solvent(flu->p, (Force*) flu->f.ff, flu->n, starts,      fsi));
 }
 
 static void forces_cnt(ObjInter *oi, int nw, const PairParams *prms[], PaWrap *pw, FoWrap *fw) {
-    cnt_build_cells(  nw, prms, pw, /**/ oi->cnt);
+    cnt_build_cells(  nw, prms, pw,      oi->cnt);
     cnt_bulk(oi->cnt, nw, prms, pw, fw);
 }
 
@@ -5341,39 +5341,39 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, const PairParam
     ObjExch *e = oi->e;
     int all_counts[26 * MAX_OBJ_TYPES] = {0};
 
-    UC(fill_wrappers(obj, /**/ &nw, pw, fw));
+    UC(fill_wrappers(obj,      &nw, pw, fw));
     if (!nw) return;
     if (!has_work(oi, nw, fsi_prms)) return;
 
-    /* Prepare and send the data */
 
-    UC(eobj_build_map(nw, pw, /**/ e->p));
-    UC(eobj_pack(nw, pw, /**/ e->p));
-    UC(eobj_download(nw, /**/ e->p));
+
+    UC(eobj_build_map(nw, pw,      e->p));
+    UC(eobj_pack(nw, pw,      e->p));
+    UC(eobj_download(nw,      e->p));
 
     UC(eobj_post_send(e->p, e->c));
     UC(eobj_post_recv(e->c, e->u));
 
-    /* bulk interactions */
+
 
     if (oi->fsi) UC(bind_solvent(flu, flu_start, oi->fsi));
 
     if (oi->fsi) UC(forces_fsi(oi, nw, fsi_prms, pw, fw));
     if (oi->cnt) UC(forces_cnt(oi, nw, cnt_prms, pw, fw));
 
-    /* recv data and halo interactions  */
+
 
     UC(eobj_wait_send(e->c));
     UC(eobj_wait_recv(e->c, e->u));
 
-    eobj_get_all_counts(nw, e->u, /**/ all_counts);
+    eobj_get_all_counts(nw, e->u,      all_counts);
     Pap26 hpp = eobj_upload_shift(e->u);
     Fop26 hff = eobj_reini_ff(e->u, e->pf);
 
     if (oi->fsi) UC(fsi_halo(oi->fsi, nw, fsi_prms,         hpp, hff, all_counts));
     if (oi->cnt) UC(cnt_halo(oi->cnt, nw, cnt_prms, pw, fw, hpp, hff, all_counts));
 
-    /* send the forces back */
+
 
     UC(eobj_download_ff(e->pf));
 
@@ -5383,7 +5383,7 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, const PairParam
     UC(eobj_wait_send_ff(e->cf));
     UC(eobj_wait_recv_ff(e->cf, e->uf));
 
-    UC(eobj_unpack_ff(e->uf, e->p, nw, /**/ fw));
+    UC(eobj_unpack_ff(e->uf, e->p, nw,      fw));
 }
 
 
@@ -5405,10 +5405,10 @@ struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -5449,15 +5449,15 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -5468,7 +5468,7 @@ void conf_write_history(const Config *cfg, FILE *stream); // <2>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -5490,21 +5490,21 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
 #ifndef UDX_SIM_MESH_IO_COMMON
@@ -5521,8 +5521,8 @@ struct Vectors;
 enum {MESH_WRITE_EDGE, MESH_WRITE_CENTER};
 #endif
 
-void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite**);
-void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead*, const char *directory, /**/ MeshWrite**);
+void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory,      MeshWrite**);
+void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead*, const char *directory,      MeshWrite**);
 
 void mesh_write_particles(MeshWrite*, MPI_Comm, const Coords*, int nm, const Particle*, int id);
 void mesh_write_vectors(MeshWrite*, MPI_Comm, int nm, Vectors *pos, Vectors *vel, int id);
@@ -5532,12 +5532,12 @@ void mesh_write_fin(MeshWrite*);
 
 #ifndef UDX_SIM_OBJECTS_OPT_COMMON
 #define UDX_SIM_OBJECTS_OPT_COMMON
-/* solvent options */
+
 struct OptFlu {
     bool colors, ids, ss, push;
 };
 
-/* common parameters for membranes and rigid objects */
+
 struct OptObj {
     bool push, bounce;
     int shifttype;
@@ -5547,14 +5547,14 @@ struct OptObj {
     char name[FILENAME_MAX];
 };
 
-/* membrane options */
+
 struct OptMbr : OptObj {
     bool ids, stretch, dump_com;
     int substeps;
     char stretch_file[FILENAME_MAX];
 };
 
-/* rigid options */
+
 struct OptRig : OptObj {
     bool empty_pp;
 };
@@ -5563,11 +5563,11 @@ struct OptWall {
     bool active;
 };
 
-/* global physical parameters */
+
 struct OptParams {
-    int3 L;          /* subdomain sizes */
-    float kBT;       /* temperature     */
-    int numdensity;  /* number density  */
+    int3 L;
+    float kBT;
+    int numdensity;
 };
 
 struct OptDump {
@@ -5810,7 +5810,7 @@ long opt_estimate_maxp(const Opt *o) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -5821,7 +5821,7 @@ long opt_estimate_maxp(const Opt *o) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -5843,31 +5843,31 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -5911,7 +5911,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -5937,15 +5937,15 @@ void parray_push_cc(const int *cc, PaArray *a);
 
 bool parray_is_colored(const PaArray *a);
 
-void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
-void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+void parray_get_view(const PaArray *a, PaArray_v *v);
+void parray_get_view(const PaArray *a, PaCArray_v *v);
 #endif
 #ifndef UDX_SIM_OBJECTS_FARRAY_COMMON
 #define UDX_SIM_OBJECTS_FARRAY_COMMON
 struct FoArray {
     bool stress;
     float *ff;
-    float *ss; /* stress */
+    float *ss;
 };
 
 struct FoArray_v;
@@ -5960,8 +5960,8 @@ void farray_clear(FoArray *);
 
 bool farray_has_stress(const FoArray *a);
 
-void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
-void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+void farray_get_view(const FoArray *a, FoArray_v *v);
+void farray_get_view(const FoArray *a, FoSArray_v *v);
 #endif
 #ifndef UDX_SIM_OBJECTS_PFARRAYS_COMMON
 #define UDX_SIM_OBJECTS_PFARRAYS_COMMON
@@ -5997,14 +5997,14 @@ struct int3;
 void sdf_ini(int3 L, Sdf**);
 void sdf_fin(Sdf*);
 
-void sdf_gen(const Coords*, MPI_Comm cart, bool dump, Sdf*); // <1>
-void sdf_get_view(const Sdf*, /**/ Sdf_v*);                  // <2>
+void sdf_gen(const Coords*, MPI_Comm cart, bool dump, Sdf*);
+void sdf_get_view(const Sdf*,      Sdf_v*);
 
-void sdf_bulk_wall(const Sdf*, /*io*/ int *s_n, Particle *s_pp, /*o*/ int *w_n, Particle *w_pp); // <1>
-int  sdf_who_stays(const Sdf*, int n, const Particle*, int nc, int nv, /**/ int *stay);          // <2>
-double sdf_compute_volume(MPI_Comm, int3 L, const Sdf*, long nsamples);                          // <3>
+void sdf_bulk_wall(const Sdf*,        int *s_n, Particle *s_pp,       int *w_n, Particle *w_pp);
+int  sdf_who_stays(const Sdf*, int n, const Particle*, int nc, int nv,      int *stay);
+double sdf_compute_volume(MPI_Comm, int3 L, const Sdf*, long nsamples);
 
-void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**/ Particle*);
+void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n,      Particle*);
 struct Wvel;
 struct WvelStep;
 
@@ -6035,13 +6035,13 @@ void wvel_set_timestep(float dt, Wvel *vw);
 
 void wvel_set_conf(const Config *cfg, Wvel *vw);
 
-void wvel_get_step(float t, const Wvel *wv, /**/ WvelStep *);
+void wvel_get_step(float t, const Wvel *wv,      WvelStep *);
 
 int wvel_get_type(const WvelStep *w);
 
-void wvel_get_view(const WvelStep *w, /**/ WvelCste_v *v);
-void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v);
-void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
+void wvel_get_view(const WvelStep *w,      WvelCste_v *v);
+void wvel_get_view(const WvelStep *w,      WvelShear_v *v);
+void wvel_get_view(const WvelStep *w,      WvelHS_v *v);
 #ifndef UDX_SIM_WALLS_COMMON
 #define UDX_SIM_WALLS_COMMON
 struct PairParams;
@@ -6055,9 +6055,9 @@ struct float4;
 struct Config;
 
 struct WallQuants {
-    float4 *pp; /* particle positions xyzo xyzo ... */
-    int n;      /* number of particles              */
-    int3 L;     /* subdomain size                   */
+    float4 *pp;
+    int n;
+    int3 L;
 };
 
 struct WallTicket;
@@ -6070,33 +6070,33 @@ void wall_ini_ticket(int3 L, WallTicket**);
 void wall_fin_quants(WallQuants*);
 void wall_fin_ticket(WallTicket*);
 
-void wall_gen_quants(MPI_Comm, int numdensity, int maxn, const Sdf*, /* io */ int *o_n, Particle *o_pp, /**/ WallQuants*); // <1>
-void wall_gen_ticket(const WallQuants*, WallTicket*); // <2>
+void wall_gen_quants(MPI_Comm, int numdensity, int maxn, const Sdf*,          int *o_n, Particle *o_pp,      WallQuants*);
+void wall_gen_ticket(const WallQuants*, WallTicket*);
 
-void wall_strt_quants(MPI_Comm, const char *base, int maxn, WallQuants*); // <1>
-void wall_strt_dump_templ(MPI_Comm, const char *base, const WallQuants*); // <2>
+void wall_strt_quants(MPI_Comm, const char *base, int maxn, WallQuants*);
+void wall_strt_dump_templ(MPI_Comm, const char *base, const WallQuants*);
 
 void wall_force(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
-                const WallTicket*, int n, const PaArray*, const FoArray*); // <1>
+                const WallTicket*, int n, const PaArray*, const FoArray*);
 
 void wall_force_adhesion(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
-                         const WallTicket*, int n, const PaArray*, const FoArray*); // <2>
+                         const WallTicket*, int n, const PaArray*, const FoArray*);
 
-void wall_repulse(const Sdf*, const WallRepulsePrm*, long n, const PaArray*, const FoArray*); // <3>
+void wall_repulse(const Sdf*, const WallRepulsePrm*, long n, const PaArray*, const FoArray*);
 
-void wall_repulse_prm_ini(float lambda, WallRepulsePrm**); // <1>
-void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**); // <2>
-void wall_repulse_prm_fin(WallRepulsePrm*); // <3>
+void wall_repulse_prm_ini(float lambda, WallRepulsePrm**);
+void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**);
+void wall_repulse_prm_fin(WallRepulsePrm*);
 #endif
 
 #ifndef UDX_SIM_OBJECTS_OPT_COMMON
 #define UDX_SIM_OBJECTS_OPT_COMMON
-/* solvent options */
+
 struct OptFlu {
     bool colors, ids, ss, push;
 };
 
-/* common parameters for membranes and rigid objects */
+
 struct OptObj {
     bool push, bounce;
     int shifttype;
@@ -6106,14 +6106,14 @@ struct OptObj {
     char name[FILENAME_MAX];
 };
 
-/* membrane options */
+
 struct OptMbr : OptObj {
     bool ids, stretch, dump_com;
     int substeps;
     char stretch_file[FILENAME_MAX];
 };
 
-/* rigid options */
+
 struct OptRig : OptObj {
     bool empty_pp;
 };
@@ -6122,11 +6122,11 @@ struct OptWall {
     bool active;
 };
 
-/* global physical parameters */
+
 struct OptParams {
-    int3 L;          /* subdomain sizes */
-    float kBT;       /* temperature     */
-    int numdensity;  /* number density  */
+    int3 L;
+    float kBT;
+    int numdensity;
 };
 
 struct OptDump {
@@ -6169,10 +6169,10 @@ void wall_ini(const Config*, int3 L, Wall**);
 void wall_fin(Wall*);
 
 void wall_gen(MPI_Comm, const Coords*, OptParams, bool dump_sdf,
-              /*io*/ int *n, Particle *pp, /**/ Wall*);
+                     int *n, Particle *pp,      Wall*);
 
 void wall_restart(MPI_Comm, const Coords*, OptParams, bool dump_sdf,
-                  const char *base, /**/ Wall*);
+                  const char *base,      Wall*);
 
 void wall_dump_templ(const Wall*, MPI_Comm, const char *base);
 
@@ -6183,8 +6183,8 @@ void wall_repulse(const Wall*, const WallRepulsePrm *[], PFarrays*);
 
 void wall_update_vel(float t, Wall *);
 
-void wall_get_sdf_ptr(const Wall*, const Sdf**);           // <1>
-double wall_compute_volume(const Wall*, MPI_Comm, int3 L); // <2>
+void wall_get_sdf_ptr(const Wall*, const Sdf**);
+double wall_compute_volume(const Wall*, MPI_Comm, int3 L);
 struct Wall {
     Sdf *sdf;
     WallQuants q;
@@ -6221,27 +6221,27 @@ static long get_max_parts(OptParams p) {
 }
 
 void wall_gen(MPI_Comm cart, const Coords *coords, OptParams op, bool dump_sdf,
-              /*io*/ int *n, Particle *pp, /**/ Wall *w) {
+                     int *n, Particle *pp,      Wall *w) {
     long maxn, nold, nnew;
     if (!w) return;
 
     maxn = get_max_parts(op);
     nold = *n;
-    UC(sdf_gen(coords, cart, dump_sdf, /**/ w->sdf));
+    UC(sdf_gen(coords, cart, dump_sdf,      w->sdf));
     MC(m::Barrier(cart));
-    UC(wall_gen_quants(cart, op.numdensity, maxn, w->sdf, /**/ n, pp, &w->q));
+    UC(wall_gen_quants(cart, op.numdensity, maxn, w->sdf,      n, pp, &w->q));
     if (w->q.n) UC(wall_gen_ticket(&w->q, w->t));
     nnew = *n;
     msg_print("solvent particles survived: %d/%d", nnew, nold);
 }
 
 void wall_restart(MPI_Comm cart, const Coords *coords, OptParams op, bool dump_sdf,
-                  const char *base, /**/ Wall *w) {
+                  const char *base,      Wall *w) {
     long maxn;
     if (!w) return;
 
     maxn = get_max_parts(op);
-    UC(sdf_gen(coords, cart, dump_sdf, /**/ w->sdf));
+    UC(sdf_gen(coords, cart, dump_sdf,      w->sdf));
     MC(m::Barrier(cart));
     UC(wall_strt_quants(cart, base, maxn, &w->q));
     UC(wall_gen_ticket(&w->q, w->t));
@@ -6271,7 +6271,7 @@ void wall_interact(const Coords *coords, const PairParams *prms[], Wall *w, PFar
         prm = prms[i];
         if (!n)   continue;
         if (!prm) continue;
-        UC(wall_force(prm, w->velstep, coords, w->sdf, &w->q, w->t, n, &p, /**/ &f));
+        UC(wall_force(prm, w->velstep, coords, w->sdf, &w->q, w->t, n, &p,      &f));
     }
 }
 
@@ -6290,7 +6290,7 @@ void wall_adhesion(const Coords *coords, const PairParams* params[], Wall *w, PF
         if (!par) continue;
         if (!n)   continue;
 
-        UC(wall_force_adhesion(par, w->velstep, coords, w->sdf, &w->q, w->t, n, &p, /**/ &f));
+        UC(wall_force_adhesion(par, w->velstep, coords, w->sdf, &w->q, w->t, n, &p,      &f));
     }
 }
 
@@ -6303,7 +6303,7 @@ void wall_bounce(const Wall *w, const Coords *coords, float dt, PFarrays *aa) {
 
     for (i = 0; i < na; ++i) {
         UC(pfarrays_get(i, aa, &n, &p, &f));
-        if (n) UC(sdf_bounce(dt, w->velstep, coords, w->sdf, n, /**/ (Particle*) p.pp));
+        if (n) UC(sdf_bounce(dt, w->velstep, coords, w->sdf, n,      (Particle*) p.pp));
     }
 }
 
@@ -6321,12 +6321,12 @@ void wall_repulse(const Wall *w, const WallRepulsePrm *params[], PFarrays *aa) {
         if (!n)   continue;
         if (!wrp) continue;
 
-        UC(wall_repulse(w->sdf, wrp, n, &p, /**/ &f));
+        UC(wall_repulse(w->sdf, wrp, n, &p,      &f));
     }
 }
 
 void wall_update_vel(float t, Wall *w) {
-    UC(wvel_get_step(t, w->vel, /**/ w->velstep));
+    UC(wvel_get_step(t, w->vel,      w->velstep));
 }
 
 
@@ -6334,19 +6334,19 @@ void wall_update_vel(float t, Wall *w) {
 
 
 
-// Grouped editable compilation unit for I/O and half-edge code.
 
 
-// Grouped editable compilation unit for output, mesh, and restart I/O.
 
 
-// Grouped editable compilation unit for all current output backends.
 
 
-// Grouped editable compilation unit for BOP, VTK, and point-grid output.
 
 
-// Grouped editable compilation unit for BOP and VTK output.
+
+
+
+
+
 
 
 
@@ -6355,33 +6355,33 @@ void wall_update_vel(float t, Wall *w) {
 #include <vector_types.h>
 
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -6390,7 +6390,7 @@ void wall_update_vel(float t, Wall *w) {
 #define DUMP_BASE "."
 #endif
 
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -6401,7 +6401,7 @@ void check(int code, const char *file, int line);
 #ifndef UDX_SIM_SCHEME_DEVICE_API_COMMON
 #define UDX_SIM_SCHEME_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_SIM_SCHEME_DEVICE_API_COMMON */
+#endif
 
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -6445,7 +6445,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -6460,20 +6460,20 @@ int status2errcode(MPI_Status *status);
 #ifndef UDX_SIM_OBJECTS_DEF_COMMON
 #define UDX_SIM_OBJECTS_DEF_COMMON
 #include "constants.cuh"
-#endif /* UDX_SIM_OBJECTS_DEF_COMMON */
-void os_mkdir(const char* path); // <1>
-long os_time();                  // <2>
-void os_srand(long int seedval); // <3>
-double os_drand();               // <4>
-void os_sleep(unsigned int seconds); // <5>
-void os_malloc_stats();              // TODO
+#endif
+void os_mkdir(const char* path);
+long os_time();
+void os_srand(long int seedval);
+double os_drand();
+void os_sleep(unsigned int seconds);
+void os_malloc_stats();
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -6484,7 +6484,7 @@ void os_malloc_stats();              // TODO
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -6506,21 +6506,21 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 struct Coords;
 struct Coords_v;
@@ -6536,24 +6536,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -6568,13 +6568,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 struct IoBop;
@@ -6588,8 +6588,8 @@ void io_bop_stresses    (MPI_Comm cart, long n, const float *ss, const char *nam
 void io_bop_ids         (MPI_Comm cart, long n, const int   *ii, const char *name, int id, IoBop *t);
 void io_bop_colors      (MPI_Comm cart, long n, const int   *cc, const char *name, int id, IoBop *t);
 struct IoBop {
-    BopData *ff; /* float data */
-    BopData *ii; /*   int data */
+    BopData *ff;
+    BopData *ii;
 };
 enum {
     NVARP = 6,
@@ -6637,7 +6637,7 @@ void io_bop_fin(IoBop *t) {
     EFREE(t);
 }
 
-static void p2f3(const Particle p, /**/ float3 *r, float3 *v) {
+static void p2f3(const Particle p,      float3 *r, float3 *v) {
     enum {X, Y, Z};
     r->x = p.r[X];
     r->y = p.r[Y];
@@ -6648,34 +6648,34 @@ static void p2f3(const Particle p, /**/ float3 *r, float3 *v) {
     v->z = p.v[Z];
 }
 
-static void f2f3(const Force fo, /**/ float3 *f) {
+static void f2f3(const Force fo,      float3 *f) {
     enum {X, Y, Z};
     f->x = fo.f[X];
     f->y = fo.f[Y];
     f->z = fo.f[Z];
 }
 
-static void copy_shift(const Coords *c, long n, const Particle *pp, /**/ float3 *w) {
+static void copy_shift(const Coords *c, long n, const Particle *pp,      float3 *w) {
     float3 r, v;
     for (int j = 0; j < n; ++j) {
-        p2f3(pp[j], /**/ &r, &v);
-        local2global(c, r, /**/ &w[2*j]);
+        p2f3(pp[j],      &r, &v);
+        local2global(c, r,      &w[2*j]);
         w[2*j + 1] = v;
     }
 }
 
-static void copy_shift_with_forces(const Coords *c, long n, const Particle *pp, const Force *ff, /**/ float3 *w) {
+static void copy_shift_with_forces(const Coords *c, long n, const Particle *pp, const Force *ff,      float3 *w) {
     float3 r, v, f;
     for (int j = 0; j < n; ++j) {
-        p2f3(pp[j], /**/ &r, &v);
-        f2f3(ff[j], /**/ &f);
-        local2global(c, r, /**/ &w[3*j]);
+        p2f3(pp[j],      &r, &v);
+        f2f3(ff[j],      &f);
+        local2global(c, r,      &w[3*j]);
         w[3*j + 1] = v;
         w[3*j + 2] = f;
     }
 }
 
-static void set_name(const char *base, int id, /**/ char *name) {
+static void set_name(const char *base, int id,      char *name) {
     sprintf(name, DUMP_BASE "/bop/" PATTERN, base, id);
 }
 
@@ -6691,7 +6691,7 @@ void io_bop_parts (MPI_Comm cart, const Coords *coords, long n, const Particle *
     BopData *bop  = t->ff;
     float3 *ppout = (float3*) bop_get_data(bop);
 
-    copy_shift(coords, n, pp, /**/ ppout);
+    copy_shift(coords, n, pp,      ppout);
     BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARP, VARP, bop) );
 
@@ -6702,7 +6702,7 @@ void io_bop_parts_forces(MPI_Comm cart, const Coords *coords, long n, const Part
     BopData *bop = t->ff;
     float3 *out  = (float3*) bop_get_data(bop);
 
-    copy_shift_with_forces(coords, n, pp, ff, /**/ out);
+    copy_shift_with_forces(coords, n, pp, ff,      out);
     BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARP + NVARF, VARP " " VARF, bop) );
 
@@ -6753,7 +6753,7 @@ void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int i
 
 
 
-// Grouped editable compilation unit for VTK output.
+
 
 
 
@@ -6766,7 +6766,7 @@ void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int i
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -6777,7 +6777,7 @@ void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int i
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -6799,24 +6799,24 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 struct int4;
 struct MeshRead;
 
@@ -6836,8 +6836,8 @@ const int4  *mesh_read_get_dih(MeshRead*);
 struct Mesh;
 struct MeshRead;
 
-void mesh_ini(MeshRead*, /**/ Mesh**);
-void mesh_copy(const Mesh*, /**/ Mesh**);
+void mesh_ini(MeshRead*,      Mesh**);
+void mesh_copy(const Mesh*,      Mesh**);
 void mesh_fin(Mesh*);
 
 int mesh_nv(Mesh*);
@@ -6846,11 +6846,11 @@ int mesh_ne(Mesh*);
 const int* mesh_tt(Mesh*);
 
 struct Mesh {
-    int nv, nt, ne; /* vertices and triangles */
-    int *tt;   /* triangles [v0 v1 v2] [v0 v1 v2] .. */
-    int *ee;   /* edges [e0 e1] [e0 e1] .. */
+    int nv, nt, ne;
+    int *tt;
+    int *ee;
 };
-void mesh_ini(MeshRead *mesh, /**/ Mesh **pq) {
+void mesh_ini(MeshRead *mesh,      Mesh **pq) {
     Mesh *q;
     int i, j, nv, nt, ne;
     const int4 *tt, *dd;
@@ -6879,8 +6879,8 @@ void mesh_ini(MeshRead *mesh, /**/ Mesh **pq) {
     *pq = q;
 }
 
-void mesh_copy(const Mesh *f, /**/ Mesh **pt) {
-    Mesh *t; /* to, from */
+void mesh_copy(const Mesh *f,      Mesh **pt) {
+    Mesh *t;
     int nv, nt, ne;
     EMALLOC(1, &t);
 
@@ -6916,33 +6916,33 @@ const int* mesh_tt(Mesh *q) { return q->tt; }
 #include <string.h>
 #include <mpi.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -6958,7 +6958,7 @@ const int* mesh_tt(Mesh *q) { return q->tt; }
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -6969,7 +6969,7 @@ const int* mesh_tt(Mesh *q) { return q->tt; }
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -6991,30 +6991,30 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void os_mkdir(const char* path); // <1>
-long os_time();                  // <2>
-void os_srand(long int seedval); // <3>
-double os_drand();               // <4>
-void os_sleep(unsigned int seconds); // <5>
-void os_malloc_stats();              // TODO
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void os_mkdir(const char* path);
+long os_time();
+void os_srand(long int seedval);
+double os_drand();
+void os_sleep(unsigned int seconds);
+void os_malloc_stats();
 
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -7058,7 +7058,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -7069,7 +7069,7 @@ int status2errcode(MPI_Status *status);
 struct KeyList;
 
 void key_list_ini(KeyList**);
-void key_list_copy(KeyList*, /**/ KeyList**);
+void key_list_copy(KeyList*,      KeyList**);
 void key_list_fin(KeyList*);
 
 void key_list_push(KeyList*, const char*);
@@ -7088,25 +7088,25 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 struct Particle;
 struct Scalars;
 struct Vectors;
 
-void scalars_float_ini(int n, const float*, /**/ Scalars**);
-void scalars_double_ini(int n, const double*, /**/ Scalars**);
-void scalars_vectors_ini(int n, const Vectors*, int dim, /**/ Scalars**);
+void scalars_float_ini(int n, const float*,      Scalars**);
+void scalars_double_ini(int n, const double*,      Scalars**);
+void scalars_vectors_ini(int n, const Vectors*, int dim,      Scalars**);
 
-void scalars_zero_ini(int n, /**/ Scalars**);
-void scalars_one_ini(int n, /**/ Scalars**);
+void scalars_zero_ini(int n,      Scalars**);
+void scalars_one_ini(int n,      Scalars**);
 
 void scalars_fin(Scalars*);
 double scalars_get(const Scalars*, int i);
@@ -7114,8 +7114,8 @@ double scalars_get(const Scalars*, int i);
 struct Mesh;
 struct MeshRead;
 
-void mesh_ini(MeshRead*, /**/ Mesh**);
-void mesh_copy(const Mesh*, /**/ Mesh**);
+void mesh_ini(MeshRead*,      Mesh**);
+void mesh_copy(const Mesh*,      Mesh**);
 void mesh_fin(Mesh*);
 
 int mesh_nv(Mesh*);
@@ -7124,14 +7124,14 @@ int mesh_ne(Mesh*);
 const int* mesh_tt(Mesh*);
 struct WriteFile;
 
-int write_file_open(MPI_Comm, const char *path, /**/ WriteFile**);
+int write_file_open(MPI_Comm, const char *path,      WriteFile**);
 int write_file_close(WriteFile*);
 
-void write_all(MPI_Comm, const void *const, int nbytes, WriteFile*); // <1>
-int write_master(MPI_Comm, const void *const, int nbytes, WriteFile*); // <2>
+void write_all(MPI_Comm, const void *const, int nbytes, WriteFile*);
+int write_master(MPI_Comm, const void *const, int nbytes, WriteFile*);
 
-int write_shift_indices(MPI_Comm, int, /**/ int*);
-int write_reduce(MPI_Comm, int, /**/ int*);
+int write_shift_indices(MPI_Comm, int,      int*);
+int write_reduce(MPI_Comm, int,      int*);
 
 struct VTK;
 struct VTKConf;
@@ -7140,18 +7140,18 @@ struct MeshRead;
 struct Vectors;
 struct Scalars;
 
-void vtk_conf_ini(MeshRead*, /**/ VTKConf**); // <1>
+void vtk_conf_ini(MeshRead*,      VTKConf**);
 void vtk_conf_fin(VTKConf*);
-void vtk_conf_vert(VTKConf*, const char *keys); // <2>
-void vtk_conf_tri(VTKConf*, const char *keys); // <3>
+void vtk_conf_vert(VTKConf*, const char *keys);
+void vtk_conf_tri(VTKConf*, const char *keys);
 
-void vtk_ini(MPI_Comm, int maxm, char const *dir, VTKConf*, /**/ VTK**); // <1>
-void vtk_points(VTK*, int nm, const Vectors*); // <2>
+void vtk_ini(MPI_Comm, int maxm, char const *dir, VTKConf*,      VTK**);
+void vtk_points(VTK*, int nm, const Vectors*);
 
-void vtk_vert(VTK*, int nm, const Scalars*, const char *keys); // <3>
-void vtk_tri(VTK*, int nm, const Scalars*, const char *keys);  // <4>
+void vtk_vert(VTK*, int nm, const Scalars*, const char *keys);
+void vtk_tri(VTK*, int nm, const Scalars*, const char *keys);
 
-void vtk_write(VTK*, MPI_Comm, int id); // <5>
+void vtk_write(VTK*, MPI_Comm, int id);
 void vtk_fin(VTK*);
 
 struct VTKConf {
@@ -7169,11 +7169,11 @@ enum { UNSET = - 1 };
 enum { N_MAX = 100 };
 #endif
 struct VTK {
-    int nm; /* current number of meshes */
+    int nm;
     Mesh *mesh;
     KeyList *tri, *vert;
 
-    int nbuf; /* maximum bufer size */
+    int nbuf;
     double *dbuf;
     int *ibuf;
 
@@ -7183,7 +7183,7 @@ struct VTK {
     int rr_set;
     char path[FILENAME_MAX];
 
-    int stamp; /* MAGIC */
+    int stamp;
 };
 
 struct Out {
@@ -7293,7 +7293,7 @@ static void points(Out *o, int n, double *rr) {
     WriteFile *file;
     comm = o->comm;
     file = o->file;
-    big_endian_dbl(3*n, /**/ rr);
+    big_endian_dbl(3*n,      rr);
     UC(write_reduce(comm, n, &n_total));
     print(o, "POINTS %d double\n", n_total);
     UC(write_all(comm, rr, 3*n*sizeof(rr[0]), file));
@@ -7316,7 +7316,7 @@ static void tri(Out *o, int nm, int nv, int nt, const int *tt, int *buf) {
             buf[t++] = shift + nv*m + tt[3*i + 1];
             buf[t++] = shift + nv*m + tt[3*i + 2];
         }
-    big_endian_int(t, /**/ buf);
+    big_endian_int(t,      buf);
     UC(write_reduce(comm, nm, &nm_total));
     print(o, "POLYGONS %d %d\n", nt*nm_total, 4*nt*nm_total);
     UC(write_all(comm, buf, t*sizeof(buf[0]), file));
@@ -7339,7 +7339,7 @@ static void cell_data(Out *o, int n, double *data, const char *name) {
     print(o, "SCALARS %s double 1\n", name);
     print(o, "LOOKUP_TABLE default\n");
 
-    big_endian_dbl(n, /**/ data);
+    big_endian_dbl(n,      data);
     UC(write_all(comm, data, n*sizeof(data[0]), file));
     print(o, "\n");
 }
@@ -7360,13 +7360,13 @@ static void point_data(Out *o, int n, double *data, const char *name) {
     print(o, "SCALARS %s double 1\n", name);
     print(o, "LOOKUP_TABLE default\n");
 
-    big_endian_dbl(n, /**/ data);
+    big_endian_dbl(n,      data);
     UC(write_all(comm, data, n*sizeof(data[0]), file));
     print(o, "\n");
 }
 #define PATTERN "%s/%s/%05d.vtk"
 
-void vtk_conf_ini(MeshRead *mesh, /**/ VTKConf **pq) {
+void vtk_conf_ini(MeshRead *mesh,      VTKConf **pq) {
     VTKConf *q;
     EMALLOC(1, &q);
     mesh_ini(mesh, &q->mesh);
@@ -7398,7 +7398,7 @@ void vtk_conf_vert(VTKConf *q, const char *keys) {
     UC(key_list_push(q->vert, keys));
 }
 
-void vtk_ini(MPI_Comm comm, int maxm, char const *path, VTKConf *c, /**/ VTK **pq) {
+void vtk_ini(MPI_Comm comm, int maxm, char const *path, VTKConf *c,      VTK **pq) {
     int i;
     VTK *q;
     int nbuf, nk;
@@ -7419,7 +7419,7 @@ void vtk_ini(MPI_Comm comm, int maxm, char const *path, VTKConf *c, /**/ VTK **p
     q->nbuf = nbuf;
     q->nm       = UNSET;
     q->rr_set   = 0;
-    UC(mesh_copy(mesh, /**/ &q->mesh));
+    UC(mesh_copy(mesh,      &q->mesh));
     UC(key_list_copy(c->tri, &q->tri));
     UC(key_list_copy(c->vert, &q->vert));
 
@@ -7558,10 +7558,10 @@ void vtk_fin(VTK *q) {
 #undef PATTERN
 
 
-// Grouped editable compilation unit for point and grid output.
 
 
-// Grouped editable compilation unit for point I/O and generic writing.
+
+
 
 
 
@@ -7570,33 +7570,33 @@ void vtk_fin(VTK *q) {
 #include <mpi.h>
 
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -7606,21 +7606,21 @@ void vtk_fin(VTK *q) {
 #endif
 
 
-void os_mkdir(const char* path); // <1>
-long os_time();                  // <2>
-void os_srand(long int seedval); // <3>
-double os_drand();               // <4>
-void os_sleep(unsigned int seconds); // <5>
-void os_malloc_stats();              // TODO
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void os_mkdir(const char* path);
+long os_time();
+void os_srand(long int seedval);
+double os_drand();
+void os_sleep(unsigned int seconds);
+void os_malloc_stats();
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -7631,7 +7631,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -7653,25 +7653,25 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 int string_nword(const char *s);
 
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -7720,7 +7720,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -7791,7 +7791,7 @@ static void wrong_key(IOPoint *q, const char *key) {
 }
 #define PATTERN "%s/%s/%05d"
 
-void io_point_conf_ini(/**/ IOPointConf **pq) {
+void io_point_conf_ini(     IOPointConf **pq) {
     IOPointConf *q;
     EMALLOC(1, &q);
     q->i = 0;
@@ -7822,7 +7822,7 @@ static void ini_bop(int maxn, int n, const char *keys, BopData **pq) {
 
     *pq = q;
 }
-void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq) {
+void io_point_ini(int maxn, const char *path, IOPointConf *c,      IOPoint **pq) {
     int i, nkey, cum_n;
     IOPoint *q;
     char cum_key[N_MAX*(FILENAME_MAX + 1)];
@@ -7865,7 +7865,7 @@ static double *get_data(BopData *b) {
 }
 
 static void push(int n, int nvar, int cum_n, const double *F, int offset, double *T) {
-    int i, j, f, t; /* from/to */
+    int i, j, f, t;
     for (f = i = 0; i < n; i++) {
         for (j = 0; j < nvar; j++) {
             t = cum_n*i + offset + j;
@@ -7895,7 +7895,7 @@ void io_point_push(IOPoint *q, int n, const double *D, const char *key) {
     if (q->seen[i]) ERR("seen key '%s' ", key);
     q->seen[i] = 1;
     UC(B = get_data(q->bop));
-    push(n, q->nn[i], q->cum_n, D, offset, /**/ B);
+    push(n, q->nn[i], q->cum_n, D, offset,      B);
 }
 
 void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
@@ -7925,33 +7925,33 @@ void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
 #include <stdlib.h>
 #include <mpi.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -8003,7 +8003,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -8016,7 +8016,7 @@ int status2errcode(MPI_Status *status);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -8027,7 +8027,7 @@ int status2errcode(MPI_Status *status);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -8049,23 +8049,23 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -8075,18 +8075,18 @@ void check(int code, const char *file, int line);
 
 struct WriteFile;
 
-int write_file_open(MPI_Comm, const char *path, /**/ WriteFile**);
+int write_file_open(MPI_Comm, const char *path,      WriteFile**);
 int write_file_close(WriteFile*);
 
-void write_all(MPI_Comm, const void *const, int nbytes, WriteFile*); // <1>
-int write_master(MPI_Comm, const void *const, int nbytes, WriteFile*); // <2>
+void write_all(MPI_Comm, const void *const, int nbytes, WriteFile*);
+int write_master(MPI_Comm, const void *const, int nbytes, WriteFile*);
 
-int write_shift_indices(MPI_Comm, int, /**/ int*);
-int write_reduce(MPI_Comm, int, /**/ int*);
+int write_shift_indices(MPI_Comm, int,      int*);
+int write_reduce(MPI_Comm, int,      int*);
 struct WriteFile {
     MPI_File f;
 };
-int write_file_open(MPI_Comm comm, const char *fn, /**/ WriteFile **pq) {
+int write_file_open(MPI_Comm comm, const char *fn,      WriteFile **pq) {
     WriteFile *q;
     EMALLOC(1, &q);
     MC(m::File_open(comm, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &q->f));
@@ -8129,7 +8129,7 @@ int write_shift_indices(MPI_Comm comm, int n, int *shift0) {
     return 0;
 }
 
-int write_reduce(MPI_Comm comm, int n0, /**/ int *n) {
+int write_reduce(MPI_Comm comm, int n0,      int *n) {
     *n = 0;
     MC(m::Reduce(&n0, n, 1, MPI_INT, MPI_SUM, 0, comm));
     return 0;
@@ -8139,7 +8139,7 @@ int write_reduce(MPI_Comm comm, int n0, /**/ int *n) {
 
 
 
-// Grouped editable compilation unit for raw-grid and XMF output.
+
 
 
 
@@ -8292,7 +8292,7 @@ void raw_write(int3 N, MPI_Comm cart, const char *path, int ncomp,
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -8303,7 +8303,7 @@ void raw_write(int3 N, MPI_Comm cart, const char *path, int ncomp,
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -8325,21 +8325,21 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
 void xmf_write(int3 domainSize, int3 gridSize, const char *path, int ncomp, const char **names);
@@ -8367,7 +8367,7 @@ static float3 get_spacing(int3 D, int3 G) {
 static void grid(int3 D, int3 G, FILE *f, const char *path, int n, const char **names) {
     int i;
     int base_len = strlen(path) - strlen(".raw");
-    float3 o, d; /* origin, spacing */
+    float3 o, d;
     o.x = o.y = o.z = 0.0;
     d = get_spacing(D, G);
 
@@ -8392,8 +8392,8 @@ static void grid(int3 D, int3 G, FILE *f, const char *path, int n, const char **
 }
 
 static int eq(const char *a, const char *b) { return !strcmp(a, b); }
-static void xsuffix(const char *i, /**/ char *o) {
-    /* replace suffix .raw by .xmf */
+static void xsuffix(const char *i,      char *o) {
+
     char s[] = ".raw";
     int n;
     n = strlen(i) - strlen(s);
@@ -8401,7 +8401,7 @@ static void xsuffix(const char *i, /**/ char *o) {
     else                        strcpy (o, i);
     strcat(o, ".xmf");
 }
-static void basename(const char *i, /**/ char *o) {
+static void basename(const char *i,      char *o) {
     const char *p;
     p = i;
     while (*i != '\0') if (*i++ == '/') p = i;
@@ -8412,11 +8412,11 @@ void xmf_write(int3 domainSize, int3 gridSize, const char *path, int ncomp, cons
     char w[BUFSIZ];
     FILE *f;
 
-    xsuffix(path, /**/ w);
-    UC(efopen(w, "w", /**/ &f));
+    xsuffix(path,      w);
+    UC(efopen(w, "w",      &f));
     header(f);
 
-    basename(path, /**/ w);
+    basename(path,      w);
     grid(domainSize, gridSize, f, w, ncomp, names);
     epilogue(f);
     UC(efclose(f));
@@ -8430,33 +8430,33 @@ void xmf_write(int3 domainSize, int3 gridSize, const char *path, int ncomp, cons
 #include <stdio.h>
 #include <vector_types.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -8508,7 +8508,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -8521,7 +8521,7 @@ int status2errcode(MPI_Status *status);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -8532,7 +8532,7 @@ int status2errcode(MPI_Status *status);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -8554,7 +8554,7 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -8593,10 +8593,10 @@ void grid_write(int3 N, int3 L, MPI_Comm cart, const char *path, int ncmp, const
 
 
 
-// Grouped editable compilation unit for text and diagnostic I/O.
 
 
-// Grouped editable compilation unit for text and communication I/O.
+
+
 
 
 
@@ -8607,33 +8607,33 @@ void grid_write(int3 N, int3 L, MPI_Comm cart, const char *path, int ncmp, const
 #include <vector_types.h>
 #include <mpi.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -8685,14 +8685,14 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -8714,24 +8714,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -8746,44 +8746,44 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-void os_mkdir(const char* path); // <1>
-long os_time();                  // <2>
-void os_srand(long int seedval); // <3>
-double os_drand();               // <4>
-void os_sleep(unsigned int seconds); // <5>
-void os_malloc_stats();              // TODO
+void os_mkdir(const char* path);
+long os_time();
+void os_srand(long int seedval);
+double os_drand();
+void os_sleep(unsigned int seconds);
+void os_malloc_stats();
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -8794,7 +8794,7 @@ void os_malloc_stats();              // TODO
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -8819,14 +8819,14 @@ void error_print_stack();
 
 struct WriteFile;
 
-int write_file_open(MPI_Comm, const char *path, /**/ WriteFile**);
+int write_file_open(MPI_Comm, const char *path,      WriteFile**);
 int write_file_close(WriteFile*);
 
-void write_all(MPI_Comm, const void *const, int nbytes, WriteFile*); // <1>
-int write_master(MPI_Comm, const void *const, int nbytes, WriteFile*); // <2>
+void write_all(MPI_Comm, const void *const, int nbytes, WriteFile*);
+int write_master(MPI_Comm, const void *const, int nbytes, WriteFile*);
 
-int write_shift_indices(MPI_Comm, int, /**/ int*);
-int write_reduce(MPI_Comm, int, /**/ int*);
+int write_shift_indices(MPI_Comm, int,      int*);
+int write_reduce(MPI_Comm, int,      int*);
 
 struct Coords;
 struct float3;
@@ -8836,13 +8836,13 @@ enum {MAX_CHAR_PER_LINE = 128};
 
 #define BASE DUMP_BASE "/diag/com"
 
-static int swrite(const Coords *coords, int n, const int *ii, const float3 *rr, /**/ char *s) {
+static int swrite(const Coords *coords, int n, const int *ii, const float3 *rr,      char *s) {
     int i, id, c, start;
     float3 r, v, rg;
     for (i = start = 0; i < n; ++i) {
         id = ii[i];
         r  = rr[i];
-        local2global(coords, r, /**/ &rg);
+        local2global(coords, r,      &rg);
         c = sprintf(s + start, "%d %g %g %g %g %g %g\n", id, rg.x, rg.y, rg.z, v.x, v.y, v.z);
         if (c >= MAX_CHAR_PER_LINE)
             ERR("buffer too small : %d / %d", c, MAX_CHAR_PER_LINE);
@@ -8874,7 +8874,7 @@ void io_com_dump(MPI_Comm comm, const Coords *coords, const char *name, long id,
 
     io_com_gen_fname(name, id, fname);
 
-    UC(nchar = swrite(coords, n, ii, rr, /**/ data));
+    UC(nchar = swrite(coords, n, ii, rr,      data));
     io_com_write_mpi(comm, fname, nchar, data);
 
     EFREE(data);
@@ -8897,23 +8897,23 @@ void io_com_dump(MPI_Comm comm, const Coords *coords, const char *name, long id,
 #endif
 #endif
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -8921,7 +8921,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -8932,7 +8932,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -8985,7 +8985,7 @@ void txt_write_pp(long n, const Particle *pp, const char *name) {
     const float *r, *v;
     int rcode;
 
-    UC(efopen(name, "w", /**/ &f));
+    UC(efopen(name, "w",      &f));
     for (i = 0; i < n; i++) {
         r = pp[i].r;
         v = pp[i].v;
@@ -9004,7 +9004,7 @@ void txt_write_pp_ff(long n, const Particle *pp, const Force *ff, const char *na
     const float *r, *v, *a;
     int rcode;
 
-    UC(efopen(name, "w", /**/ &f));
+    UC(efopen(name, "w",      &f));
     for (i = 0; i < n; i++) {
         r = pp[i].r;
         v = pp[i].v;
@@ -9046,7 +9046,7 @@ void txt_read_pp(const char *name, TxtRead **pq) {
     int i;
     UC(ini(&q));
     q->ff = NULL;
-    UC(efopen(name, "r", /**/ &f));
+    UC(efopen(name, "r",      &f));
     q->n = get_num_lines(f);
     EMALLOC(q->n, &q->pp);
     rewind(f);
@@ -9068,7 +9068,7 @@ void txt_read_pp_ff(const char *name, TxtRead **pq) {
     Force fo;
     int i;
     UC(ini(&q));
-    UC(efopen(name, "r", /**/ &f));
+    UC(efopen(name, "r",      &f));
     q->n = get_num_lines(f);
     EMALLOC(q->n, &q->pp);
     EMALLOC(q->n, &q->ff);
@@ -9093,7 +9093,7 @@ void txt_read_ff(const char *name, TxtRead **pq) {
     Force fo;
     int i;
     UC(ini(&q));
-    UC(efopen(name, "r", /**/ &f));
+    UC(efopen(name, "r",      &f));
     q->n = get_num_lines(f);
     EMALLOC(q->n, &q->ff);
     rewind(f);
@@ -9124,7 +9124,7 @@ const Force*    txt_read_get_ff(const TxtRead *q) { return q->ff; }
 
 
 
-// Grouped editable compilation unit for diagnostic output.
+
 
 
 
@@ -9133,33 +9133,33 @@ const Force*    txt_read_get_ff(const TxtRead *q) { return q->ff; }
 #include <vector_types.h>
 #include <mpi.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -9169,8 +9169,8 @@ const Force*    txt_read_get_ff(const TxtRead *q) { return q->ff; }
 #endif
 
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -9213,7 +9213,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -9227,7 +9227,7 @@ int status2errcode(MPI_Status *status);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -9238,7 +9238,7 @@ int status2errcode(MPI_Status *status);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -9260,21 +9260,21 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 struct int4;
 struct MeshRead;
@@ -9313,7 +9313,7 @@ void diag_mesh_ini(const char *path, MeshRead *mesh, DiagMesh **pq) {
     EMALLOC(q->nt, &q->tt);
     EMEMCPY(q->nt, mesh_read_get_tri(mesh), q->tt);
     snprintf(q->path, FILENAME_MAX, "%s/%s", DUMP_BASE, path);
-    UC(efopen(q->path, "w", /**/ &f));
+    UC(efopen(q->path, "w",      &f));
     UC(efclose(f));
     msg_print("DiagMesh: %s", q->path);
 }
@@ -9335,33 +9335,33 @@ void diag_mesh_apply(DiagMesh*, MPI_Comm, float, int, Particle*) {
 #include <string.h>
 #include <mpi.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -9371,8 +9371,8 @@ void diag_mesh_apply(DiagMesh*, MPI_Comm, float, int, Particle*) {
 #endif
 
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -9415,7 +9415,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -9429,7 +9429,7 @@ int status2errcode(MPI_Status *status);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -9440,7 +9440,7 @@ int status2errcode(MPI_Status *status);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -9462,23 +9462,23 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -9489,7 +9489,7 @@ void check(int code, const char *file, int line);
 struct Particle;
 struct DiagPart;
 
-void diag_part_ini(const char *path, /**/ DiagPart**);
+void diag_part_ini(const char *path,      DiagPart**);
 void diag_part_fin(DiagPart*);
 void diag_part_apply(DiagPart*, MPI_Comm, float time, int n, const Particle*);
 enum {STAMP_GOOD = 123456};
@@ -9497,12 +9497,12 @@ struct DiagPart {
     int stamp;
     char path[FILENAME_MAX];
 };
-void diag_part_ini(const char *path, /**/ DiagPart **pq) {
+void diag_part_ini(const char *path,      DiagPart **pq) {
     FILE *f;
     DiagPart *q;
     EMALLOC(1, &q);
     snprintf(q->path, FILENAME_MAX, "%s/%s", DUMP_BASE, path);
-    UC(efopen(q->path, "w", /**/ &f));
+    UC(efopen(q->path, "w",      &f));
     UC(efclose(f));
     msg_print("DiagPart: %s", q->path);
     q->stamp = STAMP_GOOD;
@@ -9519,7 +9519,7 @@ static void reduce(MPI_Comm comm, const void *sendbuf0, void *recvbuf, int count
     const void *sendbuf = (m::is_master(comm) ? MPI_IN_PLACE : sendbuf0);
     MC(m::Reduce(sendbuf, recvbuf, count, datatype, op, root, comm));
 }
-#endif /* UDX_SCHEME_IO_REDUCE_COMMON */
+#endif
 static void sum3(MPI_Comm comm, double *v) {
     reduce(comm, v, v, 3, MPI_DOUBLE, MPI_SUM);
 }
@@ -9541,7 +9541,7 @@ void diag_part_apply(DiagPart *q, MPI_Comm comm, float time, int n, const Partic
     if (q->stamp != STAMP_GOOD) ERR("the DiagPart object was not initialized");
     enum {X, Y, Z, D};
     int i, c;
-    double k, km, ke; /* particle, total, and maximum kinetic energies */
+    double k, km, ke;
     double kbt = 0;
     FILE *f = NULL;
     double v[D] = {0};
@@ -9560,7 +9560,7 @@ void diag_part_apply(DiagPart *q, MPI_Comm comm, float time, int n, const Partic
 
     if (m::is_master(comm)) {
         if (n) kbt = 0.5 * ke / (n * D / 2.0);
-        UC(efopen(q->path, "a", /**/ &f));
+        UC(efopen(q->path, "a",      &f));
         msg_print("% .1e % .1e [% .1e % .1e % .1e] % .1e", time, kbt, v[X], v[Y], v[Z], km);
         fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\t%.10e\n", time, kbt, v[X], v[Y], v[Z], km);
         UC(efclose(f));
@@ -9573,7 +9573,7 @@ void diag_part_apply(DiagPart *q, MPI_Comm comm, float time, int n, const Partic
 
 
 
-// Grouped editable compilation unit for mesh, rigid, and restart output.
+
 
 
 
@@ -9583,33 +9583,33 @@ void diag_part_apply(DiagPart *q, MPI_Comm comm, float time, int n, const Partic
 #include <string.h>
 #include <vector_types.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -9633,24 +9633,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -9665,28 +9665,28 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
-void os_mkdir(const char* path); // <1>
-long os_time();                  // <2>
-void os_srand(long int seedval); // <3>
-double os_drand();               // <4>
-void os_sleep(unsigned int seconds); // <5>
-void os_malloc_stats();              // TODO
+void os_mkdir(const char* path);
+long os_time();
+void os_srand(long int seedval);
+double os_drand();
+void os_sleep(unsigned int seconds);
+void os_malloc_stats();
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -9697,7 +9697,7 @@ void os_malloc_stats();              // TODO
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -9719,25 +9719,25 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-/* [m]pi [c]heck macros */
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -9787,7 +9787,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -9821,26 +9821,26 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 
 struct WriteFile;
 
-int write_file_open(MPI_Comm, const char *path, /**/ WriteFile**);
+int write_file_open(MPI_Comm, const char *path,      WriteFile**);
 int write_file_close(WriteFile*);
 
-void write_all(MPI_Comm, const void *const, int nbytes, WriteFile*); // <1>
-int write_master(MPI_Comm, const void *const, int nbytes, WriteFile*); // <2>
+void write_all(MPI_Comm, const void *const, int nbytes, WriteFile*);
+int write_master(MPI_Comm, const void *const, int nbytes, WriteFile*);
 
-int write_shift_indices(MPI_Comm, int, /**/ int*);
-int write_reduce(MPI_Comm, int, /**/ int*);
+int write_shift_indices(MPI_Comm, int,      int*);
+int write_reduce(MPI_Comm, int,      int*);
 
 struct Coords;
 struct Particle;
@@ -9854,8 +9854,8 @@ struct Vectors;
 enum {MESH_WRITE_EDGE, MESH_WRITE_CENTER};
 #endif
 
-void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite**);
-void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead*, const char *directory, /**/ MeshWrite**);
+void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory,      MeshWrite**);
+void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead*, const char *directory,      MeshWrite**);
 
 void mesh_write_particles(MeshWrite*, MPI_Comm, const Coords*, int nm, const Particle*, int id);
 void mesh_write_vectors(MeshWrite*, MPI_Comm, int nm, Vectors *pos, Vectors *vel, int id);
@@ -9890,9 +9890,9 @@ static void mkdir(MPI_Comm comm, const char *p, const char *s) {
 }
 #endif
 #define PATTERN "%s/%s/%05d.ply"
-enum { NVP = 3 /* number of vertices per face */ };
+enum { NVP = 3                                   };
 
-static void ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
+static void ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory,      MeshWrite **pq) {
     int i;
     MeshWrite *q;
     EMALLOC(1, &q);
@@ -9907,17 +9907,17 @@ static void ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, co
     *pq = q;
 }
 
-void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
-    UC(ini(comm, shifttype, tt, nv, nt, directory, /**/ pq));
+void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory,      MeshWrite **pq) {
+    UC(ini(comm, shifttype, tt, nv, nt, directory,      pq));
 }
 
-void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead *cell, const char *directory, /**/ MeshWrite **pq) {
+void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead *cell, const char *directory,      MeshWrite **pq) {
     int nv, nt;
     const int4 *tt;
     nv = mesh_read_get_nv(cell);
     nt = mesh_read_get_nt(cell);
     tt = mesh_read_get_tri(cell);
-    UC(ini(comm, shifttype, tt, nv, nt, directory, /**/ pq));
+    UC(ini(comm, shifttype, tt, nv, nt, directory,      pq));
 }
 
 void mesh_write_fin(MeshWrite *q) {
@@ -9926,7 +9926,7 @@ void mesh_write_fin(MeshWrite *q) {
 }
 
 static void header(MPI_Comm comm, int nc0, int nv, int nt, WriteFile *f) {
-    int nc; /* total number of cells */
+    int nc;
     int sz = 0;
     char s[BUFSIZ];
     UC(write_reduce(comm, nc0, &nc));
@@ -9946,21 +9946,21 @@ static void header(MPI_Comm comm, int nc0, int nv, int nt, WriteFile *f) {
 static void vert(MPI_Comm cart, int n, const Vectors *pos, const Vectors *vel, WriteFile *f) {
     float *D, *r, *v;
     int i, j, m;
-    m = (3 + 3) * n; /* pos[3] + vel[3] */
+    m = (3 + 3) * n;
     EMALLOC(m, &D);
     for (i = j = 0; i < n; i++) {
         r = &D[j]; j += 3;
         v = &D[j]; j += 3;
-        UC(vectors_get(pos, i, /**/ r));
-        UC(vectors_get(vel, i, /**/ v));
+        UC(vectors_get(pos, i,      r));
+        UC(vectors_get(vel, i,      v));
     }
     UC(write_all(cart, D, m*sizeof(D[0]), f));
     EFREE(D);
 }
 
 static void wfaces0(MPI_Comm comm, int *buf, const int4 *faces, int nc, int nv, int nt, WriteFile *f) {
-    /* write faces */
-    int c, t, b;  /* cell, triangle, buffer index */
+
+    int c, t, b;
     int n, shift;
     int4 tri;
     n = nc * nv;
@@ -9977,7 +9977,7 @@ static void wfaces0(MPI_Comm comm, int *buf, const int4 *faces, int nc, int nv, 
 }
 
 static void wfaces(MPI_Comm cart, const int4 *faces, int nc, int nv, int nt, WriteFile *f) {
-    int *buf; /* buffer for faces */
+    int *buf;
     int sz;
     sz = (1 + NVP) * nc * nt;
     EMALLOC(sz, &buf);
@@ -10007,18 +10007,18 @@ void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int
     n = nv * nc;
     if (snprintf(path, FILENAME_MAX, PATTERN, DUMP_BASE, directory, id) < 0)
         ERR("sprintf failed");
-    UC(write_file_open(comm, path, /**/ &f));
+    UC(write_file_open(comm, path,      &f));
     switch (q->shift_type) {
     case MESH_WRITE_EDGE:
-        vectors_postions_edge_ini(coords, n, pp, /**/ &pos);
+        vectors_postions_edge_ini(coords, n, pp,      &pos);
         break;
     case MESH_WRITE_CENTER:
-        vectors_postions_center_ini(coords, n, pp, /**/ &pos);
+        vectors_postions_center_ini(coords, n, pp,      &pos);
         break;
     default:
         ERR("unkown q->type: %d", q->shift_type);
     }
-    vectors_velocities_ini(n, pp, /**/ &vel);
+    vectors_velocities_ini(n, pp,      &vel);
     UC(mesh_write(comm, nc, nv, nt, pos, vel, tt, f));
     vectors_fin(pos);
     vectors_fin(vel);
@@ -10035,7 +10035,7 @@ void mesh_write_vectors(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vecto
     nv = q->nv; nt = q->nt; tt = q->tt; directory = q->directory;
     if (snprintf(path, FILENAME_MAX, PATTERN, DUMP_BASE, directory, id) < 0)
         ERR("snprintf failed");
-    UC(write_file_open(comm, path, /**/ &f));
+    UC(write_file_open(comm, path,      &f));
     UC(mesh_write(comm, nc, nv, nt, pos, vel, tt, f));
     UC(write_file_close(f));
 }
@@ -10043,7 +10043,7 @@ void mesh_write_vectors(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vecto
 
 
 
-// Grouped editable compilation unit for rigid output and restart I/O.
+
 
 
 
@@ -10059,33 +10059,33 @@ void mesh_write_vectors(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vecto
 #endif
 #endif
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -10100,7 +10100,7 @@ void mesh_write_vectors(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vecto
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -10111,7 +10111,7 @@ void mesh_write_vectors(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vecto
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -10133,28 +10133,28 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-void os_mkdir(const char* path); // <1>
-long os_time();                  // <2>
-void os_srand(long int seedval); // <3>
-double os_drand();               // <4>
-void os_sleep(unsigned int seconds); // <5>
-void os_malloc_stats();              // TODO
+void os_mkdir(const char* path);
+long os_time();
+void os_srand(long int seedval);
+double os_drand();
+void os_sleep(unsigned int seconds);
+void os_malloc_stats();
 struct Coords;
 struct Coords_v;
 struct float3;
@@ -10169,24 +10169,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -10201,13 +10201,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -10251,7 +10251,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -10261,14 +10261,14 @@ int status2errcode(MPI_Status *status);
 
 struct WriteFile;
 
-int write_file_open(MPI_Comm, const char *path, /**/ WriteFile**);
+int write_file_open(MPI_Comm, const char *path,      WriteFile**);
 int write_file_close(WriteFile*);
 
-void write_all(MPI_Comm, const void *const, int nbytes, WriteFile*); // <1>
-int write_master(MPI_Comm, const void *const, int nbytes, WriteFile*); // <2>
+void write_all(MPI_Comm, const void *const, int nbytes, WriteFile*);
+int write_master(MPI_Comm, const void *const, int nbytes, WriteFile*);
 
-int write_shift_indices(MPI_Comm, int, /**/ int*);
-int write_reduce(MPI_Comm, int, /**/ int*);
+int write_shift_indices(MPI_Comm, int,      int*);
+int write_reduce(MPI_Comm, int,      int*);
 
 struct Coords;
 struct Rigid;
@@ -10276,13 +10276,13 @@ struct Rigid;
 void io_rig_dump(MPI_Comm comm, const Coords *c, const char *name, long id, int ns, const Rigid *ss);
 
 struct IoRig {
-    char mode[16]; // fopen mode
+    char mode[16];
 };
 #define BASE DUMP_BASE "/diag/rig"
 
 static int swrite_v(const float v[3], char *buf) {
     enum {X, Y, Z};
-    return sprintf(buf, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]); // 3 * 13 + 3 = 42
+    return sprintf(buf, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
 }
 
 static int swrite(const Coords *c, int ns, const Rigid *ss, int maxn, char *buf) {
@@ -10294,12 +10294,12 @@ static int swrite(const Coords *c, int ns, const Rigid *ss, int maxn, char *buf)
     for (i = nchar = 0; i < ns; ++i) {
         s = &ss[i];
 
-        // shift to global coordinates
+
         com[X] = xl2xg(c, s->com[X]);
         com[Y] = yl2yg(c, s->com[Y]);
         com[Z] = zl2zg(c, s->com[Z]);
 
-        nchar += sprintf(buf + nchar, "%04d ", (int) s->id); // 5
+        nchar += sprintf(buf + nchar, "%04d ", (int) s->id);
         nchar += swrite_v(com,   buf + nchar);
         nchar += swrite_v(s->v,  buf + nchar);
         nchar += swrite_v(s->om, buf + nchar);
@@ -10308,7 +10308,7 @@ static int swrite(const Coords *c, int ns, const Rigid *ss, int maxn, char *buf)
         nchar += swrite_v(s->e0, buf + nchar);
         nchar += swrite_v(s->e1, buf + nchar);
         nchar += swrite_v(s->e2, buf + nchar);
-        nchar += sprintf(buf + nchar, "\n"); // 1
+        nchar += sprintf(buf + nchar, "\n");
         if (nchar > maxn)
             ERR("exceed buffer capacity: [%d / %d]", nchar, maxn);
     }
@@ -10364,33 +10364,33 @@ void io_rig_dump(MPI_Comm comm, const Coords *c, const char *name, long id, int 
 #include <mpi.h>
 
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -10442,7 +10442,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -10461,15 +10461,15 @@ int status2errcode(MPI_Status *status);
 #define UDX_SIM_OBJECTS_DEF_COMMON
 #include "constants.cuh"
 #endif
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -10480,7 +10480,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -10502,21 +10502,21 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 struct Coords;
 struct Coords_v;
@@ -10532,24 +10532,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -10564,13 +10564,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 struct Coords;
@@ -10587,27 +10587,27 @@ enum {RESTART_BEGIN=RESTART_FINAL};
 typedef void (*StreamWriter)(const void*, FILE*);
 typedef void (*StreamReader)(FILE*, void*);
 
-void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
-void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
-void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
-void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp);
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter);
 
 void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
 void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
 void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
 void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
-/*
-   pattern :
-   base/code/id.ext
-   base depends on read/write
-*/
+
+
+
+
+
 
 #define PATTERN "%s/%s/%s"
 
-// buff size
+
 enum { BS = 1024 };
 
-// check fprintf (BS-1 for \0 character)
+
 #define CSPR(a) do {                                        \
         int check = a;                                      \
         if (check < 0 || check >= BS-1)                     \
@@ -10628,17 +10628,17 @@ static void id2code(const int id, char *code) {
     }
 }
 
-static void gen_base_name(const char *pattern, const char *base, const char *code, const int id, /**/ char *name) {
+static void gen_base_name(const char *pattern, const char *base, const char *code, const int id,      char *name) {
     char idcode[BS] = {0};
-    id2code(id, /**/ idcode);
+    id2code(id,      idcode);
     CSPR(sprintf(name, pattern, base, code, idcode));
 }
 
-static void gen_base_name_dump(const char *base, const char *code, const int id, /**/ char *name) {
+static void gen_base_name_dump(const char *base, const char *code, const int id,      char *name) {
     gen_base_name(PATTERN, base, code, id, name);
 }
 
-static void gen_base_name_read(const char *base, const char *code, const int id, /**/ char *name) {
+static void gen_base_name_read(const char *base, const char *code, const int id,      char *name) {
     gen_base_name(PATTERN ".bop", base, code, id, name);
 }
 
@@ -10647,7 +10647,7 @@ static void write(MPI_Comm comm, const char *base, const char *code, int id, lon
     char name[BS];
     BopData *bop;
     T *tt_bop;
-    gen_base_name_dump(base, code, id, /**/ name);
+    gen_base_name_dump(base, code, id,      name);
 
     BPC(bop_ini(&bop));
     BPC(bop_set_n(n, bop));
@@ -10670,7 +10670,7 @@ static void read(MPI_Comm comm, const char *base, const char *code, const int id
     char hname[BS], dname[BS];
     BopData *bop;
     const T *tt_bop;
-    gen_base_name_read(base, code, id, /**/ hname);
+    gen_base_name_read(base, code, id,      hname);
     msg_print("reading '%s'", hname);
 
     BPC(bop_ini(&bop));
@@ -10742,7 +10742,7 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
 
 
 
-// Grouped editable compilation unit for mesh reading and edge topology.
+
 
 
 
@@ -10754,7 +10754,7 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -10765,7 +10765,7 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -10787,40 +10787,40 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 void edg_ini(int md, int nv,                     int *hx);
-void edg_set(int md, int i, int j, int val, /**/ int *hx,       int *hy); // <1>
-int  edg_get(int md, int i, int j,         const int *hx, const int *hy); // <2>
-int  edg_valid(int md, int i, int j,         const int *hx); // <3>
+void edg_set(int md, int i, int j, int val,      int *hx,       int *hy);
+int  edg_get(int md, int i, int j,         const int *hx, const int *hy);
+int  edg_valid(int md, int i, int j,         const int *hx);
 
 struct Edg {
     int md, nv;
     int *hx, *hy;
 };
-void e_ini(int md, int nv, /**/ Edg **pq) {
+void e_ini(int md, int nv,      Edg **pq) {
     Edg *q;
     EMALLOC(1, &q);
     EMALLOC(md*nv, &q->hx);
     EMALLOC(md*nv, &q->hy);
-    edg_ini(md, nv, /**/ q->hx);
+    edg_ini(md, nv,      q->hx);
     q->md = md; q->nv = nv;
     *pq = q;
 }
@@ -10866,7 +10866,7 @@ int e_valid(Edg *q, int i, int j) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -10877,7 +10877,7 @@ int e_valid(Edg *q, int i, int j) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -10899,28 +10899,28 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 struct Edg;
 
-void e_ini(int md, int nv, /**/ Edg**);
+void e_ini(int md, int nv,      Edg**);
 void e_fin(Edg*);
 
 void e_set(Edg*, int i, int j, int val);
@@ -10944,10 +10944,10 @@ const float *mesh_read_get_vert(const MeshRead*);
 const int4  *mesh_read_get_dih(MeshRead*);
 
 struct MeshRead {
-    int nv, nt, nd; /* vertices, triangles, dihidrals */
-    float *rr; /* [x y z] [x y z] */
-    int4  *tt; /* triangles: [v0 v1 v2 dummy] */
-    int4  *dd; /* dihidrals: [v0 (v1 v2) v3]  */
+    int nv, nt, nd;
+    float *rr;
+    int4  *tt;
+    int4  *dd;
 
     int dd_computed;
 };
@@ -10962,13 +10962,13 @@ static int emptyp(char *s) {
 static int commentp(char *s) {
     return s[0] != '\0' && s[0] == '#';
 }
-static void unend(char *s) { /* rm \n */
+static void unend(char *s) {
     if (s[0] == '\0') return;
     while (s[1] != '\0') s++;
     if (s[0] == '\n') s[0] = '\0';
 }
 enum {OK, ERR};
-static int line(FILE *f, /**/ char *s) { /* read line */
+static int line(FILE *f,      char *s) {
     for (;;) {
         if (fgets(s, SIZE, f) == NULL)  return ERR;
         unend(s);
@@ -10979,14 +10979,14 @@ static int line(FILE *f, /**/ char *s) { /* read line */
 
 static int header(FILE *f, char *s) {
     char key[SIZE];
-    if (line(f, /**/ s) == ERR) return 0;
+    if (line(f,      s) == ERR) return 0;
     sscanf(s, "%s", key);
     return same_str(key, "OFF");
 }
 
-static int sizes(FILE *f, char *s, /**/ int *nv, int *nt) {
+static int sizes(FILE *f, char *s,      int *nv, int *nt) {
     int r;
-    if (line(f, /**/ s) == ERR) return 0;
+    if (line(f,      s) == ERR) return 0;
     r = sscanf(s, "%d %d %*d", nv, nt);
     return r == 2;
 }
@@ -10995,7 +10995,7 @@ static int vert(FILE *f, char *s, int n, float *rr) {
     int i;
     float *r;
     for (i = 0; i < n; i++) {
-        if (line(f, /**/ s) == ERR) return 0;
+        if (line(f,      s) == ERR) return 0;
         r = &rr[3*i];
         if (sscanf(s, "%f %f %f", &r[X], &r[Y], &r[Z]) != 3) return 0;
     }
@@ -11013,9 +11013,9 @@ static int good(int4 *t, int n) {
 static int tri(FILE *f, char *s, int nt, int nv, int4 *tt) {
     int i;
     int4 *t;
-    int nvpt; /* number of vertices per face (triangle) */
+    int nvpt;
     for (i = 0; i < nt; i++) {
-        if (line(f, /**/ s) == ERR) return 0;
+        if (line(f,      s) == ERR) return 0;
         t = &tt[i];
         if (sscanf(s, "%d %d %d %d", &nvpt, &t->x, &t->y, &t->z) != 4) {
             msg_print("expecting triangle:'%s'", s);
@@ -11033,7 +11033,7 @@ static int tri(FILE *f, char *s, int nt, int nv, int4 *tt) {
     }
     return 1;
 }
-static void read_off(FILE *f, const char *path, /**/ MeshRead *q) {
+static void read_off(FILE *f, const char *path,      MeshRead *q) {
     int nv, nt;
     char s[SIZE];
     float *rr;
@@ -11048,9 +11048,9 @@ static void read_off(FILE *f, const char *path, /**/ MeshRead *q) {
     }
     EMALLOC(3*nv, &rr);
     EMALLOC(  nt, &tt);
-    if (!vert(f, s, nv, /**/ rr))
+    if (!vert(f, s, nv,      rr))
         ERR("failed to read vertices: '%s'", path);
-    if (!tri(f, s, nt, nv, /**/ tt))
+    if (!tri(f, s, nt, nv,      tt))
         ERR("failed to read triangles: '%s'", path);
     q->nv = nv; q->nt = nt;
     q->rr = rr; q->tt = tt;
@@ -11069,16 +11069,16 @@ static void read_ply(FILE *f, const char *fname, MeshRead *q) {
     int4 *tt;
     float *rr;
     int l = 0;
-#define BUFSIZE 256 // max number of chars per line
-#define MAXLINES 64 // max number of line for header
+#define BUFSIZE 256
+#define MAXLINES 64
 
-    // https://gcc.gnu.org/onlinedocs/cpp/Stringizing.html#Stringizing
+
 #define xstr(s) str(s)
 #define str(s) #s
 
     nv = nt = -1;
     while (l++ < MAXLINES) {
-        char cbuf[BUFSIZE + 1] = {0}; // + 1 for \0
+        char cbuf[BUFSIZE + 1] = {0};
 
         const int checker = fscanf(f, " %[^\n]" xstr(BUFSIZE) "c", cbuf);
         if (checker != 1)
@@ -11104,7 +11104,7 @@ static void read_ply(FILE *f, const char *fname, MeshRead *q) {
     q->nv = nv; q->nt = nt;
     q->rr = rr; q->tt = tt;
 }
-struct Q { int4 *d; }; /* queue */
+struct Q { int4 *d; };
 
 static void q_push(Q *q, int i0, int i1, int i2, int i3) {
     int4 *d;
@@ -11113,17 +11113,17 @@ static void q_push(Q *q, int i0, int i1, int i2, int i3) {
     (q->d)++;
 }
 
-static void reg(int i1, int i2, Edg *nxt, Edg *seen, /**/ Q *q) {
+static void reg(int i1, int i2, Edg *nxt, Edg *seen,      Q *q) {
     int i0, i3;
     if (e_valid(seen, i1, i2)) return;
     if (e_valid(seen, i2, i1)) return;
     i0 = e_get(nxt, i1, i2);
-    i3 = e_get(nxt, i2, i1); /* previous */
+    i3 = e_get(nxt, i2, i1);
     q_push(q, i0, i1, i2, i3);
     UC(e_set(seen, i1, i2, 1));
 }
 
-static void ini_dd0(int nt, const int4 *tt, int nv, int md, /**/ int4 *dd) {
+static void ini_dd0(int nt, const int4 *tt, int nv, int md,      int4 *dd) {
     Q q;
     Edg *nxt, *seen;
     int i, i0, i1, i2;
@@ -11132,24 +11132,24 @@ static void ini_dd0(int nt, const int4 *tt, int nv, int md, /**/ int4 *dd) {
     UC(e_ini(md, nv, &nxt));
     UC(e_ini(md, nv, &seen));
 
-    for (i = 0; i < nt; i++) { /* save who is next for every edge */
+    for (i = 0; i < nt; i++) {
         i0 = tt[i].x; i1 = tt[i].y; i2 = tt[i].z;
         e_set(nxt, i0, i1, i2);
         e_set(nxt, i1, i2, i0);
         e_set(nxt, i2, i0, i1);
     }
 
-    for (i = 0; i < nt; i++) { /* register dihidrals */
+    for (i = 0; i < nt; i++) {
         i0 = tt[i].x; i1 = tt[i].y; i2 = tt[i].z;
-        reg(i0, i1, nxt, /**/ seen, &q);
-        reg(i1, i2, nxt, /**/ seen, &q);
-        reg(i2, i0, nxt, /**/ seen, &q);
+        reg(i0, i1, nxt,      seen, &q);
+        reg(i1, i2, nxt,      seen, &q);
+        reg(i2, i0, nxt,      seen, &q);
     }
 
     UC(e_fin(nxt); e_fin(seen));
 }
 
-static void ini_dd(/**/ MeshRead *q) {
+static void ini_dd(     MeshRead *q) {
     int nt, nv, nd, md;
     const int4 *tt;
     nt = mesh_read_get_nt(q);
@@ -11159,15 +11159,15 @@ static void ini_dd(/**/ MeshRead *q) {
     tt = mesh_read_get_tri(q);
     q->nd = nd;
     EMALLOC(nd, &q->dd);
-    UC(ini_dd0(nt, tt, nv, md, /**/ q->dd));
+    UC(ini_dd0(nt, tt, nv, md,      q->dd));
 }
 
 void mesh_read_ini_off(const char *path, MeshRead **pq) {
     FILE *f;
     MeshRead *q;
     EMALLOC(1, &q);
-    UC(efopen(path, "r", /**/ &f));
-    UC(read_off(f, path, /**/ q));
+    UC(efopen(path, "r",      &f));
+    UC(read_off(f, path,      q));
     UC(efclose(f));
     msg_print("read off '%s'", path);
     q->dd_computed = 0;
@@ -11179,8 +11179,8 @@ void mesh_read_ini_ply(const char *path, MeshRead **pq) {
     FILE *f;
     MeshRead *q;
     EMALLOC(1, &q);
-    UC(efopen(path, "r", /**/ &f));
-    UC(read_ply(f, path, /**/ q));
+    UC(efopen(path, "r",      &f));
+    UC(read_ply(f, path,      q));
     UC(efclose(f));
     msg_print("read ply '%s'", path);
     q->dd = NULL;
@@ -11250,7 +11250,7 @@ const int4  *mesh_read_get_dih(MeshRead *q) {
 
 
 
-// Grouped editable compilation unit for fragment indexing and half-edge I/O.
+
 
 
 
@@ -11261,22 +11261,22 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
+}
 
 #define FRAG_HOST
 #include "fragment.cuh"
@@ -11284,7 +11284,7 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 
 namespace frag_hst {
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap) {
+void estimates(int3 L, int nfrags, float maxd,      int *cap) {
     int i, e;
     for (i = 0; i < nfrags; ++i) {
         e = ncell(L, i);
@@ -11293,7 +11293,7 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap) {
     }
 }
 
-} // frag_hst
+}
 
 
 
@@ -11309,10 +11309,10 @@ enum {MAX_STRING_SIZE = 4096};
 #else
   #define __UNUSED
 #endif
-/* error codes */
+
 enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM};
 
-/* for user code */
+
 #define ER(fmt, ...) ERR(HE_USER, (fmt), ##__VA_ARGS__)
 #define ERR(code, fmt, ...)                                             \
     do {                                                                \
@@ -11363,10 +11363,10 @@ typedef struct T T;
 
 int he_hash_ini(int n, T**);
 
-/* hash[i, j] = v */
+
 int he_hash_set(T*, int i, int j, int v);
 
-/* ans = hash[i, j], ans = -1 if unset  */
+
 int he_hash_get(T*, int i, int j);
 int he_hash_fin(T*);
 
@@ -11378,7 +11378,7 @@ int he_hash_fin(T*);
 typedef struct Node Node;
 struct Node {
     int j;
-    int v; /* value */
+    int v;
     Node  *nxt;
 };
 struct T {
@@ -11470,10 +11470,10 @@ typedef struct T T;
 
 int he_read_ini(const char *path, T**);
 
-/* tri = [t0, t1, t2] [t0, t2, t2], ... */
+
 int he_read_tri_ini(int nv, int nt, int *tri, T**);
 
-/* tri = [tri[0].x tri[0].y tri[0].z], ... [tri[0].x tri[0].y tri[0].z] */
+
 int he_read_int4_ini(int nv, int nt, const int4 *tri, T**);
 
 int he_read_fin(T*);
@@ -11506,23 +11506,23 @@ int he_ini(HeRead*, T**);
 int he_file_ini(const char *path, T**);
 int he_fin(T*);
 
-int he_nv(T*); /* number of vert, edg, edg, hdg */
+int he_nv(T*);
 int he_nt(T*);
 int he_ne(T*);
 int he_nh(T*);
 
-int he_nxt(T*, int h); /* return half-edg */
+int he_nxt(T*, int h);
 int he_flp(T*, int h);
 
-int he_ver(T*, int h); /* return ver, tri, or edg */
+int he_ver(T*, int h);
 int he_tri(T*, int h);
 int he_edg(T*, int h);
 
-int he_hdg_ver(T*, int v); /* return half-edg */
+int he_hdg_ver(T*, int v);
 int he_hdg_edg(T*, int e);
 int he_hdg_tri(T*, int t);
 
-int he_bnd(T*, int h); /* 1 for boundary */
+int he_bnd(T*, int h);
 
 #undef T
 
@@ -11542,7 +11542,7 @@ int he_file_ini(const char *path, T **pq) {
     HeRead *read;
     if (he_read_ini(path, &read) != HE_OK)
         ERR(HE_IO, "he_read_ini failed");
-    he_ini(read, /**/ pq);
+    he_ini(read,      pq);
     he_read_fin(read);
     return HE_OK;
 }
@@ -11606,7 +11606,7 @@ int he_nt(T *q) { return q->nt; }
 int he_ne(T *q) { return q->ne; }
 int he_nh(T *q) { return q->nh; }
 
-/* validate */
+
 #define V(i, n) if (0 > (i) || (i) >= n)                        \
         ERR(HE_INDEX, "%s=%d is not in [0, %d)", #i, i, n)
 int he_nxt(T *q, int h) { V(h,q->nh); return q->nxt[h]; }
@@ -11634,7 +11634,7 @@ int he_bnd(T *q, int h)     { V(h, q->nh); return q->flp[h] == -1; }
 
 
 
-int he_malloc(int size, /**/ void **pq) {
+int he_malloc(int size,      void **pq) {
     void *q;
     q = malloc(size);
     if (q == NULL) ERR(HE_MEMORY, "malloc failed for size=%ld", size);
@@ -11666,13 +11666,13 @@ int he_memcpy(void *dest, const void *src, size_t n) {
 
 
 
-/* string equal? */
+
 int util_eq(const char *a, const char *b);
 
-/* fgets without '\n' */
+
 char *util_fgets(char *s, FILE *stream);
 
-/* fgets without '\n' and skipping '#comments' */
+
 char *util_comment_fgets(char *s, FILE *stream);
 
 
@@ -11738,7 +11738,7 @@ static void setup_edg(T *q, HeHash *hdg, int i, int j,  int *pe) {
     if ((f = he_hash_get(hdg, j, i)) != -1)
         q->edg[f] = e;
 
-    he_hash_set(hdg, i, j, -1); /* counted it */
+    he_hash_set(hdg, i, j, -1);
     he_hash_set(hdg, j, i, -1);
 
     e++;
@@ -11777,7 +11777,7 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
     int h, hi, hj, hk;
     int *tri;
     T *q;
-    HeHash *hdg; /* will maps [i, j] to half-edg */
+    HeHash *hdg;
     MALLOC(1, &q);
 
     alloc_ver(nv,        q);
@@ -11842,7 +11842,7 @@ int he_read_ini(const char *path, T **pq) {
     if (nv <= 0 || nt <= 0 || ne <= 0 || nh <= 0)
         E("wrong sizes '%s' in '%s'", line, path);
 
-    alloc(nv, ne, nt, nh, /**/ q);
+    alloc(nv, ne, nt, nh,      q);
 
     for (i = 0; i < nh; i++) {
         NXT();
