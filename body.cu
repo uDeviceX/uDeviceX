@@ -15,39 +15,6 @@
 #include <vector_types.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 #ifndef UDX_RIG_CORE_TYPE
 #define UDX_RIG_CORE_TYPE
@@ -953,39 +920,6 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi,  
 #include <math.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 void msg_ini(int rank);
@@ -1721,39 +1655,6 @@ void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
 #include <assert.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 #ifndef UDX_RIG_CORE_TYPE
 #define UDX_RIG_CORE_TYPE
@@ -2265,39 +2166,6 @@ void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,
 #include <mpi.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #ifndef UDX_RBC_CORE_DEF_COMMON
@@ -2742,39 +2610,6 @@ void rbc_strt_dump(MPI_Comm comm, const char *base, const char *name, int id, co
 #include <stdio.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #define ERR(fmt, ...)  do {                                     \
@@ -3305,39 +3140,6 @@ void rbc_shape_total_volume(RbcShape *q,      float *pe) {
 #include <assert.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #ifndef UDX_RBC_CORE_DEF_COMMON
@@ -3689,39 +3491,6 @@ void rbc_stretch_apply(int nm, const RbcStretch *f,      Force *ff) {
 #include <vector_types.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #define ERR(fmt, ...)  do {                                     \
@@ -4055,39 +3824,6 @@ void adj_get_anti(const Adj *adj,      int *anti) {
 #include <assert.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #ifndef UDX_RBC_RIG_DEF_COMMON
