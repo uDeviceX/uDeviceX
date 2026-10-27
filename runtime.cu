@@ -13033,7 +13033,6 @@ int coords_size(const Coords *c);
 #define UDX_CONTROL_SHFL_COMMON
 #define _I_ static __device__
 
-#if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
 _I_ T shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
@@ -13047,21 +13046,6 @@ template <typename T>
 _I_ T shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
-#else
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down(val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up(val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl(val, width);
-}
-#endif
 
 #undef _I_
 #define _S_ static __device__
@@ -13897,7 +13881,6 @@ int coords_size(const Coords *c);
 #define UDX_CONTROL_SHFL_COMMON
 #define _I_ static __device__
 
-#if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
 _I_ T shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
@@ -13911,21 +13894,6 @@ template <typename T>
 _I_ T shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
-#else
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down(val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up(val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl(val, width);
-}
-#endif
 
 #undef _I_
 #define _S_ static __device__
@@ -19162,7 +19130,6 @@ static int   warpSize = 1;
 #define UDX_CONTROL_SHFL_COMMON
 #define _I_ static __device__
 
-#if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
 _I_ T shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
@@ -19176,21 +19143,6 @@ template <typename T>
 _I_ T shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
-#else
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down(val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up(val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl(val, width);
-}
-#endif
 
 #undef _I_
 #define _S_ static __device__
@@ -19984,7 +19936,6 @@ void scan_fin(Scan*);                                                       // <
 /* scan device helpers */
 #define _I_ static __device__
 
-#if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
 _I_ T scan_shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
@@ -19998,21 +19949,6 @@ template <typename T>
 _I_ T scan_shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
-#else
-template <typename T>
-_I_ T scan_shfl_down(T val, unsigned int width) {
-    return __shfl_down(val, width);
-}
-
-template <typename T>
-_I_ T scan_shfl_up(T val, unsigned int width) {
-    return __shfl_up(val, width);
-}
-template <typename T>
-_I_ T scan_shfl(T val, unsigned int width) {
-    return __shfl(val, width);
-}
-#endif
 
 #undef _I_
 __global__ void scan_compress(const int nentries, const int4 *const in, uchar4 *const out) {
