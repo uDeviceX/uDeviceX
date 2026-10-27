@@ -1977,9 +1977,8 @@ void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp);
 void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *rr);
 #endif /* UDX_EXCH_COMMON_IMP_COMMON */
 
-namespace eobj_dev {
 
-__global__ void build_map(int3 L, int soluteid, int n, const Particle *pp, /**/ EMap map) {
+__global__ void eobj_build_map_kernel(int3 L, int soluteid, int n, const Particle *pp, /**/ EMap map) {
     int pid, fid, fids[MAX_DSTS], ndsts, j;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= n) return;
@@ -1992,7 +1991,7 @@ __global__ void build_map(int3 L, int soluteid, int n, const Particle *pp, /**/ 
         emap_add(NFRAGS, soluteid, pid, fids[j], /**/ map);
 }
 
-static __device__ void unpack_f(const Force *hff, int offset, int *indices, int i, /**/ Force *ff) {
+static __device__ void eobj_unpack_f(const Force *hff, int offset, int *indices, int i, /**/ Force *ff) {
     enum {X, Y, Z};
     int dst, src;
 
@@ -2006,7 +2005,7 @@ static __device__ void unpack_f(const Force *hff, int offset, int *indices, int 
     atomicAdd(ff[dst].f + Z, f.f[Z]);
 }
 
-__global__ void unpack_ff(Fop26 hff, PackHelper ph, /**/ Force *ff) {
+__global__ void eobj_unpack_ff_kernel(Fop26 hff, PackHelper ph, /**/ Force *ff) {
     int gid, fid, frag_i, hi, step;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     hi = ph.starts[26];
@@ -2018,10 +2017,8 @@ __global__ void unpack_ff(Fop26 hff, PackHelper ph, /**/ Force *ff) {
         /* index in the fragment coordinates */
         frag_i = gid - ph.starts[fid];
 
-        unpack_f(hff.d[fid], ph.offsets[fid], ph.indices[fid], frag_i, /**/ ff);
+        eobj_unpack_f(hff.d[fid], ph.offsets[fid], ph.indices[fid], frag_i, /**/ ff);
     }
-}
-
 }
 
 /*
@@ -2218,7 +2215,7 @@ void eobj_unpackf_fin(EObjUnpackF *u) {
 }
 static void add_wrap_to_map(int3 L, int wid, int n, const Particle *pp, EMap map) {
     int3 L0 = make_int3(L.x-2, L.y-2, L.z-2);
-    KL(eobj_dev::build_map, (k_cnf(n)), (L0, wid, n, pp, /**/ map));
+    KL(eobj_build_map_kernel, (k_cnf(n)), (L0, wid, n, pp, /**/ map));
 }
 
 static void fill_map(int3 L, int nw, const PaWrap *ww, /**/ EMap map) {
@@ -2398,7 +2395,7 @@ static void unpack_ff(int nfrags, Fop26 ff, EMap map, int nw, /**/ FoWrap *ww) {
         ph.offsets = map.offsets + i * stride;
         memcpy(ph.indices, map.ids, nfrags * sizeof(int*));
 
-        KL(eobj_dev::unpack_ff, (14 * 16, 128), (ff, ph, /**/ w->ff));
+        KL(eobj_unpack_ff_kernel, (14 * 16, 128), (ff, ph, /**/ w->ff));
     }
 }
 
