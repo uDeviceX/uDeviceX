@@ -5069,30 +5069,16 @@ double3 dih_a(double phi, double kb, double3 a, double3 b, double3 c, double3 d)
 double3 dih_b(double phi, double kb, double3 a, double3 b, double3 c, double3 d);
 }
 
-#define FORCE_KANTOR0_HOST
-#ifdef FORCE_KANTOR0_HOST
-  #define _I_
-  #define _S_ static
-  #define BEGIN namespace force_kantor0_hst {
-  #define END }
-#else
-  #define _I_ static __device__
-  #define _S_ static __device__
-  #define BEGIN namespace force_kantor0_dev {
-  #define END }
-#endif
+#define _I_
+#define _S_ static
+#define BEGIN namespace force_kantor0_hst {
+#define END }
 
 BEGIN
 
-#ifdef FORCE_KANTOR0_HOST
 _S_ double rsqrt0(double x) { return pow(x, -0.5); }
 #define PRINT(fmt, ...) msg_print((fmt), ##__VA_ARGS__)
 #define EXIT() ERR("assert")
-#else
-_S_ double rsqrt0(double x) { return rsqrt(x); }
-#define PRINT(fmt, ...) printf((fmt), ##__VA_ARGS__)
-#define EXIT() assert(0)
-#endif
 
 _S_ double max(double a, double b) { return a > b ? a : b; }
 
@@ -5208,7 +5194,6 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
-#undef FORCE_KANTOR0_HOST
 
 
 
