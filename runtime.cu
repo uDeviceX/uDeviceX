@@ -17650,18 +17650,10 @@ void dihedral_xy(const double a[3], const double b[3], const double c[3], const 
                    double *x, double *y); // <6>
 }
 
-#define TRI_HOST
-#ifdef TRI_HOST
-  #define _I_
-  #define _S_ static
-  #define BEGIN namespace tri_hst {
-  #define END }
-#else
-  #define _I_ static __device__
-  #define _S_ static __device__
-  #define BEGIN namespace tri_dev {
-  #define END }
-#endif
+#define _I_
+#define _S_ static
+#define BEGIN namespace tri_hst {
+#define END }
 
 BEGIN
 
@@ -17779,7 +17771,6 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
-#undef TRI_HOST
 
 
 
