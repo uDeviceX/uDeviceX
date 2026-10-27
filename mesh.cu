@@ -1,8 +1,8 @@
 
-// Editable compilation unit for mesh exchange and mesh/structure coupling.
 
 
-// Grouped editable compilation unit for mesh and object exchange.
+
+
 
 
 #include "config.cuh"
@@ -10,33 +10,33 @@
 #include <mpi.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -46,32 +46,32 @@
 #endif
 
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #ifndef UDX_EXCH_TYPE_COMMON
 #define UDX_EXCH_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_EXCH_TYPE_COMMON */
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#endif
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -80,44 +80,44 @@ void msg_print(const char *fmt, ...); // <2>
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_EXCH_FRAG_DEV_COMMON
 #define UDX_EXCH_FRAG_DEV_COMMON
 #include "fragment.cuh"
-#endif /* UDX_EXCH_FRAG_DEV_COMMON */
+#endif
 
 #ifndef UDX_EXCH_DEVICE_API_COMMON
 #define UDX_EXCH_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_EXCH_DEVICE_API_COMMON */
-/* [c]uda [c]heck macros */
+#endif
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -125,7 +125,7 @@ void msg_print(const char *fmt, ...); // <2>
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -138,18 +138,18 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_EXCH_KL_COMMON
 #define UDX_EXCH_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_EXCH_KL_COMMON */
+#endif
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -160,7 +160,7 @@ void check(int rc, const char *file, int line);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -185,7 +185,7 @@ void error_print_stack();
 
 struct Particle;
 struct float3;
-void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi);
+void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
 #define _I_ static __device__
 
 template <typename T>
@@ -212,61 +212,61 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
-#endif /* UDX_EXCH_FRAG_IMP_COMMON */
+}
+#endif
 #ifndef UDX_EXCH_COMM_COMMON
 #define UDX_EXCH_COMM_COMMON
 typedef unsigned char data_t;
 
 enum {
-    NFRAGS = 26, /* number of fragments for one halo */
-    BULK   = 26, /* bulk id                          */
-    NBAGS  = 27, /* fragments + bulk                 */
+    NFRAGS = 26,
+    BULK   = 26,
+    NBAGS  = 27,
 };
 
-/* Allocation mod for bags */
+
 enum AllocMod {
-    HST_ONLY,   /* only host bags allocated                 */
-    DEV_ONLY,   /* only device bags allocated               */
-    PINNED,     /* both host and device pinned              */
-    PINNED_HST, /* host pinned; no device memory            */
-    PINNED_DEV, /* host pinned; device global memory on gpu */
-    NONE        /* no allocation                            */
+    HST_ONLY,
+    DEV_ONLY,
+    PINNED,
+    PINNED_HST,
+    PINNED_DEV,
+    NONE
 };
 
 struct dBags {
-    data_t *data[NBAGS]; /* data on the device         */
+    data_t *data[NBAGS];
 };
 
 struct hBags {
-    data_t *data[NBAGS]; /* data on the host                    */
-    int         *counts; /* size of the data                    */
-    int capacity[NBAGS]; /* capacity of each frag (elem number) */
-    size_t bsize;        /* size of one datum in bytes          */
+    data_t *data[NBAGS];
+    int         *counts;
+    int capacity[NBAGS];
+    size_t bsize;
 };
 
 struct Comm;
 struct CommBuffer;
 
-void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-void comm_ini(MPI_Comm cart, /**/ Comm **c);
-void comm_fin(/**/ Comm *c);
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS],      hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod,      hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart,      Comm **c);
+void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
@@ -274,22 +274,22 @@ void comm_buffer_fin(CommBuffer*);
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-void comm_post_recv(hBags *b, Comm *c);           // <1>
-void comm_post_send(const hBags *b, Comm *c);     // <2>
+void comm_post_recv(hBags *b, Comm *c);
+void comm_post_send(const hBags *b, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
-void comm_wait_send(Comm *c);                     // <4>
+void comm_wait_recv(Comm *c,      hBags *b);
+void comm_wait_send(Comm *c);
 
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_recv(Comm *c,      CommBuffer *cb);
 void comm_wait_send(Comm *c);
 
-int    comm_get_number_capacity(int i, const hBags *b); // <1>
-size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+int    comm_get_number_capacity(int i, const hBags *b);
+size_t comm_get_byte_capacity(int i, const hBags *b);
 
-#endif /* UDX_EXCH_COMM_COMMON */
+#endif
 #ifndef UDX_EXCH_COMM_UTILS_COMMON
 #define UDX_EXCH_COMM_UTILS_COMMON
 template <typename BAGT, typename T, int N>
@@ -298,32 +298,32 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
     for (int i = 0; i < N; ++i)
         buf->d[i] = (T*) bags.data[i];
 }
-#endif /* UDX_EXCH_COMM_UTILS_COMMON */
+#endif
 
 #ifndef UDX_EXCH_MAP_TYPE_COMMON
 #define UDX_EXCH_MAP_TYPE_COMMON
-// [E]xchange map
+
 
 enum {MAX_FRAGS=26};
 
 struct EMap {
-    int *counts;         /* number of entities leaving in each fragment */
-    int *starts;         /* cumulative sum of the above                 */
-    int *offsets;        /* offsets per fragment for each solute        */
-    int *ids[MAX_FRAGS]; /* indices of leaving objects                  */
-    int *cap;            /* capacity of ids                             */
+    int *counts;
+    int *starts;
+    int *offsets;
+    int *ids[MAX_FRAGS];
+    int *cap;
 };
 
-#endif /* UDX_EXCH_MAP_TYPE_COMMON */
+#endif
 #ifndef UDX_EXCH_MAP_IMP_COMMON
 #define UDX_EXCH_MAP_IMP_COMMON
-void emap_ini(int nw, int nfrags, int cap[], /**/ EMap *map);               // <1>
-void emap_fin(int nfrags, EMap *map);                                       // <2>
-void emap_reini(int nw, int nfrags, /**/ EMap map);                         // <3>
-void emap_scan(int nw, int nfrags, /**/ EMap map);                          // <4>
-void emap_download_tot_counts(int nw, int nfrags, EMap map, /**/ int counts[]); // <5>
-void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[], int *counts[]);
-#endif /* UDX_EXCH_MAP_IMP_COMMON */
+void emap_ini(int nw, int nfrags, int cap[],      EMap *map);
+void emap_fin(int nfrags, EMap *map);
+void emap_reini(int nw, int nfrags,      EMap map);
+void emap_scan(int nw, int nfrags,      EMap map);
+void emap_download_tot_counts(int nw, int nfrags, EMap map,      int counts[]);
+void emap_download_all_counts(int nw, int nfrags, EMap map,      int tot_counts[], int *counts[]);
+#endif
 
 struct EMeshPack;
 struct EMeshComm;
@@ -332,20 +332,20 @@ struct EMeshPackM;
 struct EMeshCommM;
 struct EMeshUnpackM;
 
-/* mesh exchanger */
+
 
 void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **p);
-void emesh_comm_ini(MPI_Comm comm, /**/ EMeshComm **c);
+void emesh_comm_ini(MPI_Comm comm,      EMeshComm **c);
 void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **u);
 
 void emesh_pack_fin(EMeshPack *p);
 void emesh_comm_fin(EMeshComm *c);
 void emesh_unpack_fin(EMeshUnpack *u);
 
-void emesh_build_map(int nm, int nv, const Particle *pp, /**/ EMeshPack *p);
+void emesh_build_map(int nm, int nv, const Particle *pp,      EMeshPack *p);
 
-void emesh_pack_pp(int nv, const Particle *pp, /**/ EMeshPack *p);
-void emesh_pack_rrcp(int nv, const Positioncp *rr, /**/ EMeshPack *p);
+void emesh_pack_pp(int nv, const Particle *pp,      EMeshPack *p);
+void emesh_pack_rrcp(int nv, const Positioncp *rr,      EMeshPack *p);
 void emesh_download(EMeshPack *p);
 
 void emesh_post_recv(EMeshComm *c, EMeshUnpack *u);
@@ -353,22 +353,22 @@ void emesh_post_send(EMeshPack *p, EMeshComm *c);
 void emesh_wait_recv(EMeshComm *c, EMeshUnpack *u);
 void emesh_wait_send(EMeshComm *c);
 
-void emesh_unpack_pp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp);
-void emesh_unpack_rrcp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Positioncp *rr);
+void emesh_unpack_pp(int nv, const EMeshUnpack *u,      int *nmhalo, Particle *pp);
+void emesh_unpack_rrcp(int nv, const EMeshUnpack *u,      int *nmhalo, Positioncp *rr);
 
-void emesh_get_num_frag_mesh(const EMeshUnpack *u, /**/ int cc[NFRAGS]);
+void emesh_get_num_frag_mesh(const EMeshUnpack *u,      int cc[NFRAGS]);
 
-/* optional: (back) momentum exchanger */
+
 
 void emesh_packm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshPackM **p);
-void emesh_commm_ini(MPI_Comm comm, /**/ EMeshCommM **c);
+void emesh_commm_ini(MPI_Comm comm,      EMeshCommM **c);
 void emesh_unpackm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshUnpackM **u);
 
 void emesh_packm_fin(EMeshPackM *p);
 void emesh_commm_fin(EMeshCommM *c);
 void emesh_unpackm_fin(EMeshUnpackM *u);
 
-void emesh_packM(int nt, const int counts[NFRAGS], const Momentum *mm, /**/ EMeshPackM *p);
+void emesh_packM(int nt, const int counts[NFRAGS], const Momentum *mm,      EMeshPackM *p);
 void emesh_downloadM(const int counts[NFRAGS], EMeshPackM *p);
 
 void emesh_post_recv(EMeshCommM *c, EMeshUnpackM *u);
@@ -377,17 +377,17 @@ void emesh_wait_recv(EMeshCommM *c, EMeshUnpackM *u);
 void emesh_wait_send(EMeshCommM *c);
 
 void emesh_upload(EMeshUnpackM *u);
-void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Momentum *mm);
+void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u,      Momentum *mm);
 
 #ifndef UDX_EXCH_MAP_DEV_COMMON
 #define UDX_EXCH_MAP_DEV_COMMON
 #define _I_ static __device__
 #define _S_ static __device__
 
-/* corner fragments are neighbor with 7 fragments */
+
 enum { MAX_DSTS = 7 };
 
-_I_ int emap_code(int3 L, const float r[3]) // <1>
+_I_ int emap_code(int3 L, const float r[3])
 {
     int x, y, z;
     enum {X, Y, Z};
@@ -398,7 +398,7 @@ _I_ int emap_code(int3 L, const float r[3]) // <1>
     return frag_dev::d2i(x, y, z);
 }
 
-_I_ int emap_code_box(int3 L, float3 lo, float3 hi)  // <2>
+_I_ int emap_code_box(int3 L, float3 lo, float3 hi)
 {
     int x, y, z;
     x = -1 + (lo.x >= -L.x / 2) + (hi.x >= L.x / 2);
@@ -408,7 +408,7 @@ _I_ int emap_code_box(int3 L, float3 lo, float3 hi)  // <2>
     return frag_dev::d2i(x, y, z);
 }
 
-_I_ void emap_add(int nfrags, int soluteid, int pid, int fid, EMap m) // <3>
+_I_ void emap_add(int nfrags, int soluteid, int pid, int fid, EMap m)
 {
     int ientry, centry, stride, cap;
     cap = m.cap[fid];
@@ -419,7 +419,7 @@ _I_ void emap_add(int nfrags, int soluteid, int pid, int fid, EMap m) // <3>
         m.ids[fid][ientry] = pid;
 }
 
-_S_ int add_faces(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+_S_ int add_faces(int j, const int d[3],      int fids[MAX_DSTS]) {
     for (int c = 0; c < 3; ++c) {
         if (d[c]) {
             int df[3] = {0, 0, 0}; df[c] = d[c];
@@ -429,7 +429,7 @@ _S_ int add_faces(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
     return j;
 }
 
-_S_ int add_edges(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+_S_ int add_edges(int j, const int d[3],      int fids[MAX_DSTS]) {
     enum {X, Y, Z};
     for (int c = 0; c < 3; ++c) {
         int de[3] = {d[X], d[Y], d[Z]}; de[c] = 0;
@@ -439,27 +439,27 @@ _S_ int add_edges(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
     return j;
 }
 
-_S_ int add_cornr(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+_S_ int add_cornr(int j, const int d[3],      int fids[MAX_DSTS]) {
     enum {X, Y, Z};
     if (d[X] && d[Y] && d[Z])
         fids[j++] = frag_dev::d32i(d);
     return j;
 }
 
-_I_ int emap_decode(int code, /**/ int fids[MAX_DSTS]) // <4>
+_I_ int emap_decode(int code,      int fids[MAX_DSTS])
 {
     int j = 0;
     int d[3];
     frag_dev::i2d3(code, d);
-    j = add_faces(j, d, /**/ fids);
-    j = add_edges(j, d, /**/ fids);
-    j = add_cornr(j, d, /**/ fids);
+    j = add_faces(j, d,      fids);
+    j = add_edges(j, d,      fids);
+    j = add_cornr(j, d,      fids);
     return j;
 }
 
 #undef _I_
 #undef _S_
-#endif /* UDX_EXCH_MAP_DEV_COMMON */
+#endif
 #ifndef UDX_EXCH_COMMON_IMP_COMMON
 #define UDX_EXCH_COMMON_IMP_COMMON
 struct int3;
@@ -471,10 +471,10 @@ struct PackHelper {
     int *cap;
 };
 
-void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf); // <1>
-void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp); // <2>
-void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *rr);
-#endif /* UDX_EXCH_COMMON_IMP_COMMON */
+void ecommon_pack_pp(const Particle *pp, PackHelper ph,      Pap26 buf);
+void ecommon_shift_pp_one_frag(int3 L, int n, const int fid,      Particle *pp);
+void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid,      Positioncp *rr);
+#endif
 
 enum {
     EMESH_MAX_NBAGS = 1
@@ -488,7 +488,7 @@ struct EMeshPack {
     int nbags;
     CommBuffer *hbuf;
 
-    int3 L; /* subdomain size */
+    int3 L;
 };
 
 struct EMeshComm {
@@ -501,12 +501,12 @@ struct EMeshUnpack {
     int nbags;
     CommBuffer *hbuf;
 
-    int3 L; /* subdomain size */
+    int3 L;
 };
 
-/* optional structures for sending momenta back */
 
-struct MMap { /* map for compression of Momentum (support structure only) */
+
+struct MMap {
     int *cc, *ss, *subids;
 };
 
@@ -517,7 +517,7 @@ enum {
 
 struct EMeshPackM {
     MMap maps[NFRAGS];
-    int *cchst, *ccdev; /* helper to collect counts */
+    int *cchst, *ccdev;
     dBags dbags[MAX_NMBAGS], *dmm, *dii;
     hBags hbags[MAX_NMBAGS], *hmm, *hii;
     int nbags;
@@ -537,8 +537,8 @@ struct EMeshUnpackM {
 
 typedef Sarray<MMap, 26> MMap26;
 
-/* L0: subdomain cropped by one cutoff radius */
-__global__ void emesh_build_map_kernel(int3 L0, int n, const float3 *minext, const float3 *maxext, /**/ EMap map) {
+
+__global__ void emesh_build_map_kernel(int3 L0, int n, const float3 *minext, const float3 *maxext,      EMap map) {
     int i, fid, fids[MAX_DSTS], ndsts, j;
     float3 lo, hi;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -548,14 +548,14 @@ __global__ void emesh_build_map_kernel(int3 L0, int n, const float3 *minext, con
     hi = maxext[i];
 
     fid = emap_code_box(L0, lo, hi);
-    ndsts = emap_decode(fid, /**/ fids);
+    ndsts = emap_decode(fid,      fids);
 
     for (j = 0; j < ndsts; ++j)
-        emap_add(NFRAGS, 0, i, fids[j], /**/ map);
+        emap_add(NFRAGS, 0, i, fids[j],      map);
 }
 
 template <typename T>
-static __device__ void emesh_pack_p(int nv, const T *pp, int vid, int frag_mid, int *indices, /**/ T *buf) {
+static __device__ void emesh_pack_p(int nv, const T *pp, int vid, int frag_mid, int *indices,      T *buf) {
     int dst, src, mid;
     mid = __ldg(indices + frag_mid);
     dst = nv * frag_mid + vid;
@@ -564,30 +564,30 @@ static __device__ void emesh_pack_p(int nv, const T *pp, int vid, int frag_mid, 
 }
 
 template <typename T>
-__global__ void emesh_pack_mesh_kernel(int nv, const T *pp, EMap map, /**/ Sarray<T*, 26> buf) {
+__global__ void emesh_pack_mesh_kernel(int nv, const T *pp, EMap map,      Sarray<T*, 26> buf) {
     int gid, hi, step, fid, mid, vid, frag_mid;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     hi = map.starts[26] * nv;
     step = gridDim.x * blockDim.x;
 
     for (  ; gid < hi; gid += step) {
-        mid = gid / nv; /* mesh id   */
-        vid = gid % nv; /* vertex id */
+        mid = gid / nv;
+        vid = gid % nv;
         fid = frag_dev::frag_get_fid(map.starts, mid);
 
-        /* mesh index in the fragment coordinates */
+
         frag_mid = mid - map.starts[fid];
 
         if (frag_mid < map.cap[fid])
-            emesh_pack_p(nv, pp, vid, frag_mid, map.ids[fid], /**/ buf.d[fid]);
+            emesh_pack_p(nv, pp, vid, frag_mid, map.ids[fid],      buf.d[fid]);
     }
 }
 
-/* emesh_compress_kernel kernels */
+
 
 enum {EMESH_SKIP=-1};
 
-// TODO this is copy paste from meshbb, might be removed from there
+
 static __device__ bool emesh_nz(float a) {return fabs(a) > 1e-6f;}
 
 static __device__ bool emesh_nonzero(const Momentum *m) {
@@ -596,7 +596,7 @@ static __device__ bool emesh_nonzero(const Momentum *m) {
         emesh_nz(m->L[X]) && emesh_nz(m->L[Y]) && emesh_nz(m->L[Z]);
 }
 
-__global__ void emesh_subindex_compress_kernel(int nt, int nm, const Momentum *mm, /**/ int *counts, int *subids) {
+__global__ void emesh_subindex_compress_kernel(int nt, int nm, const Momentum *mm,      int *counts, int *subids) {
     int i, mid, subid;
     Momentum m;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -613,7 +613,7 @@ __global__ void emesh_subindex_compress_kernel(int nt, int nm, const Momentum *m
     subids[i] = subid;
 }
 
-/* inclusive scan */
+
 static __device__ int emesh_warp_scan(int val) {
     int tid;
     tid = threadIdx.x % warpSize;
@@ -621,9 +621,9 @@ static __device__ int emesh_warp_scan(int val) {
     return val;
 }
 
-/* exclusive scan on one block */
+
 template<int NWARP>
-__global__ void emesh_block_scan_kernel(int n, const int *cc, /**/ int *ss) {
+__global__ void emesh_block_scan_kernel(int n, const int *cc,      int *ss) {
     assert(n < blockDim.x);
     assert(gridDim.x == 1);
 
@@ -663,7 +663,7 @@ __global__ void emesh_block_scan_kernel(int n, const int *cc, /**/ int *ss) {
     if (i <= n) ss[i] = val - cnt;
 }
 
-__global__ void emesh_compress_kernel(int nt, int nm, const Momentum *mm, const int *starts, const int *subids, /**/ int *ids, Momentum *mmc) {
+__global__ void emesh_compress_kernel(int nt, int nm, const Momentum *mm, const int *starts, const int *subids,      int *ids, Momentum *mmc) {
     int i, mid, subid, entry;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= nt * nm) return;
@@ -679,7 +679,7 @@ __global__ void emesh_compress_kernel(int nt, int nm, const Momentum *mm, const 
     ids[i] = i;
 }
 
-__global__ void emesh_collect_counts_kernel(int26 nm, MMap26 mm, /**/ int *counts) {
+__global__ void emesh_collect_counts_kernel(int26 nm, MMap26 mm,      int *counts) {
     int i, c, end;
     i = threadIdx.x;
     if (i > 26) return;
@@ -688,7 +688,7 @@ __global__ void emesh_collect_counts_kernel(int26 nm, MMap26 mm, /**/ int *count
     counts[i] = c;
 }
 
-static __device__ void emesh_add_mom(const Momentum src, /**/ Momentum *dst) {
+static __device__ void emesh_add_mom(const Momentum src,      Momentum *dst) {
     enum {X, Y, Z};
     atomicAdd(dst->P + X, src.P[X]);
     atomicAdd(dst->P + Y, src.P[Y]);
@@ -699,21 +699,21 @@ static __device__ void emesh_add_mom(const Momentum src, /**/ Momentum *dst) {
     atomicAdd(dst->L + Z, src.L[Z]);
 }
 
-static __device__ void emesh_unpack_mom_frag(int nt, int i, const int *hii, const Momentum *hmm, const int *mapii, /**/ Momentum *mm) {
+static __device__ void emesh_unpack_mom_frag(int nt, int i, const int *hii, const Momentum *hmm, const int *mapii,      Momentum *mm) {
     int hid, hmid, tid, lmid, lid;
 
-    hid = hii[i];        /* global index in frag                */
-    hmid = hid / nt;     /* mesh index in frag                  */
-    tid  = hid % nt;     /* triangle id (same in frag or local) */
+    hid = hii[i];
+    hmid = hid / nt;
+    tid  = hid % nt;
 
-    lmid = mapii[hmid];  /* mesh index in bulk                  */
+    lmid = mapii[hmid];
 
     lid = lmid * nt + tid;
 
-    emesh_add_mom(hmm[i], /**/ mm + lid);
+    emesh_add_mom(hmm[i],      mm + lid);
 }
 
-__global__ void emesh_unpack_mom_kernel(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, EMap map, /**/ Momentum *mm) {
+__global__ void emesh_unpack_mom_kernel(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, EMap map,      Momentum *mm) {
     int i, fid;
     i = threadIdx.x + blockIdx.x * blockDim.x;
 
@@ -723,11 +723,11 @@ __global__ void emesh_unpack_mom_kernel(int nt, int27 fragstarts, intp26 hii, Mo
 
     i -= fragstarts.d[fid];
 
-    emesh_unpack_mom_frag(nt, i, hii.d[fid], hmm.d[fid], map.ids[fid], /**/ mm);
+    emesh_unpack_mom_frag(nt, i, hii.d[fid], hmm.d[fid], map.ids[fid],      mm);
 }
 
-// TODO this can be refined
-static void get_capacity(int nfrags, int max_mesh_num, /**/ int cap[]) {
+
+static void get_capacity(int nfrags, int max_mesh_num,      int cap[]) {
     for (int i = 0; i < nfrags; ++i)
         cap[i] = max_mesh_num;
 }
@@ -741,14 +741,14 @@ void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **pack) {
     p = *pack;
 
     p->L = L;
-    get_capacity(NFRAGS, max_mesh_num, /**/ cap);
+    get_capacity(NFRAGS, max_mesh_num,      cap);
 
-    UC(emap_ini(1, NFRAGS, cap, /**/ &p->map));
+    UC(emap_ini(1, NFRAGS, cap,      &p->map));
 
     i = 0;
     p->dpp = &p->dbags[i];
     p->hpp = &p->hbags[i++];
-    UC(comm_bags_ini(PINNED, NONE, msz, cap, /**/ p->hpp, p->dpp));
+    UC(comm_bags_ini(PINNED, NONE, msz, cap,      p->hpp, p->dpp));
 
     p->nbags = i;
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
@@ -757,11 +757,11 @@ void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **pack) {
     Dalloc(&p->maxext, max_mesh_num);
 }
 
-void emesh_comm_ini(MPI_Comm cart, /**/ EMeshComm **com) {
+void emesh_comm_ini(MPI_Comm cart,      EMeshComm **com) {
     EMeshComm *c;
     EMALLOC(1, com);
     c = *com;
-    UC(comm_ini(cart, /**/ &c->pp));
+    UC(comm_ini(cart,      &c->pp));
 }
 
 void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **unpack) {
@@ -772,21 +772,21 @@ void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **unpack) {
     u = *unpack;
 
     u->L = L;
-    get_capacity(NFRAGS, max_mesh_num, /**/ cap);
+    get_capacity(NFRAGS, max_mesh_num,      cap);
 
     i = 0;
     u->hpp = &u->hbags[i];
     u->dpp = &u->dbags[i++];
-    UC(comm_bags_ini(PINNED_DEV, NONE, msz, cap, /**/ u->hpp, u->dpp));
+    UC(comm_bags_ini(PINNED_DEV, NONE, msz, cap,      u->hpp, u->dpp));
 
     u->nbags = i;
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
 
 
-/* Momentum structures */
 
-static void get_mcap(int nfrags, int nt, const int *cap, /**/ int *mcap) {
+
+static void get_mcap(int nfrags, int nt, const int *cap,      int *mcap) {
     for (int i = 0; i < nfrags; ++i)
         mcap[i] = nt * cap[i];
 }
@@ -804,17 +804,17 @@ void emesh_packm_ini(int nt, int max_mesh_num, EMeshPackM **pack) {
     EMALLOC(1, pack);
     p = *pack;
 
-    get_capacity(NFRAGS, max_mesh_num, /**/ cap);
-    get_mcap(NFRAGS, nt, cap, /**/ mcap);
+    get_capacity(NFRAGS, max_mesh_num,      cap);
+    get_mcap(NFRAGS, nt, cap,      mcap);
 
     for (i = 0; i < NFRAGS; ++i)
-        UC(ini_map(nt, cap[i], /**/ &p->maps[i]));
+        UC(ini_map(nt, cap[i],      &p->maps[i]));
 
     p->hmm = &p->hbags[ID_MM]; p->hii = &p->hbags[ID_II];
     p->dmm = &p->dbags[ID_MM]; p->dii = &p->dbags[ID_II];
 
-    UC(comm_bags_ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ p->hmm, p->dmm));
-    UC(comm_bags_ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ p->hii, p->dii));
+    UC(comm_bags_ini(PINNED,   NONE, sizeof(Momentum), mcap,      p->hmm, p->dmm));
+    UC(comm_bags_ini(PINNED,   NONE, sizeof(int)     , mcap,      p->hii, p->dii));
 
     p->nbags = MAX_NMBAGS;
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
@@ -823,11 +823,11 @@ void emesh_packm_ini(int nt, int max_mesh_num, EMeshPackM **pack) {
     CC(d::HostGetDevicePointer((void**) &p->ccdev, p->cchst, 0));
 }
 
-void emesh_commm_ini(MPI_Comm cart, /**/ EMeshCommM **com) {
+void emesh_commm_ini(MPI_Comm cart,      EMeshCommM **com) {
     EMeshCommM *c;
     EMALLOC(1, com);
     c = *com;
-    UC(comm_ini(cart, /**/ &c->comm));
+    UC(comm_ini(cart,      &c->comm));
 }
 
 void emesh_unpackm_ini(int nt, int max_mesh_num, EMeshUnpackM **unpack) {
@@ -836,21 +836,21 @@ void emesh_unpackm_ini(int nt, int max_mesh_num, EMeshUnpackM **unpack) {
     EMALLOC(1, unpack);
     u = *unpack;
 
-    get_capacity(NFRAGS, max_mesh_num, /**/ cap);
-    get_mcap(NFRAGS, nt, cap, /**/ mcap);
+    get_capacity(NFRAGS, max_mesh_num,      cap);
+    get_mcap(NFRAGS, nt, cap,      mcap);
 
     u->hmm = &u->hbags[ID_MM]; u->hii = &u->hbags[ID_II];
     u->dmm = &u->dbags[ID_MM]; u->dii = &u->dbags[ID_II];
 
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ u->hmm, u->dmm));
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ u->hii, u->dii));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Momentum), mcap,      u->hmm, u->dmm));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int)     , mcap,      u->hii, u->dii));
 
     u->nbags = MAX_NMBAGS;
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
 void emesh_pack_fin(EMeshPack *p) {
-    UC(emap_fin(NFRAGS, /**/ &p->map));
-    UC(comm_bags_fin(PINNED, NONE, /**/ p->hpp, p->dpp));
+    UC(emap_fin(NFRAGS,      &p->map));
+    UC(comm_bags_fin(PINNED, NONE,      p->hpp, p->dpp));
     UC(comm_buffer_fin(p->hbuf));
     Dfree(p->minext);
     Dfree(p->maxext);
@@ -863,22 +863,22 @@ void emesh_comm_fin(EMeshComm *c) {
 }
 
 void emesh_unpack_fin(EMeshUnpack *u) {
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hpp, u->dpp));
+    UC(comm_bags_fin(PINNED_DEV, NONE,      u->hpp, u->dpp));
     UC(comm_buffer_fin(u->hbuf));
     EFREE(u);
 }
 
-/* Momentum struct */
 
-static void fin_map(/**/ MMap *map) {
+
+static void fin_map(     MMap *map) {
     Dfree(map->cc);
     Dfree(map->ss);
     Dfree(map->subids);
 }
 
 void emesh_packm_fin(EMeshPackM *p) {
-    UC(comm_bags_fin(PINNED, NONE, /**/ p->hmm, p->dmm));
-    UC(comm_bags_fin(PINNED, NONE, /**/ p->hii, p->dii));
+    UC(comm_bags_fin(PINNED, NONE,      p->hmm, p->dmm));
+    UC(comm_bags_fin(PINNED, NONE,      p->hii, p->dii));
 
     for (int i = 0; i < NFRAGS; ++i)
         UC(fin_map(&p->maps[i]));
@@ -894,74 +894,74 @@ void emesh_commm_fin(EMeshCommM *c) {
 }
 
 void emesh_unpackm_fin(EMeshUnpackM *u) {
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hmm, u->dmm));
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hii, u->dii));
+    UC(comm_bags_fin(PINNED_DEV, NONE,      u->hmm, u->dmm));
+    UC(comm_bags_fin(PINNED_DEV, NONE,      u->hii, u->dii));
     UC(comm_buffer_fin(u->hbuf));
     EFREE(u);
 }
-static void fill_map(int3 L, int n, const float3 *lo, const float3 *hi, /**/ EMap map) {
+static void fill_map(int3 L, int n, const float3 *lo, const float3 *hi,      EMap map) {
     int3 L0 = make_int3(L.x-2, L.y-2, L.z-2);
-    KL(emesh_build_map_kernel, (k_cnf(n)), (L0, n, lo, hi, /**/ map));
+    KL(emesh_build_map_kernel, (k_cnf(n)), (L0, n, lo, hi,      map));
 }
 
-void emesh_build_map(int nm, int nv, const Particle *pp, /**/ EMeshPack *p) {
-    emap_reini(1, NFRAGS, /**/ p->map);
-    minmax(pp, nv, nm, /**/ p->minext, p->maxext);
-    fill_map(p->L, nm, p->minext, p->maxext, /**/ p->map);
-    emap_scan(1, NFRAGS, /**/ p->map);
+void emesh_build_map(int nm, int nv, const Particle *pp,      EMeshPack *p) {
+    emap_reini(1, NFRAGS,      p->map);
+    minmax(pp, nv, nm,      p->minext, p->maxext);
+    fill_map(p->L, nm, p->minext, p->maxext,      p->map);
+    emap_scan(1, NFRAGS,      p->map);
 }
-static void pack_mesh_pp(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
-    KL(emesh_pack_mesh_kernel, (14 * 16, 128), (nv, pp, map, /**/ buf));
+static void pack_mesh_pp(int nv, const Particle *pp, EMap map,      Pap26 buf) {
+    KL(emesh_pack_mesh_kernel, (14 * 16, 128), (nv, pp, map,      buf));
 }
 
-void emesh_pack_pp(int nv, const Particle *pp, /**/ EMeshPack *p) {
+void emesh_pack_pp(int nv, const Particle *pp,      EMeshPack *p) {
     Pap26 wrap;
     bag2Sarray(*p->dpp, &wrap);
-    pack_mesh_pp(nv, pp, p->map, /**/ wrap);
+    pack_mesh_pp(nv, pp, p->map,      wrap);
 }
 
-static void pack_mesh_rrcp(int nv, const Positioncp *rr, EMap map, /**/ Pocpp26 buf) {
-    KL(emesh_pack_mesh_kernel, (14 * 16, 128), (nv, rr, map, /**/ buf));
+static void pack_mesh_rrcp(int nv, const Positioncp *rr, EMap map,      Pocpp26 buf) {
+    KL(emesh_pack_mesh_kernel, (14 * 16, 128), (nv, rr, map,      buf));
 }
 
-void emesh_pack_rrcp(int nv, const Positioncp *rr, /**/ EMeshPack *p) {
+void emesh_pack_rrcp(int nv, const Positioncp *rr,      EMeshPack *p) {
     Pocpp26 wrap;
     bag2Sarray(*p->dpp, &wrap);
-    pack_mesh_rrcp(nv, rr, p->map, /**/ wrap);
+    pack_mesh_rrcp(nv, rr, p->map,      wrap);
 }
 
 void emesh_download(EMeshPack *p) {
     int nw = 1;
-    emap_download_tot_counts(nw, NFRAGS, p->map, /**/ p->hpp->counts);
+    emap_download_tot_counts(nw, NFRAGS, p->map,      p->hpp->counts);
 }
 
-static void reini_map(int nm, /**/ MMap *m) {
+static void reini_map(int nm,      MMap *m) {
     if (nm) CC(d::MemsetAsync(m->cc, 0, nm * sizeof(int)));
 }
 
-static void compress_mom(int nt, int nm, const Momentum *mm, /**/ MMap *m, int *ids, Momentum *mmc) {
-    UC(reini_map(nm, /**/ m));
-    KL(emesh_subindex_compress_kernel, (k_cnf(nt * nm)), (nt, nm, mm, /**/ m->cc, m->subids));
+static void compress_mom(int nt, int nm, const Momentum *mm,      MMap *m, int *ids, Momentum *mmc) {
+    UC(reini_map(nm,      m));
+    KL(emesh_subindex_compress_kernel, (k_cnf(nt * nm)), (nt, nm, mm,      m->cc, m->subids));
 
     enum {NWRP=4, WRPSZ=32};
     enum {BLCK=1, THRD=NWRP*WRPSZ};
-    KL(emesh_block_scan_kernel<NWRP>, (BLCK, THRD), (nm, m->cc, /**/ m->ss));
+    KL(emesh_block_scan_kernel<NWRP>, (BLCK, THRD), (nm, m->cc,      m->ss));
 
-    KL(emesh_compress_kernel, (k_cnf(nt * nm)), (nt, nm, mm, m->ss, m->subids, /**/ ids, mmc));
+    KL(emesh_compress_kernel, (k_cnf(nt * nm)), (nt, nm, mm, m->ss, m->subids,      ids, mmc));
 }
 
 static void pack_mom(int nt, const int counts[NFRAGS], const Momentum *mm,
-                     /**/ MMap maps[NFRAGS], int *ibuf[NFRAGS], Momentum *mbuf[NFRAGS]) {
+                          MMap maps[NFRAGS], int *ibuf[NFRAGS], Momentum *mbuf[NFRAGS]) {
     int i, s, c;
 
     for (i = s = 0; i < NFRAGS; ++i) {
         c = counts[i];
-        UC(compress_mom(nt, c, mm + nt * s, /**/ maps + i, ibuf[i], mbuf[i]));
+        UC(compress_mom(nt, c, mm + nt * s,      maps + i, ibuf[i], mbuf[i]));
     }
 }
 
-void emesh_packM(int nt, const int counts[NFRAGS], const Momentum *mm, /**/ EMeshPackM *p) {
-    pack_mom(nt, counts, mm, /**/ p->maps, (int **) p->dii->data, (Momentum **) p->dmm->data);
+void emesh_packM(int nt, const int counts[NFRAGS], const Momentum *mm,      EMeshPackM *p) {
+    pack_mom(nt, counts, mm,      p->maps, (int **) p->dii->data, (Momentum **) p->dmm->data);
 }
 
 void emesh_downloadM(const int counts[NFRAGS], EMeshPackM *p) {
@@ -973,7 +973,7 @@ void emesh_downloadM(const int counts[NFRAGS], EMeshPackM *p) {
     memcpy(ii.d, counts, sz);
     memcpy(mm.d, p->maps, NFRAGS * sizeof(MMap));
 
-    KL(emesh_collect_counts_kernel, (32, 1), (ii, mm, /**/ p->ccdev));
+    KL(emesh_collect_counts_kernel, (32, 1), (ii, mm,      p->ccdev));
 
     dSync();
 
@@ -1000,7 +1000,7 @@ void emesh_wait_send(EMeshComm *c) {
 }
 
 
-/* momentum */
+
 
 void emesh_post_recv(EMeshCommM *c, EMeshUnpackM *u) {
     UC(comm_post_recv(u->hbuf, c->comm));
@@ -1023,10 +1023,10 @@ static void upload_and_shift_pp(int n, int i, int3 L, const data_t *data, Partic
     if (n == 0) return;
     size_t sz = n * sizeof(Particle);
     CC(d::MemcpyAsync(pp, data, sz, H2D));
-    ecommon_shift_pp_one_frag(L, n, i, /**/ pp);
+    ecommon_shift_pp_one_frag(L, n, i,      pp);
 }
 
-void emesh_unpack_pp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp) {
+void emesh_unpack_pp(int nv, const EMeshUnpack *u,      int *nmhalo, Particle *pp) {
     int i, nm, n, s = 0, nmtot = 0;
 
     for (i = 0; i < NFRAGS; ++i) {
@@ -1043,10 +1043,10 @@ static void upload_and_shift_rrcp(int n, int i, int3 L, const data_t *data, Posi
     if (n == 0) return;
     size_t sz = n * sizeof(Positioncp);
     CC(d::MemcpyAsync(rr, data, sz, H2D));
-    ecommon_shift_rrcp_one_frag(L, n, i, /**/ rr);
+    ecommon_shift_rrcp_one_frag(L, n, i,      rr);
 }
 
-void emesh_unpack_rrcp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Positioncp *rr) {
+void emesh_unpack_rrcp(int nv, const EMeshUnpack *u,      int *nmhalo, Positioncp *rr) {
     int i, nm, n, s = 0, nmtot = 0;
 
     for (i = 0; i < NFRAGS; ++i) {
@@ -1059,11 +1059,11 @@ void emesh_unpack_rrcp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Positionc
     *nmhalo = nmtot;
 }
 
-void emesh_get_num_frag_mesh(const EMeshUnpack *u, /**/ int cc[NFRAGS]) {
+void emesh_get_num_frag_mesh(const EMeshUnpack *u,      int cc[NFRAGS]) {
     memcpy(cc, u->hpp->counts, NFRAGS * sizeof(int));
 }
 
-/* momentum */
+
 static void upload_bags(const hBags *h, dBags *d) {
     int i, c;
     data_t *src, *dst;
@@ -1083,7 +1083,7 @@ void emesh_upload(EMeshUnpackM *u) {
     upload_bags(u->hii, u->dii);
 }
 
-static int get_fragstarts(int nfrags, const int cc[], /**/ int *starts) {
+static int get_fragstarts(int nfrags, const int cc[],      int *starts) {
     int i, s;
     starts[0] = s = 0;
     for (i = 0; i < nfrags; ++i)
@@ -1091,7 +1091,7 @@ static int get_fragstarts(int nfrags, const int cc[], /**/ int *starts) {
     return s;
 }
 
-void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Momentum *mm) {
+void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u,      Momentum *mm) {
     intp26 wrapii;
     Mop26 wrapmm;
     int27 fragstarts;
@@ -1100,9 +1100,9 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
     bag2Sarray(*u->dmm, &wrapmm);
     bag2Sarray(*u->dii, &wrapii);
 
-    n = get_fragstarts(NFRAGS, u->hii->counts, /**/ fragstarts.d);
+    n = get_fragstarts(NFRAGS, u->hii->counts,      fragstarts.d);
 
-    KL(emesh_unpack_mom_kernel, (k_cnf(n)), (nt, fragstarts, wrapii, wrapmm, p->map, /**/ mm));
+    KL(emesh_unpack_mom_kernel, (k_cnf(n)), (nt, fragstarts, wrapii, wrapmm, p->map,      mm));
 }
 
 
@@ -1112,33 +1112,33 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
 #include <mpi.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -1148,32 +1148,32 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
 #endif
 
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #ifndef UDX_EXCH_TYPE_COMMON
 #define UDX_EXCH_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_EXCH_TYPE_COMMON */
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#endif
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -1182,35 +1182,35 @@ void msg_print(const char *fmt, ...); // <2>
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_EXCH_FRAG_DEV_COMMON
 #define UDX_EXCH_FRAG_DEV_COMMON
 #include "fragment.cuh"
-#endif /* UDX_EXCH_FRAG_DEV_COMMON */
+#endif
 #ifndef UDX_EXCH_FRAG_IMP_COMMON
 #define UDX_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
@@ -1219,32 +1219,32 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
-#endif /* UDX_EXCH_FRAG_IMP_COMMON */
+}
+#endif
 
 #ifndef UDX_EXCH_DEVICE_API_COMMON
 #define UDX_EXCH_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_EXCH_DEVICE_API_COMMON */
-/* [c]uda [c]heck macros */
+#endif
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -1252,7 +1252,7 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -1265,18 +1265,18 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_EXCH_KL_COMMON
 #define UDX_EXCH_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_EXCH_KL_COMMON */
+#endif
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -1287,7 +1287,7 @@ void check(int rc, const char *file, int line);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -1315,39 +1315,39 @@ void error_print_stack();
 typedef unsigned char data_t;
 
 enum {
-    NFRAGS = 26, /* number of fragments for one halo */
-    BULK   = 26, /* bulk id                          */
-    NBAGS  = 27, /* fragments + bulk                 */
+    NFRAGS = 26,
+    BULK   = 26,
+    NBAGS  = 27,
 };
 
-/* Allocation mod for bags */
+
 enum AllocMod {
-    HST_ONLY,   /* only host bags allocated                 */
-    DEV_ONLY,   /* only device bags allocated               */
-    PINNED,     /* both host and device pinned              */
-    PINNED_HST, /* host pinned; no device memory            */
-    PINNED_DEV, /* host pinned; device global memory on gpu */
-    NONE        /* no allocation                            */
+    HST_ONLY,
+    DEV_ONLY,
+    PINNED,
+    PINNED_HST,
+    PINNED_DEV,
+    NONE
 };
 
 struct dBags {
-    data_t *data[NBAGS]; /* data on the device         */
+    data_t *data[NBAGS];
 };
 
 struct hBags {
-    data_t *data[NBAGS]; /* data on the host                    */
-    int         *counts; /* size of the data                    */
-    int capacity[NBAGS]; /* capacity of each frag (elem number) */
-    size_t bsize;        /* size of one datum in bytes          */
+    data_t *data[NBAGS];
+    int         *counts;
+    int capacity[NBAGS];
+    size_t bsize;
 };
 
 struct Comm;
 struct CommBuffer;
 
-void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-void comm_ini(MPI_Comm cart, /**/ Comm **c);
-void comm_fin(/**/ Comm *c);
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS],      hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod,      hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart,      Comm **c);
+void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
@@ -1355,22 +1355,22 @@ void comm_buffer_fin(CommBuffer*);
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-void comm_post_recv(hBags *b, Comm *c);           // <1>
-void comm_post_send(const hBags *b, Comm *c);     // <2>
+void comm_post_recv(hBags *b, Comm *c);
+void comm_post_send(const hBags *b, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
-void comm_wait_send(Comm *c);                     // <4>
+void comm_wait_recv(Comm *c,      hBags *b);
+void comm_wait_send(Comm *c);
 
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_recv(Comm *c,      CommBuffer *cb);
 void comm_wait_send(Comm *c);
 
-int    comm_get_number_capacity(int i, const hBags *b); // <1>
-size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+int    comm_get_number_capacity(int i, const hBags *b);
+size_t comm_get_byte_capacity(int i, const hBags *b);
 
-#endif /* UDX_EXCH_COMM_COMMON */
+#endif
 #ifndef UDX_EXCH_COMM_UTILS_COMMON
 #define UDX_EXCH_COMM_UTILS_COMMON
 template <typename BAGT, typename T, int N>
@@ -1379,32 +1379,32 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
     for (int i = 0; i < N; ++i)
         buf->d[i] = (T*) bags.data[i];
 }
-#endif /* UDX_EXCH_COMM_UTILS_COMMON */
+#endif
 
 #ifndef UDX_EXCH_MAP_TYPE_COMMON
 #define UDX_EXCH_MAP_TYPE_COMMON
-// [E]xchange map
+
 
 enum {MAX_FRAGS=26};
 
 struct EMap {
-    int *counts;         /* number of entities leaving in each fragment */
-    int *starts;         /* cumulative sum of the above                 */
-    int *offsets;        /* offsets per fragment for each solute        */
-    int *ids[MAX_FRAGS]; /* indices of leaving objects                  */
-    int *cap;            /* capacity of ids                             */
+    int *counts;
+    int *starts;
+    int *offsets;
+    int *ids[MAX_FRAGS];
+    int *cap;
 };
 
-#endif /* UDX_EXCH_MAP_TYPE_COMMON */
+#endif
 #ifndef UDX_EXCH_MAP_IMP_COMMON
 #define UDX_EXCH_MAP_IMP_COMMON
-void emap_ini(int nw, int nfrags, int cap[], /**/ EMap *map);               // <1>
-void emap_fin(int nfrags, EMap *map);                                       // <2>
-void emap_reini(int nw, int nfrags, /**/ EMap map);                         // <3>
-void emap_scan(int nw, int nfrags, /**/ EMap map);                          // <4>
-void emap_download_tot_counts(int nw, int nfrags, EMap map, /**/ int counts[]); // <5>
-void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[], int *counts[]);
-#endif /* UDX_EXCH_MAP_IMP_COMMON */
+void emap_ini(int nw, int nfrags, int cap[],      EMap *map);
+void emap_fin(int nfrags, EMap *map);
+void emap_reini(int nw, int nfrags,      EMap map);
+void emap_scan(int nw, int nfrags,      EMap map);
+void emap_download_tot_counts(int nw, int nfrags, EMap map,      int counts[]);
+void emap_download_all_counts(int nw, int nfrags, EMap map,      int tot_counts[], int *counts[]);
+#endif
 struct EObjPack;
 struct EObjComm;
 struct EObjUnpack;
@@ -1414,16 +1414,16 @@ struct EObjCommF;
 struct EObjUnpackF;
 
 void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **p);
-void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **c);
+void eobj_comm_ini(MPI_Comm cart,      EObjComm **c);
 void eobj_unpack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjUnpack **u);
 
 void eobj_pack_fin(EObjPack *p);
 void eobj_comm_fin(EObjComm *c);
 void eobj_unpack_fin(EObjUnpack *u);
 
-void eobj_build_map(int nw, const PaWrap *ww, /**/ EObjPack *p);
+void eobj_build_map(int nw, const PaWrap *ww,      EObjPack *p);
 
-void eobj_pack(int nw, const PaWrap *ww, /**/ EObjPack *p);
+void eobj_pack(int nw, const PaWrap *ww,      EObjPack *p);
 void eobj_download(int nw, EObjPack *p);
 
 void eobj_post_recv(EObjComm *c, EObjUnpack *u);
@@ -1431,14 +1431,14 @@ void eobj_post_send(EObjPack *p, EObjComm *c);
 void eobj_wait_recv(EObjComm *c, EObjUnpack *u);
 void eobj_wait_send(EObjComm *c);
 
-int26 eobj_get_counts(EObjUnpack *u); // <1>
+int26 eobj_get_counts(EObjUnpack *u);
 void  eobj_get_all_counts(int nw, EObjUnpack *u, int *all_counts);
-Pap26 eobj_upload_shift(EObjUnpack *u); // <2>
-Fop26 eobj_reini_ff(const EObjUnpack *u, EObjPackF *pf); // <3>
+Pap26 eobj_upload_shift(EObjUnpack *u);
+Fop26 eobj_reini_ff(const EObjUnpack *u, EObjPackF *pf);
 
 
 void eobj_packf_ini(int3 L, int maxd, int maxpsolid, EObjPackF **p);
-void eobj_commf_ini(MPI_Comm cart, /**/ EObjCommF **c);
+void eobj_commf_ini(MPI_Comm cart,      EObjCommF **c);
 void eobj_unpackf_ini(int3 L, int maxd, int maxpsolid, EObjUnpackF **u);
 
 void eobj_packf_fin(EObjPackF *p);
@@ -1452,17 +1452,17 @@ void eobj_post_send_ff(EObjPackF *p, EObjCommF *c);
 void eobj_wait_recv_ff(EObjCommF *c, EObjUnpackF *u);
 void eobj_wait_send_ff(EObjCommF *c);
 
-void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww);
+void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw,      FoWrap *ww);
 
 #ifndef UDX_EXCH_MAP_DEV_COMMON
 #define UDX_EXCH_MAP_DEV_COMMON
 #define _I_ static __device__
 #define _S_ static __device__
 
-/* corner fragments are neighbor with 7 fragments */
+
 enum { MAX_DSTS = 7 };
 
-_I_ int emap_code(int3 L, const float r[3]) // <1>
+_I_ int emap_code(int3 L, const float r[3])
 {
     int x, y, z;
     enum {X, Y, Z};
@@ -1473,7 +1473,7 @@ _I_ int emap_code(int3 L, const float r[3]) // <1>
     return frag_dev::d2i(x, y, z);
 }
 
-_I_ int emap_code_box(int3 L, float3 lo, float3 hi)  // <2>
+_I_ int emap_code_box(int3 L, float3 lo, float3 hi)
 {
     int x, y, z;
     x = -1 + (lo.x >= -L.x / 2) + (hi.x >= L.x / 2);
@@ -1483,7 +1483,7 @@ _I_ int emap_code_box(int3 L, float3 lo, float3 hi)  // <2>
     return frag_dev::d2i(x, y, z);
 }
 
-_I_ void emap_add(int nfrags, int soluteid, int pid, int fid, EMap m) // <3>
+_I_ void emap_add(int nfrags, int soluteid, int pid, int fid, EMap m)
 {
     int ientry, centry, stride, cap;
     cap = m.cap[fid];
@@ -1494,7 +1494,7 @@ _I_ void emap_add(int nfrags, int soluteid, int pid, int fid, EMap m) // <3>
         m.ids[fid][ientry] = pid;
 }
 
-_S_ int add_faces(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+_S_ int add_faces(int j, const int d[3],      int fids[MAX_DSTS]) {
     for (int c = 0; c < 3; ++c) {
         if (d[c]) {
             int df[3] = {0, 0, 0}; df[c] = d[c];
@@ -1504,7 +1504,7 @@ _S_ int add_faces(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
     return j;
 }
 
-_S_ int add_edges(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+_S_ int add_edges(int j, const int d[3],      int fids[MAX_DSTS]) {
     enum {X, Y, Z};
     for (int c = 0; c < 3; ++c) {
         int de[3] = {d[X], d[Y], d[Z]}; de[c] = 0;
@@ -1514,27 +1514,27 @@ _S_ int add_edges(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
     return j;
 }
 
-_S_ int add_cornr(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+_S_ int add_cornr(int j, const int d[3],      int fids[MAX_DSTS]) {
     enum {X, Y, Z};
     if (d[X] && d[Y] && d[Z])
         fids[j++] = frag_dev::d32i(d);
     return j;
 }
 
-_I_ int emap_decode(int code, /**/ int fids[MAX_DSTS]) // <4>
+_I_ int emap_decode(int code,      int fids[MAX_DSTS])
 {
     int j = 0;
     int d[3];
     frag_dev::i2d3(code, d);
-    j = add_faces(j, d, /**/ fids);
-    j = add_edges(j, d, /**/ fids);
-    j = add_cornr(j, d, /**/ fids);
+    j = add_faces(j, d,      fids);
+    j = add_edges(j, d,      fids);
+    j = add_cornr(j, d,      fids);
     return j;
 }
 
 #undef _I_
 #undef _S_
-#endif /* UDX_EXCH_MAP_DEV_COMMON */
+#endif
 #ifndef UDX_EXCH_COMMON_IMP_COMMON
 #define UDX_EXCH_COMMON_IMP_COMMON
 struct int3;
@@ -1546,26 +1546,26 @@ struct PackHelper {
     int *cap;
 };
 
-void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf); // <1>
-void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp); // <2>
-void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *rr);
-#endif /* UDX_EXCH_COMMON_IMP_COMMON */
+void ecommon_pack_pp(const Particle *pp, PackHelper ph,      Pap26 buf);
+void ecommon_shift_pp_one_frag(int3 L, int n, const int fid,      Particle *pp);
+void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid,      Positioncp *rr);
+#endif
 
 
-__global__ void eobj_build_map_kernel(int3 L, int soluteid, int n, const Particle *pp, /**/ EMap map) {
+__global__ void eobj_build_map_kernel(int3 L, int soluteid, int n, const Particle *pp,      EMap map) {
     int pid, fid, fids[MAX_DSTS], ndsts, j;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= n) return;
     const Particle p = pp[pid];
 
     fid = emap_code(L, p.r);
-    ndsts = emap_decode(fid, /**/ fids);
+    ndsts = emap_decode(fid,      fids);
 
     for (j = 0; j < ndsts; ++j)
-        emap_add(NFRAGS, soluteid, pid, fids[j], /**/ map);
+        emap_add(NFRAGS, soluteid, pid, fids[j],      map);
 }
 
-static __device__ void eobj_unpack_f(const Force *hff, int offset, int *indices, int i, /**/ Force *ff) {
+static __device__ void eobj_unpack_f(const Force *hff, int offset, int *indices, int i,      Force *ff) {
     enum {X, Y, Z};
     int dst, src;
 
@@ -1579,7 +1579,7 @@ static __device__ void eobj_unpack_f(const Force *hff, int offset, int *indices,
     atomicAdd(ff[dst].f + Z, f.f[Z]);
 }
 
-__global__ void eobj_unpack_ff_kernel(Fop26 hff, PackHelper ph, /**/ Force *ff) {
+__global__ void eobj_unpack_ff_kernel(Fop26 hff, PackHelper ph,      Force *ff) {
     int gid, fid, frag_i, hi, step;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     hi = ph.starts[26];
@@ -1588,17 +1588,17 @@ __global__ void eobj_unpack_ff_kernel(Fop26 hff, PackHelper ph, /**/ Force *ff) 
     for (  ; gid < hi; gid += step) {
         fid = frag_dev::frag_get_fid(ph.starts, gid);
 
-        /* index in the fragment coordinates */
+
         frag_i = gid - ph.starts[fid];
 
-        eobj_unpack_f(hff.d[fid], ph.offsets[fid], ph.indices[fid], frag_i, /**/ ff);
+        eobj_unpack_f(hff.d[fid], ph.offsets[fid], ph.indices[fid], frag_i,      ff);
     }
 }
 
-/*
-pp: particles
-cc: counts of object types
-*/
+
+
+
+
 
 enum {
     ID_PP, ID_CC,
@@ -1612,7 +1612,7 @@ struct EObjPack {
     int nbags;
     CommBuffer *hbuf;
 
-    int3 L; /* subdomain size */
+    int3 L;
 };
 
 struct EObjComm {
@@ -1625,7 +1625,7 @@ struct EObjUnpack {
     int nbags;
     CommBuffer *hbuf;
 
-    int3 L; /* subdomain size */
+    int3 L;
 };
 
 struct EObjPackF {
@@ -1643,11 +1643,11 @@ struct EObjUnpackF {
 };
 static void estimates(int3 L, int nfrags, int maxd, int maxpsolid, int *cap) {
     int i, e, kind;
-    frag_hst::estimates(L, nfrags, maxd, /**/ cap);
+    frag_hst::estimates(L, nfrags, maxd,      cap);
 
-    /* estimates for solid */
+
     const float safety = 2.;
-    float factor[3] = {safety / 2, safety / 4, safety / 8}; /* face, edge, corner */
+    float factor[3] = {safety / 2, safety / 4, safety / 8};
 
     for (i = 0; i < nfrags; ++i) {
         int d[3];
@@ -1677,15 +1677,15 @@ void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **pack) {
     p = *pack;
 
     p->L = L;
-    estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
+    estimates(L, NFRAGS, maxd, maxpsolid,      cap);
     get_cc_cap(nw, NFRAGS, cccap);
 
-    UC(emap_ini(nw, NFRAGS, cap, /**/ &p->map));
+    UC(emap_ini(nw, NFRAGS, cap,      &p->map));
 
     p->hpp = &p->hbags[ID_PP];  p->hcc = &p->hbags[ID_CC];
 
-    UC(comm_bags_ini(PINNED,   NONE, sizeof(Particle), cap, /**/ p->hpp, &p->dpp));
-    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int),    cccap, /**/ p->hcc, NULL));
+    UC(comm_bags_ini(PINNED,   NONE, sizeof(Particle), cap,      p->hpp, &p->dpp));
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int),    cccap,      p->hcc, NULL));
 
     set_cc_counts(nw, NFRAGS, p->hcc);
 
@@ -1693,12 +1693,12 @@ void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **pack) {
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
 }
 
-void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **com) {
+void eobj_comm_ini(MPI_Comm cart,      EObjComm **com) {
     EObjComm *c;
     EMALLOC(1, com);
     c = *com;
 
-    UC(comm_ini(cart, /**/ &c->comm));
+    UC(comm_ini(cart,      &c->comm));
 }
 
 void eobj_unpack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjUnpack **unpack) {
@@ -1709,13 +1709,13 @@ void eobj_unpack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjUnpack **unpac
     u = *unpack;
 
     u->L = L;
-    estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
+    estimates(L, NFRAGS, maxd, maxpsolid,      cap);
     get_cc_cap(nw, NFRAGS, cccap);
 
     u->hpp = &u->hbags[ID_PP];  u->hcc = &u->hbags[ID_CC];
 
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ u->hpp, &u->dpp));
-    UC(comm_bags_ini(HST_ONLY  , NONE, sizeof(int),    cccap, /**/ u->hcc, NULL));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap,      u->hpp, &u->dpp));
+    UC(comm_bags_ini(HST_ONLY  , NONE, sizeof(int),    cccap,      u->hcc, NULL));
 
     set_cc_counts(nw, NFRAGS, u->hcc);
 
@@ -1730,16 +1730,16 @@ void eobj_packf_ini(int3 L, int maxd, int maxpsolid, EObjPackF **pack) {
     EMALLOC(1, pack);
     p = *pack;
 
-    estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
+    estimates(L, NFRAGS, maxd, maxpsolid,      cap);
 
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &p->hff, &p->dff));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Force), cap,      &p->hff, &p->dff));
 }
 
-void eobj_commf_ini(MPI_Comm cart, /**/ EObjCommF **com) {
+void eobj_commf_ini(MPI_Comm cart,      EObjCommF **com) {
     EObjCommF *c;
     EMALLOC(1, com);
     c = *com;
-    UC(comm_ini(cart, /**/ &c->comm));
+    UC(comm_ini(cart,      &c->comm));
 }
 
 void eobj_unpackf_ini(int3 L, int maxd, int maxpsolid, EObjUnpackF **unpack) {
@@ -1749,14 +1749,14 @@ void eobj_unpackf_ini(int3 L, int maxd, int maxpsolid, EObjUnpackF **unpack) {
     EMALLOC(1, unpack);
     u = *unpack;
 
-    estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
+    estimates(L, NFRAGS, maxd, maxpsolid,      cap);
 
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &u->hff, &u->dff));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Force), cap,      &u->hff, &u->dff));
 }
 void eobj_pack_fin(EObjPack *p) {
-    UC(emap_fin(NFRAGS, /**/ &p->map));
-    UC(comm_bags_fin(PINNED,   NONE, /**/ p->hpp, &p->dpp));
-    UC(comm_bags_fin(HST_ONLY, NONE, /**/ p->hcc, NULL));
+    UC(emap_fin(NFRAGS,      &p->map));
+    UC(comm_bags_fin(PINNED,   NONE,      p->hpp, &p->dpp));
+    UC(comm_bags_fin(HST_ONLY, NONE,      p->hcc, NULL));
     UC(comm_buffer_fin(p->hbuf));
     EFREE(p);
 }
@@ -1767,14 +1767,14 @@ void eobj_comm_fin(EObjComm *c) {
 }
 
 void eobj_unpack_fin(EObjUnpack *u) {
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hpp, &u->dpp));
-    UC(comm_bags_fin(HST_ONLY  , NONE, /**/ u->hcc, NULL));
+    UC(comm_bags_fin(PINNED_DEV, NONE,      u->hpp, &u->dpp));
+    UC(comm_bags_fin(HST_ONLY  , NONE,      u->hcc, NULL));
     UC(comm_buffer_fin(u->hbuf));
     EFREE(u);
 }
 
 void eobj_packf_fin(EObjPackF *p) {
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ &p->hff, &p->dff));
+    UC(comm_bags_fin(PINNED_DEV, NONE,      &p->hff, &p->dff));
     EFREE(p);
 }
 
@@ -1784,33 +1784,33 @@ void eobj_commf_fin(EObjCommF *c) {
 }
 
 void eobj_unpackf_fin(EObjUnpackF *u) {
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ &u->hff, &u->dff));
+    UC(comm_bags_fin(PINNED_DEV, NONE,      &u->hff, &u->dff));
     EFREE(u);
 }
 static void add_wrap_to_map(int3 L, int wid, int n, const Particle *pp, EMap map) {
     int3 L0 = make_int3(L.x-2, L.y-2, L.z-2);
-    KL(eobj_build_map_kernel, (k_cnf(n)), (L0, wid, n, pp, /**/ map));
+    KL(eobj_build_map_kernel, (k_cnf(n)), (L0, wid, n, pp,      map));
 }
 
-static void fill_map(int3 L, int nw, const PaWrap *ww, /**/ EMap map) {
+static void fill_map(int3 L, int nw, const PaWrap *ww,      EMap map) {
     const PaWrap *w;
     for (int i = 0; i < nw; ++i) {
         w = ww + i;
-        add_wrap_to_map(L, i, w->n, w->pp, /**/ map);
+        add_wrap_to_map(L, i, w->n, w->pp,      map);
     }
 }
 
-static void build_map(int3 L, int nw, const PaWrap *ww, /**/ EMap map) {
-    emap_reini(nw, NFRAGS, /**/ map);
-    fill_map(L, nw, ww, /**/ map);
-    emap_scan(nw, NFRAGS, /**/ map);
+static void build_map(int3 L, int nw, const PaWrap *ww,      EMap map) {
+    emap_reini(nw, NFRAGS,      map);
+    fill_map(L, nw, ww,      map);
+    emap_scan(nw, NFRAGS,      map);
 }
 
-void eobj_build_map(int nw, const PaWrap *ww, /**/ EObjPack *p) {
+void eobj_build_map(int nw, const PaWrap *ww,      EObjPack *p) {
     if (!nw) return;
-    build_map(p->L, nw, ww, /**/ p->map);
+    build_map(p->L, nw, ww,      p->map);
 }
-static void pack_pp(int nfrags, int nw, const PaWrap *ww, EMap map, /**/ Pap26 buf) {
+static void pack_pp(int nfrags, int nw, const PaWrap *ww, EMap map,      Pap26 buf) {
     int i, stride;
     stride = nfrags + 1;
     const PaWrap *w;
@@ -1823,22 +1823,22 @@ static void pack_pp(int nfrags, int nw, const PaWrap *ww, EMap map, /**/ Pap26 b
         ph.cap = map.cap;
         memcpy(ph.indices, map.ids, nfrags * sizeof(int*));
 
-        UC(ecommon_pack_pp(w->pp, ph, /**/ buf));
+        UC(ecommon_pack_pp(w->pp, ph,      buf));
     }
 }
 
-void eobj_pack(int nw, const PaWrap *ww, /**/ EObjPack *p) {
+void eobj_pack(int nw, const PaWrap *ww,      EObjPack *p) {
     Pap26 wrap;
     UC(bag2Sarray(p->dpp, &wrap));
-    UC(pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap));
+    UC(pack_pp(NFRAGS, nw, ww, p->map,      wrap));
 }
 
 void eobj_download(int nw, EObjPack *p) {
     if (!nw) return;
-    UC(emap_download_all_counts(nw, NFRAGS, p->map, /**/ p->hpp->counts, (int**) p->hcc->data));
+    UC(emap_download_all_counts(nw, NFRAGS, p->map,      p->hpp->counts, (int**) p->hcc->data));
 }
 
-static void clear_forces(int nfrags, /**/ EObjPackF *p) {
+static void clear_forces(int nfrags,      EObjPackF *p) {
     int i, c;
     size_t sz;
     for (i = 0; i < nfrags; ++i) {
@@ -1851,7 +1851,7 @@ static void clear_forces(int nfrags, /**/ EObjPackF *p) {
 Fop26 eobj_reini_ff(const EObjUnpack *u, EObjPackF *pf) {
     size_t sz = NBAGS * sizeof(int);
     memcpy(pf->hff.counts, u->hpp->counts, sz);
-    clear_forces(NFRAGS, /**/ pf);
+    clear_forces(NFRAGS,      pf);
 
     Fop26 wrap;
     bag2Sarray(pf->dff, &wrap);
@@ -1920,7 +1920,7 @@ void  eobj_get_all_counts(int nw, EObjUnpack *u, int *all_counts) {
     }
 }
 
-static void upload(int nfrags, const hBags *h, /**/ dBags *d) {
+static void upload(int nfrags, const hBags *h,      dBags *d) {
     int i, c;
     size_t sz;
     data_t *src, *dst;
@@ -1936,7 +1936,7 @@ static void upload(int nfrags, const hBags *h, /**/ dBags *d) {
     }
 }
 
-static void shift_pp(int3 L, int nfrags, const int counts[], /**/ dBags d) {
+static void shift_pp(int3 L, int nfrags, const int counts[],      dBags d) {
     int i, n;
     Particle *pp;
 
@@ -1944,20 +1944,20 @@ static void shift_pp(int3 L, int nfrags, const int counts[], /**/ dBags d) {
         n = counts[i];
         if (n) {
             pp = (Particle *) d.data[i];
-            ecommon_shift_pp_one_frag(L, n, i, /**/ pp);
+            ecommon_shift_pp_one_frag(L, n, i,      pp);
         }
     }
 }
 
 Pap26 eobj_upload_shift(EObjUnpack *u) {
-    upload(NFRAGS, u->hpp, /**/ &u->dpp);
-    shift_pp(u->L, NFRAGS, u->hpp->counts, /**/ u->dpp);
+    upload(NFRAGS, u->hpp,      &u->dpp);
+    shift_pp(u->L, NFRAGS, u->hpp->counts,      u->dpp);
     Pap26 wrap;
     bag2Sarray(u->dpp, &wrap);
     return wrap;
 }
 
-static void unpack_ff(int nfrags, Fop26 ff, EMap map, int nw, /**/ FoWrap *ww) {
+static void unpack_ff(int nfrags, Fop26 ff, EMap map, int nw,      FoWrap *ww) {
     int i, stride;
     stride = nfrags + 1;
     const FoWrap *w;
@@ -1969,37 +1969,37 @@ static void unpack_ff(int nfrags, Fop26 ff, EMap map, int nw, /**/ FoWrap *ww) {
         ph.offsets = map.offsets + i * stride;
         memcpy(ph.indices, map.ids, nfrags * sizeof(int*));
 
-        KL(eobj_unpack_ff_kernel, (14 * 16, 128), (ff, ph, /**/ w->ff));
+        KL(eobj_unpack_ff_kernel, (14 * 16, 128), (ff, ph,      w->ff));
     }
 }
 
-void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww) {
+void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw,      FoWrap *ww) {
     Fop26 wrap;
-    upload(NFRAGS, &u->hff, /**/ &u->dff);
+    upload(NFRAGS, &u->hff,      &u->dff);
     bag2Sarray(u->dff, &wrap);
-    unpack_ff(NFRAGS, wrap, p->map, nw, /**/ ww);
+    unpack_ff(NFRAGS, wrap, p->map, nw,      ww);
 }
 
 
 
 
 
-// Grouped editable compilation unit for mesh and structure subsystems.
 
 
-// Grouped editable compilation unit for the complete mesh subsystem.
 
 
-// Grouped editable compilation unit for mesh geometry, topology, coordinates, and generation.
 
 
-// Grouped editable compilation unit for mesh geometry, measures, topology, and collision.
 
 
-// Grouped editable compilation unit for mesh geometry and measures.
 
 
-// Grouped editable compilation unit for mesh geometry helpers.
+
+
+
+
+
+
 
 
 
@@ -2007,21 +2007,21 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww) 
 #include <math.h>
 #include <vector_types.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -2029,7 +2029,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2040,7 +2040,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2062,8 +2062,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct int4;
 struct MeshRead;
@@ -2084,36 +2084,36 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 
 namespace tri_hst {
-double kahan_area0(double a, double b, double c); // <1>
-double kahan_area(const double a[3], const double b[3], const double c[3]); // <2>
-void   ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]); // <3>
-double shewchuk_area(const double a[3], const double b[3], const double c[3]); // <4>
-double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]); // <5>
+double kahan_area0(double a, double b, double c);
+double kahan_area(const double a[3], const double b[3], const double c[3]);
+void   ac_bc_cross(const double a[3], const double b[3], const double c[3],      double r[3]);
+double shewchuk_area(const double a[3], const double b[3], const double c[3]);
+double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]);
 void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
-                   double *x, double *y); // <6>
+                   double *x, double *y);
 }
 
 struct MeshAngle;
 struct Vectors;
 struct MeshRead;
 
-void mesh_angle_ini(MeshRead*, /**/ MeshAngle**); // <1>
+void mesh_angle_ini(MeshRead*,      MeshAngle**);
 void mesh_angle_fin(MeshAngle*);
-void  mesh_angle_apply(MeshAngle*, int nm, Vectors*, /**/ double*); // <2>
+void  mesh_angle_apply(MeshAngle*, int nm, Vectors*,      double*);
 struct MeshAngle {
     int nd, nv;
-    int4 *dd; /* dihidrals */
+    int4 *dd;
 };
 void mesh_angle_ini(MeshRead *mesh, MeshAngle **pq) {
     int i, nv, nd;
@@ -2137,7 +2137,7 @@ void mesh_angle_fin(MeshAngle *q) {
 static void get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
-    UC(vectors_get(p, i, /**/ f));
+    UC(vectors_get(p, i,      f));
     d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
 }
 static double angle(int4 t, Vectors *p, int offset) {
@@ -2145,15 +2145,15 @@ static double angle(int4 t, Vectors *p, int offset) {
     double a[3], b[3], c[3], d[3], x, y;
     ia = t.x; ib = t.y; ic = t.z; id = t.w;
 
-    UC(get(p, ia + offset, /**/ a));
-    UC(get(p, ib + offset, /**/ b));
-    UC(get(p, ic + offset, /**/ c));
-    UC(get(p, id + offset, /**/ d));
+    UC(get(p, ia + offset,      a));
+    UC(get(p, ib + offset,      b));
+    UC(get(p, ic + offset,      c));
+    UC(get(p, id + offset,      d));
 
-    tri_hst::dihedral_xy(a, b, c, d, /**/ &x, &y);
+    tri_hst::dihedral_xy(a, b, c, d,      &x, &y);
     return atan2(y, x);
 }
-void mesh_angle_apply(MeshAngle *q, int m, Vectors *p, /**/ double *angle0) {
+void mesh_angle_apply(MeshAngle *q, int m, Vectors *p,      double *angle0) {
     int i, j, k, nv, nd, offset;
     int4 *dd;
     nd = q->nd; nv = q->nv; dd = q->dd; offset = 0;
@@ -2178,15 +2178,15 @@ void mesh_angle_apply(MeshAngle *q, int m, Vectors *p, /**/ double *angle0) {
 #endif
 struct Particle;
 struct float3;
-void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi);
+void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
 
 struct float3;
 struct Particle;
 
-void mesh_get_bbox(const float *rr, const int n, /**/ float3 *minbb, float3 *maxbb);
+void mesh_get_bbox(const float *rr, const int n,      float3 *minbb, float3 *maxbb);
 
-void mesh_get_bboxes_hst(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb);
-void mesh_get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb);
+void mesh_get_bboxes_hst(const Particle *pp, const int nps, const int ns,      float3 *minbb, float3 *maxbb);
+void mesh_get_bboxes_dev(const Particle *pp, const int nps, const int ns,      float3 *minbb, float3 *maxbb);
 
 static void T2r(const int i, const Particle *pp, const float **r) {*r = pp[i].r;}
 static void T2r(const int i, const float *rr,    const float **r) {*r = rr + 3*i;}
@@ -2195,20 +2195,20 @@ static float min2(float a, float b) {return a < b ? a : b;}
 static float max2(float a, float b) {return a < b ? b : a;}
 
 template <typename T>
-static void get_bbox_(const T *vv, const int n, /**/ float3 *minbb, float3 *maxbb) {
+static void get_bbox_(const T *vv, const int n,      float3 *minbb, float3 *maxbb) {
     enum {X, Y, Z};
     const float *r;
     float3 minb, maxb;
 
     if (n == 0) return;
 
-    T2r(0, vv, /**/ &r);
+    T2r(0, vv,      &r);
 
     minb.x = r[X]; minb.y = r[Y]; minb.z = r[Z];
     maxb = minb;
 
     for (int i = 1; i < n; ++i) {
-        T2r(i, vv, /**/ &r);
+        T2r(i, vv,      &r);
         minb.x = min2(minb.x, r[0]); maxb.x = max2(maxb.x, r[0]);
         minb.y = min2(minb.y, r[1]); maxb.y = max2(maxb.y, r[1]);
         minb.z = min2(minb.z, r[2]); maxb.z = max2(maxb.z, r[2]);
@@ -2216,49 +2216,49 @@ static void get_bbox_(const T *vv, const int n, /**/ float3 *minbb, float3 *maxb
     *minbb = minb; *maxbb = maxb;
 }
 
-void mesh_get_bbox(const float *rr, const int n, /**/ float3 *minbb, float3 *maxbb) {
-    get_bbox_(rr, n, /**/ minbb, maxbb);
+void mesh_get_bbox(const float *rr, const int n,      float3 *minbb, float3 *maxbb) {
+    get_bbox_(rr, n,      minbb, maxbb);
 }
 
-void mesh_get_bboxes_hst(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb) {
+void mesh_get_bboxes_hst(const Particle *pp, const int nps, const int ns,      float3 *minbb, float3 *maxbb) {
     for (int i = 0; i < ns; ++i)
-    get_bbox_(pp + i*nps, nps, /**/ minbb + i, maxbb + i);
+    get_bbox_(pp + i*nps, nps,      minbb + i, maxbb + i);
 }
 
-void mesh_get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb) {
+void mesh_get_bboxes_dev(const Particle *pp, const int nps, const int ns,      float3 *minbb, float3 *maxbb) {
     if (ns == 0) return;
-    minmax(pp, nps, ns, /**/ minbb, maxbb);
+    minmax(pp, nps, ns,      minbb, maxbb);
 }
 
 
 
 
 
-// Grouped editable compilation unit for mesh area and length measures.
 
 
-// Grouped editable compilation unit for mesh area calculations.
+
+
 
 
 
 #include <stdio.h>
 #include <vector_types.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -2266,7 +2266,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2277,7 +2277,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2299,8 +2299,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct int4;
 struct MeshRead;
@@ -2321,43 +2321,43 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 struct KahanSum;
 
-void kahan_sum_ini(/**/ KahanSum**);
+void kahan_sum_ini(     KahanSum**);
 void kahan_sum_fin(KahanSum*);
 
-void kahan_sum_add(KahanSum*, double input); // <1>
-double kahan_sum_get(const KahanSum*); // <2>
-double kahan_sum_compensation(const KahanSum*); // <3>
+void kahan_sum_add(KahanSum*, double input);
+double kahan_sum_get(const KahanSum*);
+double kahan_sum_compensation(const KahanSum*);
 
 namespace tri_hst {
-double kahan_area0(double a, double b, double c); // <1>
-double kahan_area(const double a[3], const double b[3], const double c[3]); // <2>
-void   ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]); // <3>
-double shewchuk_area(const double a[3], const double b[3], const double c[3]); // <4>
-double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]); // <5>
+double kahan_area0(double a, double b, double c);
+double kahan_area(const double a[3], const double b[3], const double c[3]);
+void   ac_bc_cross(const double a[3], const double b[3], const double c[3],      double r[3]);
+double shewchuk_area(const double a[3], const double b[3], const double c[3]);
+double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]);
 void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
-                   double *x, double *y); // <6>
+                   double *x, double *y);
 }
 
 struct MeshArea;
 struct Vectors;
 struct MeshRead;
 
-void mesh_area_ini(MeshRead*, /**/ MeshArea**); // <1>
+void mesh_area_ini(MeshRead*,      MeshArea**);
 void mesh_area_fin(MeshArea*);
 
-double mesh_area_apply0(MeshArea*, Vectors*);                     // <2>
-void  mesh_area_apply(MeshArea*, int nm, Vectors*, /**/ double*); // <3>
+double mesh_area_apply0(MeshArea*, Vectors*);
+void  mesh_area_apply(MeshArea*, int nm, Vectors*,      double*);
 struct MeshArea {
     int4 *tt;
     int nv, nt;
@@ -2380,7 +2380,7 @@ void mesh_area_fin(MeshArea *q) { EFREE(q->tt); EFREE(q); }
 static void mesh_area_get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
-    UC(vectors_get(p, i, /**/ f));
+    UC(vectors_get(p, i,      f));
     d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
 }
 static double mesh_area_value(int nt, int4 *tt, Vectors *p, int offset) {
@@ -2390,9 +2390,9 @@ static double mesh_area_value(int nt, int4 *tt, Vectors *p, int offset) {
     kahan_sum_ini(&kahan_sum);
     for (i = 0; i < nt; i++) {
         ia = tt[i].x; ib = tt[i].y; ic = tt[i].z;
-        UC(mesh_area_get(p, ia + offset, /**/ a));
-        UC(mesh_area_get(p, ib + offset, /**/ b));
-        UC(mesh_area_get(p, ic + offset, /**/ c));
+        UC(mesh_area_get(p, ia + offset,      a));
+        UC(mesh_area_get(p, ib + offset,      b));
+        UC(mesh_area_get(p, ic + offset,      c));
         kahan_sum_add(kahan_sum, tri_hst::kahan_area(a, b, c));
     }
     sum = kahan_sum_get(kahan_sum);
@@ -2424,21 +2424,21 @@ void mesh_area_apply(MeshArea *q, int m, Vectors *p, double *area0) {
 #include <stdio.h>
 #include <vector_types.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -2446,7 +2446,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2457,7 +2457,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2479,8 +2479,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct int4;
 struct MeshRead;
@@ -2501,34 +2501,34 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 
 namespace tri_hst {
-double kahan_area0(double a, double b, double c); // <1>
-double kahan_area(const double a[3], const double b[3], const double c[3]); // <2>
-void   ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]); // <3>
-double shewchuk_area(const double a[3], const double b[3], const double c[3]); // <4>
-double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]); // <5>
+double kahan_area0(double a, double b, double c);
+double kahan_area(const double a[3], const double b[3], const double c[3]);
+void   ac_bc_cross(const double a[3], const double b[3], const double c[3],      double r[3]);
+double shewchuk_area(const double a[3], const double b[3], const double c[3]);
+double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]);
 void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
-                   double *x, double *y); // <6>
+                   double *x, double *y);
 }
 
 struct MeshTriArea;
 struct Vectors;
 struct MeshRead;
 
-void mesh_tri_area_ini(MeshRead*, /**/ MeshTriArea**); // <1>
+void mesh_tri_area_ini(MeshRead*,      MeshTriArea**);
 void mesh_tri_area_fin(MeshTriArea*);
 
-void  mesh_tri_area_apply(MeshTriArea*, int nm, Vectors*, /**/ double*); // <2>
+void  mesh_tri_area_apply(MeshTriArea*, int nm, Vectors*,      double*);
 struct MeshTriArea {
     int4 *tt;
     int nv, nt;
@@ -2551,16 +2551,16 @@ void mesh_tri_area_fin(MeshTriArea *q) { EFREE(q->tt); EFREE(q); }
 static void mesh_tri_area_get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
-    UC(vectors_get(p, i, /**/ f));
+    UC(vectors_get(p, i,      f));
     d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
 }
 static double mesh_tri_area_value(int4 t, Vectors *p, int offset) {
     int ia, ib, ic;
     double a[3], b[3], c[3];
     ia = t.x; ib = t.y; ic = t.z;
-    UC(mesh_tri_area_get(p, ia + offset, /**/ a));
-    UC(mesh_tri_area_get(p, ib + offset, /**/ b));
-    UC(mesh_tri_area_get(p, ic + offset, /**/ c));
+    UC(mesh_tri_area_get(p, ia + offset,      a));
+    UC(mesh_tri_area_get(p, ib + offset,      b));
+    UC(mesh_tri_area_get(p, ic + offset,      c));
     return tri_hst::kahan_area(a, b, c);
 }
 
@@ -2581,7 +2581,7 @@ void mesh_tri_area_apply(MeshTriArea *q, int m, Vectors *p, double *area0) {
 
 
 
-// Grouped editable compilation unit for edge lengths and vertex areas.
+
 
 
 
@@ -2589,21 +2589,21 @@ void mesh_tri_area_apply(MeshTriArea *q, int m, Vectors *p, double *area0) {
 #include <math.h>
 #include <vector_types.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -2611,7 +2611,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2622,7 +2622,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2644,8 +2644,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct int4;
 struct MeshRead;
@@ -2666,23 +2666,23 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 
 struct MeshEdgLen;
 struct MeshRead;
 struct Vectors;
 
-void mesh_edg_len_ini(MeshRead*, MeshEdgLen**); // <1>
+void mesh_edg_len_ini(MeshRead*, MeshEdgLen**);
 void mesh_edg_len_fin(MeshEdgLen*);
-void mesh_edg_len_apply(MeshEdgLen*, int nm, Vectors*, /**/ double*); // <2>
+void mesh_edg_len_apply(MeshEdgLen*, int nm, Vectors*,      double*);
 struct MeshEdgLen {
     int ne, nv;
     int *ee;
@@ -2708,19 +2708,19 @@ void mesh_edg_len_ini(MeshRead *mesh, MeshEdgLen **pq) {
 static void mesh_edg_len_get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
-    UC(vectors_get(p, i, /**/ f));
+    UC(vectors_get(p, i,      f));
     d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
 }
 static double sum_sq(double x, double y, double z) { return x*x + y*y + z*z; }
 static double len0(Vectors *pos, int i, int j) {
     enum {X, Y, Z};
     double d, a[3], b[3];
-    mesh_edg_len_get(pos, i, /**/ a);
-    mesh_edg_len_get(pos, j, /**/ b);
+    mesh_edg_len_get(pos, i,      a);
+    mesh_edg_len_get(pos, j,      b);
     d = sum_sq(a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]);
     return sqrt(d);
 }
-static void len(MeshEdgLen *q, Vectors *pos, int offset_v, int offset_e, /**/ double *o) {
+static void len(MeshEdgLen *q, Vectors *pos, int offset_v, int offset_e,      double *o) {
     int ne, i, k, a, b;
     double value;
     const int *ee;
@@ -2732,13 +2732,13 @@ static void len(MeshEdgLen *q, Vectors *pos, int offset_v, int offset_e, /**/ do
         o[i + offset_e] = value;
     }
 }
-void mesh_edg_len_apply(MeshEdgLen *q, int nm, Vectors *pos, /**/ double *o) {
+void mesh_edg_len_apply(MeshEdgLen *q, int nm, Vectors *pos,      double *o) {
     int i, nv, ne;
-    int offset_v, offset_e; /* vert and edge */
+    int offset_v, offset_e;
     nv = q->nv;
     ne = q->ne;
     for (offset_e = offset_v = i = 0; i < nm; i++) {
-        UC(len(q, pos, offset_v, offset_e, /**/ o));
+        UC(len(q, pos, offset_v, offset_e,      o));
         offset_v += nv;
         offset_e += ne;
     }
@@ -2756,21 +2756,21 @@ void mesh_edg_len_fin(MeshEdgLen *q) {
 #include <stdio.h>
 #include <vector_types.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -2778,7 +2778,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2789,7 +2789,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2811,8 +2811,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct int4;
 struct MeshRead;
@@ -2833,34 +2833,34 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 
 namespace tri_hst {
-double kahan_area0(double a, double b, double c); // <1>
-double kahan_area(const double a[3], const double b[3], const double c[3]); // <2>
-void   ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]); // <3>
-double shewchuk_area(const double a[3], const double b[3], const double c[3]); // <4>
-double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]); // <5>
+double kahan_area0(double a, double b, double c);
+double kahan_area(const double a[3], const double b[3], const double c[3]);
+void   ac_bc_cross(const double a[3], const double b[3], const double c[3],      double r[3]);
+double shewchuk_area(const double a[3], const double b[3], const double c[3]);
+double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]);
 void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
-                   double *x, double *y); // <6>
+                   double *x, double *y);
 }
 
 struct MeshVertArea;
 struct Vectors;
 struct MeshRead;
 
-void mesh_vert_area_ini(MeshRead*, /**/ MeshVertArea**); // <1>
+void mesh_vert_area_ini(MeshRead*,      MeshVertArea**);
 void mesh_vert_area_fin(MeshVertArea*);
 
-void  mesh_vert_area_apply(MeshVertArea*, int nm, Vectors*, /**/ double*); // <2>
+void  mesh_vert_area_apply(MeshVertArea*, int nm, Vectors*,      double*);
 struct MeshVertArea {
     int4 *tt;
     int nv, nt;
@@ -2883,16 +2883,16 @@ void mesh_vert_area_fin(MeshVertArea *q) { EFREE(q->tt); EFREE(q); }
 static void mesh_vert_area_get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
-    UC(vectors_get(p, i, /**/ f));
+    UC(vectors_get(p, i,      f));
     d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
 }
-static void area(int4 t, Vectors *p, int offset, /**/ double *o) {
+static void area(int4 t, Vectors *p, int offset,      double *o) {
     int ia, ib, ic;
     double a[3], b[3], c[3], A;
     ia = t.x; ib = t.y; ic = t.z;
-    UC(mesh_vert_area_get(p, ia + offset, /**/ a));
-    UC(mesh_vert_area_get(p, ib + offset, /**/ b));
-    UC(mesh_vert_area_get(p, ic + offset, /**/ c));
+    UC(mesh_vert_area_get(p, ia + offset,      a));
+    UC(mesh_vert_area_get(p, ib + offset,      b));
+    UC(mesh_vert_area_get(p, ic + offset,      c));
 
     A = tri_hst::kahan_area(a, b, c)/3;
     o[ia + offset] += A;
@@ -2909,7 +2909,7 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
 
     for (i = 0; i < nm; i++) {
         for (j = 0; j < nt; j++)
-            area(tt[j], pos, offset, /**/ o);
+            area(tt[j], pos, offset,      o);
         offset += nv;
     }
 }
@@ -2920,43 +2920,43 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
 
 
 
-// Grouped editable compilation unit for mesh topology and collision.
 
 
-// Grouped editable compilation unit for mesh topology and volume helpers.
+
+
 
 
 
 #include <stdio.h>
 #include <vector_types.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -2970,10 +2970,10 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
 #define UDX_EXCH_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -2982,35 +2982,35 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -3018,7 +3018,7 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -3031,22 +3031,22 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -3054,7 +3054,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -3065,7 +3065,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -3114,10 +3114,10 @@ struct Triangles {
 struct Triangles;
 struct MeshRead;
 
-void triangles_ini(MeshRead*, /**/ Triangles**);
+void triangles_ini(MeshRead*,      Triangles**);
 void triangles_fin(Triangles*);
 
-void triangles_ini(MeshRead *mesh, /**/ Triangles **pq) {
+void triangles_ini(MeshRead *mesh,      Triangles **pq) {
     int nt;
     Triangles *q;
     const int4 *hst;
@@ -3144,21 +3144,21 @@ void triangles_fin(Triangles *q) {
 #include <stdio.h>
 #include <vector_types.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -3166,7 +3166,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -3177,7 +3177,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -3199,8 +3199,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct int4;
 struct MeshRead;
@@ -3221,36 +3221,36 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 struct KahanSum;
 
-void kahan_sum_ini(/**/ KahanSum**);
+void kahan_sum_ini(     KahanSum**);
 void kahan_sum_fin(KahanSum*);
 
-void kahan_sum_add(KahanSum*, double input); // <1>
-double kahan_sum_get(const KahanSum*); // <2>
-double kahan_sum_compensation(const KahanSum*); // <3>
+void kahan_sum_add(KahanSum*, double input);
+double kahan_sum_get(const KahanSum*);
+double kahan_sum_compensation(const KahanSum*);
 
 struct MeshVolume;
 struct Vectors;
 struct MeshRead;
 
-void mesh_volume_ini(MeshRead*, /**/ MeshVolume**); // <1>
+void mesh_volume_ini(MeshRead*,      MeshVolume**);
 void mesh_volume_fin(MeshVolume*);
 
-double mesh_volume_apply0(MeshVolume*, Vectors*);                      // <2>
-void  mesh_volume_apply(MeshVolume*, int nm, Vectors*, /**/ double*); // <3>
+double mesh_volume_apply0(MeshVolume*, Vectors*);
+void  mesh_volume_apply(MeshVolume*, int nm, Vectors*,      double*);
 struct MeshVolume {
-    double *rr; /* workspace for coordinates shifted to a mesh center
-                   of mass */
+    double *rr;
+
     int4 *tt;
     int nv, nt;
 };
@@ -3276,14 +3276,14 @@ void mesh_volume_fin(MeshVolume *q) {
     EFREE(q);
 }
 
-static void compute_com(int nv, Vectors *pos, /**/ double *com) {
+static void compute_com(int nv, Vectors *pos,      double *com) {
     enum {X, Y, Z};
     int i;
     float r[3];
     KahanSum *sx, *sy, *sz;
     kahan_sum_ini(&sx); kahan_sum_ini(&sy); kahan_sum_ini(&sz);
     for (i = 0; i < nv; i++) {
-        UC(vectors_get(pos, i, /**/ r));
+        UC(vectors_get(pos, i,      r));
         kahan_sum_add(sx, r[X]);
         kahan_sum_add(sy, r[Y]);
         kahan_sum_add(sz, r[Z]);
@@ -3293,15 +3293,15 @@ static void compute_com(int nv, Vectors *pos, /**/ double *com) {
     com[Z] = kahan_sum_get(sz)/nv;
     kahan_sum_fin(sx); kahan_sum_fin(sy); kahan_sum_fin(sz);
 }
-static void to_com(int nv, int offset, Vectors *pos, /**/ double *rr) {
+static void to_com(int nv, int offset, Vectors *pos,      double *rr) {
     enum {X, Y, Z};
     int i;
-    float   r0[3]; /* from */
-    double *r1;    /* to */
+    float   r0[3];
+    double *r1;
     double com[3];
-    UC(compute_com(nv, pos, /**/ com));
+    UC(compute_com(nv, pos,      com));
     for (i = 0; i < nv; i++) {
-        UC(vectors_get(pos, i + offset, /**/ r0));
+        UC(vectors_get(pos, i + offset,      r0));
         r1 = &rr[3*i];
         r1[X] = r0[X] - com[X];
         r1[Y] = r0[Y] - com[Y];
@@ -3314,7 +3314,7 @@ static double M0(double a[3], double b[3], double c[3]) {
              -a[Y]*(b[X]*c[Z]-b[Z]*c[X])
              +a[Z]*(b[X]*c[Y]-b[Y]*c[X]));
 }
-static void get(double *rr, int i, /**/ double *r1) {
+static void get(double *rr, int i,      double *r1) {
     enum {X, Y, Z};
     double *r0;
     r0 = &rr[3*i];
@@ -3328,9 +3328,9 @@ static double volume(int nt, int4 *tt, double *rr) {
     kahan_sum_ini(&kahan_sum);
     for (i = 0; i < nt; i++) {
         ia = tt[i].x; ib = tt[i].y; ic = tt[i].z;
-        UC(get(rr, ia, /**/ a));
-        UC(get(rr, ib, /**/ b));
-        UC(get(rr, ic, /**/ c));
+        UC(get(rr, ia,      a));
+        UC(get(rr, ib,      b));
+        UC(get(rr, ic,      c));
         kahan_sum_add(kahan_sum, M0(a, b, c));
     }
     sum = kahan_sum_get(kahan_sum);
@@ -3341,7 +3341,7 @@ double mesh_volume_apply0(MeshVolume *q, Vectors *positions) {
     double *rr;
     int4 *tt;
     nv = q->nv; nt = q->nt; rr = q->rr; tt = q->tt; offset = 0;
-    UC(to_com(nv, offset, positions, /**/ rr));
+    UC(to_com(nv, offset, positions,      rr));
     return volume(nt, tt, rr);
 }
 
@@ -3351,7 +3351,7 @@ double mesh_volume_apply0(MeshVolume *q, Vectors *positions) {
     int4 *tt;
     nv = q->nv; nt = q->nt; rr = q->rr; tt = q->tt; offset = 0;
     for (i = 0; i < m; i++) {
-        UC(to_com(nv, offset, positions, /**/ rr));
+        UC(to_com(nv, offset, positions,      rr));
         UC(volume0[i] = volume(nt, tt, rr));
         offset += nv;
     }
@@ -3365,21 +3365,21 @@ double mesh_volume_apply0(MeshVolume *q, Vectors *positions) {
 #include <stdio.h>
 #include <vector_types.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -3387,7 +3387,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -3398,7 +3398,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -3420,8 +3420,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct int4;
 struct MeshRead;
@@ -3442,12 +3442,12 @@ struct Particle;
 struct Scalars;
 struct Vectors;
 
-void scalars_float_ini(int n, const float*, /**/ Scalars**);
-void scalars_double_ini(int n, const double*, /**/ Scalars**);
-void scalars_vectors_ini(int n, const Vectors*, int dim, /**/ Scalars**);
+void scalars_float_ini(int n, const float*,      Scalars**);
+void scalars_double_ini(int n, const double*,      Scalars**);
+void scalars_vectors_ini(int n, const Vectors*, int dim,      Scalars**);
 
-void scalars_zero_ini(int n, /**/ Scalars**);
-void scalars_one_ini(int n, /**/ Scalars**);
+void scalars_zero_ini(int n,      Scalars**);
+void scalars_one_ini(int n,      Scalars**);
 
 void scalars_fin(Scalars*);
 double scalars_get(const Scalars*, int i);
@@ -3456,16 +3456,16 @@ struct MeshScatter;
 struct MeshRead;
 struct Scalars;
 
-void mesh_scatter_ini(MeshRead*, MeshScatter**); // <1>
+void mesh_scatter_ini(MeshRead*, MeshScatter**);
 void mesh_scatter_fin(MeshScatter*);
-void mesh_scatter_edg2vert(MeshScatter*, int nm, Scalars*, /**/ double*); // <2>
-void mesh_scatter_edg2vert_avg(MeshScatter*, int nm, Scalars*, /**/ double*); // <2>
+void mesh_scatter_edg2vert(MeshScatter*, int nm, Scalars*,      double*);
+void mesh_scatter_edg2vert_avg(MeshScatter*, int nm, Scalars*,      double*);
 struct MeshScatter {
     int ne, nv;
     int *ee;
-    int *deg; /* vert. degree */
+    int *deg;
 };
-static void deg_ini(int nv, int ne, const int *ee, /**/ int *deg) {
+static void deg_ini(int nv, int ne, const int *ee,      int *deg) {
     int i, k, a, b;
     for (i = 0; i < nv; i++) deg[i] = 0;
     for (i = k = 0; i < ne; i++) {
@@ -3492,14 +3492,14 @@ void mesh_scatter_ini(MeshRead *mesh, MeshScatter **pq) {
         ee[j++] = d.y; ee[j++] = d.z;
     }
     EMALLOC(  nv, &deg);
-    UC(deg_ini(nv, ne, ee, /**/ deg));
+    UC(deg_ini(nv, ne, ee,      deg));
 
     q->nv = nv; q->ne = ne;
     q->ee = ee; q->deg = deg;
     *pq = q;
 }
 
-static void edg2vert(MeshScatter *q, Scalars *sc, int offset_v, int offset_e, /**/ double *o) {
+static void edg2vert(MeshScatter *q, Scalars *sc, int offset_v, int offset_e,      double *o) {
     int ne, i, k, a, b;
     double value;
     const int *ee;
@@ -3512,7 +3512,7 @@ static void edg2vert(MeshScatter *q, Scalars *sc, int offset_v, int offset_e, /*
         o[b + offset_v] += value;
     }
 }
-void mesh_scatter_edg2vert_avg(MeshScatter *q, int nm, Scalars *sc, /**/ double *o) {
+void mesh_scatter_edg2vert_avg(MeshScatter *q, int nm, Scalars *sc,      double *o) {
     int i, j, k, d, n, nv, ne;
     int offset_v, offset_e;
     nv = q->nv;
@@ -3520,7 +3520,7 @@ void mesh_scatter_edg2vert_avg(MeshScatter *q, int nm, Scalars *sc, /**/ double 
     n = nv * nm;
     for (i = 0; i < n; i++) o[i] = 0;
     for (offset_e = offset_v = i = 0; i < nm; i++) {
-        UC(edg2vert(q, sc, offset_v, offset_e, /**/ o));
+        UC(edg2vert(q, sc, offset_v, offset_e,      o));
         offset_v += nv;
         offset_e += ne;
     }
@@ -3533,7 +3533,7 @@ void mesh_scatter_edg2vert_avg(MeshScatter *q, int nm, Scalars *sc, /**/ double 
         }
 }
 
-void mesh_scatter_edg2vert(MeshScatter *q, int nm, Scalars *sc, /**/ double *o) {
+void mesh_scatter_edg2vert(MeshScatter *q, int nm, Scalars *sc,      double *o) {
     int i, n, nv, ne;
     int offset_v, offset_e;
     nv = q->nv;
@@ -3541,7 +3541,7 @@ void mesh_scatter_edg2vert(MeshScatter *q, int nm, Scalars *sc, /**/ double *o) 
     n = nv * nm;
     for (i = 0; i < n; i++) o[i] = 0;
     for (offset_e = offset_v = i = 0; i < nm; i++) {
-        UC(edg2vert(q, sc, offset_v, offset_e, /**/ o));
+        UC(edg2vert(q, sc, offset_v, offset_e,      o));
         offset_v += nv;
         offset_e += ne;
     }
@@ -3561,33 +3561,33 @@ void mesh_scatter_fin(MeshScatter *q) {
 #include <stdio.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -3606,7 +3606,7 @@ void mesh_scatter_fin(MeshScatter *q) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -3617,7 +3617,7 @@ void mesh_scatter_fin(MeshScatter *q) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -3639,12 +3639,12 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-/* [c]uda [c]heck macros */
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -3652,7 +3652,7 @@ void msg_print(const char *fmt, ...); // <2>
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -3665,15 +3665,15 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
 
-/* function and variable type [q]ualifiers */
+
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -3699,8 +3699,8 @@ void check(int rc, const char *file, int line);
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -3778,10 +3778,10 @@ static int   warpSize = 1;
 #define UDX_EXCH_TYPE_COMMON
 #include "types.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -3790,32 +3790,32 @@ static int   warpSize = 1;
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* 1D texture object template */
+
 static void sz_check(int n) {
     if (n <            0 ) ERR("too small texo: %d", n);
     if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
@@ -3827,7 +3827,7 @@ struct Texo {
 };
 
 template<typename T>
-void texo_setup(int n, T *data, /**/ Texo<T> *to)
+void texo_setup(int n, T *data,      Texo<T> *to)
 {
     sz_check(n);
 
@@ -3848,7 +3848,7 @@ void texo_setup(int n, T *data, /**/ Texo<T> *to)
 }
 
 template<typename T>
-void texo_destroy(/**/ Texo<T> *to)
+void texo_destroy(     Texo<T> *to)
 {
     CC(cudaDestroyTextureObject(to->d));
 }
@@ -3868,7 +3868,7 @@ struct Triangles {
 struct Triangles;
 struct MeshRead;
 
-void triangles_ini(MeshRead*, /**/ Triangles**);
+void triangles_ini(MeshRead*,      Triangles**);
 void triangles_fin(Triangles*);
 
 #ifndef UDX_EXCH_KL_COMMON
@@ -3881,22 +3881,22 @@ struct Config;
 
 enum {NOT_PERIODIC = -1};
 
-void rig_pininfo_ini(RigPinInfo **); // <1>
-void rig_pininfo_fin(RigPinInfo *); // <2>
-void rig_pininfo_set(int3 com, int3 axis, RigPinInfo *); // <3>
-void rig_pininfo_set_pdir(int pdir, RigPinInfo *); // <4>
-void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *); // <5>
+void rig_pininfo_ini(RigPinInfo **);
+void rig_pininfo_fin(RigPinInfo *);
+void rig_pininfo_set(int3 com, int3 axis, RigPinInfo *);
+void rig_pininfo_set_pdir(int pdir, RigPinInfo *);
+void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *);
 
-int rig_pininfo_get_pdir(const RigPinInfo *); // <6>
+int rig_pininfo_get_pdir(const RigPinInfo *);
 
 struct Particle;
 struct Rigid;
 struct Force;
 
-void rig_reinit_ft(const int ns, /**/ Rigid *ss); // <1>
-void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns, /**/ Particle *pp, Rigid *ss); // <2>
-void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0, /**/ Particle *pp); // <3>
-void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv, /**/ Particle *pp); // <4>
+void rig_reinit_ft(const int ns,      Rigid *ss);
+void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns,      Particle *pp, Rigid *ss);
+void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0,      Particle *pp);
+void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,      Particle *pp);
 
 
 struct float3;
@@ -3906,11 +3906,11 @@ struct Triangles;
 
 int collision_inside_1p(int spdir, const float *r, const float *vv, const int4 *tt, const int nt);
 
-void collision_label_ini(long n, int lab_out, /**/ int *labels);
+void collision_label_ini(long n, int lab_out,      int *labels);
 void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri,
                      int nv, int nm, const Particle *i_pp,
                      const float3 *minext, const float3 *maxext,
-                     int lab_in, /**/ int *labels);
+                     int lab_in,      int *labels);
 
 enum {X, Y, Z};
 
@@ -3956,7 +3956,7 @@ int collision_inside_1p(int spdir, const float *r, const float *vv, const int4 *
 
 namespace collision_dev
 {
-__global__ void init_tags(const int n, const int color, /**/ int *tags) {
+__global__ void init_tags(const int n, const int color,      int *tags) {
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
     if (gid < n) tags[gid] = color;
 }
@@ -3982,10 +3982,10 @@ static __device__ bool inside_box(const float r[3], float3 lo, float3 hi) {
         r[Z] >= lo.z && r[Z] <= hi.z;
 }
 
-/* assume nm blocks along y */
+
 __global__ void label(int pdir, const Particle *pp, const int n, const Particle *vert, const int nv,
                       Triangles tri, const float3 *minext, const float3 *maxext,
-                      int lab_in, /**/ int *labels) {
+                      int lab_in,      int *labels) {
     int i, sid, gid, count, mbase;
     Particle p;
     Pos a, b, c;
@@ -4017,19 +4017,19 @@ __global__ void label(int pdir, const Particle *pp, const int n, const Particle 
         if (in_tetrahedron(p.r, a.r, b.r, c.r, origin)) ++count;
     }
 
-    // dont consider the case of inside several solids
+
     if (count % 2) atomicExch(labels + gid, lab_in);
 }
 }
 
-void collision_label_ini(long n, int lab_out, /**/ int *labels) {
-    KL(collision_dev::init_tags, (k_cnf(n)), (n, lab_out, /**/ labels));
+void collision_label_ini(long n, int lab_out,      int *labels) {
+    KL(collision_dev::init_tags, (k_cnf(n)), (n, lab_out,      labels));
 }
 
 void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri,
                      int nv, int nm, const Particle *i_pp,
                      const float3 *minext, const float3 *maxext,
-                     int lab_in, /**/ int *labels) {
+                     int lab_in,      int *labels) {
     enum {THR = 128};
 
     dim3 thrd(THR, 1);
@@ -4038,7 +4038,7 @@ void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri,
     if (nm == 0 || n == 0) return;
 
     KL(collision_dev::label, (blck, thrd),
-       (pdir, pp, n, i_pp, nv, *tri, minext, maxext, lab_in, /**/ labels));
+       (pdir, pp, n, i_pp, nv, *tri, minext, maxext, lab_in,      labels));
 
 }
 
@@ -4047,34 +4047,34 @@ void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri,
 
 
 
-// Grouped editable compilation unit for mesh coordinates, distance, generation, and energy.
 
 
-// Grouped editable compilation unit for mesh coordinates and distance properties.
 
 
-// Grouped editable compilation unit for cylindrical and spherical coordinates.
+
+
+
 
 
 
 #include <stdio.h>
 #include <math.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -4082,7 +4082,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -4093,7 +4093,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -4115,42 +4115,42 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 struct KahanSum;
 
-void kahan_sum_ini(/**/ KahanSum**);
+void kahan_sum_ini(     KahanSum**);
 void kahan_sum_fin(KahanSum*);
 
-void kahan_sum_add(KahanSum*, double input); // <1>
-double kahan_sum_get(const KahanSum*); // <2>
-double kahan_sum_compensation(const KahanSum*); // <3>
+void kahan_sum_add(KahanSum*, double input);
+double kahan_sum_get(const KahanSum*);
+double kahan_sum_compensation(const KahanSum*);
 
 struct MeshCylindrical;
 struct Vectors;
 
-void mesh_cylindrical_ini(int nv, /**/ MeshCylindrical**);
+void mesh_cylindrical_ini(int nv,      MeshCylindrical**);
 void mesh_cylindrical_fin(MeshCylindrical*);
-void  mesh_cylindrical_apply(MeshCylindrical*, int nm, Vectors*, /**/
+void  mesh_cylindrical_apply(MeshCylindrical*, int nm, Vectors*,
                            double *r, double *phi, double *z);
 #include "coordinate.cuh"
 struct MeshCylindrical {
-    double *rr; /* workspace for coordinates shifted to a mesh center
-                   of mass */
+    double *rr;
+
     int nv;
 };
 void mesh_cylindrical_ini(int nv, MeshCylindrical **pq) {
@@ -4166,27 +4166,27 @@ void mesh_cylindrical_fin(MeshCylindrical *q) {
     EFREE(q);
 }
 
-static void xyz2cyl(double x, double y, double z, /**/ double *pr, double *pphi, double *pz) {
+static void xyz2cyl(double x, double y, double z,      double *pr, double *pphi, double *pz) {
     double r, phi;
     r = sqrt(x*x + y*y);
     phi = atan2(y, x);
     *pr = r; *pphi  = phi; *pz = z;
 }
-static void mesh_cylindrical_apply_coordinates(int n, double *rr, /**/ double *r, double *phi, double *z) {
+static void mesh_cylindrical_apply_coordinates(int n, double *rr,      double *r, double *phi, double *z) {
     enum {X, Y, Z};
     int i;
     for (i = 0; i < n; i++) {
-        xyz2cyl(rr[X], rr[Y], rr[Z], /**/ r, phi, z);
+        xyz2cyl(rr[X], rr[Y], rr[Z],      r, phi, z);
         rr += 3; r++; phi++; z++;
     }
 }
-void mesh_cylindrical_apply(MeshCylindrical *q, int m, Vectors *pos, /**/ double *r, double *phi, double *z) {
+void mesh_cylindrical_apply(MeshCylindrical *q, int m, Vectors *pos,      double *r, double *phi, double *z) {
     int i, nv, offset;
     double *rr;
     nv = q->nv; rr = q->rr; offset = 0;
     for (i = 0; i < m; i++) {
-        UC(mesh_coordinate_to_com(nv, offset, pos, /**/ rr));
-        mesh_cylindrical_apply_coordinates(nv, rr, /**/ r, phi, z);
+        UC(mesh_coordinate_to_com(nv, offset, pos,      rr));
+        mesh_cylindrical_apply_coordinates(nv, rr,      r, phi, z);
         rr += 3*nv; r += nv; phi += nv; z += nv; offset += nv;
     }
 }
@@ -4198,21 +4198,21 @@ void mesh_cylindrical_apply(MeshCylindrical *q, int m, Vectors *pos, /**/ double
 #include <stdio.h>
 #include <math.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -4220,7 +4220,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -4231,7 +4231,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -4253,42 +4253,42 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 struct KahanSum;
 
-void kahan_sum_ini(/**/ KahanSum**);
+void kahan_sum_ini(     KahanSum**);
 void kahan_sum_fin(KahanSum*);
 
-void kahan_sum_add(KahanSum*, double input); // <1>
-double kahan_sum_get(const KahanSum*); // <2>
-double kahan_sum_compensation(const KahanSum*); // <3>
+void kahan_sum_add(KahanSum*, double input);
+double kahan_sum_get(const KahanSum*);
+double kahan_sum_compensation(const KahanSum*);
 
 struct MeshSpherical;
 struct Vectors;
 
-void mesh_spherical_ini(int nv, /**/ MeshSpherical**);
+void mesh_spherical_ini(int nv,      MeshSpherical**);
 void mesh_spherical_fin(MeshSpherical*);
-void  mesh_spherical_apply(MeshSpherical*, int nm, Vectors*, /**/
+void  mesh_spherical_apply(MeshSpherical*, int nm, Vectors*,
                            double *r, double *theta, double *phi);
 #include "coordinate.cuh"
 struct MeshSpherical {
-    double *rr; /* workspace for coordinates shifted to a mesh center
-                   of mass */
+    double *rr;
+
     int nv;
 };
 void mesh_spherical_ini(int nv, MeshSpherical **pq) {
@@ -4304,28 +4304,28 @@ void mesh_spherical_fin(MeshSpherical *q) {
     EFREE(q);
 }
 
-static void xyz2sph(double x, double y, double z, /**/ double *pr, double *ptheta, double *pphi) {
+static void xyz2sph(double x, double y, double z,      double *pr, double *ptheta, double *pphi) {
     double r, theta, phi;
     r = sqrt(x*x + y*y + z*z);
     theta = atan2(z, r);
     phi = atan2(y, x);
     *pr = r; *ptheta = theta; *pphi = phi;
 }
-static void mesh_spherical_apply_coordinates(int n, double *rr, /**/ double *r, double *theta, double *phi) {
+static void mesh_spherical_apply_coordinates(int n, double *rr,      double *r, double *theta, double *phi) {
     enum {X, Y, Z};
     int i;
     for (i = 0; i < n; i++) {
-        xyz2sph(rr[X], rr[Y], rr[Z], /**/ r, theta, phi);
+        xyz2sph(rr[X], rr[Y], rr[Z],      r, theta, phi);
         rr += 3; r++; theta++; phi++;
     }
 }
-void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *pos, /**/ double *r, double *theta, double *phi) {
+void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *pos,      double *r, double *theta, double *phi) {
     int i, nv, offset;
     double *rr;
     nv = q->nv; rr = q->rr; offset = 0;
     for (i = 0; i < m; i++) {
-        UC(mesh_coordinate_to_com(nv, offset, pos, /**/ rr));
-        mesh_spherical_apply_coordinates(nv, rr, /**/ r, theta, phi);
+        UC(mesh_coordinate_to_com(nv, offset, pos,      rr));
+        mesh_spherical_apply_coordinates(nv, rr,      r, theta, phi);
         rr += 3*nv; r += nv; theta += nv; phi += nv; offset += nv;
     }
 }
@@ -4334,7 +4334,7 @@ void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *pos, /**/ double *r,
 
 
 
-// Grouped editable compilation unit for mesh distance and properties.
+
 
 
 
@@ -4349,7 +4349,7 @@ static float fmin_local(float a, float b) {return a < b ? a : b;}
 static float fmax_local(float a, float b) {return a < b ? b : a;}
 static float dot(const float x[3], const float y[3]) { return x[0]*y[0] + x[1]*y[1] + x[2]*y[2]; }
 
-static void project_t(const float *a, const float *b, const float *c, const float *r, /**/ float *p) {
+static void project_t(const float *a, const float *b, const float *c, const float *r,      float *p) {
     const float ab[3] = {b[0]-a[0], b[1]-a[1], b[2]-a[2]};
     const float ac[3] = {c[0]-a[0], c[1]-a[1], c[2]-a[2]};
     const float ar[3] = {r[0]-a[0], r[1]-a[1], r[2]-a[2]};
@@ -4381,7 +4381,7 @@ static void project_t(const float *a, const float *b, const float *c, const floa
         v = (ga2 * a11 - ga1 * a12) * fac;
     }
 
-    // project (u,v) onto unit triangle
+
 
     if ( (v > u - 1) && (v < u + 1) && (v > 1 - u) ) {
         const float a_ = 0.5f * (u + v - 1);
@@ -4393,7 +4393,7 @@ static void project_t(const float *a, const float *b, const float *c, const floa
         v = fmax_local(fmin_local(v, 1.f-u), 0.f);
     }
 
-    // compute projected point
+
     p[0] = a[0] + u * ab[0] + v * ac[0];
     p[1] = a[1] + u * ab[1] + v * ac[1];
     p[2] = a[2] + u * ab[2] + v * ac[2];
@@ -4401,7 +4401,7 @@ static void project_t(const float *a, const float *b, const float *c, const floa
 
 static float dist_from_triangle(const float *a, const float *b, const float *c, const float *r) {
     float p[3];
-    project_t(a, b, c, r, /**/ p);
+    project_t(a, b, c, r,      p);
 
     const float dr[3] = {p[0] - r[0], p[1] - r[1], p[2] - r[2]};
     return sqrt(dot(dr, dr));
@@ -4437,8 +4437,8 @@ float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0) {
 #include "meshcore.cuh"
 struct int4;
 float mesh_volume0(int nt, const int4 *tt, const float *vv);
-void mesh_center_of_mass(int nt, const int4 *tt, const float *vv, /**/ float *com);
-void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *com, const float density, /**/ float *I);
+void mesh_center_of_mass(int nt, const int4 *tt, const float *vv,      float *com);
+void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *com, const float density,      float *I);
 
 enum {XX, XY, XZ, YY, YZ, ZZ};
 
@@ -4454,15 +4454,15 @@ enum {XX, XY, XZ, YY, YZ, ZZ};
 #define Cy C[Y]
 #define Cz C[Z]
 
-/* see http://chenlab.ece.cornell.edu/Publication/Cha/icip01_Cha.pdf */
 
-static void M_0(const float *A, const float *B, const float *C, /**/ float *res) {
+
+static void M_0(const float *A, const float *B, const float *C,      float *res) {
     *res =  (+Ax * (By * Cz -Bz * Cy)
              -Ay * (Bx * Cz -Bz * Cx)
              +Az * (Bx * Cy -By * Cx)) / 6.f;
 }
 
-static void M_1(const float *A, const float *B, const float *C, /**/ float *res) {
+static void M_1(const float *A, const float *B, const float *C,      float *res) {
     const float common = (+Ax * (By * Cz -Bz * Cy)
                           -Ay * (Bx * Cz -Bz * Cx)
                           +Az * (Bx * Cy -By * Cx)) / 24.f;
@@ -4472,8 +4472,8 @@ static void M_1(const float *A, const float *B, const float *C, /**/ float *res)
     res[2] = common * (Az + Bz + Cz);
 }
 
-static void M_2(const float *A, const float *B, const float *C, /**/ float *res) {
-    /* see /poc/mesh/moments.mac */
+static void M_2(const float *A, const float *B, const float *C,      float *res) {
+
     const float D1 = (+Ax * (By*Cz - Bz*Cy)
                       -Ay * (Bx*Cz - Bz*Cx)
                       +Az * (Bx*Cy - By*Cx)) / 60.f;
@@ -4517,14 +4517,14 @@ float mesh_volume0(int nt, const int4 *tt, const float *vv) {
         const float C[3] = load_t(vv, t.z);
 
         float V = 0;
-        M_0(A, B, C, /**/ &V);
+        M_0(A, B, C,      &V);
 
         Vtot += V;
     }
     return Vtot;
 }
 
-void mesh_center_of_mass(int nt, const int4 *tt, const float *vv, /**/ float *com) {
+void mesh_center_of_mass(int nt, const int4 *tt, const float *vv,      float *com) {
     float Vtot = 0, M1tot[3] = {0};
 
     for (int it = 0; it < nt; ++it) {
@@ -4536,8 +4536,8 @@ void mesh_center_of_mass(int nt, const int4 *tt, const float *vv, /**/ float *co
 
         float V = 0, M1[3];
 
-        M_0(A, B, C, /**/ &V);
-        M_1(A, B, C, /**/ M1);
+        M_0(A, B, C,      &V);
+        M_1(A, B, C,      M1);
 
         Vtot += V;
         M1tot[X] += M1[X];
@@ -4550,11 +4550,11 @@ void mesh_center_of_mass(int nt, const int4 *tt, const float *vv, /**/ float *co
     com[Z] = M1tot[Z] / Vtot;
 }
 
-static void shift(const float s[3], /**/ float a[3]) {
+static void shift(const float s[3],      float a[3]) {
     a[X] -= s[X]; a[Y] -= s[Y]; a[Z] -= s[Z];
 }
 
-void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *com, const float density, /**/ float *I) {
+void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *com, const float density,      float *I) {
     memset(I, 0, 6 * sizeof(float));
 
     for (int it = 0; it < nt; ++it) {
@@ -4564,12 +4564,12 @@ void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *c
         float B[3] = load_t(vv, t.y);
         float C[3] = load_t(vv, t.z);
 
-        shift(com, /**/ A);
-        shift(com, /**/ B);
-        shift(com, /**/ C);
+        shift(com,      A);
+        shift(com,      B);
+        shift(com,      C);
 
         float M2[6];
-        M_2(A, B, C, /**/ M2);
+        M_2(A, B, C,      M2);
 
         I[XX] += M2[YY] + M2[ZZ];
         I[YY] += M2[XX] + M2[ZZ];
@@ -4591,33 +4591,33 @@ void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *c
 
 
 
-// Grouped editable compilation unit for mesh generation, energies, and forces.
 
 
-// Grouped editable compilation unit for mesh energies and Kantor force backends.
 
 
-// Grouped editable compilation unit for Julicher and Kantor mesh energies.
+
+
+
 
 
 
 #include <stdio.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -4625,7 +4625,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -4636,7 +4636,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -4658,8 +4658,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct int4;
 struct MeshRead;
@@ -4680,12 +4680,12 @@ struct Particle;
 struct Scalars;
 struct Vectors;
 
-void scalars_float_ini(int n, const float*, /**/ Scalars**);
-void scalars_double_ini(int n, const double*, /**/ Scalars**);
-void scalars_vectors_ini(int n, const Vectors*, int dim, /**/ Scalars**);
+void scalars_float_ini(int n, const float*,      Scalars**);
+void scalars_double_ini(int n, const double*,      Scalars**);
+void scalars_vectors_ini(int n, const Vectors*, int dim,      Scalars**);
 
-void scalars_zero_ini(int n, /**/ Scalars**);
-void scalars_one_ini(int n, /**/ Scalars**);
+void scalars_zero_ini(int n,      Scalars**);
+void scalars_one_ini(int n,      Scalars**);
 
 void scalars_fin(Scalars*);
 double scalars_get(const Scalars*, int i);
@@ -4693,70 +4693,70 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 
 namespace tri_hst {
-double kahan_area0(double a, double b, double c); // <1>
-double kahan_area(const double a[3], const double b[3], const double c[3]); // <2>
-void   ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]); // <3>
-double shewchuk_area(const double a[3], const double b[3], const double c[3]); // <4>
-double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]); // <5>
+double kahan_area0(double a, double b, double c);
+double kahan_area(const double a[3], const double b[3], const double c[3]);
+void   ac_bc_cross(const double a[3], const double b[3], const double c[3],      double r[3]);
+double shewchuk_area(const double a[3], const double b[3], const double c[3]);
+double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]);
 void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
-                   double *x, double *y); // <6>
+                   double *x, double *y);
 }
 
 struct MeshEdgLen;
 struct MeshRead;
 struct Vectors;
 
-void mesh_edg_len_ini(MeshRead*, MeshEdgLen**); // <1>
+void mesh_edg_len_ini(MeshRead*, MeshEdgLen**);
 void mesh_edg_len_fin(MeshEdgLen*);
-void mesh_edg_len_apply(MeshEdgLen*, int nm, Vectors*, /**/ double*); // <2>
+void mesh_edg_len_apply(MeshEdgLen*, int nm, Vectors*,      double*);
 struct MeshAngle;
 struct Vectors;
 struct MeshRead;
 
-void mesh_angle_ini(MeshRead*, /**/ MeshAngle**); // <1>
+void mesh_angle_ini(MeshRead*,      MeshAngle**);
 void mesh_angle_fin(MeshAngle*);
-void  mesh_angle_apply(MeshAngle*, int nm, Vectors*, /**/ double*); // <2>
+void  mesh_angle_apply(MeshAngle*, int nm, Vectors*,      double*);
 struct MeshVertArea;
 struct Vectors;
 struct MeshRead;
 
-void mesh_vert_area_ini(MeshRead*, /**/ MeshVertArea**); // <1>
+void mesh_vert_area_ini(MeshRead*,      MeshVertArea**);
 void mesh_vert_area_fin(MeshVertArea*);
 
-void  mesh_vert_area_apply(MeshVertArea*, int nm, Vectors*, /**/ double*); // <2>
+void  mesh_vert_area_apply(MeshVertArea*, int nm, Vectors*,      double*);
 struct MeshScatter;
 struct MeshRead;
 struct Scalars;
 
-void mesh_scatter_ini(MeshRead*, MeshScatter**); // <1>
+void mesh_scatter_ini(MeshRead*, MeshScatter**);
 void mesh_scatter_fin(MeshScatter*);
-void mesh_scatter_edg2vert(MeshScatter*, int nm, Scalars*, /**/ double*); // <2>
-void mesh_scatter_edg2vert_avg(MeshScatter*, int nm, Scalars*, /**/ double*); // <2>
+void mesh_scatter_edg2vert(MeshScatter*, int nm, Scalars*,      double*);
+void mesh_scatter_edg2vert_avg(MeshScatter*, int nm, Scalars*,      double*);
 
 struct MeshEngJulicher;
 struct Vectors;
 struct MeshRead;
 
-void mesh_eng_julicher_ini(MeshRead*, int max_nm, /**/ MeshEngJulicher**); // <1>
+void mesh_eng_julicher_ini(MeshRead*, int max_nm,      MeshEngJulicher**);
 void mesh_eng_julicher_fin(MeshEngJulicher*);
 
-void  mesh_eng_julicher_apply(MeshEngJulicher*, int nm, Vectors*, double kb, /**/ double*); // <2>
+void  mesh_eng_julicher_apply(MeshEngJulicher*, int nm, Vectors*, double kb,      double*);
 struct MeshEngJulicher {
-    int max_nm; /* maximum number of meshes */
+    int max_nm;
     int nv, ne;
 
-    /* edge lens, edge angles, vert. areas, vert. curvatures */
+
     double *lens, *angles, *areas, *curvs_edg, *curvs_vert;
 
     MeshEdgLen *len;
@@ -4765,7 +4765,7 @@ struct MeshEngJulicher {
 
     MeshScatter *scatter;
 };
-void mesh_eng_julicher_ini(MeshRead *mesh, int nm, /**/ MeshEngJulicher **pq) {
+void mesh_eng_julicher_ini(MeshRead *mesh, int nm,      MeshEngJulicher **pq) {
     int nv, ne;
     MeshEngJulicher *q;
     EMALLOC(1, &q);
@@ -4781,10 +4781,10 @@ void mesh_eng_julicher_ini(MeshRead *mesh, int nm, /**/ MeshEngJulicher **pq) {
     EMALLOC(nm*ne, &q->curvs_edg);
     EMALLOC(nm*nv, &q->curvs_vert);
 
-    mesh_edg_len_ini(mesh, /**/ &q->len);
-    mesh_angle_ini(mesh, /**/ &q->angle);
-    mesh_vert_area_ini(mesh, /**/ &q->area);
-    mesh_scatter_ini(mesh, /**/ &q->scatter);
+    mesh_edg_len_ini(mesh,      &q->len);
+    mesh_angle_ini(mesh,      &q->angle);
+    mesh_vert_area_ini(mesh,      &q->area);
+    mesh_scatter_ini(mesh,      &q->scatter);
 
     *pq = q;
 }
@@ -4804,7 +4804,7 @@ void mesh_eng_julicher_fin(MeshEngJulicher *q) {
     EFREE(q);
 }
 
-void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb, /**/ double *o) {
+void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb,      double *o) {
     int i, nv, ne;
     double *lens, *angles, *areas, *curvs_vert, *curvs_edg;
     double area, curv;
@@ -4813,17 +4813,17 @@ void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb
     curvs_edg = q->curvs_edg; curvs_vert = q->curvs_vert;
 
     ne = q->ne; nv = q->nv;
-    mesh_edg_len_apply(q->len, nm, pos, /**/ lens);
-    mesh_angle_apply(q->angle, nm, pos, /**/ angles);
+    mesh_edg_len_apply(q->len, nm, pos,      lens);
+    mesh_angle_apply(q->angle, nm, pos,      angles);
     for (i = 0; i < nm * ne; i++)
         curvs_edg[i] = lens[i]*angles[i];
 
-    scalars_double_ini(nm * ne, curvs_edg, /**/ &sc);
-    mesh_scatter_edg2vert(q->scatter, nm, sc, /**/ curvs_vert);
+    scalars_double_ini(nm * ne, curvs_edg,      &sc);
+    mesh_scatter_edg2vert(q->scatter, nm, sc,      curvs_vert);
     for (i = 0; i < nm * nv; i++)
         curvs_vert[i] /= 4;
 
-    mesh_vert_area_apply(q->area, nm, pos, /**/ areas);
+    mesh_vert_area_apply(q->area, nm, pos,      areas);
     for (i = 0; i < nm * nv; i++) {
         curv = curvs_vert[i];
         area = areas[i];
@@ -4831,7 +4831,7 @@ void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb
         o[i] = 2*kb*curv*curv/area;
     }
     scalars_fin(sc);
-    mesh_vert_area_apply(q->area, nm, pos, /**/ areas);
+    mesh_vert_area_apply(q->area, nm, pos,      areas);
 }
 
 
@@ -4841,21 +4841,21 @@ void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb
 #include <stdio.h>
 #include <math.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -4863,7 +4863,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -4874,7 +4874,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -4896,8 +4896,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct int4;
 struct MeshRead;
@@ -4918,12 +4918,12 @@ struct Particle;
 struct Scalars;
 struct Vectors;
 
-void scalars_float_ini(int n, const float*, /**/ Scalars**);
-void scalars_double_ini(int n, const double*, /**/ Scalars**);
-void scalars_vectors_ini(int n, const Vectors*, int dim, /**/ Scalars**);
+void scalars_float_ini(int n, const float*,      Scalars**);
+void scalars_double_ini(int n, const double*,      Scalars**);
+void scalars_vectors_ini(int n, const Vectors*, int dim,      Scalars**);
 
-void scalars_zero_ini(int n, /**/ Scalars**);
-void scalars_one_ini(int n, /**/ Scalars**);
+void scalars_zero_ini(int n,      Scalars**);
+void scalars_one_ini(int n,      Scalars**);
 
 void scalars_fin(Scalars*);
 double scalars_get(const Scalars*, int i);
@@ -4931,48 +4931,48 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 
 namespace tri_hst {
-double kahan_area0(double a, double b, double c); // <1>
-double kahan_area(const double a[3], const double b[3], const double c[3]); // <2>
-void   ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]); // <3>
-double shewchuk_area(const double a[3], const double b[3], const double c[3]); // <4>
-double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]); // <5>
+double kahan_area0(double a, double b, double c);
+double kahan_area(const double a[3], const double b[3], const double c[3]);
+void   ac_bc_cross(const double a[3], const double b[3], const double c[3],      double r[3]);
+double shewchuk_area(const double a[3], const double b[3], const double c[3]);
+double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]);
 void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
-                   double *x, double *y); // <6>
+                   double *x, double *y);
 }
 struct MeshAngle;
 struct Vectors;
 struct MeshRead;
 
-void mesh_angle_ini(MeshRead*, /**/ MeshAngle**); // <1>
+void mesh_angle_ini(MeshRead*,      MeshAngle**);
 void mesh_angle_fin(MeshAngle*);
-void  mesh_angle_apply(MeshAngle*, int nm, Vectors*, /**/ double*); // <2>
+void  mesh_angle_apply(MeshAngle*, int nm, Vectors*,      double*);
 
 struct MeshEngKantor;
 struct Vectors;
 struct MeshRead;
 
-void mesh_eng_kantor_ini(MeshRead*, int max_nm, /**/ MeshEngKantor**); // <1>
+void mesh_eng_kantor_ini(MeshRead*, int max_nm,      MeshEngKantor**);
 void mesh_eng_kantor_fin(MeshEngKantor*);
 
-void  mesh_eng_kantor_apply(MeshEngKantor*, int nm, Vectors*, double kb, double ang, /**/ double*); // <2>
+void  mesh_eng_kantor_apply(MeshEngKantor*, int nm, Vectors*, double kb, double ang,      double*);
 struct MeshEngKantor {
-    int max_nm; /* maximum number of meshes */
+    int max_nm;
     int nv, ne;
     double *angles;
     MeshAngle  *angle;
 };
-void mesh_eng_kantor_ini(MeshRead *mesh, int nm, /**/ MeshEngKantor **pq) {
+void mesh_eng_kantor_ini(MeshRead *mesh, int nm,      MeshEngKantor **pq) {
     int nv, ne;
     MeshEngKantor *q;
     EMALLOC(1, &q);
@@ -4983,7 +4983,7 @@ void mesh_eng_kantor_ini(MeshRead *mesh, int nm, /**/ MeshEngKantor **pq) {
     q->max_nm = nm;
     q->nv = nv; q->ne = ne;
     EMALLOC(nm*ne, &q->angles);
-    mesh_angle_ini(mesh, /**/ &q->angle);
+    mesh_angle_ini(mesh,      &q->angle);
 
     *pq = q;
 }
@@ -4994,12 +4994,12 @@ void mesh_eng_kantor_fin(MeshEngKantor *q) {
     EFREE(q);
 }
 
-void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, double angle0, /**/ double *o) {
+void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, double angle0,      double *o) {
     int i, ne;
     double *angles, angle;
     angles = q->angles;
     ne = q->ne;
-    mesh_angle_apply(q->angle, nm, pos, /**/ angles);
+    mesh_angle_apply(q->angle, nm, pos,      angles);
     for (i = 0; i < nm * ne; i++) {
         angle = angles[i];
         o[i] = 2*kb*(1 - cos(angle - angle0));
@@ -5010,7 +5010,7 @@ void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, do
 
 
 
-// Grouped editable compilation unit for Kantor force backends.
+
 
 
 #include "kantor.cuh"
@@ -5027,7 +5027,7 @@ void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, do
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -5038,7 +5038,7 @@ void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, do
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -5060,8 +5060,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 struct float3;
 struct double3;
 namespace force_kantor0_hst {
@@ -5083,7 +5083,7 @@ _S_ double rsqrt0(double x) { return pow(x, -0.5); }
 _S_ double max(double a, double b) { return a > b ? a : b; }
 
 enum {ANGLE_OK, ANGLE_BAD_A, ANGLE_BAD_B};
-_S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
+_S_ int angle(double3 a, double3 b,      double *pcos, double *pover_sin,
               double *pover_a, double *pover_b) {
     double  cost, over_sin, over_a, over_b;
     double aa, bb, ab;
@@ -5112,7 +5112,7 @@ _S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
     PRINT("%g %g %g\n", d.x, d.y, d.z);
 }
 
-/* forces from one dihedral */
+
 template <int update>
 _S_ double3 dih0(double phi, double kb,
                  double3 a, double3 b, double3 c, double3 d) {
@@ -5120,17 +5120,17 @@ _S_ double3 dih0(double phi, double kb,
     double over_k, over_n, cosTheta, over_sin,
         beta, b11, b12, sint0kb, cost0kb;
     double3 ab, ac, cd, bc, bd, da, k, n, k_n;
-    diff(&a, &b, /**/ &ab);
-    diff(&a, &c, /**/ &ac);
-    diff(&c, &d, /**/ &cd);
-    diff(&b, &d, /**/ &bd);
-    diff(&b, &c, /**/ &bc);
-    diff(&d, &a, /**/ &da);
+    diff(&a, &b,      &ab);
+    diff(&a, &c,      &ac);
+    diff(&c, &d,      &cd);
+    diff(&b, &d,      &bd);
+    diff(&b, &c,      &bc);
+    diff(&d, &a,      &da);
 
-    cross(&ab, &ac, /**/ &k);
-    cross(&bd, &bc, /**/ &n);
+    cross(&ab, &ac,      &k);
+    cross(&bd, &bc,      &n);
 
-    status = angle(k, n, /**/
+    status = angle(k, n,
                    &cosTheta, &over_sin,
                    &over_k, &over_n);
     if (status != ANGLE_OK) {
@@ -5138,7 +5138,7 @@ _S_ double3 dih0(double phi, double kb,
         dih_write(a, b, c, d);
         EXIT();
     }
-    diff(&k, &n, /**/ &k_n);
+    diff(&k, &n,      &k_n);
     over_sin = copysign(over_sin, dot<double>(&k_n, &da));
 
     sint0kb = sin(phi) * kb;
@@ -5150,26 +5150,26 @@ _S_ double3 dih0(double phi, double kb,
 
     if (update == 1) {
         double3 r32, f1, f;
-        diff(&c, &b, /**/ &r32);
-        cross(&k, &r32, /**/ &f);
-        cross(&n, &r32, /**/ &f1);
-        scal(b11, /**/ &f);
-        axpy(b12, &f1, /**/ &f);
+        diff(&c, &b,      &r32);
+        cross(&k, &r32,      &f);
+        cross(&n, &r32,      &f1);
+        scal(b11,      &f);
+        axpy(b12, &f1,      &f);
         return f;
     }
     else if (update == 2) {
         double3 f, f1, f2, f3;
         double b22 = -beta * cosTheta * over_n * over_n;
 
-        cross(&k, &ac, /**/ &f);
-        cross(&k, &cd, /**/ &f1);
-        cross(&n, &ac, /**/ &f2);
-        cross(&n, &cd, /**/ &f3);
+        cross(&k, &ac,      &f);
+        cross(&k, &cd,      &f1);
+        cross(&n, &ac,      &f2);
+        cross(&n, &cd,      &f3);
 
-        scal(b11, /**/ &f);
-        add(&f2, /**/ &f1);
-        axpy(b12, &f1, /**/ &f);
-        axpy(b22, &f3, /**/ &f);
+        scal(b11,      &f);
+        add(&f2,      &f1);
+        axpy(b12, &f1,      &f);
+        axpy(b22, &f3,      &f);
         return f;
     }
     else {
@@ -5212,7 +5212,7 @@ END
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -5223,7 +5223,7 @@ END
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -5245,8 +5245,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 struct double3;
 namespace force_kantor1_hst {
 double3 dih_a(double phi, double kb, double3 a, double3 b, double3 c, double3 d);
@@ -5403,7 +5403,7 @@ END
 
 
 
-// Grouped editable compilation unit for matrix and mesh generation.
+
 
 
 
@@ -5416,7 +5416,7 @@ END
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -5427,7 +5427,7 @@ END
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -5449,24 +5449,24 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 struct Coords;
 struct Coords_v;
 struct float3;
@@ -5481,24 +5481,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -5513,25 +5513,25 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 struct Matrices;
 struct Coords;
 
-void matrices_read(const char *path, /**/ Matrices**); // <1>
-void matrices_read_filter(const char *path, const Coords*, /**/ Matrices**); // <2>
+void matrices_read(const char *path,      Matrices**);
+void matrices_read_filter(const char *path, const Coords*,      Matrices**);
 
-void matrices_get(const Matrices*, int i, /**/ double**); // <3>
-void matrices_get_r(const Matrices*, int i, /**/ double r[3]); // <4>
-int  matrices_get_n(const Matrices*); // <5>
-void matrices_log(const Matrices*);   // <6>
+void matrices_get(const Matrices*, int i,      double**);
+void matrices_get_r(const Matrices*, int i,      double r[3]);
+int  matrices_get_n(const Matrices*);
+void matrices_log(const Matrices*);
 
 void matrices_fin(Matrices*);
 
@@ -5558,16 +5558,16 @@ static int read_matrix(FILE *f, double A[16]) {
     return 1;
 }
 
-void matrices_read(const char *path, /**/ Matrices **pq) {
+void matrices_read(const char *path,      Matrices **pq) {
     int n;
     FILE *f;
     Matrices *q;
     EMALLOC(1, &q);
     EMALLOC(MAX_N, &q->m);
     msg_print("read '%s'", path);
-    UC(efopen(path, "r", /**/ &f));
+    UC(efopen(path, "r",      &f));
     n = 0;
-    while (read_matrix(f, /**/ q->m[n].D)) {
+    while (read_matrix(f,      q->m[n].D)) {
         n++;
         if (n > MAX_N) ERR("n=%d > MAX_N=%d", n, MAX_N);
     }
@@ -5579,22 +5579,22 @@ void matrices_read(const char *path, /**/ Matrices **pq) {
 static int good(const Coords *c, const double A[16]) {
     enum {X, Y, Z};
     double r[3];
-    matrix2r(A, /**/ r);
+    matrix2r(A,      r);
     return
         xlo(c) <= r[X] && r[X] < xhi(c) &&
         ylo(c) <= r[Y] && r[Y] < yhi(c) &&
         zlo(c) <= r[Z] && r[Z] < zhi(c);
 }
-void matrices_read_filter(const char *path, const Coords *c, /**/ Matrices **pq) {
+void matrices_read_filter(const char *path, const Coords *c,      Matrices **pq) {
     int m, n;
     FILE *f;
     Matrices *q;
     EMALLOC(1, &q);
     EMALLOC(MAX_N, &q->m);
     msg_print("read '%s'", path);
-    UC(efopen(path, "r", /**/ &f));
+    UC(efopen(path, "r",      &f));
     n = m = 0;
-    while (read_matrix(f, /**/ q->m[n].D)) {
+    while (read_matrix(f,      q->m[n].D)) {
         m++;
         if (good(c, q->m[n].D)) n++;
         if (n > MAX_N) ERR("n=%d > MAX_N=%d", n, MAX_N);
@@ -5605,21 +5605,21 @@ void matrices_read_filter(const char *path, const Coords *c, /**/ Matrices **pq)
     *pq = q;
 }
 
-void matrices_get(const Matrices *q, int i, /**/ double **pq) {
+void matrices_get(const Matrices *q, int i,      double **pq) {
     int n;
     n = q->n;
     if (i >= n) ERR("i=%d >= n=%d", i, n);
     *pq = q->m[i].D;
 }
 
-void matrices_get_r(const Matrices *q, int k, /**/ double r[3]) {
+void matrices_get_r(const Matrices *q, int k,      double r[3]) {
     enum {X, Y, Z};
     int n;
     double *A;
     n = q->n;
     if (k >= n) ERR("k=%d >= n=%d", k, n);
     A = q->m[k].D;
-    matrix2r(A, /**/ r);
+    matrix2r(A,      r);
 }
 
 int matrices_get_n(const Matrices *q) { return q->n; }
@@ -5653,33 +5653,33 @@ void matrices_fin(Matrices *q) { EFREE(q->m); EFREE(q); }
 #include <assert.h>
 #include <mpi.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -5703,24 +5703,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -5735,13 +5735,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 #ifndef UDX_MESH_DEF_COMMON
@@ -5751,10 +5751,10 @@ int coords_size(const Coords *c);
 #ifndef UDX_EXCH_TYPE_COMMON
 #define UDX_EXCH_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_EXCH_TYPE_COMMON */
+#endif
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -5762,7 +5762,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -5773,7 +5773,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -5795,24 +5795,24 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -5861,7 +5861,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -5889,26 +5889,26 @@ const int4  *mesh_read_get_dih(MeshRead*);
 struct Matrices;
 struct Coords;
 
-void matrices_read(const char *path, /**/ Matrices**); // <1>
-void matrices_read_filter(const char *path, const Coords*, /**/ Matrices**); // <2>
+void matrices_read(const char *path,      Matrices**);
+void matrices_read_filter(const char *path, const Coords*,      Matrices**);
 
-void matrices_get(const Matrices*, int i, /**/ double**); // <3>
-void matrices_get_r(const Matrices*, int i, /**/ double r[3]); // <4>
-int  matrices_get_n(const Matrices*); // <5>
-void matrices_log(const Matrices*);   // <6>
+void matrices_get(const Matrices*, int i,      double**);
+void matrices_get_r(const Matrices*, int i,      double r[3]);
+int  matrices_get_n(const Matrices*);
+void matrices_log(const Matrices*);
 
 void matrices_fin(Matrices*);
 struct Coords;
 struct Particle;
 struct Matrices;
 
-/* vv : vertices of the mesh template : x y z x y z, ...   */
-int  mesh_gen_from_file(const Coords*, const float *vv, const char *ic, int nv, /**/ Particle*); // <1>
-void mesh_gen_from_matrices(int nv, const float *vv, const Matrices*, /**/ int *pn, Particle*);  // <2>
-void mesh_shift(const Coords*, int n, /**/ Particle*); // <3>
 
-static void mult(double A[16], const double a[4], /**/ double b[4]) {
-    /* b = A x a */
+int  mesh_gen_from_file(const Coords*, const float *vv, const char *ic, int nv,      Particle*);
+void mesh_gen_from_matrices(int nv, const float *vv, const Matrices*,      int *pn, Particle*);
+void mesh_shift(const Coords*, int n,      Particle*);
+
+static void mult(double A[16], const double a[4],      double b[4]) {
+
     enum {X, Y, Z, W};
     int c, i;
     for (i = c = 0; c < 4; c++) {
@@ -5919,26 +5919,26 @@ static void mult(double A[16], const double a[4], /**/ double b[4]) {
     }
 }
 
-static void homogenius_multi(double A[16], const float a0[3], /**/ float b0[3]) {
-    /* b = A x [a, 1] */
+static void homogenius_multi(double A[16], const float a0[3],      float b0[3]) {
+
     enum {X, Y, Z, W};
     double a[4], b[4];
     a[X] = a0[X]; a[Y] = a0[Y]; a[Z] = a0[Z]; a[W] = 1;
-    mult(A, a, /**/ b);
+    mult(A, a,      b);
     b0[X] = b[X]; b0[Y] = b[Y]; b0[Z] = b[Z];
 }
 
 static void gen0(double A[16], const float *r, Particle *p) {
     enum {X, Y, Z};
     p->v[X] = p->v[Y] = p->v[Z] = 0;
-    homogenius_multi(A, r, /**/ p->r);
+    homogenius_multi(A, r,      p->r);
 }
 
 static void gen1(double A[16], int nv, const float *rr, Particle *pp) {
     for (int i = 0; i < nv; i++) gen0(A, &rr[3*i], &pp[i]);
 }
 
-void mesh_gen_from_matrices(int nv, const float *rr, const Matrices *matrices, /**/ int *pn, Particle *pp) {
+void mesh_gen_from_matrices(int nv, const float *rr, const Matrices *matrices,      int *pn, Particle *pp) {
     int i, n, nm;
     double *A;
     n = 0;
@@ -5967,8 +5967,8 @@ int mesh_gen_from_file(const Coords *coords, const float *rr0, const char *path,
     int n;
     Matrices *matrices;
     if (nv <= 0) ERR("nv <= 0");
-    UC(matrices_read_filter(path, coords, /**/ &matrices));
-    UC(mesh_gen_from_matrices(nv, rr0, matrices, /**/ &n, pp));
+    UC(matrices_read_filter(path, coords,      &matrices));
+    UC(mesh_gen_from_matrices(nv, rr0, matrices,      &n, pp));
     UC(mesh_shift(coords, n, pp));
     UC(matrices_fin(matrices));
     return n / nv;
@@ -5985,33 +5985,33 @@ int mesh_gen_from_file(const Coords *coords, const float *rr0, const char *path,
 #include <assert.h>
 #include <stdio.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -6021,23 +6021,23 @@ int mesh_gen_from_file(const Coords *coords, const float *rr0, const char *path,
 #endif
 
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -6045,7 +6045,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -6056,7 +6056,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -6078,10 +6078,10 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -6090,39 +6090,39 @@ void error_print_stack();
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_EXCH_KL_COMMON
 #define UDX_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -6130,7 +6130,7 @@ void error_print_stack();
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -6143,38 +6143,38 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_EXCH_TYPE_COMMON
 #define UDX_EXCH_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_EXCH_TYPE_COMMON */
+#endif
 #ifndef UDX_EXCH_DEVICE_API_COMMON
 #define UDX_EXCH_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_EXCH_DEVICE_API_COMMON */
+#endif
 
 #ifndef UDX_MESH_FORCE_KANTOR_COMMON_CUH
 #define UDX_MESH_FORCE_KANTOR_COMMON_CUH
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -6186,14 +6186,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -6201,14 +6201,14 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
@@ -6229,36 +6229,36 @@ struct MeshInfo {
     const int4 *tt;
 };
 
-void mesh_bounce_ini(int maxpp, /**/ MeshBB **d);
-void mesh_bounce_fin(/**/ MeshBB *d);
+void mesh_bounce_ini(int maxpp,      MeshBB **d);
+void mesh_bounce_fin(     MeshBB *d);
 
-void mesh_bounce_reini(int n, /**/ MeshBB *d);  // <1>
+void mesh_bounce_reini(int n,      MeshBB *d);
 void mesh_bounce_find_collisions(float dt, int nm, MeshInfo meshinfo, const Positioncp *i_rr, int3 L,
-                                 const int *starts, const int *counts, const Particle *pp, const Particle *pp0, /**/ MeshBB *d);  // <2>
-void mesh_bounce_select_collisions(int n, /**/ MeshBB *d);  // <3>
+                                 const int *starts, const int *counts, const Particle *pp, const Particle *pp0,      MeshBB *d);
+void mesh_bounce_select_collisions(int n,      MeshBB *d);
 void mesh_bounce_bounce(float dt, float mass, int n, const MeshBB *d, MeshInfo meshinfo,
-                        const Positioncp *i_rr, const Particle *pp0, /**/ Particle *pp, Momentum *mm);  // <4>
+                        const Positioncp *i_rr, const Particle *pp0,      Particle *pp, Momentum *mm);
 
-void mesh_bounce_collect_rig_momentum(int ns, MeshInfo meshinfo, const Particle *pp, const Momentum *mm, /**/ Rigid *ss); // <1>
-void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Momentum *mm, /**/ Particle *pp);            // <2>
+void mesh_bounce_collect_rig_momentum(int ns, MeshInfo meshinfo, const Particle *pp, const Momentum *mm,      Rigid *ss);
+void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Momentum *mm,      Particle *pp);
 struct MeshBB {
-    int *ncols;       /* number of possible collisions per particle      */
-    float4 *datacol;  /* list of data related to collisions per particle */
-    int *idcol;       /* list of triangle colliding ids per particle     */
+    int *ncols;
+    float4 *datacol;
+    int *idcol;
 };
 
-/* conf */
+
 enum {MAX_COL = 4};
 
 #define make_enum(a) a ,
 #define make_str(a) #a ,
 
 #define bbstates(_)                                                 \
-    _(BB_SUCCESS)   /* succesfully bounced                       */ \
-    _(BB_NOCROSS)   /* did not cross the plane                   */ \
-    _(BB_WTRIANGLE) /* [w]rong triangle                          */ \
-    _(BB_HFAIL)     /* no time solution h                        */ \
-    _(BB_MAXCOL)    /* maximum number of collisions reached      */
+    _(BB_SUCCESS)                                                   \
+    _(BB_NOCROSS)                                                   \
+    _(BB_WTRIANGLE)                                                 \
+    _(BB_HFAIL)                                                     \
+    _(BB_MAXCOL)
 
 enum BBState {
     bbstates(make_enum)
@@ -6275,8 +6275,8 @@ static const char *bbstatenames[] = {bbstates(make_str)};
 #define _S_ static __device__
 
 namespace mesh_bounce_dev {
-// typedef double   real_t;
-// typedef double3 real3_t;
+
+
 
 typedef float   real_t;
 typedef float3 real3_t;
@@ -6342,10 +6342,10 @@ _I_ bool quadratic(real a, real b, real c, real *h0, real *h1) {
     return true;
 }
 
-/* code copied from gsl library; gsl_poly_solve_cubic (see end of file for initial header)
-   https://www.gnu.org/software/gsl/
-   slightly adapted
-*/
+
+
+
+
 
 template <typename real>
 _I_ int cubic(real a, real b, real c,
@@ -6369,12 +6369,12 @@ _I_ int cubic(real a, real b, real c,
         return 3 ;
     }
     else if (CR2 == CQ3) {
-        /* this test is actually R2 == Q3, written in a form suitable
-           for exact computation with integers */
 
-        /* Due to finite precision some real roots may be missed, and
-           considered to be a pair of complex roots z = x +/- epsilon i
-           close to the real axis. */
+
+
+
+
+
 
         real sqrtQ = sqrt (Q);
 
@@ -6397,7 +6397,7 @@ _I_ int cubic(real a, real b, real c,
         *x1 = norm * cos ((theta + 2.0 * M_PI) / 3) - a / 3;
         *x2 = norm * cos ((theta - 2.0 * M_PI) / 3) - a / 3;
 
-        /* Sort *x0, *x1, *x2 into increasing order */
+
 
         if (*x0 > *x1)
             SWAP(*x0, *x1) ;
@@ -6419,26 +6419,26 @@ _I_ int cubic(real a, real b, real c,
     }
 }
 
-/* poly/solve_cubic.c
- *
- * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2007, 2009 Brian Gough
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or (at
- * your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
 
-/* solve_cubic.c - finds the real roots of x^3 + a x^2 + b x + c = 0 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 typedef double real;
 typedef double3 real3;
 #ifndef UDX_MESH_COORD_COMMON
@@ -6483,15 +6483,15 @@ _I_ int3 get_cidx(int3 L, real3_t r) {
 
 _I_ bool valid_time(real dt, real t) {return (t >= 0 && t <= dt);}
 
-// BB assumes r0 + v0 dt = r1
-_I_ void vprev(real dt, const real3_t *r1, const real3_t *r0, /**/ real3_t *v0) {
+
+_I_ void vprev(real dt, const real3_t *r1, const real3_t *r0,      real3_t *v0) {
     v0->x = (r1->x - r0->x) / dt;
     v0->y = (r1->y - r0->y) / dt;
     v0->z = (r1->z - r0->z) / dt;
 }
 
 _I_ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Particle *i_pp,
-                        /**/ rPa *A, rPa *B, rPa *C) {
+                             rPa *A, rPa *B, rPa *C) {
     int4 t;
     int tid, mid;
     tid = id % nt;
@@ -6508,7 +6508,7 @@ _I_ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Particle *
 }
 
 _I_ void fetch_triangle(float dt, int id, int nt, int nv, const int4 *tt, const Positioncp *i_rr,
-                        /**/ rPa *A, rPa *B, rPa *C) {
+                             rPa *A, rPa *B, rPa *C) {
     int4 t;
     int tid, mid;
     tid = id % nt;
@@ -6524,7 +6524,7 @@ _I_ void fetch_triangle(float dt, int id, int nt, int nv, const int4 *tt, const 
     *C = fetch_Part(dt, t.z, i_rr);
 }
 
-_I_ void bounce_back(real dt, const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h, /**/ rPa *pn) {
+_I_ void bounce_back(real dt, const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h,      rPa *pn) {
     pn->v.x = 2 * vw->x - p0->v.x;
     pn->v.y = 2 * vw->y - p0->v.y;
     pn->v.z = 2 * vw->z - p0->v.z;
@@ -6534,13 +6534,13 @@ _I_ void bounce_back(real dt, const rPa *p0, const real3_t *rw, const real3_t *v
     pn->r.z = rw->z + (dt-h) * pn->v.z;
 }
 
-_I_ void lin_mom_change(float m, const real3_t v0, const real3_t v1, /**/ float dP[3]) {
+_I_ void lin_mom_change(float m, const real3_t v0, const real3_t v1,      float dP[3]) {
     dP[X] = - m * (v1.x - v0.x);
     dP[Y] = - m * (v1.y - v0.y);
     dP[Z] = - m * (v1.z - v0.z);
 }
 
-_I_ void ang_mom_change(float m, real3_t rc, real3_t r0, real3_t v0, real3_t r1, real3_t v1, /**/ float dL[3]) {
+_I_ void ang_mom_change(float m, real3_t rc, real3_t r0, real3_t v0, real3_t r1, real3_t v1,      float dL[3]) {
     r0.x -= rc.x; r0.y -= rc.y; r0.z -= rc.z;
     r1.x -= rc.x; r1.y -= rc.y; r1.z -= rc.z;
 
@@ -6549,8 +6549,8 @@ _I_ void ang_mom_change(float m, real3_t rc, real3_t r0, real3_t v0, real3_t r1,
     dL[Z] = - m * (r1.x * v1.y - r1.y * v1.x  -  r0.x * v0.y + r0.y - v0.x);
 }
 
-/* shift origin from 0 to R for ang momentum */
-_I_ void mom_shift_ref(const real3_t r, /**/ Momentum *m) {
+
+_I_ void mom_shift_ref(const real3_t r,      Momentum *m) {
     m->L[X] -= r.y * m->P[Z] - r.z * m->P[Y];
     m->L[Y] -= r.z * m->P[X] - r.x * m->P[Z];
     m->L[Z] -= r.x * m->P[Y] - r.y * m->P[X];
@@ -6564,10 +6564,10 @@ _I_ bool nonzero(const Momentum *m) {
 }
 
 enum {XX, XY, XZ, YY, YZ, ZZ};
-/* see /poc/bounce-back/trianglemom.mac */
 
-/* inertia tensor w.r.t. com of triangle */
-_S_ void compute_I(float mass, const real3_t a, const real3_t b, const real3_t c, /**/ real_t I[6]) {
+
+
+_S_ void compute_I(float mass, const real3_t a, const real3_t b, const real3_t c,      real_t I[6]) {
 
     real3_t M, d, e;
     const real_t inv_12 = 1.f/12.f;
@@ -6594,16 +6594,16 @@ _S_ void compute_I(float mass, const real3_t a, const real3_t b, const real3_t c
     I[YZ] = - inv_24 * mass * (e.x * a.z + e.y * b.z + e.z * c.z);
 }
 
-_S_ void inverse(const real_t A[6], /**/ real_t I[6]) {
+_S_ void inverse(const real_t A[6],      real_t I[6]) {
 
-    /* minors */
+
     const real_t mx = A[YY] * A[ZZ] - A[YZ] * A[YZ];
     const real_t my = A[XY] * A[ZZ] - A[XZ] * A[YZ];
     const real_t mz = A[XY] * A[YZ] - A[XZ] * A[YY];
 
-    /* inverse determinant */
+
     real_t idet = mx * A[XX] - my * A[XY] + mz * A[XZ];
-    //assert( fabs(idet) > 1e-8f );
+
     idet = 1.f / idet;
 
     I[XX] =  idet * mx;
@@ -6614,35 +6614,35 @@ _S_ void inverse(const real_t A[6], /**/ real_t I[6]) {
     I[ZZ] =  idet * (A[XX] * A[YY] - A[XY] * A[XY]);
 }
 
-_S_ void rigid_motion_vel(const real3_t r, const real3_t om, const real3_t v0, /**/ real3_t *v) {
+_S_ void rigid_motion_vel(const real3_t r, const real3_t om, const real3_t v0,      real3_t *v) {
     v->x = v0.x + r.y * om.z - r.z * om.y;
     v->y = v0.y + r.z * om.x - r.x * om.z;
     v->z = v0.z + r.x * om.y - r.y * om.x;
 }
 
 _I_ void rbc_M2v(float mass, const Momentum m, real3_t a, real3_t b, real3_t c,
-                 /**/ real3_t *va, real3_t *vb, real3_t *vc) {
+                      real3_t *va, real3_t *vb, real3_t *vc) {
 
     real_t I[6], Iinv[6], inv_mass;
     real3_t om, v, com;
 
     const real_t one_third = 1.f / 3.f;
 
-    compute_I(mass, a, b, c, /**/ I);
-    inverse(I, /**/ Iinv);
+    compute_I(mass, a, b, c,      I);
+    inverse(I,      Iinv);
 
-    /* angular velocity to be added (w.r.t. com of triangle) */
+
     om.x = one_third * (Iinv[XX] * m.L[X] + Iinv[XY] * m.L[Y] + Iinv[XZ] * m.L[Z]);
     om.y = one_third * (Iinv[XY] * m.L[X] + Iinv[YY] * m.L[Y] + Iinv[YZ] * m.L[Z]);
     om.z = one_third * (Iinv[XZ] * m.L[X] + Iinv[YZ] * m.L[Y] + Iinv[ZZ] * m.L[Z]);
 
-    /* linear velocity to be added */
+
     inv_mass = 1.0 / mass;
     v.x =  one_third * m.P[X] * inv_mass;
     v.y =  one_third * m.P[Y] * inv_mass;
     v.z =  one_third * m.P[Z] * inv_mass;
 
-    /* referential is com of triangle, shift it */
+
     com.x = one_third * (a.x + b.x + c.x);
     com.y = one_third * (a.y + b.y + c.y);
     com.z = one_third * (a.z + b.z + c.z);
@@ -6655,11 +6655,11 @@ _I_ void rbc_M2v(float mass, const Momentum m, real3_t a, real3_t b, real3_t c,
     rigid_motion_vel(b, om, v, vb);
     rigid_motion_vel(c, om, v, vc);
 }
-static __device__ bool cubic_root(real dt, real a, real b, real c, real d, /**/ real *h) {
+static __device__ bool cubic_root(real dt, real a, real b, real c, real d,      real *h) {
     const real eps = 1e-8;
     real h1, h2, h3;
 
-    if (fabs(a) > eps) { // cubic
+    if (fabs(a) > eps) {
         b /= a;
         c /= a;
         d /= a;
@@ -6670,12 +6670,12 @@ static __device__ bool cubic_root(real dt, real a, real b, real c, real d, /**/ 
         if (nsol > 1 && valid_time(dt, h2)) {*h = h2; return true;}
         if (nsol > 2 && valid_time(dt, h3)) {*h = h3; return true;}
     }
-    else if (fabs(b) > eps) { // quadratic
+    else if (fabs(b) > eps) {
         if (!quadratic(b, c, d, &h1, &h2)) return false;
         if (valid_time(dt, h1)) {*h = h1; return true;}
         if (valid_time(dt, h2)) {*h = h2; return true;}
     }
-    else if (fabs(c) > eps) { // linear
+    else if (fabs(c) > eps) {
         h1 = -d/c;
         if (valid_time(dt, h1)) {*h = h1; return true;}
     }
@@ -6683,62 +6683,62 @@ static __device__ bool cubic_root(real dt, real a, real b, real c, real d, /**/ 
     return false;
 }
 
-/* see Fedosov PhD Thesis */
+
 _I_ BBState intersect_triangle(real dt,
                                const real3_t *s10, const real3_t *s20, const real3_t *s30,
                                const real3_t *vs1, const real3_t *vs2, const real3_t *vs3,
-                               const rPa *p0,  /**/ real_t *h, real_t *u, real_t *v, real_t *s) {
+                               const rPa *p0,       real_t *h, real_t *u, real_t *v, real_t *s) {
 
     real3 a1, a2, at1, at2, n0, nt, ntt, dr0;
 
-    diff(s20, s10, /**/ &a1);
-    diff(s30, s10, /**/ &a2);
+    diff(s20, s10,      &a1);
+    diff(s30, s10,      &a2);
 
-    diff(vs2, vs1, /**/ &at1);
-    diff(vs3, vs1, /**/ &at2);
+    diff(vs2, vs1,      &at1);
+    diff(vs3, vs1,      &at2);
 
-    /* n(t) = n + t*nt + t^2 * ntt */
-    cross(&a1, &a2, /**/ &n0);
-    cross(&at1, &at2, /**/ &ntt);
+
+    cross(&a1, &a2,      &n0);
+    cross(&at1, &at2,      &ntt);
 
     nt.x = a1.y * at2.z - a1.z * at2.y  +  at1.y * a2.z - at1.z * a2.y;
     nt.y = a1.z * at2.x - a1.x * at2.z  +  at1.z * a2.x - at1.x * a2.z;
     nt.z = a1.x * at2.y - a1.y * at2.x  +  at1.x * a2.y - at1.y * a2.x;
 
-    diff(&p0->r, s10, /**/ &dr0);
+    diff(&p0->r, s10,      &dr0);
 
-    /* check intersection with plane */
+
     {
         real3 r1, s11, n1, dr1;
         real b0, b1;
 
-        apxb(&p0->r, dt, &p0->v, /**/ &r1);
-        apxb(s10, dt, vs1, /**/ &s11);
+        apxb(&p0->r, dt, &p0->v,      &r1);
+        apxb(s10, dt, vs1,      &s11);
 
         n1.x = n0.x + dt * (nt.x + dt * ntt.x);
         n1.y = n0.y + dt * (nt.y + dt * ntt.y);
         n1.z = n0.z + dt * (nt.z + dt * ntt.z);
 
-        diff(&r1, &s11, /**/ &dr1);
+        diff(&r1, &s11,      &dr1);
 
         b0 = dot<real>(&dr0, &n0);
         b1 = dot<real>(&dr1, &n1);
 
-        /* sign : which side does the particle belong? */
+
         *s = b0 > 0 ? 1 : -1;
 
         if (b0 * b1 > 0)
             return BB_NOCROSS;
     }
 
-    /* find intersection time with plane */
+
     real hl;
 
     {
         real3 dv;
         real a, b, c, d;
 
-        diff(&p0->v, vs1, /**/ &dv);
+        diff(&p0->v, vs1,      &dv);
 
         a = dot<real>(&ntt, &dv);
         b = dot<real>(&ntt, &dr0) + dot<real>(&nt, &dv);
@@ -6752,15 +6752,15 @@ _I_ BBState intersect_triangle(real dt,
     real3 rwl, g, a1_, a2_;
     real ga1, ga2, a11, a22, a12, fac, ul, vl;
 
-    apxb(&p0->r, hl, &p0->v, /**/ &rwl);
+    apxb(&p0->r, hl, &p0->v,      &rwl);
 
-    /* check if inside triangle */
+
     g.x = rwl.x - s10->x - hl * vs1->x;
     g.y = rwl.y - s10->y - hl * vs1->y;
     g.z = rwl.z - s10->z - hl * vs1->z;
 
-    apxb(&a1, hl, &at1, /**/ &a1_);
-    apxb(&a2, hl, &at2, /**/ &a2_);
+    apxb(&a1, hl, &at1,      &a1_);
+    apxb(&a2, hl, &at2,      &a2_);
 
     ga1 = dot<real>(&g, &a1_);
     ga2 = dot<real>(&g, &a2_);
@@ -6783,7 +6783,7 @@ _I_ BBState intersect_triangle(real dt,
     return BB_SUCCESS;
 }
 _S_ void rig_transform_mom(real3_t dr, Momentum *m) {
-    mom_shift_ref(dr, /**/ m);
+    mom_shift_ref(dr,      m);
 
     m->L[X] += dr.y * m->P[Z] - dr.z * m->P[Y];
     m->L[Y] += dr.z * m->P[X] - dr.x * m->P[Z];
@@ -6813,8 +6813,8 @@ _S_ void rig_add_ang_mom(const float Iinv[], const float L[3], float *om) {
     atomicAdd(&om[Z], dom[Z]);
 }
 
-/* assume very small portion of non zero momentum changes */
-__global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Rigid *ss) {
+
+__global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm,      Rigid *ss) {
     int i, sid;
     Rigid *s;
     i = threadIdx.x + blockDim.x * blockIdx.x;
@@ -6830,7 +6830,7 @@ __global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Pa
         rPa A, B, C;
         real3_t dr;
 
-        fetch_triangle(i, nt, nv, tt, pp, /**/ &A, &B, &C);
+        fetch_triangle(i, nt, nv, tt, pp,      &A, &B, &C);
 
         dr.x = s->com[X];
         dr.y = s->com[Y];
@@ -6854,7 +6854,7 @@ _S_ void addVel(const real3_t v, int i, Particle *pp) {
     atomicAdd(pp[i].v + Z, v.z);
 }
 
-__global__ void collect_rbc_mom(float mass, int nc, int nt, int nv, const int4 *tt, const Momentum *mm, /**/ Particle *pp) {
+__global__ void collect_rbc_mom(float mass, int nc, int nt, int nv, const int4 *tt, const Momentum *mm,      Particle *pp) {
     int i, cid, tid;
     int4 t;
     i = threadIdx.x + blockDim.x * blockIdx.x;
@@ -6879,16 +6879,16 @@ __global__ void collect_rbc_mom(float mass, int nc, int nt, int nv, const int4 *
         B = fetch_Part(t.y, pp);
         C = fetch_Part(t.z, pp);
 
-        rbc_M2v(mass, m, A.r, B.r, C.r, /**/ &va, &vb, &vc);
+        rbc_M2v(mass, m, A.r, B.r, C.r,      &va, &vb, &vc);
 
-        addVel(va, t.x, /**/ pp);
-        addVel(vb, t.y, /**/ pp);
-        addVel(vc, t.z, /**/ pp);
+        addVel(va, t.x,      pp);
+        addVel(vb, t.y,      pp);
+        addVel(vc, t.z,      pp);
     }
 }
 static const real_t TOL = 0.1;
 
-_S_ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_t C, /**/ int3 *lo, int3 *hi) {
+_S_ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_t C,      int3 *lo, int3 *hi) {
     real3_t lf, hf;
     lf = min3T3(A, B, C);
     hf = max3T3(A, B, C);
@@ -6902,7 +6902,7 @@ _S_ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_t C, /**/ int3
 
 _S_ void find_collisions_cell(real dt, int tid, int start, int count, const Particle *pp, const Particle *pp0,
                               const rPa *A, const rPa *B, const rPa *C,
-                              /**/ int *ncol, float4 *datacol, int *idcol) {
+                                   int *ncol, float4 *datacol, int *idcol) {
     int i, entry;
     rPa p, p0;
     BBState state;
@@ -6912,9 +6912,9 @@ _S_ void find_collisions_cell(real dt, int tid, int start, int count, const Part
         p  = fetch_Part(i, pp);
         p0 = fetch_Part(i, pp0);
 
-        vprev(dt, &p.r, &p0.r, /**/ &p0.v);
+        vprev(dt, &p.r, &p0.r,      &p0.v);
 
-        state = intersect_triangle(dt, &A->r, &B->r, &C->r, &A->v, &B->v, &C->v, &p0, /**/ &tc, &u, &v, &s);
+        state = intersect_triangle(dt, &A->r, &B->r, &C->r, &A->v, &B->v, &C->v, &p0,      &tc, &u, &v, &s);
 
         if (state == BB_SUCCESS) {
             entry = atomicAdd(ncol + i, 1);
@@ -6940,7 +6940,7 @@ _S_ void revert_r(float h, rPa *p) {
 
 __global__ void find_collisions(float dt, int nm, int nt, int nv, const int4 *tt, const Positioncp *i_rr,
                                 int3 L, const int *starts, const int *counts, const Particle *pp, const Particle *pp0,
-                                /**/ int *ncol, float4 *datacol, int *idcol) {
+                                     int *ncol, float4 *datacol, int *idcol) {
 
     int gid, ix, iy, iz, cid;
     rPa A, B, C;
@@ -6949,20 +6949,20 @@ __global__ void find_collisions(float dt, int nm, int nt, int nv, const int4 *tt
 
     if (gid >= nm * nt) return;
 
-    fetch_triangle(dt, gid, nt, nv, tt, i_rr, /**/ &A, &B, &C);
+    fetch_triangle(dt, gid, nt, nv, tt, i_rr,      &A, &B, &C);
 
     revert_r(dt, &A);
     revert_r(dt, &B);
     revert_r(dt, &C);
 
-    get_cells(L, TOL, A.r, B.r, C.r, /**/ &str, &end);
+    get_cells(L, TOL, A.r, B.r, C.r,      &str, &end);
 
     for (iz = str.z; iz <= end.z; ++iz) {
         for (iy = str.y; iy <= end.y; ++iy) {
             for (ix = str.x; ix <= end.x; ++ix) {
                 cid = ix + L.x * (iy + L.y * iz);
 
-                find_collisions_cell(dt, gid, starts[cid], counts[cid], pp, pp0, &A, &B, &C, /**/ ncol, datacol, idcol);
+                find_collisions_cell(dt, gid, starts[cid], counts[cid], pp, pp0, &A, &B, &C,      ncol, datacol, idcol);
             }
         }
     }
@@ -6970,7 +6970,7 @@ __global__ void find_collisions(float dt, int nm, int nt, int nv, const int4 *tt
 
 static const float MAX_T = 1e6f;
 
-__global__ void select_collisions(int n, /**/ int *ncol, float4 *datacol, int *idcol) {
+__global__ void select_collisions(int n,      int *ncol, float4 *datacol, int *idcol) {
     int i, c, j, dst, src, argmin;
     float tmin;
     float4 d;
@@ -6995,17 +6995,17 @@ __global__ void select_collisions(int n, /**/ int *ncol, float4 *datacol, int *i
         dst = MAX_COL * i;
         idcol[dst]   = idcol[src];
         datacol[dst] = datacol[src];
-        ncol[i] = 1; /* we can use find_collisions again */
+        ncol[i] = 1;
     }
 }
 
 _S_ void get_collision_point(real dt,
                              const float4 dcol, rPa A, rPa B, rPa C,
-                             /**/ real3_t *rw, real3_t *vw) {
+                                  real3_t *rw, real3_t *vw) {
     enum {X, Y, Z};
     float h, u, v, w;
 
-    /* d.x is collision time */
+
     h = dt - dcol.x;
     revert_r(h, &A);
     revert_r(h, &B);
@@ -7024,13 +7024,13 @@ _S_ void get_collision_point(real dt,
     vw->z = w * A.v.z + u * B.v.z + v * C.v.z;
 }
 
-_S_ void push_particle(const real3_t *A, const real3_t *B, const real3_t *C, real_t l, /**/ real3_t *r) {
+_S_ void push_particle(const real3_t *A, const real3_t *B, const real3_t *C, real_t l,      real3_t *r) {
     real3_t n, a, b;
     real_t s;
 
-    diff(B, A, /**/ &a);
-    diff(C, A, /**/ &b);
-    cross(&a, &b, /**/ &n);
+    diff(B, A,      &a);
+    diff(C, A,      &b);
+    cross(&a, &b,      &n);
     s = dot<real_t>(&n, &n);
     s = rsqrtf(s);
     n.x *= s;
@@ -7052,7 +7052,7 @@ static __device__ void atomicAddf3(float d[3], const float s[3]) {
 __global__ void perform_collisions(float dt, float mass,
                                    int n, const int *ncol, const float4 *datacol, const int *idcol,
                                    int nt, int nv, const int4 *tt, const Positioncp *i_rr, const Particle *pp0,
-                                   /**/ Particle *pp, Momentum *mm) {
+                                        Particle *pp, Momentum *mm) {
     int i, id, entry;
     float4 d;
     rPa p1, p0, pn, A, B, C;
@@ -7071,34 +7071,34 @@ __global__ void perform_collisions(float dt, float mass,
     p0 = fetch_Part(i, pp0);
     p1 = fetch_Part(i, pp);
 
-    vprev(dt, &p1.r, &p0.r, /**/ &p0.v);
+    vprev(dt, &p1.r, &p0.r,      &p0.v);
 
-    fetch_triangle(dt, id, nt, nv, tt, i_rr, /**/ &A, &B, &C);
+    fetch_triangle(dt, id, nt, nv, tt, i_rr,      &A, &B, &C);
 
-    get_collision_point(dt, d, A, B, C, /**/ &rw, &vw);
+    get_collision_point(dt, d, A, B, C,      &rw, &vw);
 
-    bounce_back(dt, &p0, &rw, &vw, d.x, /**/ &pn);
+    bounce_back(dt, &p0, &rw, &vw, d.x,      &pn);
 
-    push_particle(&A.r, &B.r, &C.r, d.w * eps, /**/ &pn.r);
+    push_particle(&A.r, &B.r, &C.r, d.w * eps,      &pn.r);
 
-    write_Part(&pn, i, /**/ pp);
+    write_Part(&pn, i,      pp);
 
-    /* add momentum (ang mom in ref of the triangle com) */
-    /* shift in new ref */
+
+
 
     rc.x = 0.333333 * (A.r.x + B.r.x + C.r.x);
     rc.y = 0.333333 * (A.r.y + B.r.y + C.r.y);
     rc.z = 0.333333 * (A.r.z + B.r.z + C.r.z);
 
-    lin_mom_change(mass,           p1.v,       pn.v, /**/ m.P);
-    ang_mom_change(mass, rc, p1.r, p1.v, pn.r, pn.v, /**/ m.L);
+    lin_mom_change(mass,           p1.v,       pn.v,      m.P);
+    ang_mom_change(mass, rc, p1.r, p1.v, pn.r, pn.v,      m.L);
 
     atomicAddf3(mm[id].P, m.P);
     atomicAddf3(mm[id].L, m.L);
 }
 }
 
-void mesh_bounce_ini(int maxpp, /**/ MeshBB **meshbb) {
+void mesh_bounce_ini(int maxpp,      MeshBB **meshbb) {
     MeshBB *mbb;
     EMALLOC(1, meshbb);
     mbb = *meshbb;
@@ -7107,41 +7107,41 @@ void mesh_bounce_ini(int maxpp, /**/ MeshBB **meshbb) {
     Dalloc(&mbb->idcol,   maxpp * MAX_COL);
 }
 
-void mesh_bounce_fin(/**/ MeshBB *mbb) {
+void mesh_bounce_fin(     MeshBB *mbb) {
     Dfree(mbb->ncols);
     Dfree(mbb->datacol);
     Dfree(mbb->idcol);
     EFREE(mbb);
 }
 
-void mesh_bounce_reini(int n, /**/ MeshBB *mbb) {
+void mesh_bounce_reini(int n,      MeshBB *mbb) {
     CC(d::MemsetAsync(mbb->ncols, 0, n * sizeof(int)));
 }
 
 void mesh_bounce_find_collisions(float dt, int nm, MeshInfo mi, const Positioncp *i_rr, int3 L,
                                  const int *starts, const int *counts, const Particle *pp, const Particle *pp0,
-                                 /**/ MeshBB *d) {
+                                      MeshBB *d) {
     if (!nm) return;
     KL(mesh_bounce_dev::find_collisions, (k_cnf(nm * mi.nt)),
-       (dt, nm, mi.nt, mi.nv, mi.tt, i_rr, L, starts, counts, pp, pp0, /**/ d->ncols, d->datacol, d->idcol));
+       (dt, nm, mi.nt, mi.nv, mi.tt, i_rr, L, starts, counts, pp, pp0,      d->ncols, d->datacol, d->idcol));
 }
 
-void mesh_bounce_select_collisions(int n, /**/ MeshBB *mbb) {
-    KL(mesh_bounce_dev::select_collisions, (k_cnf(n)), (n, /**/ mbb->ncols, mbb->datacol, mbb->idcol));
+void mesh_bounce_select_collisions(int n,      MeshBB *mbb) {
+    KL(mesh_bounce_dev::select_collisions, (k_cnf(n)), (n,      mbb->ncols, mbb->datacol, mbb->idcol));
 }
 
 void mesh_bounce_bounce(float dt, float mass, int n, const MeshBB *mbb, MeshInfo mi, const Positioncp *i_rr,
-                   const Particle *pp0, /**/ Particle *pp, Momentum *mm) {
+                   const Particle *pp0,      Particle *pp, Momentum *mm) {
     KL(mesh_bounce_dev::perform_collisions, (k_cnf(n)),
-       (dt, mass, n, mbb->ncols, mbb->datacol, mbb->idcol, mi.nt, mi.nv, mi.tt, i_rr, pp0, /**/ pp, mm));
+       (dt, mass, n, mbb->ncols, mbb->datacol, mbb->idcol, mi.nt, mi.nv, mi.tt, i_rr, pp0,      pp, mm));
 }
 
-void mesh_bounce_collect_rig_momentum(int ns, MeshInfo mi, const Particle *pp, const Momentum *mm, /**/ Rigid *ss) {
-    KL(mesh_bounce_dev::collect_rig_mom, (k_cnf(ns * mi.nt)), (ns, mi.nt, mi.nv, mi.tt, pp, mm, /**/ ss));
+void mesh_bounce_collect_rig_momentum(int ns, MeshInfo mi, const Particle *pp, const Momentum *mm,      Rigid *ss) {
+    KL(mesh_bounce_dev::collect_rig_mom, (k_cnf(ns * mi.nt)), (ns, mi.nt, mi.nv, mi.tt, pp, mm,      ss));
 }
 
-void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Momentum *mm, /**/ Particle *pp) {
-    KL(mesh_bounce_dev::collect_rbc_mom, (k_cnf(nc * mi.nt)), (mass, nc, mi.nt, mi.nv, mi.tt, mm, /**/ pp));
+void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Momentum *mm,      Particle *pp) {
+    KL(mesh_bounce_dev::collect_rbc_mom, (k_cnf(nc * mi.nt)), (mass, nc, mi.nt, mi.nv, mi.tt, mm,      pp));
 }
 
 #undef _I_
@@ -7151,10 +7151,10 @@ void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Mom
 
 
 
-// Grouped editable compilation unit for particle, force, and paired arrays.
 
 
-// Grouped editable compilation unit for the particle and force array views.
+
+
 
 
 
@@ -7178,8 +7178,8 @@ void parray_push_cc(const int *cc, PaArray *a);
 
 bool parray_is_colored(const PaArray *a);
 
-void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
-void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+void parray_get_view(const PaArray *a, PaArray_v *v);
+void parray_get_view(const PaArray *a, PaCArray_v *v);
 #endif
 
 struct PaArray_v {
@@ -7188,7 +7188,7 @@ struct PaArray_v {
 
 struct PaCArray_v {
     const float *pp;
-    const int *cc;   /* colors */
+    const int *cc;
 };
 void parray_push_pp(const Particle *pp, PaArray *a) {
     a->pp = (const float*)pp;
@@ -7225,7 +7225,7 @@ void parray_get_view(const PaArray *a, PaCArray_v *v) {
 struct FoArray {
     bool stress;
     float *ff;
-    float *ss; /* stress */
+    float *ss;
 };
 
 struct FoArray_v;
@@ -7240,8 +7240,8 @@ void farray_clear(FoArray *);
 
 bool farray_has_stress(const FoArray *a);
 
-void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
-void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+void farray_get_view(const FoArray *a, FoArray_v *v);
+void farray_get_view(const FoArray *a, FoSArray_v *v);
 #endif
 
 struct FoArray_v {
@@ -7289,7 +7289,7 @@ void farray_get_view(const FoArray *a, FoSArray_v *v) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -7300,7 +7300,7 @@ void farray_get_view(const FoArray *a, FoSArray_v *v) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -7322,27 +7322,27 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
 #ifndef UDX_EXCH_TYPE_COMMON
 #define UDX_EXCH_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_EXCH_TYPE_COMMON */
+#endif
 
 #ifndef UDX_STRUCT_PARRAY_COMMON
 #define UDX_STRUCT_PARRAY_COMMON
@@ -7362,15 +7362,15 @@ void parray_push_cc(const int *cc, PaArray *a);
 
 bool parray_is_colored(const PaArray *a);
 
-void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
-void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+void parray_get_view(const PaArray *a, PaArray_v *v);
+void parray_get_view(const PaArray *a, PaCArray_v *v);
 #endif
 #ifndef UDX_STRUCT_FARRAY_COMMON
 #define UDX_STRUCT_FARRAY_COMMON
 struct FoArray {
     bool stress;
     float *ff;
-    float *ss; /* stress */
+    float *ss;
 };
 
 struct FoArray_v;
@@ -7385,8 +7385,8 @@ void farray_clear(FoArray *);
 
 bool farray_has_stress(const FoArray *a);
 
-void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
-void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+void farray_get_view(const FoArray *a, FoArray_v *v);
+void farray_get_view(const FoArray *a, FoSArray_v *v);
 #endif
 
 struct PFarray {
