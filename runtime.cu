@@ -19763,8 +19763,7 @@ void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr);
 void convert_pp2rr_previous(long n, const Particle *pp, Positioncp *rr);
 void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp);
 
-namespace convert_dev {
-__global__ void pp2rr_current (long n, const Particle *pp, Positioncp *rr) {
+__global__ void convert_pp2rr_current_kernel (long n, const Particle *pp, Positioncp *rr) {
     enum {X, Y, Z};
     const float *s;
     float *d;
@@ -19779,7 +19778,7 @@ __global__ void pp2rr_current (long n, const Particle *pp, Positioncp *rr) {
     d[Z] = s[Z];
 }
 
-__global__ void pp2rr_previous(long n, const Particle *pp, Positioncp *rr) {
+__global__ void convert_pp2rr_previous_kernel(long n, const Particle *pp, Positioncp *rr) {
     enum {X, Y, Z};
     const float *s;
     float *d;
@@ -19794,7 +19793,7 @@ __global__ void pp2rr_previous(long n, const Particle *pp, Positioncp *rr) {
     d[Z] = s[Z];
 }
 
-__global__ void pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
+__global__ void convert_pp2f4_pos_kernel(int n, const float *pp, /**/ float4 *zpp) {
     enum {X, Y, Z};
     int i;
     const float *r, *v;
@@ -19812,20 +19811,19 @@ __global__ void pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
     zpp[2*i]     = make_float4(x,   y,  z, 0);
     zpp[2*i + 1] = make_float4(vx, vy, vz, 0);
 }
-}
 
 void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr) {
-    KL(convert_dev::pp2rr_current, (k_cnf(n)), (n, pp, rr));
+    KL(convert_pp2rr_current_kernel, (k_cnf(n)), (n, pp, rr));
 }
 
 void convert_pp2rr_previous(long n, const Particle *pp, Positioncp *rr) {
-    KL(convert_dev::pp2rr_previous, (k_cnf(n)), (n, pp, rr));
+    KL(convert_pp2rr_previous_kernel, (k_cnf(n)), (n, pp, rr));
 }
 
 void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
     static_assert(sizeof(Particle) == 6 * sizeof(float),
                   "sizeof(Particle) != 6 * sizeof(float)");
-    KL(convert_dev::pp2f4_pos, (k_cnf(n)), (n, pp, zpp));
+    KL(convert_pp2f4_pos_kernel, (k_cnf(n)), (n, pp, zpp));
 }
 
 
