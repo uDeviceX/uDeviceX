@@ -8835,45 +8835,44 @@ void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw)
 void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all_ff, const int *all_counts); // <3>
 
 /* body */
-namespace fsi_dev {
 typedef PairPa Pa;
-struct Fo { float *x, *y, *z; }; /* force */
-static __device__ float random(uint lid, uint rid, float seed) {
+struct FsiFo { float *x, *y, *z; }; /* force */
+static __device__ float fsi_random(uint lid, uint rid, float seed) {
     return rnd::mean0var1uu(seed, lid, rid);
 }
 
-static __device__ Fo ff2f(float *ff, int i) {
-    Fo f;
+static __device__ FsiFo fsi_ff2f(float *ff, int i) {
+    FsiFo f;
     ff += 3*i;
     f.x = ff++; f.y = ff++; f.z = ff++;
     return f;
 }
 
 template <typename Par>
-static __device__ void pair0(Par params, const Pa a, const Pa b, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void fsi_pair0(Par params, const Pa a, const Pa b, float rnd, /**/ float *fx, float *fy, float *fz) {
     PairFo f;
     pair_force(&params, a, b, rnd, /**/ &f);
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
 
 template <typename Par>
-static __device__ void pair(Par params, const Pa a, const Pa b, float rnd, /**/
-                            float *fx, float *fy, float *fz, Fo f) {
-    /* f[xyz]: local force; Fo f: remote force */
-    float x, y, z; /* pair force */
-    pair0(params, a, b, rnd, /**/ &x, &y, &z);
+static __device__ void fsi_pair(Par params, const Pa a, const Pa b, float rnd, /**/
+                            float *fx, float *fy, float *fz, FsiFo f) {
+    /* f[xyz]: local force; FsiFo f: remote force */
+    float x, y, z; /* fsi_pair force */
+    fsi_pair0(params, a, b, rnd, /**/ &x, &y, &z);
     *fx += x; *fy += y; *fz += z;
     atomicAdd(f.x, -x); atomicAdd(f.y, -y); atomicAdd(f.z, -z);
 }
-struct Map { /* helps to find remote particle */
+struct FsiMap { /* helps to find remote particle */
     int  org0, org1, org2;
     uint cnt0, cnt1, cnt2;
 };
 
 /* true if `i' is bigger than the number of remote particles */
-static __device__ int endp(const Map m, uint i) { return i >= m.cnt2; }
+static __device__ int fsi_endp(const FsiMap m, uint i) { return i >= m.cnt2; }
 
-static __device__ uint m2id(const Map m, uint i) {
+static __device__ uint fsi_m2id(const FsiMap m, uint i) {
     /* return remote particle id */
     int m1, m2;
     uint id;
@@ -8882,7 +8881,7 @@ static __device__ uint m2id(const Map m, uint i) {
     id = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
     return id;
 }
-static __device__ int r2map(int3 L, const int *start, int zplane, int n, float x, float y, float z, /**/ Map *m) {
+static __device__ int fsi_r2map(int3 L, const int *start, int zplane, int n, float x, float y, float z, /**/ FsiMap *m) {
     /* coordinate [r] to map */
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
@@ -8946,7 +8945,7 @@ static __device__ int r2map(int3 L, const int *start, int zplane, int n, float x
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
     return 1;
 }
-static __device__ int tex2map(int3 L, const int *start, int zplane, int n1, float x, float y, float z, /**/ Map *m) {
+static __device__ int fsi_tex2map(int3 L, const int *start, int zplane, int n1, float x, float y, float z, /**/ FsiMap *m) {
     /* textures to map */
     int xstart, xcount;
     int zmy;
@@ -9016,20 +9015,20 @@ static __device__ int tex2map(int3 L, const int *start, int zplane, int n1, floa
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
     return 1;
 }
-static __device__ void pp2p(const Particle *pp, int i, /**/ Pa *p) {
+static __device__ void fsi_pp2p(const Particle *pp, int i, /**/ Pa *p) {
     enum {X, Y, Z};
     Particle a = pp[i];
     p->x  = a.r[X]; p->y  = a.r[Y]; p->z  = a.r[Z];
     p->vx = a.v[X]; p->vy = a.v[Y]; p->vz = a.v[Z];
 }
 
-static __device__ int p2map(int3 L, const int *start, int zplane, int n, const Pa p, /**/ Map *m) {
+static __device__ int fsi_p2map(int3 L, const int *start, int zplane, int n, const Pa p, /**/ FsiMap *m) {
     /* particle to map */
-    return r2map(L, start, zplane, n, p.x, p.y, p.z, m);
+    return fsi_r2map(L, start, zplane, n, p.x, p.y, p.z, m);
 }
 
-static const float EPS = 1e-6;
-static __device__ float dist(Pa a, Pa b) {
+static const float fsi_eps = 1e-6;
+static __device__ float fsi_dist(Pa a, Pa b) {
     float dx, dy, dz;
     dx = a.x - b.x;
     dy = a.y - b.y;
@@ -9038,26 +9037,26 @@ static __device__ float dist(Pa a, Pa b) {
 }
 
 template <typename Par, typename Parray>
-static __device__ void bulk0(Par params, const Pa a, Parray parray, int lid, const Map m, float seed, /**/
+static __device__ void fsi_bulk0(Par params, const Pa a, Parray parray, int lid, const FsiMap m, float seed, /**/
                              float *fx, float *fy, float *fz, float *ff) {
     /* "[a]ocal" and "[b]emote" particles */
     Pa b;
-    Fo f;
+    FsiFo f;
     int i, rid;
     *fx = *fy = *fz = 0; /* local force */
-    for (i = 0; !endp(m, i); ++i) {
-        rid = m2id(m, i);
+    for (i = 0; !fsi_endp(m, i); ++i) {
+        rid = fsi_m2id(m, i);
         parray_get(parray, rid, /**/ &b);
-        f = ff2f(ff, rid);
-        pair(params, a, b, random(lid, rid, seed), /**/ fx, fy, fz,   f);
+        f = fsi_ff2f(ff, rid);
+        fsi_pair(params, a, b, fsi_random(lid, rid, seed), /**/ fx, fy, fz,   f);
     }
 }
 
 template <typename Par, typename Parray>
 static __device__ void bulk1(Par params, const Pa a, Parray parray,
-                             const Fo f, int i, const Map m, float seed, /**/ float *ff) {
+                             const FsiFo f, int i, const FsiMap m, float seed, /**/ float *ff) {
     float fx, fy, fz; /* local force */
-    bulk0(params, a, parray, i, m, seed, /**/ &fx, &fy, &fz, ff);
+    fsi_bulk0(params, a, parray, i, m, seed, /**/ &fx, &fy, &fz, ff);
     atomicAdd(f.x, fx);
     atomicAdd(f.y, fy);
     atomicAdd(f.z, fz);
@@ -9067,16 +9066,16 @@ template <typename Par, typename Parray>
 static __device__ void bulk2(Par params, int3 L, const int *start, const Particle *ppA, Parray parray, int i, int zplane, int n, float seed,
                              /**/ float *ff, float *ff0) {
     Pa p;
-    Fo f; /* "local" particle */
-    Map m;
-    pp2p(ppA, i, /**/ &p);
-    f = ff2f(ff, i);
-    if (!p2map(L, start, zplane, n, p, /**/ &m)) return;
+    FsiFo f; /* "local" particle */
+    FsiMap m;
+    fsi_pp2p(ppA, i, /**/ &p);
+    f = fsi_ff2f(ff, i);
+    if (!fsi_p2map(L, start, zplane, n, p, /**/ &m)) return;
     bulk1(params, p, parray, f, i, m, seed, /**/ ff0);
 }
 
 template <typename Par, typename Parray>
-__global__ void bulk(Par params, int3 L, const int *start, const Particle *ppA, Parray parray, int n0, int n1, float seed, float *ff, float *ff0) {
+__global__ void fsi_bulk_kernel(Par params, int3 L, const int *start, const Particle *ppA, Parray parray, int n0, int n1, float seed, float *ff, float *ff0) {
     int gid, i, zplane;
     gid    = threadIdx.x + blockDim.x * blockIdx.x;
     i      = gid / 3;
@@ -9099,21 +9098,21 @@ static __device__ void halo0(Par params, int3 L, const int *start, Pa A, int aid
     enum {X, Y, Z};
 
     Pa B; /* remote particles */
-    Fo f;
+    FsiFo f;
 
-    Map m;
+    FsiMap m;
     int zplane;
     int i, bid;
     float fx, fy, fz;
 
     fx = fy = fz = 0;
     for (zplane = 0; zplane < 3; ++zplane) {
-        if (!tex2map(L, start, zplane, nb, A.x, A.y, A.z, /**/ &m)) continue;
-        for (i = 0; !endp(m, i); ++i) {
-            bid = m2id(m, i);
+        if (!fsi_tex2map(L, start, zplane, nb, A.x, A.y, A.z, /**/ &m)) continue;
+        for (i = 0; !fsi_endp(m, i); ++i) {
+            bid = fsi_m2id(m, i);
             parray_get(parray, bid, /**/ &B);
-            f = ff2f(ffB, bid);
-            pair(params, A, B, random(aid, bid, seed), /**/ &fx, &fy, &fz,   f);
+            f = fsi_ff2f(ffB, bid);
+            fsi_pair(params, A, B, fsi_random(aid, bid, seed), /**/ &fx, &fy, &fz,   f);
         }
     }
     fA[X] += fx; fA[Y] += fy; fA[Z] += fz;
@@ -9137,12 +9136,11 @@ static __device__ void halo1(Par params, int3 L, const int *cellsstart, int27 st
 }
 
 template <typename Par, typename Parray>
-__global__ void halo(Par params, int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, Parray parray, int na, int nb, float seed, /**/ float *ffB) {
+__global__ void fsi_halo_kernel(Par params, int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, Parray parray, int na, int nb, float seed, /**/ float *ffB) {
     int aid;
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= na) return;
     halo1(params, L, cellsstart, starts, pp, ff, aid, parray, nb, seed, /**/ ffB);
-}
 }
 
 struct RNDunif;
@@ -9201,7 +9199,7 @@ static void bulk_one_wrap(const PairParams *params, PaWrap *pw, FoWrap *fw, Fsi 
         pair_get_view_dpd_mirrored(params, &pv);
         parray_get_view(parray, &paview);
 
-        KL(fsi_dev::bulk, (k_cnf(3*n0)), (pv, fsi->L, wo->starts, ppA, paview,
+        KL(fsi_bulk_kernel, (k_cnf(3*n0)), (pv, fsi->L, wo->starts, ppA, paview,
                                           n0, n1,
                                           rnd, (float*)fw->ff, (float*)wo->ff));
     }
@@ -9212,7 +9210,7 @@ static void bulk_one_wrap(const PairParams *params, PaWrap *pw, FoWrap *fw, Fsi 
         pair_get_view_dpd(params, &pv);
         parray_get_view(parray, &paview);
 
-        KL(fsi_dev::bulk, (k_cnf(3*n0)), (pv, fsi->L, wo->starts, ppA, paview,
+        KL(fsi_bulk_kernel, (k_cnf(3*n0)), (pv, fsi->L, wo->starts, ppA, paview,
                                           n0, n1,
                                           rnd, (float*)fw->ff, (float*)wo->ff));
     }
@@ -9244,7 +9242,7 @@ static void fsi_halo_one_type(const PairParams *params, Fsi *fsi, Pap26 PP, Fop2
         pair_get_view_dpd_mirrored(params, &pv);
         parray_get_view(parray, &pav);
 
-        KL(fsi_dev::halo, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
+        KL(fsi_halo_kernel, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
     }
     else {
         PairDPD pv;
@@ -9253,7 +9251,7 @@ static void fsi_halo_one_type(const PairParams *params, Fsi *fsi, Pap26 PP, Fop2
         pair_get_view_dpd(params, &pv);
         parray_get_view(parray, &pav);
 
-        KL(fsi_dev::halo, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
+        KL(fsi_halo_kernel, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
     }
 }
 
