@@ -1608,18 +1608,6 @@ void scheme_move_apply(float dt, float mass, int n, const Force*, Particle*); //
 void scheme_move_clear_vel(int n, Particle*); // <2>
 
 namespace scheme_move_dev {
-#ifdef FORWARD_EULER
-static __device__ void update0(float dt, float m, const float *f, /**/ float *r, float *v) {
-    enum {X, Y, Z};
-    r[X] += v[X]*dt;
-    r[Y] += v[Y]*dt;
-    r[Z] += v[Z]*dt;
-
-    v[X] += f[X]/m*dt;
-    v[Y] += f[Y]/m*dt;
-    v[Z] += f[Z]/m*dt;
-}
-#else
 static __device__ void update0(float dt, float m, const float *f, /**/ float *r, float *v) {
     enum {X, Y, Z};
     v[X] += f[X]/m*dt;
@@ -1630,7 +1618,6 @@ static __device__ void update0(float dt, float m, const float *f, /**/ float *r,
     r[Y] += v[Y]*dt;
     r[Z] += v[Z]*dt;
 }
-#endif
 __global__ void update(float dt, float mass, Particle* pp, const Force *ff, int n) {
     float *r, *v;
     const float *f;
