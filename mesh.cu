@@ -11,39 +11,6 @@
 #include <assert.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 void emalloc(size_t,      void**);
@@ -1113,39 +1080,6 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u,      Mo
 #include <assert.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 void emalloc(size_t,      void**);
@@ -2931,39 +2865,6 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
 #include <vector_types.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #ifndef UDX_EXCH_DEVICE_API_COMMON
@@ -3562,39 +3463,6 @@ void mesh_scatter_fin(MeshScatter *q) {
 #include <assert.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 #ifndef UDX_MESH_DEF_COMMON
 #define UDX_MESH_DEF_COMMON
@@ -5654,39 +5522,6 @@ void matrices_fin(Matrices *q) { EFREE(q->m); EFREE(q); }
 #include <mpi.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 struct Coords;
@@ -5986,39 +5821,6 @@ int mesh_gen_from_file(const Coords *coords, const float *rr0, const char *path,
 #include <stdio.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 void msg_ini(int rank);
