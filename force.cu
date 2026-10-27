@@ -4260,39 +4260,38 @@ struct RbcForce {
     RndInfo rinfo;
 };
 
-namespace rbc_force_dev {
-struct StressInfo { double l0, a0; };
-struct Rnd0Info {};
-struct Rnd1Info { double r; };
-static __device__ StressInfo fetch_stress_info(int, StressFul_v sv) {
-    StressInfo si;
+struct RbcForceStressInfo { double l0, a0; };
+struct RbcForceRnd0Info {};
+struct RbcForceRnd1Info { double r; };
+static __device__ RbcForceStressInfo rbc_force_fetch_stress_info(int, StressFul_v sv) {
+    RbcForceStressInfo si;
     si.l0 = sv.l0;
     si.a0 = sv.a0;
     return si;
 }
 
-static __device__ StressInfo fetch_stress_info(int i, StressFree_v sv) {
-    StressInfo si;
+static __device__ RbcForceStressInfo rbc_force_fetch_stress_info(int i, StressFree_v sv) {
+    RbcForceStressInfo si;
     si.l0 = sv.ll[i];
     si.a0 = sv.aa[i];
     return si;
 }
 
-static __device__ Rnd0Info fetch_rnd_info(int, int, Rnd0_v rv) {
-    Rnd0Info ri;
+static __device__ RbcForceRnd0Info rbc_force_fetch_rnd_info(int, int, Rnd0_v rv) {
+    RbcForceRnd0Info ri;
     return ri;
 }
 
-static __device__ Rnd1Info fetch_rnd_info(int i0, int j, Rnd1_v rv) {
+static __device__ RbcForceRnd1Info rbc_force_fetch_rnd_info(int i0, int j, Rnd1_v rv) {
     /* i0: edge index; j: vertex index */
-    Rnd1Info ri;
+    RbcForceRnd1Info ri;
     int i1;
     i1 = rv.anti[i0];
     if (i1 > i0) j = j - i0 + i1;
     ri.r = rv.rr[j];
     return ri;
 }
-static __device__ double3 fvolume(const RbcParams_v *par, double3 r2, double3 r3, double v0, double v) {
+static __device__ double3 rbc_force_fvolume(const RbcParams_v *par, double3 r2, double3 r3, double v0, double v) {
     double f0;
     double3 f;
     cross(&r3, &r2, /**/ &f);
@@ -4301,7 +4300,7 @@ static __device__ double3 fvolume(const RbcParams_v *par, double3 r2, double3 r3
     return f;
 }
 
-static __device__ double3 farea(const RbcParams_v *par, double3 x21, double3 x31, double3 x32,   double a0, double A0, double A) {
+static __device__ double3 rbc_force_farea(const RbcParams_v *par, double3 x21, double3 x31, double3 x32,   double a0, double A0, double A) {
     double3 nn, f;
     double a, f0, fa, fA;
     cross(&x21, &x31, /**/ &nn);
@@ -4315,19 +4314,19 @@ static __device__ double3 farea(const RbcParams_v *par, double3 x21, double3 x31
     return f;
 }
 
-enum {SPRING_OK, SPRING_LONG};
-static __device__ double sq(double x) { return x * x; }
-static __device__ double wlc0(double r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
-static __device__ double wlc(double lmax, double ks, double r) { return ks/lmax*wlc0(r/lmax); }
-static __device__ double3 fspring(const RbcParams_v *par, double3 x21, double l0, /**/ int *pstatus) {
-  #define wlc_r(r) (wlc(lmax, ks, r))
+enum {RBC_FORCE_SPRING_OK, RBC_FORCE_SPRING_LONG};
+static __device__ double rbc_force_sq(double x) { return x * x; }
+static __device__ double rbc_force_wlc0(double r) { return (4*rbc_force_sq(r)-9*r+6)/(4*rbc_force_sq(r-1)); }
+static __device__ double rbc_force_wlc(double lmax, double ks, double r) { return ks/lmax*rbc_force_wlc0(r/lmax); }
+static __device__ double3 rbc_force_fspring(const RbcParams_v *par, double3 x21, double l0, /**/ int *pstatus) {
+  #define wlc_r(r) (rbc_force_wlc(lmax, ks, r))
     double m, r, fwlc, fpow, lmax, ks, x0;
-    *pstatus = SPRING_OK;
+    *pstatus = RBC_FORCE_SPRING_OK;
     ks = par->ks; m = par->mpow; x0 = par->x0;
     r = sqrtf(dot<double>(&x21, &x21));
     lmax = l0 / x0;
     if (r >= lmax) {
-        *pstatus = SPRING_LONG;
+        *pstatus = RBC_FORCE_SPRING_LONG;
         r = RBC_SPRING_CAP * lmax;
     }
     fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
@@ -4337,13 +4336,13 @@ static __device__ double3 fspring(const RbcParams_v *par, double3 x21, double l0
   #undef wlc_r
 }
 
-static __device__ void report_tri(double3 r1, double3 r2, double3 r3) {
+static __device__ void rbc_force_report_tri(double3 r1, double3 r2, double3 r3) {
     printf("bad triangle: [%g %g %g] [%g %g %g] [%g %g %g]\n",
            r1.x, r1.y, r1.z,   r2.x, r2.y, r2.z,   r3.x, r3.y, r3.z);
     assert(0);
 }
-static __device__ double3 ftri(const RbcParams_v *par, double3 r1, double3 r2, double3 r3,
-                             StressInfo si, double area, double volume) {
+static __device__ double3 rbc_force_ftri(const RbcParams_v *par, double3 r1, double3 r2, double3 r3,
+                             RbcForceStressInfo si, double area, double volume) {
     int spring_status;
     double3 f, fv, fs;
     double3 x21, x32, x31;
@@ -4352,19 +4351,19 @@ static __device__ double3 ftri(const RbcParams_v *par, double3 r1, double3 r2, d
     diff(&r3, &r2, /**/ &x32);
     diff(&r3, &r1, /**/ &x31);
 
-    f = farea(par, x21, x31, x32, si.a0, par->totArea, area);
-    fv = fvolume(par, r2, r3, par->totVolume, volume);
+    f = rbc_force_farea(par, x21, x31, x32, si.a0, par->totArea, area);
+    fv = rbc_force_fvolume(par, r2, r3, par->totVolume, volume);
     add(&fv, /*io*/ &f);
 
-    fs = fspring(par, x21, si.l0, &spring_status);
+    fs = rbc_force_fspring(par, x21, si.l0, &spring_status);
 #ifdef RBC_SPRING_FAIL
-    if (spring_status != SPRING_OK) report_tri(r1, r2, r3);
+    if (spring_status != RBC_FORCE_SPRING_OK) rbc_force_report_tri(r1, r2, r3);
 #endif
     add(&fs, /*io*/ &f);
     return f;
 }
 
-static __device__ double3 fvisc(const RbcParams_v *par, double3 r1, double3 r2, double3 u1, double3 u2) {
+static __device__ double3 rbc_force_fvisc(const RbcParams_v *par, double3 r1, double3 r2, double3 u1, double3 u2) {
     const double gammaC = par->gammaC, gammaT = par->gammaT;
     double3 du, dr, f = make_double3(0, 0, 0);
     diff(&u2, &u1, /**/ &du);
@@ -4378,32 +4377,32 @@ static __device__ double3 fvisc(const RbcParams_v *par, double3 r1, double3 r2, 
     return f;
 }
 
-static __device__ double3 frnd(double, const RbcParams_v*, double3, double3, Rnd0Info) {
+static __device__ double3 rbc_force_frnd(double, const RbcParams_v*, double3, double3, RbcForceRnd0Info) {
     double3 f;
     f.x = f.y = f.z = 0;
     return f;
 }
 
-static __device__ double  frnd0(double dt, const RbcParams_v *par, double rnd) {
+static __device__ double  rbc_force_frnd0(double dt, const RbcParams_v *par, double rnd) {
     double f, g, T;
     g = par->gammaC; T = par->kBT;
     f  = sqrtf(2*g*T/dt)*rnd;
     return f;
 }
 
-static __device__ double3 frnd(double dt, const RbcParams_v *par, double3 r1, double3 r2, Rnd1Info rnd) {
+static __device__ double3 rbc_force_frnd(double dt, const RbcParams_v *par, double3 r1, double3 r2, RbcForceRnd1Info rnd) {
     double3 dr;
     double r, f0;
     diff(&r1, &r2, /**/ &dr);
     r = sqrtf(dot<double>(&dr, &dr));
-    f0 = frnd0(dt, par, rnd.r);
+    f0 = rbc_force_frnd0(dt, par, rnd.r);
     scal(f0/r, /*io*/ &dr);
     return dr;
 }
-struct Part { double3 r, v; };
+struct RbcForcePart { double3 r, v; };
 typedef double3 Pos;
 
-static __device__ Pos fetchPos(const Particle *pp, int i) {
+static __device__ Pos rbc_force_fetch_pos(const Particle *pp, int i) {
     enum {X, Y, Z};
     Pos r;
     r.x = pp[i].r[X];
@@ -4412,9 +4411,9 @@ static __device__ Pos fetchPos(const Particle *pp, int i) {
     return r;
 }
 
-static __device__ Part fetchPart(const Particle *pp, int i) {
+static __device__ RbcForcePart rbc_force_fetch_part(const Particle *pp, int i) {
     enum {X, Y, Z};
-    Part p;
+    RbcForcePart p;
     const float *r, *v;
     r = pp[i].r; v = pp[i].v;
     p.r.x = r[X]; p.r.y = r[Y]; p.r.z = r[Z];
@@ -4423,9 +4422,9 @@ static __device__ Part fetchPart(const Particle *pp, int i) {
 }
 
 template <typename RndInfo>
-static __device__ void adj_tris(double dt,
-                                const RbcParams_v *par, const Particle *pp,  const Part p0, const float *av,
-                                const StressInfo si, RndInfo ri,
+static __device__ void rbc_force_adj_tris(double dt,
+                                const RbcParams_v *par, const Particle *pp,  const RbcForcePart p0, const float *av,
+                                const RbcForceStressInfo si, RndInfo ri,
                                 AdjMap *m, /*io*/ double f[3]) {
     enum {X, Y, Z};
     double3 f0;
@@ -4433,22 +4432,22 @@ static __device__ void adj_tris(double dt,
     double area, volume;
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
 
-    const Part p1 = fetchPart(pp, i1);
-    const Pos  r2 = fetchPos(pp,  i2);
+    const RbcForcePart p1 = rbc_force_fetch_part(pp, i1);
+    const Pos  r2 = rbc_force_fetch_pos(pp,  i2);
 
     area = av[2*rbc]; volume = av[2 * rbc + 1];
-    f0 = ftri(par, p0.r, p1.r, r2, si, area, volume);
+    f0 = rbc_force_ftri(par, p0.r, p1.r, r2, si, area, volume);
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 
-    f0 = fvisc(par, p0.r, p1.r, p0.v, p1.v);
+    f0 = rbc_force_fvisc(par, p0.r, p1.r, p0.v, p1.v);
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 
-    f0 = frnd(dt, par, p0.r, p1.r, ri);
+    f0 = rbc_force_frnd(dt, par, p0.r, p1.r, ri);
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 }
 
 template <typename Stress_v, typename Rnd_v>
-__global__ void force(double dt,
+__global__ void rbc_force_kernel(double dt,
                       RbcParams_v par, int md, int nv, int nc, const Particle *pp,
                       Adj_v adj,
                       Stress_v sv, Rnd_v rv,
@@ -4457,7 +4456,7 @@ __global__ void force(double dt,
     int i, pid, valid;
     double f[3];
     AdjMap m;
-    StressInfo si;
+    RbcForceStressInfo si;
 
     i = threadIdx.x + blockDim.x * blockIdx.x;
     pid = i / md;
@@ -4465,20 +4464,18 @@ __global__ void force(double dt,
     if (pid >= nc * nv) return;
     valid = adj_get_map(i, &adj, /**/ &m);
     if (!valid) return;
-    si = fetch_stress_info(i % (md * nv), sv);
-    auto ri = fetch_rnd_info(i % (md * nv), i, rv);
+    si = rbc_force_fetch_stress_info(i % (md * nv), sv);
+    auto ri = rbc_force_fetch_rnd_info(i % (md * nv), i, rv);
 
-    const Part p0 = fetchPart(pp, m.i0);
+    const RbcForcePart p0 = rbc_force_fetch_part(pp, m.i0);
 
     f[X] = f[Y] = f[Z] = 0;
-    adj_tris(dt, &par, pp, p0, av, si, ri, &m, /*io*/ f);
+    rbc_force_adj_tris(dt, &par, pp, p0, av, si, ri, &m, /*io*/ f);
 
     atomicAdd(&ff[3 * pid + 0], f[X]);
     atomicAdd(&ff[3 * pid + 1], f[Y]);
     atomicAdd(&ff[3 * pid + 2], f[Z]);
 }
-}
-
 static bool is_stress_free(const RbcForce *f) {
     return f->stype == RBC_SFREE;
 }
@@ -4631,7 +4628,7 @@ static void apply(float dt, RbcParams_v parv, int nc, int nv, int md,
                   const Adj_v *adj_v, Stress_v sv, Rnd_v rv,
                   float *av, /**/ Force *ff) {
     if (!d::is_device_pointer(ff))  ERR("`ff` is not a device pointer");
-    KL(rbc_force_dev::force, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp,
+    KL(rbc_force_kernel, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp,
                                                  *adj_v, sv, rv, av, /**/ (float*)ff));
 }
 
