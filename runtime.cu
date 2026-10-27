@@ -1,23 +1,23 @@
 
-// Editable compilation unit for runtime/support and contact units.
 
 
-// Grouped editable compilation unit for runtime/control and support/grid algorithms.
 
 
-// Grouped editable compilation unit for runtime/config and control systems.
 
 
-// Grouped editable compilation unit for runtime and configuration code.
 
 
-// Grouped editable compilation unit for device/MPI adapters and program entry.
 
 
-// Grouped editable compilation unit for device/MPI and color-coordinate helpers.
 
 
-// Grouped editable compilation unit for device and MPI adapters.
+
+
+
+
+
+
+
 
 
 #include "config.cuh"
@@ -25,33 +25,33 @@
 #include <stdio.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -61,21 +61,21 @@
 #endif
 
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -83,7 +83,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -94,7 +94,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -116,8 +116,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 #ifndef UDX_D_MPI_COLOR_D_API
 #define UDX_D_MPI_COLOR_D_API
@@ -125,12 +125,12 @@ void msg_print(const char *fmt, ...); // <2>
 #endif
 
 namespace d {
-static const char *emsg0; /* last error message */
+static const char *emsg0;
 const char *emsg() { return emsg0; }
 
 #if   defined(DEV_CUDA)
 #define SZ(a) (int)(sizeof(a)/sizeof(*(a)))
-static enum cudaMemcpyKind k2k0[] = {  /* [k]ind to [k]ind */
+static enum cudaMemcpyKind k2k0[] = {
     cudaMemcpyHostToHost, cudaMemcpyHostToDevice,
     cudaMemcpyDeviceToHost, cudaMemcpyDeviceToDevice,
     cudaMemcpyDefault };
@@ -227,7 +227,7 @@ int FreeHost (void *hstPtr) {
     return R(cudaFreeHost(hstPtr));
 }
 #  elif defined(CUDA_ALLOC_DEBUG)
-/* for sysconf */
+
 #include <unistd.h>
 
 static size_t tot_d = 0;
@@ -273,7 +273,7 @@ int FreeHost (void *hstPtr) {
 #    error CUDA_ALLOC_* is undefined
 #  endif
 #elif defined(DEV_CPU)
-/* [v]oid add : shift by `n' number of bytes */
+
 #define vadd(p, n) (void*)((char*)(p) + (n))
 
 int alloc_pinned(void **pHost, size_t size) {
@@ -293,12 +293,12 @@ int GetSymbolAddress(void **, const void*) {
     return 0;
 }
 
-int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, int /*kind*/) {
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, int         ) {
     memcpy(vadd(symbol, offset), src, count);
     return 0;
 }
 
-int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset, int /*kind*/) {
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset, int         ) {
     memcpy(dst, vadd(symbol, offset), count);
     return 0;
 }
@@ -308,7 +308,7 @@ int HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
     return 0;
 }
 
-int Memcpy (void *dst, const void *src, size_t count, int /*kind*/) {
+int Memcpy (void *dst, const void *src, size_t count, int         ) {
     memcpy(dst, src, count);
     return 0;
 }
@@ -323,7 +323,7 @@ int Memset (void *devPtr, int value, size_t count) {
     return 0;
 }
 
-int MemcpyAsync (void * dst, const void * src, size_t count, int /*kind*/, Stream_t) {
+int MemcpyAsync (void * dst, const void * src, size_t count, int         , Stream_t) {
     memcpy(dst, src, count);
     return 0;
 }
@@ -359,33 +359,33 @@ int PeekAtLastError(void) {
 #include <string.h>
 #include <mpi.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -437,7 +437,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -445,7 +445,7 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -453,7 +453,7 @@ namespace mpicheck {
 void check(int code, const char *file, int line);
 }
 
-namespace m { /* MPI */
+namespace m {
 enum {X, Y, Z, D};
 
 void ini(int *argc, char ***argv) {
@@ -477,11 +477,11 @@ void get_dims(int *argc, char ***argv, int dims[]) {
     int i, d, ac;
     char **av;
 
-    // defaults
+
     dims[X] = dims[Y] = dims[Z] = 1;
     ac = *argc; av = *argv;
 
-    // skip executable
+
     shift(&ac, &av);
 
     for (i = 0; ac > 0 && i <= D; i++) {
@@ -497,7 +497,7 @@ void get_dims(int *argc, char ***argv, int dims[]) {
     *argc = ac; *argv = av;
 }
 
-void get_cart(MPI_Comm comm, const int dims[3], /**/ MPI_Comm *cart) {
+void get_cart(MPI_Comm comm, const int dims[3],      MPI_Comm *cart) {
     enum {X, Y, Z};
     const int reorder = 0;
     const int periods[D] = {1, 1, 1};
@@ -514,7 +514,7 @@ void get_cart(MPI_Comm comm, const int dims[3], /**/ MPI_Comm *cart) {
 
 void fin() { MC(m::Finalize()); }
 
-} /* namespace */
+}
 
 
 
@@ -688,7 +688,7 @@ int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 
 
 
-// Grouped editable compilation unit for color and coordinate helpers.
+
 
 
 
@@ -696,33 +696,33 @@ int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 #include <curand_kernel.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -732,12 +732,12 @@ int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 #endif
 
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-/* [c]uda [c]heck macros */
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -745,7 +745,7 @@ void msg_print(const char *fmt, ...); // <2>
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -758,11 +758,11 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_CONTROL_KL_COMMON */
+#endif
 #ifndef UDX_D_MPI_COLOR_D_API
 #define UDX_D_MPI_COLOR_D_API
 #include "device.cuh"
@@ -771,10 +771,10 @@ void check(int rc, const char *file, int line);
 #define UDX_CONTROL_D_API_COMMON
 #endif
 
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -783,47 +783,47 @@ void check(int rc, const char *file, int line);
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_CONTROL_TYPE_COMMON */
+#endif
 
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
 struct Coords_v {
-    int xc, yc, zc; /* rank coordinates        */
-    int xd, yd, zd; /* rank sizes              */
-    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+    int xc, yc, zc;
+    int xd, yd, zd;
+    int Lx, Ly, Lz;
 };
 struct Coords {
-    int xc, yc, zc; /* rank coordinates        */
-    int xd, yd, zd; /* rank sizes              */
-    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+    int xc, yc, zc;
+    int xd, yd, zd;
+    int Lx, Ly, Lz;
 };
 #endif
 struct Coords;
@@ -840,24 +840,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -872,13 +872,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 struct int3;
@@ -887,7 +887,7 @@ struct Coords;
 
 struct Rnd;
 
-void color_linear_flux(const Coords*, int3 L, int dir, int color, int n, const Particle *pp, /**/int *cc);
+void color_linear_flux(const Coords*, int3 L, int dir, int color, int n, const Particle *pp,     int *cc);
 
 void color_tracers(const Coords *coords, int color, const float R, const float Po, int n, const Particle *pp, int *cc);
 void decolor_tracers(const Coords *coords, int color, const float R, const float Po, int n, const Particle *pp, int *cc);
@@ -945,7 +945,7 @@ __global__ void color_decolor_tracer_kernel(const Coords_v c, const float R, con
     if (i >= n)
         return;
 
-    if (cc[i] == color) //if blue color nothing todo
+    if (cc[i] == color)
         return;
 
     Particle p;
@@ -963,7 +963,7 @@ __global__ void color_decolor_tracer_kernel(const Coords_v c, const float R, con
 
         const float r = sqrtf( pxc*pxc + pyc*pyc + pzc*pzc );
 
-        if (r > R) // if outside the initialization region
+        if (r > R)
             cc[i] = color;
     }
 }
@@ -982,11 +982,11 @@ void color_linear_flux(const Coords *coords, int3 L, int dir, int color, int n, 
 }
 
 void color_tracers(const Coords *coords, int color, const float R, const float Po, int n, const Particle *pp, int *cc) {
-    // find min and max of my domain in global coordinate system
+
     int l[3] = {xlo(coords), ylo(coords), zlo(coords)};
     int h[3] = {xhi(coords), yhi(coords), zhi(coords)};
 
-    // if center (0,0,0) is in my domain, proceed
+
     bool inradius = 1;
     for (int i=0; i<2; ++i)
         inradius *= ( sqrtf(l[i]*l[i]) <= R || sqrtf(h[i]*h[i]) <= R );
@@ -1028,21 +1028,21 @@ void tracers_fin() {
 
 #include <vector_types.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -1050,7 +1050,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -1061,7 +1061,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -1087,10 +1087,10 @@ struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -1131,14 +1131,14 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 
 struct Coords;
 struct Config;
 
-void coords_ini(MPI_Comm cart, int Lx, int Ly, int Lz, Coords **c); // <1>
-void coords_fin(Coords *c); // <2>
+void coords_ini(MPI_Comm cart, int Lx, int Ly, int Lz, Coords **c);
+void coords_fin(Coords *c);
 
 void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c);
 
@@ -1154,33 +1154,33 @@ void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
 #include <vector_types.h>
 #include <mpi.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -1196,7 +1196,7 @@ void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -1207,7 +1207,7 @@ void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -1230,7 +1230,7 @@ void error_abort();
 
 void error_print_stack();
 
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -1280,7 +1280,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -1291,9 +1291,9 @@ int status2errcode(MPI_Status *status);
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
 struct Coords_v {
-    int xc, yc, zc; /* rank coordinates        */
-    int xd, yd, zd; /* rank sizes              */
-    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+    int xc, yc, zc;
+    int xd, yd, zd;
+    int Lx, Ly, Lz;
 };
 
 struct Coords;
@@ -1310,24 +1310,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -1342,18 +1342,18 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 struct Coords {
-    int xc, yc, zc; /* rank coordinates        */
-    int xd, yd, zd; /* rank sizes              */
-    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+    int xc, yc, zc;
+    int xd, yd, zd;
+    int Lx, Ly, Lz;
 };
 #endif
 enum {X, Y, Z, D};
@@ -1397,7 +1397,7 @@ void coords_fin(Coords *c) {
     EFREE(c);
 }
 
-/* domain sizes */
+
 
 int xdomain(const Coords *c) {
     return c->Lx * c->xd;
@@ -1411,7 +1411,7 @@ int zdomain(const Coords *c) {
     return c->Lz * c->zd;
 }
 
-/* [l]ocal to [c]enter */
+
 
 float xl2xc(const Coords *c, float xl) {
     return xl - 0.5f * c->Lx * (c->xd - 2 * c->xc - 1);
@@ -1425,13 +1425,13 @@ float zl2zc(const Coords *c, float zl) {
     return zl - 0.5f * c->Lz * (c->zd - 2 * c->zc - 1);
 }
 
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc) {
+void local2center(const Coords *c, float3 rl,      float3 *rc) {
     rc->x = xl2xc(c, rl.x);
     rc->y = yl2yc(c, rl.y);
     rc->z = zl2zc(c, rl.z);
 }
 
-/* [c]enter to [l]ocal  */
+
 
 float xc2xl(const Coords *c, float xc) {
     return xc + 0.5f * c->Lx * (c->xd - 2 * c->xc - 1);
@@ -1445,13 +1445,13 @@ float zc2zl(const Coords *c, float zc) {
     return zc + 0.5f * c->Lz * (c->zd - 2 * c->zc - 1);
 }
 
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl) {
+void center2local(const Coords *c, float3 rc,      float3 *rl) {
     rl->x = xc2xl(c, rc.x);
     rl->y = yc2yl(c, rc.y);
     rl->z = zc2zl(c, rc.z);
 }
 
-/* [l]ocal to [g]lobal */
+
 
 float xl2xg(const Coords *c, float xl) {
     return (c->xc + 0.5f) * c->Lx + xl;
@@ -1465,13 +1465,13 @@ float zl2zg(const Coords *c, float zl) {
     return (c->zc + 0.5f) * c->Lz + zl;
 }
 
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg) {
+void local2global(const Coords *c, float3 rl,      float3 *rg) {
     rg->x = xl2xg(c, rl.x);
     rg->y = yl2yg(c, rl.y);
     rg->z = zl2zg(c, rl.z);
 }
 
-/* [g]lobal to [l]ocal */
+
 
 float xg2xl(const Coords *c, float xg) {
     return xg - (c->xc + 0.5f) * c->Lx;
@@ -1485,13 +1485,13 @@ float zg2zl(const Coords *c, float zg) {
     return zg - (c->zc + 0.5f) * c->Lz;
 }
 
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl) {
+void global2local(const Coords *c, float3 rg,      float3 *rl) {
     rl->x = xg2xl(c, rg.x);
     rl->y = yg2yl(c, rg.y);
     rl->z = zg2zl(c, rg.z);
 }
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords *c) { return xl2xg(c, 0) - 0.5*c->Lx; }
 int ylo(const Coords *c) { return yl2yg(c, 0) - 0.5*c->Ly; }
@@ -1501,7 +1501,7 @@ int xhi(const Coords *c) { return xl2xg(c, 0) + 0.5*c->Lx; }
 int yhi(const Coords *c) { return yl2yg(c, 0) + 0.5*c->Ly; }
 int zhi(const Coords *c) { return zl2zg(c, 0) + 0.5*c->Lz; }
 
-/* sizes of the sub-domain */
+
 
 int xs(const Coords *c) { return c->Lx; }
 int ys(const Coords *c) { return c->Ly; }
@@ -1514,7 +1514,7 @@ int3 subdomain(const Coords *c) {
     return L;
 }
 
-/* rank predicates */
+
 
 bool is_end(const Coords *c, int dir) {
     enum {X, Y, Z};
@@ -1529,7 +1529,7 @@ bool is_end(const Coords *c, int dir) {
 static int bigp(int max, int x, int y, int z) {
     return x > max || y > max || z > max;
 }
-void coord_stamp(const Coords *c, /**/ char *s) {
+void coord_stamp(const Coords *c,      char *s) {
     int x, y, z;
     x = c->xc; y = c->yc; z = c->zc;
     if (bigp(999, x, y, z))
@@ -1547,7 +1547,7 @@ int coords_size(const Coords *c) {
 
 
 
-// Grouped editable compilation unit for communication and program entry.
+
 
 
 
@@ -1555,33 +1555,33 @@ int coords_size(const Coords *c) {
 #include <string.h>
 #include <mpi.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -1590,10 +1590,10 @@ int coords_size(const Coords *c) {
 #define DUMP_BASE "."
 #endif
 
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -1602,29 +1602,29 @@ int coords_size(const Coords *c) {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
@@ -1636,53 +1636,53 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
-#endif /* UDX_SHARED_FRAG_COMMON */
+}
+#endif
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -1690,7 +1690,7 @@ void check(int code, const char *file, int line);
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -1703,14 +1703,14 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -1721,7 +1721,7 @@ void check(int rc, const char *file, int line);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -1746,7 +1746,7 @@ void error_print_stack();
 #ifndef UDX_D_MPI_COLOR_D_API
 #define UDX_D_MPI_COLOR_D_API
 #include "device.cuh"
-#endif /* UDX_D_MPI_COLOR_D_API */
+#endif
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -1789,7 +1789,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -1800,39 +1800,39 @@ int status2errcode(MPI_Status *status);
 typedef unsigned char data_t;
 
 enum {
-    NFRAGS = 26, /* number of fragments for one halo */
-    BULK   = 26, /* bulk id                          */
-    NBAGS  = 27, /* fragments + bulk                 */
+    NFRAGS = 26,
+    BULK   = 26,
+    NBAGS  = 27,
 };
 
-/* Allocation mod for bags */
+
 enum AllocMod {
-    HST_ONLY,   /* only host bags allocated                 */
-    DEV_ONLY,   /* only device bags allocated               */
-    PINNED,     /* both host and device pinned              */
-    PINNED_HST, /* host pinned; no device memory            */
-    PINNED_DEV, /* host pinned; device global memory on gpu */
-    NONE        /* no allocation                            */
+    HST_ONLY,
+    DEV_ONLY,
+    PINNED,
+    PINNED_HST,
+    PINNED_DEV,
+    NONE
 };
 
 struct dBags {
-    data_t *data[NBAGS]; /* data on the device         */
+    data_t *data[NBAGS];
 };
 
 struct hBags {
-    data_t *data[NBAGS]; /* data on the host                    */
-    int         *counts; /* size of the data                    */
-    int capacity[NBAGS]; /* capacity of each frag (elem number) */
-    size_t bsize;        /* size of one datum in bytes          */
+    data_t *data[NBAGS];
+    int         *counts;
+    int capacity[NBAGS];
+    size_t bsize;
 };
 
 struct Comm;
 struct CommBuffer;
 
-void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-void comm_ini(MPI_Comm cart, /**/ Comm **c);
-void comm_fin(/**/ Comm *c);
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS],      hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod,      hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart,      Comm **c);
+void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
@@ -1840,44 +1840,44 @@ void comm_buffer_fin(CommBuffer*);
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-void comm_post_recv(hBags *b, Comm *c);           // <1>
-void comm_post_send(const hBags *b, Comm *c);     // <2>
+void comm_post_recv(hBags *b, Comm *c);
+void comm_post_send(const hBags *b, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
-void comm_wait_send(Comm *c);                     // <4>
+void comm_wait_recv(Comm *c,      hBags *b);
+void comm_wait_send(Comm *c);
 
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_recv(Comm *c,      CommBuffer *cb);
 void comm_wait_send(Comm *c);
 
-int    comm_get_number_capacity(int i, const hBags *b); // <1>
-size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+int    comm_get_number_capacity(int i, const hBags *b);
+size_t comm_get_byte_capacity(int i, const hBags *b);
 
 
 struct Comm {
-    MPI_Request sreq[NBAGS]; /* send requests */
-    MPI_Request rreq[NBAGS]; /* recv requests */
-    MPI_Comm cart;           /* cartesian communicator */
-    int ranks[NFRAGS];       /* ranks of neighbors     */
-    int  tags[NFRAGS];       /* tags in bt coordinates */
+    MPI_Request sreq[NBAGS];
+    MPI_Request rreq[NBAGS];
+    MPI_Comm cart;
+    int ranks[NFRAGS];
+    int  tags[NFRAGS];
 };
 
 struct CommBuffer {
     data_t *buf[NBAGS];
     size_t sz[NBAGS], cap[NBAGS];
 };
-/* pinned allocation */
 
-static void alloc_counts(int n, /**/ int **hc) {
+
+static void alloc_counts(int n,      int **hc) {
     size_t sz = n * sizeof(int);
     EMALLOC(n, hc);
     memset(*hc, 0, sz);
 }
 
-/* generic allocation */
-static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
+
+static void alloc_pair(int i, AllocMod mod,      hBags *hb, dBags *db) {
     size_t n = hb->capacity[i] * hb->bsize;
 
     switch (mod) {
@@ -1915,18 +1915,18 @@ static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     }
 }
 
-void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db) {
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS],      hBags *hb, dBags *db) {
     hb->bsize = bsize;
     memcpy(hb->capacity, capacity, NBAGS * sizeof(int));
 
-    /* fragments */
+
     for (int i = 0; i < NFRAGS; ++i)
-        UC(alloc_pair(i, fmod, /**/ hb, db));
+        UC(alloc_pair(i, fmod,      hb, db));
 
-    /* bulk */
-    UC(alloc_pair(frag_bulk, bmod, /**/ hb, db));
 
-    UC(alloc_counts(NBAGS, /**/ &hb->counts));
+    UC(alloc_pair(frag_bulk, bmod,      hb, db));
+
+    UC(alloc_counts(NBAGS,      &hb->counts));
 }
 
 static void comm_buffer_ini_one_frag(int fid, int nbags, const hBags *hbb, CommBuffer *b) {
@@ -1948,7 +1948,7 @@ void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer **cb) {
         comm_buffer_ini_one_frag(i, nbags, hbb, *cb);
 }
 
-void comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
+void comm_ini(MPI_Comm cart,      Comm **com_p) {
     int i, c, crd_rnk[3], d[3];
     int coords[3], periods[3], dims[3];
     Comm *com;
@@ -1973,7 +1973,7 @@ static void free_counts(int **hc) {
     *hc = NULL;
 }
 
-static void free_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
+static void free_pair(int i, AllocMod mod,      hBags *hb, dBags *db) {
     switch (mod) {
     case HST_ONLY:
         if (hb->data[i])
@@ -2000,14 +2000,14 @@ static void free_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     }
 }
 
-void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
-    /* fragments */
-    for (int i = 0; i < NFRAGS; ++i)
-        free_pair(i, fmod, /**/ hb, db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod,      hBags *hb, dBags *db) {
 
-    /* bulk */
-    free_pair(frag_bulk, bmod, /**/ hb, db);
-    free_counts(/**/ &hb->counts);
+    for (int i = 0; i < NFRAGS; ++i)
+        free_pair(i, fmod,      hb, db);
+
+
+    free_pair(frag_bulk, bmod,      hb, db);
+    free_counts(     &hb->counts);
 }
 
 void comm_buffer_fin(CommBuffer *cb) {
@@ -2017,7 +2017,7 @@ void comm_buffer_fin(CommBuffer *cb) {
     EFREE(cb);
 }
 
-void comm_fin(/**/ Comm *c) {
+void comm_fin(     Comm *c) {
     MC(m::Comm_free(&c->cart));
     EFREE(c);
 }
@@ -2105,14 +2105,14 @@ void comm_post_send(const hBags *b, Comm *com) {
     }
 }
 
-static void get_counts_bytes(const MPI_Status ss[NFRAGS], /**/ int counts[NFRAGS]) {
+static void get_counts_bytes(const MPI_Status ss[NFRAGS],      int counts[NFRAGS]) {
     for (int i = 0; i < NFRAGS; ++i)
         MC(m::Get_count(ss + i, MPI_BYTE, counts + i));
 }
 
-static void get_counts(const MPI_Status ss[NFRAGS], /**/ hBags *b) {
+static void get_counts(const MPI_Status ss[NFRAGS],      hBags *b) {
     int cap, i, c, cc[NFRAGS];
-    get_counts_bytes(ss, /**/ cc);
+    get_counts_bytes(ss,      cc);
 
     for (i = 0; i < NFRAGS; ++i) {
         c = cc[i] / b->bsize;
@@ -2122,10 +2122,10 @@ static void get_counts(const MPI_Status ss[NFRAGS], /**/ hBags *b) {
     }
 }
 
-static void get_counts(const MPI_Status ss[NFRAGS], /**/ CommBuffer *b) {
+static void get_counts(const MPI_Status ss[NFRAGS],      CommBuffer *b) {
     int i, cc[NFRAGS];
     size_t cap, c;
-    get_counts_bytes(ss, /**/ cc);
+    get_counts_bytes(ss,      cc);
 
     for (i = 0; i < NFRAGS; ++i) {
         c = cc[i];
@@ -2143,7 +2143,7 @@ static void fail_wait_normal(int code) {
 }
 
 static void fail_wait_status(int n, MPI_Status *ss) {
-    /* get error message from status */
+
     enum {X, Y, Z};
     int i, sz, code, d[3];
     char msg[BUFSIZ];
@@ -2163,12 +2163,12 @@ static void fail_wait(int code, int n, MPI_Status *ss) {
     else  UC(fail_wait_normal(code));
 }
 
-void comm_wait_recv(Comm *com, /**/ hBags *b) {
+void comm_wait_recv(Comm *com,      hBags *b) {
     int errorcode;
     MPI_Status ss[NFRAGS];
-    errorcode = m::Waitall(NFRAGS, com->rreq, /**/ ss);
+    errorcode = m::Waitall(NFRAGS, com->rreq,      ss);
     if (!m::is_success(errorcode)) fail_wait(errorcode, NFRAGS, ss);
-    get_counts(ss, /**/ b);
+    get_counts(ss,      b);
 }
 
 void comm_post_recv(CommBuffer *cb, Comm *com) {
@@ -2192,12 +2192,12 @@ void comm_post_send(const CommBuffer *cb, Comm *com) {
 }
 
 
-void comm_wait_recv(Comm *com, /**/ CommBuffer *cb) {
+void comm_wait_recv(Comm *com,      CommBuffer *cb) {
     int errorcode;
     MPI_Status ss[NFRAGS];
-    errorcode = m::Waitall(NFRAGS, com->rreq, /**/ ss);
+    errorcode = m::Waitall(NFRAGS, com->rreq,      ss);
     if (!m::is_success(errorcode)) fail_wait(errorcode, NFRAGS, ss);
-    get_counts(ss, /**/ cb);
+    get_counts(ss,      cb);
 }
 
 void comm_wait_send(Comm *com) {
@@ -2222,33 +2222,33 @@ size_t comm_get_byte_capacity(int i, const hBags *b) {
 #include <mpi.h>
 #include <stdio.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -2258,15 +2258,15 @@ size_t comm_get_byte_capacity(int i, const hBags *b) {
 #endif
 
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2277,7 +2277,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2299,17 +2299,17 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-namespace m { /* mini MPI */
+namespace m {
 void ini(int *argc, char ***argv);
 void get_dims(int *argc, char ***argv, int dims[3]);
-void get_cart(MPI_Comm comm, const int dims[3], /**/ MPI_Comm *cart);
+void get_cart(MPI_Comm comm, const int dims[3],      MPI_Comm *cart);
 void fin();
 }
 namespace m {
@@ -2354,7 +2354,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -2363,25 +2363,25 @@ int status2errcode(MPI_Status *status);
 }
 struct TimeLine;
 
-void time_line_ini(float start, /**/ TimeLine**);
+void time_line_ini(float start,      TimeLine**);
 void time_line_fin(TimeLine*);
 
-void time_line_advance(float dt, TimeLine*);           // <1>
-int  time_line_cross(const TimeLine*, float interval); // <2>
+void time_line_advance(float dt, TimeLine*);
+int  time_line_cross(const TimeLine*, float interval);
 
-void time_line_strt_dump(MPI_Comm, const char *base, int id, const TimeLine*); // <1>
-void time_line_strt_read(const char *base, int id, TimeLine*); // <2>
+void time_line_strt_dump(MPI_Comm, const char *base, int id, const TimeLine*);
+void time_line_strt_read(const char *base, int id, TimeLine*);
 
-float time_line_get_current  (const TimeLine*); // <1>
-long  time_line_get_iteration(const TimeLine*); // <2>
+float time_line_get_current  (const TimeLine*);
+long  time_line_get_iteration(const TimeLine*);
 struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -2422,16 +2422,16 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 struct Sim;
 struct Config;
 
-void sim_ini(const Config*, MPI_Comm, /**/ Sim**);
+void sim_ini(const Config*, MPI_Comm,      Sim**);
 void sim_fin(Sim*);
 
-void sim_gen(Sim*);  // <1>
-void sim_strt(Sim*); // <2>
+void sim_gen(Sim*);
+void sim_strt(Sim*);
 
 int main(int argc, char **argv) {
     Sim *sim;
@@ -2470,14 +2470,14 @@ int main(int argc, char **argv) {
 
 
 
-// Grouped editable compilation unit for configuration and bundled libconfig.
+
 
 
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-/* libconfig is bundled above. */
+
 #include <vector_types.h>
 
 #define ERR(fmt, ...)  do {                                     \
@@ -2486,7 +2486,7 @@ int main(int argc, char **argv) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2497,7 +2497,7 @@ int main(int argc, char **argv) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2519,33 +2519,33 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -2586,20 +2586,20 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 
 enum {
-    EXE, /* from program setters */
-    ARG, /* from arguments       */
-    OPT, /* from additional file */
-    DEF, /* from default file    */
+    EXE,
+    ARG,
+    OPT,
+    DEF,
     NCFG
 };
 
 struct Config {
     config_t c[NCFG];
-    config_t *r; /* what have been read */
+    config_t *r;
 };
 
 enum {
@@ -2609,7 +2609,7 @@ enum {
 };
 
 enum {
-    MAX_LEVEL = 10 /* maximum level of parameters */
+    MAX_LEVEL = 10
 };
 
 struct CBuf {
@@ -2623,7 +2623,7 @@ static void set_write_options(config_t *c) {
     config_set_option(c, CONFIG_OPTION_ALLOW_SCIENTIFIC_NOTATION,       CONFIG_TRUE );
 }
 
-void conf_ini(/**/ Config **pq) {
+void conf_ini(     Config **pq) {
     Config *q;
     EMALLOC(1, &q);
     for (int i = 0; i < NCFG; ++i) {
@@ -2637,7 +2637,7 @@ void conf_ini(/**/ Config **pq) {
     *pq = q;
 }
 
-void conf_fin(/**/ Config *q) {
+void conf_fin(     Config *q) {
     int i;
     for (i = 0; i < NCFG; ++i)
         config_destroy(&q->c[i]);
@@ -2646,7 +2646,7 @@ void conf_fin(/**/ Config *q) {
     EFREE(q);
 }
 
-static void concatenate(int n, char **ss, /**/ char *a) {
+static void concatenate(int n, char **ss,      char *a) {
     char *s;
     a[0] = '\0';
 
@@ -2657,20 +2657,20 @@ static void concatenate(int n, char **ss, /**/ char *a) {
     }
 }
 
-static void read_file(const char *fname, /**/ config_t *c) {
+static void read_file(const char *fname,      config_t *c) {
     msg_print("read '%s'", fname);
     if (!config_read_file(c, fname))
         ERR( "%s:%d - %s\n", config_error_file(c),
              config_error_line(c), config_error_text(c));
 }
 
-static void read_args(int argc, char **argv, /**/ config_t *c) {
+static void read_args(int argc, char **argv,      config_t *c) {
    enum {MAX_CHAR = 100000};
    char *args;
 
    EMALLOC(MAX_CHAR, &args);
 
-   concatenate(argc, argv, /**/ args);
+   concatenate(argc, argv,      args);
    if (!config_read_string(c, args)) {
        msg_print("read args: %s", args);
        ERR("%d - %s\n",
@@ -2685,7 +2685,7 @@ static void shift(int *c, char ***v) {
     (*v) ++;
 }
 
-static int get_opt_file(int *argc, char ***argv, /**/ char fname[]) {
+static int get_opt_file(int *argc, char ***argv,      char fname[]) {
     char *lastpnt, *a;
     int differ;
 
@@ -2709,27 +2709,27 @@ static void set_include_dir(const char *path, Config *cfg) {
         config_set_include_dir(&cfg->c[i], path);
 }
 
-void conf_read(int argc, char **argv, /**/ Config *cfg) {
+void conf_read(int argc, char **argv,      Config *cfg) {
     char *home, defname[1024] = {0}, optname[1024], definclude[1024] = {0};
     home = getenv("HOME");
 
-    // default include dir
+
     strcpy(definclude, home);
     strcat(definclude, "/.udx/");
     set_include_dir(definclude, cfg);
 
-    // default parameters file
+
     strcpy(defname, home);
     strcat(defname, "/.udx/default.cfg");
 
-    UC(read_file(defname, /**/ &cfg->c[DEF]));
+    UC(read_file(defname,      &cfg->c[DEF]));
 
-    if (get_opt_file(&argc, &argv, /**/ optname)) {
-        UC(read_file(optname, /**/ &cfg->c[OPT]));
+    if (get_opt_file(&argc, &argv,      optname)) {
+        UC(read_file(optname,      &cfg->c[OPT]));
     }
 
     if (argc)
-        UC(read_args(argc, argv, /**/ &cfg->c[ARG]));
+        UC(read_args(argc, argv,      &cfg->c[ARG]));
 }
 
 void conf_write_exe(const Config *cfg, FILE *stream) {
@@ -2794,8 +2794,8 @@ static void set_int(const char *name, int a, config_t *c) {
     UC(split_str(name, &n, &buf));
     to_ptr_array(&buf, desc);
 
-    group = get_subgroup_setting(n-1, desc, /**/ c);
-    setting = subsetting(desc[n-1], CONFIG_TYPE_INT, /**/ group);
+    group = get_subgroup_setting(n-1, desc,      c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_INT,      group);
 
     status = config_setting_set_int(setting, a);
     if (CONFIG_TRUE != status)
@@ -2813,8 +2813,8 @@ static void set_vint(const char *name, int nelem, const int a[], config_t *c) {
     UC(split_str(name, &n, &buf));
     to_ptr_array(&buf, desc);
 
-    group = get_subgroup_setting(n-1, desc, /**/ c);
-    setting = subsetting(desc[n-1], CONFIG_TYPE_ARRAY, /**/ group);
+    group = get_subgroup_setting(n-1, desc,      c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_ARRAY,      group);
 
     for (i = 0; i < nelem; ++i) {
         status = config_setting_set_int_elem(setting, APPEND, a[i]);
@@ -2838,8 +2838,8 @@ static void set_float(const char *name, float a, config_t *c) {
     UC(split_str(name, &n, &buf));
     to_ptr_array(&buf, desc);
 
-    group = get_subgroup_setting(n-1, desc, /**/ c);
-    setting = subsetting(desc[n-1], CONFIG_TYPE_FLOAT, /**/ group);
+    group = get_subgroup_setting(n-1, desc,      c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_FLOAT,      group);
 
     status = config_setting_set_float(setting, a);
     if (CONFIG_TRUE != status)
@@ -2857,8 +2857,8 @@ static void set_vfloat(const char *name, int nelem, const float a[], config_t *c
     UC(split_str(name, &n, &buf));
     to_ptr_array(&buf, desc);
 
-    group = get_subgroup_setting(n-1, desc, /**/ c);
-    setting = subsetting(desc[n-1], CONFIG_TYPE_ARRAY, /**/ group);
+    group = get_subgroup_setting(n-1, desc,      c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_ARRAY,      group);
 
     for (i = 0; i < nelem; ++i) {
         status = config_setting_set_float_elem(setting, APPEND, a[i]);
@@ -2881,8 +2881,8 @@ static void set_bool(const char *name, int a, config_t *c) {
     UC(split_str(name, &n, &buf));
     to_ptr_array(&buf, desc);
 
-    group = get_subgroup_setting(n-1, desc, /**/ c);
-    setting = subsetting(desc[n-1], CONFIG_TYPE_BOOL, /**/ group);
+    group = get_subgroup_setting(n-1, desc,      c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_BOOL,      group);
 
     status = config_setting_set_bool(setting, a);
     if (CONFIG_TRUE != status)
@@ -2898,8 +2898,8 @@ static void set_string(const char *name, const char *a, config_t *c) {
     UC(split_str(name, &n, &buf));
     to_ptr_array(&buf, desc);
 
-    group = get_subgroup_setting(n-1, desc, /**/ c);
-    setting = subsetting(desc[n-1], CONFIG_TYPE_STRING, /**/ group);
+    group = get_subgroup_setting(n-1, desc,      c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_STRING,      group);
 
     status = config_setting_set_string(setting, a);
     if (CONFIG_TRUE != status)
@@ -2917,8 +2917,8 @@ static void set_vstring(const char *name, int nelem, const char *ss[], config_t 
     UC(split_str(name, &n, &buf));
     to_ptr_array(&buf, desc);
 
-    group = get_subgroup_setting(n-1, desc, /**/ c);
-    setting = subsetting(desc[n-1], CONFIG_TYPE_ARRAY, /**/ group);
+    group = get_subgroup_setting(n-1, desc,      c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_ARRAY,      group);
 
     for (i = 0; i < nelem; ++i) {
         status = config_setting_set_string_elem(setting, APPEND, ss[i]);
@@ -2980,7 +2980,7 @@ static int lookup_setting(const Config *c, const char *desc, config_setting_t **
 static int lookup_int(const Config *c, const char *desc, int *a) {
     config_setting_t *s;
     int status;
-    status = lookup_setting(c, desc, /**/ &s);
+    status = lookup_setting(c, desc,      &s);
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_INT) return WTYPE;
     *a = config_setting_get_int(s);
@@ -2991,7 +2991,7 @@ static int lookup_int(const Config *c, const char *desc, int *a) {
 static int lookup_float(const Config *c, const char *desc, float *a) {
     config_setting_t *s;
     int status;
-    status = lookup_setting(c, desc, /**/ &s);
+    status = lookup_setting(c, desc,      &s);
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_FLOAT) return WTYPE;
     *a = config_setting_get_float(s);
@@ -3002,7 +3002,7 @@ static int lookup_float(const Config *c, const char *desc, float *a) {
 static int lookup_bool(const Config *c, const char *desc, int *a) {
     config_setting_t *s;
     int status;
-    status = lookup_setting(c, desc, /**/ &s);
+    status = lookup_setting(c, desc,      &s);
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_BOOL) return WTYPE;
     *a = config_setting_get_bool(s);
@@ -3013,7 +3013,7 @@ static int lookup_bool(const Config *c, const char *desc, int *a) {
 static int lookup_string(const Config *c, const char *desc, const char **a) {
     config_setting_t *s;
     int status;
-    status = lookup_setting(c, desc, /**/ &s);
+    status = lookup_setting(c, desc,      &s);
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_STRING) return WTYPE;
     *a = config_setting_get_string(s);
@@ -3024,7 +3024,7 @@ static int lookup_string(const Config *c, const char *desc, const char **a) {
 static int lookup_vint(const Config *c, const char *desc, int maxn, int *n, int a[]) {
     config_setting_t *s, *e;
     int j, status;
-    status = lookup_setting(c, desc, /**/ &s);
+    status = lookup_setting(c, desc,      &s);
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_ARRAY) return WTYPE;
     *n = config_setting_length(s);
@@ -3054,7 +3054,7 @@ static int lookup_int3(const Config *c, const char *desc, int3 *a) {
 static int lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]) {
     config_setting_t *s, *e;
     int j, status;
-    status = lookup_setting(c, desc, /**/ &s);
+    status = lookup_setting(c, desc,      &s);
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_ARRAY) return WTYPE;
     *n = config_setting_length(s);
@@ -3086,7 +3086,7 @@ static int lookup_float3(const Config *c, const char *desc, float3 *a) {
 static int lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss) {
     config_setting_t *s, *e;
     int j, status;
-    status = lookup_setting(c, desc, /**/ &s);
+    status = lookup_setting(c, desc,      &s);
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_ARRAY) return WTYPE;
     *n = config_setting_length(s);
@@ -3246,46 +3246,46 @@ bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const
 
 
 
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2018  Mark A Lindner
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifndef __libconfig_h
 #define __libconfig_h
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
 #if defined(LIBCONFIG_STATIC)
 #define LIBCONFIG_API
 #elif defined(LIBCONFIG_EXPORTS)
 #define LIBCONFIG_API __declspec(dllexport)
-#else /* ! LIBCONFIG_EXPORTS */
+#else
 #define LIBCONFIG_API __declspec(dllimport)
-#endif /* LIBCONFIG_STATIC */
-#else /* ! WIN32 */
+#endif
+#else
 #define LIBCONFIG_API
-#endif /* WIN32 */
+#endif
 
 #define LIBCONFIG_VER_MAJOR    1
 #define LIBCONFIG_VER_MINOR    7
@@ -3491,39 +3491,39 @@ extern LIBCONFIG_API int config_setting_is_scalar(
 extern LIBCONFIG_API int config_setting_is_aggregate(
     const config_setting_t *setting);
 
-#define /* const char * */ config_get_include_dir(/* const config_t * */ C) \
+#define                    config_get_include_dir(                       C) \
   ((C)->include_dir)
 
-#define /* void */ config_set_auto_convert(/* config_t * */ C, F) \
+#define            config_set_auto_convert(                 C, F) \
   config_set_option((C), CONFIG_OPTION_AUTOCONVERT, (F))
-#define /* int */ config_get_auto_convert(/* const config_t * */ C) \
+#define           config_get_auto_convert(                       C) \
   config_get_option((C), CONFIG_OPTION_AUTOCONVERT)
 
-#define /* int */ config_setting_type(/* const config_setting_t * */ S) \
+#define           config_setting_type(                               S) \
   ((S)->type)
 
-#define /* int */ config_setting_is_group(/* const config_setting_t * */ S) \
+#define           config_setting_is_group(                               S) \
   ((S)->type == CONFIG_TYPE_GROUP)
-#define /* int */ config_setting_is_array(/* const config_setting_t * */ S) \
+#define           config_setting_is_array(                               S) \
   ((S)->type == CONFIG_TYPE_ARRAY)
-#define /* int */ config_setting_is_list(/* const config_setting_t * */ S) \
+#define           config_setting_is_list(                               S) \
   ((S)->type == CONFIG_TYPE_LIST)
 
-#define /* int */ config_setting_is_number(/* const config_setting_t * */ S) \
+#define           config_setting_is_number(                               S) \
   (((S)->type == CONFIG_TYPE_INT)                                       \
    || ((S)->type == CONFIG_TYPE_INT64)                                  \
    || ((S)->type == CONFIG_TYPE_FLOAT))
 
-#define /* const char * */ config_setting_name( \
-  /* const config_setting_t * */ S)             \
+#define                    config_setting_name( \
+                                 S)             \
   ((S)->name)
 
-#define /* config_setting_t * */ config_setting_parent( \
-  /* const config_setting_t * */ S)                     \
+#define                          config_setting_parent( \
+                                 S)                     \
   ((S)->parent)
 
-#define /* int */ config_setting_is_root(       \
-  /* const config_setting_t * */ S)             \
+#define           config_setting_is_root(       \
+                                 S)             \
   ((S)->parent ? CONFIG_FALSE : CONFIG_TRUE)
 
 extern LIBCONFIG_API int config_setting_index(const config_setting_t *setting);
@@ -3565,63 +3565,63 @@ extern LIBCONFIG_API int config_lookup_string(const config_t *config,
                                               const char *path,
                                               const char **value);
 
-#define /* config_setting_t * */ config_root_setting( \
-  /* const config_t * */ C)                           \
+#define                          config_root_setting( \
+                         C)                           \
   ((C)->root)
 
-#define  /* void */ config_set_default_format(/* config_t * */ C,       \
-                                              /* short */ F)            \
+#define             config_set_default_format(                 C,       \
+                                                          F)            \
   (C)->default_format = (F)
 
-#define /* short */ config_get_default_format(/* config_t * */ C)       \
+#define             config_get_default_format(                 C)       \
   ((C)->default_format)
 
-#define /* unsigned short */ config_setting_source_line(   \
-  /* const config_setting_t * */ S)                        \
+#define                      config_setting_source_line(   \
+                                 S)                        \
   ((S)->line)
 
-#define /* const char */ config_setting_source_file(    \
-  /* const config_setting_t * */ S)                     \
+#define                  config_setting_source_file(    \
+                                 S)                     \
   ((S)->file)
 
-#define /* const char * */ config_error_text(/* const config_t * */ C)  \
+#define                    config_error_text(                       C)  \
   ((C)->error_text)
 
-#define /* const char * */ config_error_file(/* const config_t * */ C)  \
+#define                    config_error_file(                       C)  \
   ((C)->error_file)
 
-#define /* int */ config_error_line(/* const config_t * */ C)   \
+#define           config_error_line(                       C)   \
   ((C)->error_line)
 
-#define /* config_error_t */ config_error_type(/* const config_t * */ C) \
+#define                      config_error_type(                       C) \
   ((C)->error_type)
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
+#endif
 
-#endif /* __libconfig_h */
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2020  Mark A Lindner
+#endif
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifndef __libconfig_strbuf_h
 #define __libconfig_strbuf_h
@@ -3642,28 +3642,28 @@ void libconfig_strbuf_append_char(strbuf_t *buf, char c);
 
 char *libconfig_strbuf_release(strbuf_t *buf);
 
-#endif /* __libconfig_strbuf_h */
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2020  Mark A Lindner
+#endif
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifndef __libconfig_strvec_h
 #define __libconfig_strvec_h
@@ -3685,33 +3685,33 @@ extern const char **libconfig_strvec_release(strvec_t *vec);
 
 extern void libconfig_strvec_delete(const char * const *vec);
 
-#endif /* __libconfig_strvec_h */
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2018  Mark A Lindner
+#endif
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #include <string.h>
 #include <sys/types.h>
 
-#define __new(T) (T *)calloc(1, sizeof(T)) /* zeroed */
+#define __new(T) (T *)calloc(1, sizeof(T))
 #define __delete(P) free((void *)(P))
 #define __zero(P) memset((void *)(P), 0, sizeof(*P))
 
@@ -3721,27 +3721,27 @@ extern unsigned long long libconfig_parse_hex64(const char *s);
 extern void libconfig_format_double(double val, int precision, int sci_ok,
                                     char *buf, size_t buflen);
 
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2018  Mark A Lindner
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifndef __wincompat_h
 #define __wincompat_h
@@ -3751,7 +3751,7 @@ extern void libconfig_format_double(double val, int precision, int sci_ok,
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) \
   || defined(WIN64) || defined(_WIN64) || defined(__WIN64__)
 
-/* Prevent warnings about redefined malloc/free in generated code. */
+
 #ifndef _STDLIB_H
 #define _STDLIB_H
 #endif
@@ -3794,7 +3794,7 @@ extern void libconfig_format_double(double val, int precision, int sci_ok,
 
 #define FILE_SEPARATOR "\\"
 
-#else /* defined(WIN32) || defined(__MINGW32__) */
+#else
 
 #define INT64_FMT "%lld"
 #define UINT64_FMT "%llu"
@@ -3803,7 +3803,7 @@ extern void libconfig_format_double(double val, int precision, int sci_ok,
 
 #define FILE_SEPARATOR "/"
 
-#endif /* defined(WIN32) || defined(__MINGW32__) */
+#endif
 
 #if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__) \
   || defined(WIN64) || defined(_WIN64) || defined(__WIN64__)) \
@@ -3826,7 +3826,7 @@ extern void libconfig_format_double(double val, int precision, int sci_ok,
 
 extern int fsync(int fd);
 
-#else /* defined(WIN32/WIN64) && ! defined(__MINGW32__) */
+#else
 
 #define INT64_CONST(I)  (I ## LL)
 #define UINT64_CONST(I) (I ## ULL)
@@ -3834,32 +3834,32 @@ extern int fsync(int fd);
 #define IS_RELATIVE_PATH(P) \
   ((P)[0] != '/')
 
-#include <unistd.h> /* for fsync() */
+#include <unistd.h>
 
-#endif /* defined(WIN32/WIN64) && ! defined(__MINGW32__) */
+#endif
 
-#endif /* __wincompat_h */
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2020  Mark A Lindner
+#endif
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifndef __libconfig_scanctx_h
 #define __libconfig_scanctx_h
@@ -3873,10 +3873,10 @@ extern int fsync(int fd);
 
 struct include_stack_frame
 {
-  /*
-   * Member strings are not owned; they are pointers into scan_context's
-   * filenames vector.
-   */
+
+
+
+
   const char **files;
   const char **current_file;
   FILE *current_stream;
@@ -3897,41 +3897,41 @@ extern void libconfig_scanctx_init(struct scan_context *ctx,
                                    const char *top_filename);
 extern const char **libconfig_scanctx_cleanup(struct scan_context *ctx);
 
-/*
- * Pushes a new frame onto the include stack, and returns an open stream to the
- * first file in the include list, if any.
- *
- * ctx - The scan context
- * prev_buffer - The current input buffer, to be restored when this frame is
- * popped
- * path - The string argument to the @include directive, to be expanded into a
- * list of zero or more filenames using the function ctx->config->include_fn
- * error - A pointer at which to store a static error message, if any.
- *
- * On success, the new frame will be pushed and the stream to the first file
- * will be returned.
- *
- * On failure, the frame will not be pushed and NULL will be returned. If
- * *error is NULL, it means there are no files in the list. Otherwise, it
- * points to an error and parsing should be aborted.
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 extern FILE *libconfig_scanctx_push_include(struct scan_context *ctx,
                                             void *prev_buffer,
                                             const char *path,
                                             const char **error);
 
-/*
- * Returns the next include file in the current include stack frame.
- *
- * Returns NULL on failure or if there are no more files left in the current
- * frame. If there was an error, sets *error.
- */
+
+
+
+
+
+
 extern FILE *libconfig_scanctx_next_include_file(struct scan_context *ctx,
                                                  const char **error);
 
-/*
- * Pops a frame off the include stack.
- */
+
+
+
 extern void *libconfig_scanctx_pop_include(struct scan_context *ctx);
 
 #define libconfig_scanctx_append_string(C, S) \
@@ -3944,28 +3944,28 @@ extern char *libconfig_scanctx_take_string(struct scan_context *ctx);
 
 extern const char *libconfig_scanctx_current_filename(struct scan_context *ctx);
 
-#endif /* __libconfig_scanctx_h */
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2020  Mark A Lindner
+#endif
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifndef __libconfig_parsectx_h
 #define __libconfig_parsectx_h
@@ -3990,42 +3990,42 @@ struct parse_context
 #define libconfig_parsectx_take_string(C) \
   libconfig_strbuf_release(&((C)->string))
 
-#endif /* __libconfig_parsectx_h */
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+#endif
 
-/* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-/* As a special exception, you may create a larger work that contains
-   part or all of the Bison parser skeleton and distribute that work
-   under terms of your choice, so long as that work isn't itself a
-   parser generator using the skeleton or a modified version thereof
-   as a parser skeleton.  Alternatively, if you modify or redistribute
-   the parser skeleton itself, you may (at your option) remove this
-   special exception, which will cause the skeleton and the resulting
-   Bison output files to be licensed under the GNU General Public
-   License without this special exception.
 
-   This special exception was added by the Free Software Foundation in
-   version 2.2 of Bison.  */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifndef YY_LIBCONFIG_YY_GRAMMAR_H_INCLUDED
 # define YY_LIBCONFIG_YY_GRAMMAR_H_INCLUDED
-/* Debug traces.  */
+
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
@@ -4033,7 +4033,7 @@ struct parse_context
 extern int libconfig_yydebug;
 #endif
 
-/* Token type.  */
+
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
@@ -4060,7 +4060,7 @@ extern int libconfig_yydebug;
     TOK_ERROR = 277
   };
 #endif
-/* Tokens.  */
+
 #define TOK_BOOLEAN 258
 #define TOK_INTEGER 259
 #define TOK_HEX 260
@@ -4082,7 +4082,7 @@ extern int libconfig_yydebug;
 #define TOK_GARBAGE 276
 #define TOK_ERROR 277
 
-/* Value type.  */
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
@@ -4104,7 +4104,7 @@ typedef union YYSTYPE YYSTYPE;
 
 int libconfig_yyparse (void *scanner, struct parse_context *ctx, struct scan_context *scan_ctx);
 
-#endif /* !YY_LIBCONFIG_YY_GRAMMAR_H_INCLUDED  */
+#endif
 #ifndef libconfig_yyHEADER_H
 #define libconfig_yyHEADER_H 1
 #define libconfig_yyIN_HEADER 1
@@ -4113,7 +4113,7 @@ int libconfig_yyparse (void *scanner, struct parse_context *ctx, struct scan_con
 
 #define  YY_INT_ALIGNED short int
 
-/* A lexical scanner generated by flex */
+
 
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
@@ -4345,7 +4345,7 @@ int libconfig_yyparse (void *scanner, struct parse_context *ctx, struct scan_con
 #define yyfree libconfig_yyfree
 #endif
 
-/* First, we deal with  platform-specific or compiler-specific issues. */
+
 
 #include <stdio.h>
 #include <string.h>
@@ -4353,18 +4353,18 @@ int libconfig_yyparse (void *scanner, struct parse_context *ctx, struct scan_con
 #include <stdlib.h>
 
 
-/* flex integer type definitions */
+
 
 #ifndef FLEXINT_H
 #define FLEXINT_H
 
-/* C99 systems have <inttypes.h>. Non-C99 systems may or may not. */
+
 
 #if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 
-/* C99 says to define __STDC_LIMIT_MACROS before including stdint.h,
- * if you want the limit (max/min) macros for int types.
- */
+
+
+
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS 1
 #endif
@@ -4384,7 +4384,7 @@ typedef unsigned char flex_uint8_t;
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
 
-/* Limits of integral types. */
+
 #ifndef INT8_MIN
 #define INT8_MIN               (-128)
 #endif
@@ -4417,12 +4417,12 @@ typedef unsigned int flex_uint32_t;
 #define SIZE_MAX               (~(size_t)0)
 #endif
 
-#endif /* ! C99 */
+#endif
 
-#endif /* ! FLEXINT_H */
+#endif
 
 
-/* TODO: this is always defined, so inline it */
+
 #define yyconst const
 
 #if defined(__GNUC__) && __GNUC__ >= 3
@@ -4431,14 +4431,14 @@ typedef unsigned int flex_uint32_t;
 #define yynoreturn
 #endif
 
-/* An opaque pointer. */
+
 #ifndef YY_TYPEDEF_YY_SCANNER_T
 #define YY_TYPEDEF_YY_SCANNER_T
 typedef void* yyscan_t;
 #endif
 
-/* For convenience, these vars (plus the bison vars far below)
-   are macros in the reentrant scanner. */
+
+
 #define yyin yyg->yyin_r
 #define yyout yyg->yyout_r
 #define yyextra yyg->yyextra_r
@@ -4448,17 +4448,17 @@ typedef void* yyscan_t;
 #define yycolumn (YY_CURRENT_BUFFER_LVALUE->yy_bs_column)
 #define yy_flex_debug yyg->yy_flex_debug_r
 
-/* Size of default input buffer. */
+
 #ifndef YY_BUF_SIZE
 #ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k.
- * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
- * Ditto for the __ia64__ case accordingly.
- */
+
+
+
+
 #define YY_BUF_SIZE 32768
 #else
 #define YY_BUF_SIZE 16384
-#endif /* __ia64__ */
+#endif
 #endif
 
 #ifndef YY_TYPEDEF_YY_BUFFER_STATE
@@ -4477,50 +4477,50 @@ struct yy_buffer_state
 	{
 	FILE *yy_input_file;
 
-	char *yy_ch_buf;		/* input buffer */
-	char *yy_buf_pos;		/* current position in input buffer */
+	char *yy_ch_buf;
+	char *yy_buf_pos;
 
-	/* Size of input buffer in bytes, not including room for EOB
-	 * characters.
-	 */
+
+
+
 	int yy_buf_size;
 
-	/* Number of characters read into yy_ch_buf, not including EOB
-	 * characters.
-	 */
+
+
+
 	int yy_n_chars;
 
-	/* Whether we "own" the buffer - i.e., we know we created it,
-	 * and can realloc() it to grow it, and should free() it to
-	 * delete it.
-	 */
+
+
+
+
 	int yy_is_our_buffer;
 
-	/* Whether this is an "interactive" input source; if so, and
-	 * if we're using stdio for input, then we want to use getc()
-	 * instead of fread(), to make sure we stop fetching input after
-	 * each newline.
-	 */
+
+
+
+
+
 	int yy_is_interactive;
 
-	/* Whether we're considered to be at the beginning of a line.
-	 * If so, '^' rules will be active on the next match, otherwise
-	 * not.
-	 */
+
+
+
+
 	int yy_at_bol;
 
-    int yy_bs_lineno; /**< The line count. */
-    int yy_bs_column; /**< The column count. */
+    int yy_bs_lineno;
+    int yy_bs_column;
 
-	/* Whether to try to fill the input buffer when we reach the
-	 * end of it.
-	 */
+
+
+
 	int yy_fill_buffer;
 
 	int yy_buffer_status;
 
 	};
-#endif /* !YY_STRUCT_YY_BUFFER_STATE */
+#endif
 
 void yyrestart ( FILE *input_file , yyscan_t yyscanner );
 void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
@@ -4538,7 +4538,7 @@ void *yyalloc ( yy_size_t , yyscan_t yyscanner );
 void *yyrealloc ( void *, yy_size_t , yyscan_t yyscanner );
 void yyfree ( void * , yyscan_t yyscanner );
 
-#define libconfig_yywrap(yyscanner) (/*CONSTCOND*/1)
+#define libconfig_yywrap(yyscanner) (             1)
 #define YY_SKIP_YYWRAP
 
 #define yytext_ptr yytext_r
@@ -4553,10 +4553,10 @@ void yyfree ( void * , yyscan_t yyscanner );
 #endif
 
 #ifndef YY_NO_UNISTD_H
-/* Special case for "unistd.h", since it is non-ANSI. We include it way
- * down here because we want the user's section 1 to have been scanned first.
- * The user has a chance to override it with an option.
- */
+
+
+
+
 #include <unistd.h>
 #endif
 
@@ -4566,8 +4566,8 @@ int yylex_init (yyscan_t* scanner);
 
 int yylex_init_extra ( YY_EXTRA_TYPE user_defined, yyscan_t* scanner);
 
-/* Accessor methods to globals.
-   These are made visible to non-reentrant scanners for convenience. */
+
+
 
 int yylex_destroy ( yyscan_t yyscanner );
 
@@ -4603,9 +4603,9 @@ YYSTYPE * yyget_lval ( yyscan_t yyscanner );
 
 void yyset_lval ( YYSTYPE * yylval_param , yyscan_t yyscanner );
 
-/* Macros after this point can all be overridden by user definitions in
- * section 1.
- */
+
+
+
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
@@ -4627,24 +4627,24 @@ static int yy_flex_strlen ( const char * , yyscan_t yyscanner);
 
 #endif
 
-/* Amount of stuff to slurp up with each read. */
+
 #ifndef YY_READ_BUF_SIZE
 #ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k */
+
 #define YY_READ_BUF_SIZE 16384
 #else
 #define YY_READ_BUF_SIZE 8192
-#endif /* __ia64__ */
+#endif
 #endif
 
-/* Number of entries by which start-condition stack grows. */
+
 #ifndef YY_START_STACK_INCR
 #define YY_START_STACK_INCR 25
 #endif
 
-/* Default declaration of generated scanner - a define so the user can
- * easily add parameters.
- */
+
+
+
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
@@ -4653,9 +4653,9 @@ extern int yylex \
 
 #define YY_DECL int yylex \
                (YYSTYPE * yylval_param , yyscan_t yyscanner)
-#endif /* !YY_DECL */
+#endif
 
-/* yy_get_previous_state - get the state just before the EOB char was reached */
+
 
 #undef YY_NEW_FILE
 #undef YY_FLUSH_BUFFER
@@ -4816,34 +4816,34 @@ extern int yylex \
 
 
 #undef libconfig_yyIN_HEADER
-#endif /* libconfig_yyHEADER_H */
+#endif
 #ifndef YY_BUFFER_NEW
 #define YY_BUFFER_NEW 0
 #define YY_BUFFER_NORMAL 1
 #define YY_BUFFER_EOF_PENDING 2
 #endif
 
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2020  Mark A Lindner
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #include <string.h>
@@ -4851,13 +4851,13 @@ extern int yylex \
 
 #define STRING_BLOCK_SIZE 64
 
-/* ------------------------------------------------------------------------- */
+
 
 void libconfig_strbuf_ensure_capacity(strbuf_t *buf, size_t len)
 {
   static const size_t mask = ~(STRING_BLOCK_SIZE - 1);
 
-  size_t newlen = buf->length + len + 1; /* add 1 for NUL */
+  size_t newlen = buf->length + len + 1;
   if(newlen > buf->capacity)
   {
     buf->capacity = (newlen + (STRING_BLOCK_SIZE - 1)) & mask;
@@ -4865,7 +4865,7 @@ void libconfig_strbuf_ensure_capacity(strbuf_t *buf, size_t len)
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 char *libconfig_strbuf_release(strbuf_t *buf)
 {
@@ -4874,7 +4874,7 @@ char *libconfig_strbuf_release(strbuf_t *buf)
   return(r);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void libconfig_strbuf_append_string(strbuf_t *buf, const char *s)
 {
@@ -4884,7 +4884,7 @@ void libconfig_strbuf_append_string(strbuf_t *buf, const char *s)
   buf->length += len;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void libconfig_strbuf_append_char(strbuf_t *buf, char c)
 {
@@ -4894,35 +4894,35 @@ void libconfig_strbuf_append_char(strbuf_t *buf, char c)
   *(buf->string + buf->length) = '\0';
 }
 
-/* ------------------------------------------------------------------------- */
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2020  Mark A Lindner
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #include <stdlib.h>
 
 #define CHUNK_SIZE 32
 
-/* ------------------------------------------------------------------------- */
+
 
 void libconfig_strvec_append(strvec_t *vec, const char *s)
 {
@@ -4940,7 +4940,7 @@ void libconfig_strvec_append(strvec_t *vec, const char *s)
   ++(vec->length);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 const char **libconfig_strvec_release(strvec_t *vec)
 {
@@ -4952,7 +4952,7 @@ const char **libconfig_strvec_release(strvec_t *vec)
   return(r);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void libconfig_strvec_delete(const char *const *vec)
 {
@@ -4966,28 +4966,28 @@ void libconfig_strvec_delete(const char *const *vec)
   __delete(vec);
 }
 
-/* ------------------------------------------------------------------------- */
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2018  Mark A Lindner
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #include <errno.h>
@@ -4995,7 +4995,7 @@ void libconfig_strvec_delete(const char *const *vec)
 #include <stdlib.h>
 #include <string.h>
 
-/* ------------------------------------------------------------------------- */
+
 
 long long libconfig_parse_integer(const char *s, int *ok)
 {
@@ -5003,12 +5003,12 @@ long long libconfig_parse_integer(const char *s, int *ok)
   char *endptr;
   int errsave = errno;
   errno = 0;
-  llval = strtoll(s, &endptr, 0);	/* base 10 or base 8 */
+  llval = strtoll(s, &endptr, 0);
   if(*endptr || errno)
   {
     errno = 0;
     *ok = 0;
-    return(0);	/* parse error */
+    return(0);
   }
   errno = errsave;
 
@@ -5016,15 +5016,15 @@ long long libconfig_parse_integer(const char *s, int *ok)
   return(llval);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 unsigned long long libconfig_parse_hex64(const char *s)
 {
 #ifdef __MINGW32__
 
-  /* MinGW's strtoull() seems to be broken; it only returns the lower
-   * 32 bits...
-   */
+
+
+
 
   const char *p = s;
   unsigned long long val = 0;
@@ -5045,14 +5045,14 @@ unsigned long long libconfig_parse_hex64(const char *s)
 
   return(val);
 
-#else /* ! __MINGW32__ */
+#else
 
   return(strtoull(s, NULL, 16));
 
-#endif /* __MINGW32__ */
+#endif
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void libconfig_format_double(double val, int precision, int sci_ok, char *buf,
                              size_t buflen)
@@ -5062,20 +5062,20 @@ void libconfig_format_double(double val, int precision, int sci_ok, char *buf,
 
   snprintf(buf, buflen - 3, fmt, precision, val);
 
-  /* Check for exponent. */
+
   p = strchr(buf, 'e');
   if(p) return;
 
-  /* Check for decimal point. */
+
   p = strchr(buf, '.');
   if(!p)
   {
-    /* No decimal point. Add trailing ".0". */
+
     strcat(buf, ".0");
   }
   else
   {
-    /* Remove any excess trailing 0's after decimal point. */
+
     for(q = buf + strlen(buf) - 1; q > p + 1; --q)
     {
       if(*q == '0')
@@ -5086,28 +5086,28 @@ void libconfig_format_double(double val, int precision, int sci_ok, char *buf,
   }
 }
 
-/* ------------------------------------------------------------------------- */
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2018  Mark A Lindner
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) \
@@ -5146,40 +5146,40 @@ int fsync(int fd)
   return(0);
 }
 
-#endif // WIN32 || WIN64
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2020  Mark A Lindner
+#endif
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
-/* ------------------------------------------------------------------------- */
+
 
 static const char *err_bad_include = "cannot open include file";
 static const char *err_include_too_deep = "include file nesting too deep";
 
-/* ------------------------------------------------------------------------- */
+
 
 void libconfig_scanctx_init(struct scan_context *ctx, const char *top_filename)
 {
@@ -5191,7 +5191,7 @@ void libconfig_scanctx_init(struct scan_context *ctx, const char *top_filename)
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 const char **libconfig_scanctx_cleanup(struct scan_context *ctx)
 {
@@ -5212,7 +5212,7 @@ const char **libconfig_scanctx_cleanup(struct scan_context *ctx)
   return(libconfig_strvec_release(&(ctx->filenames)));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 FILE *libconfig_scanctx_push_include(struct scan_context *ctx, void *prev_buffer,
                                      const char *path, const char **error)
@@ -5263,7 +5263,7 @@ FILE *libconfig_scanctx_push_include(struct scan_context *ctx, void *prev_buffer
   return(fp);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 FILE *libconfig_scanctx_next_include_file(struct scan_context *ctx,
                                           const char **error)
@@ -5298,14 +5298,14 @@ FILE *libconfig_scanctx_next_include_file(struct scan_context *ctx,
   return(include_frame->current_stream);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void *libconfig_scanctx_pop_include(struct scan_context *ctx)
 {
   struct include_stack_frame *frame;
 
   if(ctx->stack_depth == 0)
-    return(NULL); /* stack underflow */
+    return(NULL);
 
   frame = &(ctx->include_stack[--(ctx->stack_depth)]);
 
@@ -5321,7 +5321,7 @@ void *libconfig_scanctx_pop_include(struct scan_context *ctx)
   return(frame->parent_buffer);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 char *libconfig_scanctx_take_string(struct scan_context *ctx)
 {
@@ -5330,7 +5330,7 @@ char *libconfig_scanctx_take_string(struct scan_context *ctx)
   return(r ? r : strdup(""));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 const char *libconfig_scanctx_current_filename(struct scan_context *ctx)
 {
@@ -5340,69 +5340,69 @@ const char *libconfig_scanctx_current_filename(struct scan_context *ctx)
   return(ctx->top_filename);
 }
 
-/* ------------------------------------------------------------------------- */
-/* A Bison parser, made by GNU Bison 3.0.4.  */
 
-/* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-/* As a special exception, you may create a larger work that contains
-   part or all of the Bison parser skeleton and distribute that work
-   under terms of your choice, so long as that work isn't itself a
-   parser generator using the skeleton or a modified version thereof
-   as a parser skeleton.  Alternatively, if you modify or redistribute
-   the parser skeleton itself, you may (at your option) remove this
-   special exception, which will cause the skeleton and the resulting
-   Bison output files to be licensed under the GNU General Public
-   License without this special exception.
 
-   This special exception was added by the Free Software Foundation in
-   version 2.2 of Bison.  */
 
-/* C LALR(1) parser skeleton written by Richard Stallman, by
-   simplifying the original so-called "semantic" parser.  */
 
-/* All symbols defined below should begin with yy or YY, to avoid
-   infringing on user name space.  This should be done even for local
-   variables, as they might otherwise be expanded by user macros.
-   There are some unavoidable exceptions within include files to
-   define necessary library symbols; they are noted "INFRINGES ON
-   USER NAME SPACE" below.  */
 
-/* Identify Bison output.  */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define YYBISON 1
 
-/* Bison version.  */
+
 #define YYBISON_VERSION "3.0.4"
 
-/* Skeleton name.  */
+
 #define YYSKELETON_NAME "yacc.c"
 
-/* Pure parsers.  */
+
 #define YYPURE 1
 
-/* Push parsers.  */
+
 #define YYPUSH 0
 
-/* Pull parsers.  */
+
 #define YYPULL 1
 
 
-/* Substitute the variable and function names.  */
+
 #define yyparse         libconfig_yyparse
 #define yylex           libconfig_yylex
 #define yyerror         libconfig_yyerror
@@ -5410,13 +5410,13 @@ const char *libconfig_scanctx_current_filename(struct scan_context *ctx)
 #define yynerrs         libconfig_yynerrs
 
 
-/* Copy the first part of user declarations.  */
+
 
 #include <string.h>
 #include <stdlib.h>
 
 
-/* These declarations are provided to suppress compiler warnings. */
+
 extern int libconfig_yylex();
 extern int libconfig_yyget_lineno();
 
@@ -5457,7 +5457,7 @@ void libconfig_yyerror(void *scanner, struct parse_context *ctx,
 #  endif
 # endif
 
-/* Enabling verbose error messages.  */
+
 #ifdef YYERROR_VERBOSE
 # undef YYERROR_VERBOSE
 # define YYERROR_VERBOSE 1
@@ -5465,11 +5465,11 @@ void libconfig_yyerror(void *scanner, struct parse_context *ctx,
 # define YYERROR_VERBOSE 0
 #endif
 
-/* In a future release of Bison, this section will be replaced
-   by #include "y.tab.h".  */
+
+
 #ifndef YY_LIBCONFIG_YY_GRAMMAR_H_INCLUDED
 # define YY_LIBCONFIG_YY_GRAMMAR_H_INCLUDED
-/* Debug traces.  */
+
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
@@ -5477,7 +5477,7 @@ void libconfig_yyerror(void *scanner, struct parse_context *ctx,
 extern int libconfig_yydebug;
 #endif
 
-/* Token type.  */
+
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
@@ -5504,7 +5504,7 @@ extern int libconfig_yydebug;
     TOK_ERROR = 277
   };
 #endif
-/* Tokens.  */
+
 #define TOK_BOOLEAN 258
 #define TOK_INTEGER 259
 #define TOK_HEX 260
@@ -5526,7 +5526,7 @@ extern int libconfig_yydebug;
 #define TOK_GARBAGE 276
 #define TOK_ERROR 277
 
-/* Value type.  */
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
@@ -5548,9 +5548,9 @@ typedef union YYSTYPE YYSTYPE;
 
 int libconfig_yyparse (void *scanner, struct parse_context *ctx, struct scan_context *scan_ctx);
 
-#endif /* !YY_LIBCONFIG_YY_GRAMMAR_H_INCLUDED  */
+#endif
 
-/* Copy the second part of user declarations.  */
+
 
 
 #ifdef short
@@ -5587,7 +5587,7 @@ typedef short int yytype_int16;
 # elif defined size_t
 #  define YYSIZE_T size_t
 # elif ! defined YYSIZE_T
-#  include <stddef.h> /* INFRINGES ON USER NAME SPACE */
+#  include <stddef.h>
 #  define YYSIZE_T size_t
 # else
 #  define YYSIZE_T unsigned int
@@ -5599,7 +5599,7 @@ typedef short int yytype_int16;
 #ifndef YY_
 # if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
-#   include <libintl.h> /* INFRINGES ON USER NAME SPACE */
+#   include <libintl.h>
 #   define YY_(Msgid) dgettext ("bison-runtime", Msgid)
 #  endif
 # endif
@@ -5614,7 +5614,7 @@ typedef short int yytype_int16;
      || defined __SUNPRO_C && 0x5110 <= __SUNPRO_C
 #  define YY_ATTRIBUTE(Spec) __attribute__(Spec)
 # else
-#  define YY_ATTRIBUTE(Spec) /* empty */
+#  define YY_ATTRIBUTE(Spec)
 # endif
 #endif
 
@@ -5635,15 +5635,15 @@ typedef short int yytype_int16;
 # endif
 #endif
 
-/* Suppress unused-variable warnings by "using" E.  */
+
 #if ! defined lint || defined __GNUC__
 # define YYUSE(E) ((void) (E))
 #else
-# define YYUSE(E) /* empty */
+# define YYUSE(E)
 #endif
 
 #if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
-/* Suppress an incorrect diagnostic about yylval being uninitialized.  */
+
 # define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
     _Pragma ("GCC diagnostic push") \
     _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")\
@@ -5658,30 +5658,30 @@ typedef short int yytype_int16;
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END
 #endif
 #ifndef YY_INITIAL_VALUE
-# define YY_INITIAL_VALUE(Value) /* Nothing. */
+# define YY_INITIAL_VALUE(Value)
 #endif
 
 
 #if ! defined yyoverflow || YYERROR_VERBOSE
 
-/* The parser invokes alloca or malloc; define the necessary symbols.  */
+
 
 # ifdef YYSTACK_USE_ALLOCA
 #  if YYSTACK_USE_ALLOCA
 #   ifdef __GNUC__
 #    define YYSTACK_ALLOC __builtin_alloca
 #   elif defined __BUILTIN_VA_ARG_INCR
-#    include <alloca.h> /* INFRINGES ON USER NAME SPACE */
+#    include <alloca.h>
 #   elif defined _AIX
 #    define YYSTACK_ALLOC __alloca
 #   elif defined _MSC_VER
-#    include <malloc.h> /* INFRINGES ON USER NAME SPACE */
+#    include <malloc.h>
 #    define alloca _alloca
 #   else
 #    define YYSTACK_ALLOC alloca
 #    if ! defined _ALLOCA_H && ! defined EXIT_SUCCESS
-#     include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
-      /* Use EXIT_SUCCESS as a witness for stdlib.h.  */
+#     include <stdlib.h>
+
 #     ifndef EXIT_SUCCESS
 #      define EXIT_SUCCESS 0
 #     endif
@@ -5691,14 +5691,14 @@ typedef short int yytype_int16;
 # endif
 
 # ifdef YYSTACK_ALLOC
-   /* Pacify GCC's 'empty if-body' warning.  */
-#  define YYSTACK_FREE(Ptr) do { /* empty */; } while (0)
+
+#  define YYSTACK_FREE(Ptr) do {            ; } while (0)
 #  ifndef YYSTACK_ALLOC_MAXIMUM
-    /* The OS might guarantee only one guard page at the bottom of the stack,
-       and a page size can be as small as 4096 bytes.  So we cannot safely
-       invoke alloca (N) if N exceeds 4096.  Use a slightly smaller number
-       to allow for a few compiler-allocated temporary stack slots.  */
-#   define YYSTACK_ALLOC_MAXIMUM 4032 /* reasonable circa 2006 */
+
+
+
+
+#   define YYSTACK_ALLOC_MAXIMUM 4032
 #  endif
 # else
 #  define YYSTACK_ALLOC YYMALLOC
@@ -5709,7 +5709,7 @@ typedef short int yytype_int16;
 #  if (defined __cplusplus && ! defined EXIT_SUCCESS \
        && ! ((defined YYMALLOC || defined malloc) \
              && (defined YYFREE || defined free)))
-#   include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
+#   include <stdlib.h>
 #   ifndef EXIT_SUCCESS
 #    define EXIT_SUCCESS 0
 #   endif
@@ -5717,46 +5717,46 @@ typedef short int yytype_int16;
 #  ifndef YYMALLOC
 #   define YYMALLOC malloc
 #   if ! defined malloc && ! defined EXIT_SUCCESS
-void *malloc (YYSIZE_T); /* INFRINGES ON USER NAME SPACE */
+void *malloc (YYSIZE_T);
 #   endif
 #  endif
 #  ifndef YYFREE
 #   define YYFREE free
 #   if ! defined free && ! defined EXIT_SUCCESS
-void free (void *); /* INFRINGES ON USER NAME SPACE */
+void free (void *);
 #   endif
 #  endif
 # endif
-#endif /* ! defined yyoverflow || YYERROR_VERBOSE */
+#endif
 
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
          || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
 
-/* A type that is properly aligned for any stack member.  */
+
 union yyalloc
 {
   yytype_int16 yyss_alloc;
   YYSTYPE yyvs_alloc;
 };
 
-/* The size of the maximum gap between one aligned stack and the next.  */
+
 # define YYSTACK_GAP_MAXIMUM (sizeof (union yyalloc) - 1)
 
-/* The size of an array large to enough to hold all stacks, each with
-   N elements.  */
+
+
 # define YYSTACK_BYTES(N) \
      ((N) * (sizeof (yytype_int16) + sizeof (YYSTYPE)) \
       + YYSTACK_GAP_MAXIMUM)
 
 # define YYCOPY_NEEDED 1
 
-/* Relocate STACK from its old location to the new one.  The
-   local variables YYSIZE and YYSTACKSIZE give the old and new number of
-   elements in the stack, and YYPTR gives the new location of the
-   stack.  Advance YYPTR to a properly aligned location for the next
-   stack.  */
+
+
+
+
+
 # define YYSTACK_RELOCATE(Stack_alloc, Stack)                           \
     do                                                                  \
       {                                                                 \
@@ -5771,8 +5771,8 @@ union yyalloc
 #endif
 
 #if defined YYCOPY_NEEDED && YYCOPY_NEEDED
-/* Copy COUNT objects from SRC to DST.  The source and destination do
-   not overlap.  */
+
+
 # ifndef YYCOPY
 #  if defined __GNUC__ && 1 < __GNUC__
 #   define YYCOPY(Dst, Src, Count) \
@@ -5788,32 +5788,32 @@ union yyalloc
       while (0)
 #  endif
 # endif
-#endif /* !YYCOPY_NEEDED */
+#endif
 
-/* YYFINAL -- State number of the termination state.  */
+
 #define YYFINAL  6
-/* YYLAST -- Last index in YYTABLE.  */
+
 #define YYLAST   35
 
-/* YYNTOKENS -- Number of terminals.  */
+
 #define YYNTOKENS  23
-/* YYNNTS -- Number of nonterminals.  */
+
 #define YYNNTS  20
-/* YYNRULES -- Number of rules.  */
+
 #define YYNRULES  41
-/* YYNSTATES -- Number of states.  */
+
 #define YYNSTATES  47
 
-/* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
-   by yylex, with out-of-bounds checking.  */
+
+
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   277
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
-/* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
-   as returned by yylex, without out-of-bounds checking.  */
+
+
 static const yytype_uint8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -5847,7 +5847,7 @@ static const yytype_uint8 yytranslate[] =
 };
 
 #if YYDEBUG
-  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
+
 static const yytype_uint16 yyrline[] =
 {
        0,    92,    92,    94,    98,    99,   102,   104,   107,   109,
@@ -5859,8 +5859,8 @@ static const yytype_uint16 yyrline[] =
 #endif
 
 #if YYDEBUG || YYERROR_VERBOSE || 0
-/* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
-   First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
+
+
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "TOK_BOOLEAN", "TOK_INTEGER", "TOK_HEX",
@@ -5876,8 +5876,8 @@ static const char *const yytname[] =
 #endif
 
 # ifdef YYPRINT
-/* YYTOKNUM[NUM] -- (External) token number corresponding to the
-   (internal) symbol number NUM (which must be that of a token).  */
+
+
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
@@ -5896,8 +5896,8 @@ static const yytype_uint16 yytoknum[] =
 #define yytable_value_is_error(Yytable_value) \
   0
 
-  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-     STATE-NUM.  */
+
+
 static const yytype_int8 yypact[] =
 {
       -8,   -26,    12,    -8,   -26,     5,   -26,   -26,     0,   -26,
@@ -5907,9 +5907,9 @@ static const yytype_int8 yypact[] =
       23,   -26,     0,   -26,   -26,   -26,   -26
 };
 
-  /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
-     Performed when YYTABLE does not specify something else to do.  Zero
-     means the default is an error.  */
+
+
+
 static const yytype_uint8 yydefact[] =
 {
        2,    11,     0,     3,     4,     0,     1,     5,     0,    23,
@@ -5919,23 +5919,23 @@ static const yytype_uint8 yydefact[] =
       37,    14,    32,    16,    41,    36,    31
 };
 
-  /* YYPGOTO[NTERM-NUM].  */
+
 static const yytype_int8 yypgoto[] =
 {
      -26,   -26,    -5,   -26,   -26,    -3,   -26,   -26,   -26,   -26,
      -26,   -25,   -26,   -15,   -26,   -26,   -26,   -26,   -26,   -26
 };
 
-  /* YYDEFGOTO[NTERM-NUM].  */
+
 static const yytype_int8 yydefgoto[] =
 {
       -1,     2,     3,    39,    30,     4,     5,    19,    25,    20,
       26,    21,    22,    23,    36,    37,    33,    34,    24,    27
 };
 
-  /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
-     positive, shift that token.  If negative, reduce the rule whose
-     number is the opposite.  If YYTABLE_NINF, syntax error.  */
+
+
+
 static const yytype_uint8 yytable[] =
 {
        7,    35,     1,     9,    10,    11,    12,    13,    14,    15,
@@ -5952,8 +5952,8 @@ static const yytype_int8 yycheck[] =
        7,     8,     9,    19,    -1,    38
 };
 
-  /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
-     symbol of state STATE-NUM.  */
+
+
 static const yytype_uint8 yystos[] =
 {
        0,    10,    24,    25,    28,    29,     0,    28,    11,     3,
@@ -5963,7 +5963,7 @@ static const yytype_uint8 yystos[] =
       17,    14,    17,    16,    19,    36,    34
 };
 
-  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
+
 static const yytype_uint8 yyr1[] =
 {
        0,    23,    24,    24,    25,    25,    26,    26,    27,    27,
@@ -5973,7 +5973,7 @@ static const yytype_uint8 yyr1[] =
       42,    41
 };
 
-  /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
+
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     0,     1,     1,     2,     0,     1,     0,     1,
@@ -6013,17 +6013,17 @@ do                                                              \
     }                                                           \
 while (0)
 
-/* Error token number */
+
 #define YYTERROR        1
 #define YYERRCODE       256
 
 
 
-/* Enable debugging if requested.  */
+
 #if YYDEBUG
 
 # ifndef YYFPRINTF
-#  include <stdio.h> /* INFRINGES ON USER NAME SPACE */
+#  include <stdio.h>
 #  define YYFPRINTF fprintf
 # endif
 
@@ -6033,7 +6033,7 @@ do {                                            \
     YYFPRINTF Args;                             \
 } while (0)
 
-/* This macro is provided for backward compatibility. */
+
 #ifndef YY_LOCATION_PRINT
 # define YY_LOCATION_PRINT(File, Loc) ((void) 0)
 #endif
@@ -6051,9 +6051,9 @@ do {                                                                      \
 } while (0)
 
 
-/*----------------------------------------.
-| Print this symbol's value on YYOUTPUT.  |
-`----------------------------------------*/
+
+
+
 
 static void
 yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, void *scanner, struct parse_context *ctx, struct scan_context *scan_ctx)
@@ -6073,9 +6073,9 @@ yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvalue
 }
 
 
-/*--------------------------------.
-| Print this symbol on YYOUTPUT.  |
-`--------------------------------*/
+
+
+
 
 static void
 yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, void *scanner, struct parse_context *ctx, struct scan_context *scan_ctx)
@@ -6087,10 +6087,10 @@ yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, voi
   YYFPRINTF (yyoutput, ")");
 }
 
-/*------------------------------------------------------------------.
-| yy_stack_print -- Print the state stack from its BOTTOM up to its |
-| TOP (included).                                                   |
-`------------------------------------------------------------------*/
+
+
+
+
 
 static void
 yy_stack_print (yytype_int16 *yybottom, yytype_int16 *yytop)
@@ -6111,9 +6111,9 @@ do {                                                            \
 } while (0)
 
 
-/*------------------------------------------------.
-| Report that the YYRULE is going to be reduced.  |
-`------------------------------------------------*/
+
+
+
 
 static void
 yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule, void *scanner, struct parse_context *ctx, struct scan_context *scan_ctx)
@@ -6123,7 +6123,7 @@ yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule, void *scanner,
   int yyi;
   YYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
              yyrule - 1, yylno);
-  /* The symbols being reduced.  */
+
   for (yyi = 0; yyi < yynrhs; yyi++)
     {
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
@@ -6141,28 +6141,28 @@ do {                                    \
     yy_reduce_print (yyssp, yyvsp, Rule, scanner, ctx, scan_ctx); \
 } while (0)
 
-/* Nonzero means print parse trace.  It is left uninitialized so that
-   multiple parsers can coexist.  */
+
+
 int yydebug;
-#else /* !YYDEBUG */
+#else
 # define YYDPRINTF(Args)
 # define YY_SYMBOL_PRINT(Title, Type, Value, Location)
 # define YY_STACK_PRINT(Bottom, Top)
 # define YY_REDUCE_PRINT(Rule)
-#endif /* !YYDEBUG */
+#endif
 
 
-/* YYINITDEPTH -- initial size of the parser's stacks.  */
+
 #ifndef YYINITDEPTH
 # define YYINITDEPTH 200
 #endif
 
-/* YYMAXDEPTH -- maximum size the stacks can grow to (effective only
-   if the built-in stack extension method is used).
 
-   Do not make this value too large; the results are undefined if
-   YYSTACK_ALLOC_MAXIMUM < YYSTACK_BYTES (YYMAXDEPTH)
-   evaluated with infinite-precision integer arithmetic.  */
+
+
+
+
+
 
 #ifndef YYMAXDEPTH
 # define YYMAXDEPTH 10000
@@ -6175,7 +6175,7 @@ int yydebug;
 #  if defined __GLIBC__ && defined _STRING_H
 #   define yystrlen strlen
 #  else
-/* Return the length of YYSTR.  */
+
 static YYSIZE_T
 yystrlen (const char *yystr)
 {
@@ -6191,8 +6191,8 @@ yystrlen (const char *yystr)
 #  if defined __GLIBC__ && defined _STRING_H && defined _GNU_SOURCE
 #   define yystpcpy stpcpy
 #  else
-/* Copy YYSRC to YYDEST, returning the address of the terminating '\0' in
-   YYDEST.  */
+
+
 static char *
 yystpcpy (char *yydest, const char *yysrc)
 {
@@ -6208,13 +6208,13 @@ yystpcpy (char *yydest, const char *yysrc)
 # endif
 
 # ifndef yytnamerr
-/* Copy to YYRES the contents of YYSTR after stripping away unnecessary
-   quotes and backslashes, so that it's suitable for yyerror.  The
-   heuristic is that double-quoting is unnecessary unless the string
-   contains an apostrophe, a comma, or backslash (other than
-   backslash-backslash).  YYSTR is taken from yytname.  If YYRES is
-   null, do not copy; instead, return the length of what the result
-   would have been.  */
+
+
+
+
+
+
+
 static YYSIZE_T
 yytnamerr (char *yyres, const char *yystr)
 {
@@ -6233,7 +6233,7 @@ yytnamerr (char *yyres, const char *yystr)
           case '\\':
             if (*++yyp != '\\')
               goto do_not_strip_quotes;
-            /* Fall through.  */
+
           default:
             if (yyres)
               yyres[yyn] = *yyp;
@@ -6255,14 +6255,14 @@ yytnamerr (char *yyres, const char *yystr)
 }
 # endif
 
-/* Copy into *YYMSG, which is of size *YYMSG_ALLOC, an error message
-   about the unexpected token YYTOKEN for the state stack whose top is
-   YYSSP.
 
-   Return 0 if *YYMSG was successfully written.  Return 1 if *YYMSG is
-   not large enough to hold the message.  In that case, also set
-   *YYMSG_ALLOC to the required number of bytes.  Return 2 if the
-   required number of bytes is too large to store.  */
+
+
+
+
+
+
+
 static int
 yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                 yytype_int16 *yyssp, int yytoken)
@@ -6270,48 +6270,48 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
   YYSIZE_T yysize0 = yytnamerr (YY_NULLPTR, yytname[yytoken]);
   YYSIZE_T yysize = yysize0;
   enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
-  /* Internationalized format string. */
+
   const char *yyformat = YY_NULLPTR;
-  /* Arguments of yyformat. */
+
   char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
-  /* Number of reported tokens (one for the "unexpected", one per
-     "expected"). */
+
+
   int yycount = 0;
 
-  /* There are many possibilities here to consider:
-     - If this state is a consistent state with a default action, then
-       the only way this function was invoked is if the default action
-       is an error action.  In that case, don't check for expected
-       tokens because there are none.
-     - The only way there can be no lookahead present (in yychar) is if
-       this state is a consistent state with a default action.  Thus,
-       detecting the absence of a lookahead is sufficient to determine
-       that there is no unexpected or expected token to report.  In that
-       case, just report a simple "syntax error".
-     - Don't assume there isn't a lookahead just because this state is a
-       consistent state with a default action.  There might have been a
-       previous inconsistent state, consistent state with a non-default
-       action, or user semantic action that manipulated yychar.
-     - Of course, the expected token list depends on states to have
-       correct lookahead information, and it depends on the parser not
-       to perform extra reductions after fetching a lookahead from the
-       scanner and before detecting a syntax error.  Thus, state merging
-       (from LALR or IELR) and default reductions corrupt the expected
-       token list.  However, the list is correct for canonical LR with
-       one exception: it will still contain any token that will not be
-       accepted due to an error action in a later state.
-  */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   if (yytoken != YYEMPTY)
     {
       int yyn = yypact[*yyssp];
       yyarg[yycount++] = yytname[yytoken];
       if (!yypact_value_is_default (yyn))
         {
-          /* Start YYX at -YYN if negative to avoid negative indexes in
-             YYCHECK.  In other words, skip the first -YYN actions for
-             this state because they are default actions.  */
+
+
+
           int yyxbegin = yyn < 0 ? -yyn : 0;
-          /* Stay within bounds of both yycheck and yytname.  */
+
           int yychecklim = YYLAST - yyn + 1;
           int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
           int yyx;
@@ -6369,9 +6369,9 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
       return 1;
     }
 
-  /* Avoid sprintf, as that infringes on the user's name space.
-     Don't have undefined behavior even if the translation
-     produced a string with the wrong number of "%s"s.  */
+
+
+
   {
     char *yyp = *yymsg;
     int yyi = 0;
@@ -6389,11 +6389,11 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
   }
   return 0;
 }
-#endif /* YYERROR_VERBOSE */
+#endif
 
-/*-----------------------------------------------.
-| Release the memory associated to this symbol.  |
-`-----------------------------------------------*/
+
+
+
 
 static void
 yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, void *scanner, struct parse_context *ctx, struct scan_context *scan_ctx)
@@ -6409,7 +6409,7 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, void *scanner, str
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   switch (yytype)
     {
-          case 9: /* TOK_STRING  */
+          case 9:
       { free(((*yyvaluep).sval)); }
         break;
 
@@ -6423,43 +6423,43 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, void *scanner, str
 
 
 
-/*----------.
-| yyparse.  |
-`----------*/
+
+
+
 
 int
 yyparse (void *scanner, struct parse_context *ctx, struct scan_context *scan_ctx)
 {
-/* The lookahead symbol.  */
+
 int yychar;
 
 
-/* The semantic value of the lookahead symbol.  */
-/* Default value used for initialization, for pacifying older GCCs
-   or non-GCC compilers.  */
+
+
+
 YY_INITIAL_VALUE (static YYSTYPE yyval_default;)
 YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
 
-    /* Number of syntax errors so far.  */
+
     int yynerrs;
 
     int yystate;
-    /* Number of tokens to shift before error messages enabled.  */
+
     int yyerrstatus;
 
-    /* The stacks and their tools:
-       'yyss': related to states.
-       'yyvs': related to semantic values.
 
-       Refer to the stacks through separate pointers, to allow yyoverflow
-       to reallocate them elsewhere.  */
 
-    /* The state stack.  */
+
+
+
+
+
+
     yytype_int16 yyssa[YYINITDEPTH];
     yytype_int16 *yyss;
     yytype_int16 *yyssp;
 
-    /* The semantic value stack.  */
+
     YYSTYPE yyvsa[YYINITDEPTH];
     YYSTYPE *yyvs;
     YYSTYPE *yyvsp;
@@ -6468,14 +6468,14 @@ YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
 
   int yyn;
   int yyresult;
-  /* Lookahead token as an internal (translated) token number.  */
+
   int yytoken = 0;
-  /* The variables used to return semantic value and location from the
-     action routines.  */
+
+
   YYSTYPE yyval;
 
 #if YYERROR_VERBOSE
-  /* Buffer for error messages, and its allocated size.  */
+
   char yymsgbuf[128];
   char *yymsg = yymsgbuf;
   YYSIZE_T yymsg_alloc = sizeof yymsgbuf;
@@ -6483,8 +6483,8 @@ YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
 
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
 
-  /* The number of symbols on the RHS of the reduced rule.
-     Keep to zero when no symbol should be popped.  */
+
+
   int yylen = 0;
 
   yyssp = yyss = yyssa;
@@ -6496,15 +6496,15 @@ YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
   yystate = 0;
   yyerrstatus = 0;
   yynerrs = 0;
-  yychar = YYEMPTY; /* Cause a token to be read.  */
+  yychar = YYEMPTY;
   goto yysetstate;
 
-/*------------------------------------------------------------.
-| yynewstate -- Push a new state, which is found in yystate.  |
-`------------------------------------------------------------*/
+
+
+
  yynewstate:
-  /* In all cases, when you get here, the value and location stacks
-     have just been pushed.  So pushing a state here evens the stacks.  */
+
+
   yyssp++;
 
  yysetstate:
@@ -6512,21 +6512,21 @@ YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
 
   if (yyss + yystacksize - 1 <= yyssp)
     {
-      /* Get the current used size of the three stacks, in elements.  */
+
       YYSIZE_T yysize = yyssp - yyss + 1;
 
 #ifdef yyoverflow
       {
-        /* Give user a chance to reallocate the stack.  Use copies of
-           these so that the &'s don't force the real ones into
-           memory.  */
+
+
+
         YYSTYPE *yyvs1 = yyvs;
         yytype_int16 *yyss1 = yyss;
 
-        /* Each stack pointer address is followed by the size of the
-           data in use in that stack, in bytes.  This used to be a
-           conditional around just the two extra args, but that might
-           be undefined if yyoverflow is a macro.  */
+
+
+
+
         yyoverflow (YY_("memory exhausted"),
                     &yyss1, yysize * sizeof (*yyssp),
                     &yyvs1, yysize * sizeof (*yyvsp),
@@ -6535,11 +6535,11 @@ YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
         yyss = yyss1;
         yyvs = yyvs1;
       }
-#else /* no yyoverflow */
+#else
 # ifndef YYSTACK_RELOCATE
       goto yyexhaustedlab;
 # else
-      /* Extend the stack our own way.  */
+
       if (YYMAXDEPTH <= yystacksize)
         goto yyexhaustedlab;
       yystacksize *= 2;
@@ -6559,7 +6559,7 @@ YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
           YYSTACK_FREE (yyss1);
       }
 # endif
-#endif /* no yyoverflow */
+#endif
 
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
@@ -6578,22 +6578,22 @@ YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
 
   goto yybackup;
 
-/*-----------.
-| yybackup.  |
-`-----------*/
+
+
+
 yybackup:
 
-  /* Do appropriate processing given the current state.  Read a
-     lookahead token if we need one and don't already have one.  */
 
-  /* First try to decide what to do without reference to lookahead token.  */
+
+
+
   yyn = yypact[yystate];
   if (yypact_value_is_default (yyn))
     goto yydefault;
 
-  /* Not known => get a lookahead token if don't already have one.  */
 
-  /* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
+
+
   if (yychar == YYEMPTY)
     {
       YYDPRINTF ((stderr, "Reading a token: "));
@@ -6611,8 +6611,8 @@ yybackup:
       YY_SYMBOL_PRINT ("Next token is", yytoken, &yylval, &yylloc);
     }
 
-  /* If the proper action on seeing token YYTOKEN is to reduce or to
-     detect an error, take that action.  */
+
+
   yyn += yytoken;
   if (yyn < 0 || YYLAST < yyn || yycheck[yyn] != yytoken)
     goto yydefault;
@@ -6625,15 +6625,15 @@ yybackup:
       goto yyreduce;
     }
 
-  /* Count tokens shifted since error; after three, turn off error
-     status.  */
+
+
   if (yyerrstatus)
     yyerrstatus--;
 
-  /* Shift the lookahead token.  */
+
   YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
 
-  /* Discard the shifted token.  */
+
   yychar = YYEMPTY;
 
   yystate = yyn;
@@ -6644,9 +6644,9 @@ yybackup:
   goto yynewstate;
 
 
-/*-----------------------------------------------------------.
-| yydefault -- do the default action for the current state.  |
-`-----------------------------------------------------------*/
+
+
+
 yydefault:
   yyn = yydefact[yystate];
   if (yyn == 0)
@@ -6654,21 +6654,21 @@ yydefault:
   goto yyreduce;
 
 
-/*-----------------------------.
-| yyreduce -- Do a reduction.  |
-`-----------------------------*/
+
+
+
 yyreduce:
-  /* yyn is the number of a rule to reduce with.  */
+
   yylen = yyr2[yyn];
 
-  /* If YYLEN is nonzero, implement the default value of the action:
-     '$$ = $1'.
 
-     Otherwise, the following line sets YYVAL to garbage.
-     This behavior is undocumented and Bison
-     users should not rely upon it.  Assigning to YYVAL
-     unconditionally makes the parser a bit smaller, and it avoids a
-     GCC warning that YYVAL may be used uninitialized.  */
+
+
+
+
+
+
+
   yyval = yyvsp[1-yylen];
 
 
@@ -6936,17 +6936,17 @@ yyreduce:
 
       default: break;
     }
-  /* User semantic actions sometimes alter yychar, and that requires
-     that yytoken be updated with the new translation.  We take the
-     approach of translating immediately before every use of yytoken.
-     One alternative is translating here after every semantic action,
-     but that translation would be missed if the semantic action invokes
-     YYABORT, YYACCEPT, or YYERROR immediately after altering yychar or
-     if it invokes YYBACKUP.  In the case of YYABORT or YYACCEPT, an
-     incorrect destructor might then be invoked immediately.  In the
-     case of YYERROR or YYBACKUP, subsequent parser actions might lead
-     to an incorrect destructor call or verbose syntax error message
-     before the lookahead is translated.  */
+
+
+
+
+
+
+
+
+
+
+
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
 
   YYPOPSTACK (yylen);
@@ -6955,9 +6955,9 @@ yyreduce:
 
   *++yyvsp = yyval;
 
-  /* Now 'shift' the result of the reduction.  Determine what state
-     that goes to, based on the state we popped back to and the rule
-     number reduced by.  */
+
+
+
 
   yyn = yyr1[yyn];
 
@@ -6970,15 +6970,15 @@ yyreduce:
   goto yynewstate;
 
 
-/*--------------------------------------.
-| yyerrlab -- here on detecting error.  |
-`--------------------------------------*/
+
+
+
 yyerrlab:
-  /* Make sure we have latest lookahead translation.  See comments at
-     user semantic actions for why this is necessary.  */
+
+
   yytoken = yychar == YYEMPTY ? YYEMPTY : YYTRANSLATE (yychar);
 
-  /* If not already recovering from an error, report this error.  */
+
   if (!yyerrstatus)
     {
       ++yynerrs;
@@ -7022,12 +7022,12 @@ yyerrlab:
 
   if (yyerrstatus == 3)
     {
-      /* If just tried and failed to reuse lookahead token after an
-         error, discard it.  */
+
+
 
       if (yychar <= YYEOF)
         {
-          /* Return failure if at end of input.  */
+
           if (yychar == YYEOF)
             YYABORT;
         }
@@ -7039,24 +7039,24 @@ yyerrlab:
         }
     }
 
-  /* Else will try to reuse lookahead token after shifting the error
-     token.  */
+
+
   goto yyerrlab1;
 
 
-/*---------------------------------------------------.
-| yyerrorlab -- error raised explicitly by YYERROR.  |
-`---------------------------------------------------*/
+
+
+
 yyerrorlab:
 
-  /* Pacify compilers like GCC when the user code never invokes
-     YYERROR and the label yyerrorlab therefore never appears in user
-     code.  */
-  if (/*CONSTCOND*/ 0)
+
+
+
+  if (              0)
      goto yyerrorlab;
 
-  /* Do not reclaim the symbols of the rule whose action triggered
-     this YYERROR.  */
+
+
   YYPOPSTACK (yylen);
   yylen = 0;
   YY_STACK_PRINT (yyss, yyssp);
@@ -7064,11 +7064,11 @@ yyerrorlab:
   goto yyerrlab1;
 
 
-/*-------------------------------------------------------------.
-| yyerrlab1 -- common code for both syntax error and YYERROR.  |
-`-------------------------------------------------------------*/
+
+
+
 yyerrlab1:
-  yyerrstatus = 3;      /* Each real token shifted decrements this.  */
+  yyerrstatus = 3;
 
   for (;;)
     {
@@ -7084,7 +7084,7 @@ yyerrlab1:
             }
         }
 
-      /* Pop the current state because it cannot handle the error token.  */
+
       if (yyssp == yyss)
         YYABORT;
 
@@ -7101,48 +7101,48 @@ yyerrlab1:
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 
 
-  /* Shift the error token.  */
+
   YY_SYMBOL_PRINT ("Shifting", yystos[yyn], yyvsp, yylsp);
 
   yystate = yyn;
   goto yynewstate;
 
 
-/*-------------------------------------.
-| yyacceptlab -- YYACCEPT comes here.  |
-`-------------------------------------*/
+
+
+
 yyacceptlab:
   yyresult = 0;
   goto yyreturn;
 
-/*-----------------------------------.
-| yyabortlab -- YYABORT comes here.  |
-`-----------------------------------*/
+
+
+
 yyabortlab:
   yyresult = 1;
   goto yyreturn;
 
 #if !defined yyoverflow || YYERROR_VERBOSE
-/*-------------------------------------------------.
-| yyexhaustedlab -- memory exhaustion comes here.  |
-`-------------------------------------------------*/
+
+
+
 yyexhaustedlab:
   yyerror (scanner, ctx, scan_ctx, YY_("memory exhausted"));
   yyresult = 2;
-  /* Fall through.  */
+
 #endif
 
 yyreturn:
   if (yychar != YYEMPTY)
     {
-      /* Make sure we have latest lookahead translation.  See comments at
-         user semantic actions for why this is necessary.  */
+
+
       yytoken = YYTRANSLATE (yychar);
       yydestruct ("Cleanup: discarding lookahead",
                   yytoken, &yylval, scanner, ctx, scan_ctx);
     }
-  /* Do not reclaim the symbols of the rule whose action triggered
-     this YYABORT or YYACCEPT.  */
+
+
   YYPOPSTACK (yylen);
   YY_STACK_PRINT (yyss, yyssp);
   while (yyssp != yyss)
@@ -7166,7 +7166,7 @@ yyreturn:
 
 #define  YY_INT_ALIGNED short int
 
-/* A lexical scanner generated by flex */
+
 
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
@@ -7398,7 +7398,7 @@ yyreturn:
 #define yyfree libconfig_yyfree
 #endif
 
-/* First, we deal with  platform-specific or compiler-specific issues. */
+
 
 #include <stdio.h>
 #include <string.h>
@@ -7406,18 +7406,18 @@ yyreturn:
 #include <stdlib.h>
 
 
-/* flex integer type definitions */
+
 
 #ifndef FLEXINT_H
 #define FLEXINT_H
 
-/* C99 systems have <inttypes.h>. Non-C99 systems may or may not. */
+
 
 #if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 
-/* C99 says to define __STDC_LIMIT_MACROS before including stdint.h,
- * if you want the limit (max/min) macros for int types.
- */
+
+
+
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS 1
 #endif
@@ -7437,7 +7437,7 @@ typedef unsigned char flex_uint8_t;
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
 
-/* Limits of integral types. */
+
 #ifndef INT8_MIN
 #define INT8_MIN               (-128)
 #endif
@@ -7470,12 +7470,12 @@ typedef unsigned int flex_uint32_t;
 #define SIZE_MAX               (~(size_t)0)
 #endif
 
-#endif /* ! C99 */
+#endif
 
-#endif /* ! FLEXINT_H */
+#endif
 
 
-/* TODO: this is always defined, so inline it */
+
 #define yyconst const
 
 #if defined(__GNUC__) && __GNUC__ >= 3
@@ -7484,22 +7484,22 @@ typedef unsigned int flex_uint32_t;
 #define yynoreturn
 #endif
 
-/* Returned upon end-of-file. */
+
 #define YY_NULL 0
 
-/* Promotes a possibly negative, possibly signed char to an
- *   integer in range [0..255] for use as an array index.
- */
+
+
+
 #define YY_SC_TO_UI(c) ((YY_CHAR) (c))
 
-/* An opaque pointer. */
+
 #ifndef YY_TYPEDEF_YY_SCANNER_T
 #define YY_TYPEDEF_YY_SCANNER_T
 typedef void* yyscan_t;
 #endif
 
-/* For convenience, these vars (plus the bison vars far below)
-   are macros in the reentrant scanner. */
+
+
 #define yyin yyg->yyin_r
 #define yyout yyg->yyout_r
 #define yyextra yyg->yyextra_r
@@ -7509,38 +7509,38 @@ typedef void* yyscan_t;
 #define yycolumn (YY_CURRENT_BUFFER_LVALUE->yy_bs_column)
 #define yy_flex_debug yyg->yy_flex_debug_r
 
-/* Enter a start condition.  This macro really ought to take a parameter,
- * but we do it the disgusting crufty way forced on us by the ()-less
- * definition of BEGIN.
- */
+
+
+
+
 #define BEGIN yyg->yy_start = 1 + 2 *
-/* Translate the current start state into a value that can be later handed
- * to BEGIN to return to the state.  The YYSTATE alias is for lex
- * compatibility.
- */
+
+
+
+
 #define YY_START ((yyg->yy_start - 1) / 2)
 #define YYSTATE YY_START
-/* Action number for EOF rule of a given start state. */
+
 #define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
-/* Special action meaning "start processing a new file". */
+
 #define YY_NEW_FILE yyrestart( yyin , yyscanner )
 #define YY_END_OF_BUFFER_CHAR 0
 
-/* Size of default input buffer. */
+
 #ifndef YY_BUF_SIZE
 #ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k.
- * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
- * Ditto for the __ia64__ case accordingly.
- */
+
+
+
+
 #define YY_BUF_SIZE 32768
 #else
 #define YY_BUF_SIZE 16384
-#endif /* __ia64__ */
+#endif
 #endif
 
-/* The state buf must be large enough to hold one state per character in the main buffer.
- */
+
+
 #define YY_STATE_BUF_SIZE   ((YY_BUF_SIZE + 2) * sizeof(yy_state_type))
 
 #ifndef YY_TYPEDEF_YY_BUFFER_STATE
@@ -7557,13 +7557,13 @@ typedef size_t yy_size_t;
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
 
-    /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
-     *       access to the local variable yy_act. Since yyless() is a macro, it would break
-     *       existing scanners that call yyless() from OUTSIDE yylex.
-     *       One obvious solution it to make yy_act a global. I tried that, and saw
-     *       a 5% performance hit in a non-yylineno scanner, because yy_act is
-     *       normally declared as a register variable-- so it is not worth it.
-     */
+
+
+
+
+
+
+
     #define  YY_LESS_LINENO(n) \
             do { \
                 int yyl;\
@@ -7579,17 +7579,17 @@ typedef size_t yy_size_t;
                         --yylineno;\
             }while(0)
 
-/* Return all but the first "n" matched characters back to the input stream. */
+
 #define yyless(n) \
 	do \
 		{ \
-		/* Undo effects of setting up yytext. */ \
+		                                         \
         int yyless_macro_arg = (n); \
         YY_LESS_LINENO(yyless_macro_arg);\
 		*yy_cp = yyg->yy_hold_char; \
 		YY_RESTORE_YY_MORE_OFFSET \
 		yyg->yy_c_buf_p = yy_cp = yy_bp + yyless_macro_arg - YY_MORE_ADJ; \
-		YY_DO_BEFORE_ACTION; /* set up yytext again */ \
+		YY_DO_BEFORE_ACTION;                           \
 		} \
 	while ( 0 )
 #define unput(c) yyunput( c, yyg->yytext_ptr , yyscanner )
@@ -7600,77 +7600,77 @@ struct yy_buffer_state
 	{
 	FILE *yy_input_file;
 
-	char *yy_ch_buf;		/* input buffer */
-	char *yy_buf_pos;		/* current position in input buffer */
+	char *yy_ch_buf;
+	char *yy_buf_pos;
 
-	/* Size of input buffer in bytes, not including room for EOB
-	 * characters.
-	 */
+
+
+
 	int yy_buf_size;
 
-	/* Number of characters read into yy_ch_buf, not including EOB
-	 * characters.
-	 */
+
+
+
 	int yy_n_chars;
 
-	/* Whether we "own" the buffer - i.e., we know we created it,
-	 * and can realloc() it to grow it, and should free() it to
-	 * delete it.
-	 */
+
+
+
+
 	int yy_is_our_buffer;
 
-	/* Whether this is an "interactive" input source; if so, and
-	 * if we're using stdio for input, then we want to use getc()
-	 * instead of fread(), to make sure we stop fetching input after
-	 * each newline.
-	 */
+
+
+
+
+
 	int yy_is_interactive;
 
-	/* Whether we're considered to be at the beginning of a line.
-	 * If so, '^' rules will be active on the next match, otherwise
-	 * not.
-	 */
+
+
+
+
 	int yy_at_bol;
 
-    int yy_bs_lineno; /**< The line count. */
-    int yy_bs_column; /**< The column count. */
+    int yy_bs_lineno;
+    int yy_bs_column;
 
-	/* Whether to try to fill the input buffer when we reach the
-	 * end of it.
-	 */
+
+
+
 	int yy_fill_buffer;
 
 	int yy_buffer_status;
 
 #define YY_BUFFER_NEW 0
 #define YY_BUFFER_NORMAL 1
-	/* When an EOF's been seen but there's still some text to process
-	 * then we mark the buffer as YY_EOF_PENDING, to indicate that we
-	 * shouldn't try reading from the input source any more.  We might
-	 * still have a bunch of tokens to match, though, because of
-	 * possible backing-up.
-	 *
-	 * When we actually see the EOF, we change the status to "new"
-	 * (via yyrestart()), so that the user can continue scanning by
-	 * just pointing yyin at a new input file.
-	 */
+
+
+
+
+
+
+
+
+
+
 #define YY_BUFFER_EOF_PENDING 2
 
 	};
-#endif /* !YY_STRUCT_YY_BUFFER_STATE */
+#endif
 
-/* We provide macros for accessing buffer states in case in the
- * future we want to put the buffer states in a more general
- * "scanner state".
- *
- * Returns the top of the stack, or NULL.
- */
+
+
+
+
+
+
 #define YY_CURRENT_BUFFER ( yyg->yy_buffer_stack \
                           ? yyg->yy_buffer_stack[yyg->yy_buffer_stack_top] \
                           : NULL)
-/* Same as previous macro, but useful when we know that the buffer stack is not
- * NULL or when we need an lvalue. For internal use only.
- */
+
+
+
 #define YY_CURRENT_BUFFER_LVALUE yyg->yy_buffer_stack[yyg->yy_buffer_stack_top]
 
 void yyrestart ( FILE *input_file , yyscan_t yyscanner );
@@ -7715,7 +7715,7 @@ void yyfree ( void * , yyscan_t yyscanner );
 	}
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
-#define libconfig_yywrap(yyscanner) (/*CONSTCOND*/1)
+#define libconfig_yywrap(yyscanner) (             1)
 #define YY_SKIP_YYWRAP
 typedef flex_uint8_t YY_CHAR;
 
@@ -7728,9 +7728,9 @@ static yy_state_type yy_try_NUL_trans ( yy_state_type current_state  , yyscan_t 
 static int yy_get_next_buffer ( yyscan_t yyscanner );
 static void yynoreturn yy_fatal_error ( const char* msg , yyscan_t yyscanner );
 
-/* Done after the current pattern has been matched and before the
- * corresponding action - sets up yytext.
- */
+
+
+
 #define YY_DO_BEFORE_ACTION \
 	yyg->yytext_ptr = yy_bp; \
 	yyleng = (int) (yy_cp - yy_bp); \
@@ -7739,8 +7739,8 @@ static void yynoreturn yy_fatal_error ( const char* msg , yyscan_t yyscanner );
 	yyg->yy_c_buf_p = yy_cp;
 #define YY_NUM_RULES 44
 #define YY_END_OF_BUFFER 45
-/* This struct is not used in this scanner,
-   but its presence is necessary. */
+
+
 struct yy_trans_info
 	{
 	flex_int32_t yy_verify;
@@ -7901,42 +7901,42 @@ static const flex_int16_t yy_chk[252] =
       104
     } ;
 
-/* Table of booleans, true if rule could match eol. */
+
 static const flex_int32_t yy_rule_can_match_eol[45] =
     {   0,
 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0,     };
 
-/* The intent behind this definition is that it'll catch
- * any uses of REJECT which flex missed.
- */
+
+
+
 #define REJECT reject_used_but_not_detected
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-/* -*- mode: C -*- */
-/* --------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2020  Mark A Lindner
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define YY_NO_UNISTD_H 1
 
 #ifdef _MSC_VER
@@ -7950,7 +7950,7 @@ static const flex_int32_t yy_rule_can_match_eol[45] =
 #include <limits.h>
 
 
-#define YY_NO_INPUT // Suppress generation of useless input() function
+#define YY_NO_INPUT
 
 
 
@@ -7961,27 +7961,27 @@ static const flex_int32_t yy_rule_can_match_eol[45] =
 #define INCLUDE 4
 
 #ifndef YY_NO_UNISTD_H
-/* Special case for "unistd.h", since it is non-ANSI. We include it way
- * down here because we want the user's section 1 to have been scanned first.
- * The user has a chance to override it with an option.
- */
+
+
+
+
 #include <unistd.h>
 #endif
 
 #define YY_EXTRA_TYPE struct scan_context *
 
-/* Holds the entire state of the reentrant scanner. */
+
 struct yyguts_t
     {
 
-    /* User-defined. Not touched by flex. */
+
     YY_EXTRA_TYPE yyextra_r;
 
-    /* The rest are the same as the globals declared in the non-reentrant scanner. */
+
     FILE *yyin_r, *yyout_r;
-    size_t yy_buffer_stack_top; /**< index of top of stack. */
-    size_t yy_buffer_stack_max; /**< capacity of stack. */
-    YY_BUFFER_STATE * yy_buffer_stack; /**< Stack as an array. */
+    size_t yy_buffer_stack_top;
+    size_t yy_buffer_stack_max;
+    YY_BUFFER_STATE * yy_buffer_stack;
     char yy_hold_char;
     int yy_n_chars;
     int yyleng_r;
@@ -8004,20 +8004,20 @@ struct yyguts_t
 
     YYSTYPE * yylval_r;
 
-    }; /* end struct yyguts_t */
+    };
 
 static int yy_init_globals ( yyscan_t yyscanner );
 
-    /* This must go here because YYSTYPE and YYLTYPE are included
-     * from bison output in section 1.*/
+
+
     #    define yylval yyg->yylval_r
 
 int yylex_init (yyscan_t* scanner);
 
 int yylex_init_extra ( YY_EXTRA_TYPE user_defined, yyscan_t* scanner);
 
-/* Accessor methods to globals.
-   These are made visible to non-reentrant scanners for convenience. */
+
+
 
 int yylex_destroy ( yyscan_t yyscanner );
 
@@ -8053,9 +8053,9 @@ YYSTYPE * yyget_lval ( yyscan_t yyscanner );
 
 void yyset_lval ( YYSTYPE * yylval_param , yyscan_t yyscanner );
 
-/* Macros after this point can all be overridden by user definitions in
- * section 1.
- */
+
+
+
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
@@ -8086,27 +8086,27 @@ static int input ( yyscan_t yyscanner );
 
 #endif
 
-/* Amount of stuff to slurp up with each read. */
+
 #ifndef YY_READ_BUF_SIZE
 #ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k */
+
 #define YY_READ_BUF_SIZE 16384
 #else
 #define YY_READ_BUF_SIZE 8192
-#endif /* __ia64__ */
+#endif
 #endif
 
-/* Copy whatever the last rule matched to the standard output. */
+
 #ifndef ECHO
-/* This used to be an fputs(), but since the string might contain NUL's,
- * we now use fwrite().
- */
+
+
+
 #define ECHO do { if (fwrite( yytext, (size_t) yyleng, 1, yyout )) {} } while (0)
 #endif
 
-/* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
- * is returned in "result".
- */
+
+
+
 #ifndef YY_INPUT
 #define YY_INPUT(buf,result,max_size) \
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
@@ -8140,28 +8140,28 @@ static int input ( yyscan_t yyscanner );
 
 #endif
 
-/* No semi-colon after return; correct usage is to write "yyterminate();" -
- * we don't want an extra ';' after the "return" because that will cause
- * some compilers to complain about unreachable statements.
- */
+
+
+
+
 #ifndef yyterminate
 #define yyterminate() return YY_NULL
 #endif
 
-/* Number of entries by which start-condition stack grows. */
+
 #ifndef YY_START_STACK_INCR
 #define YY_START_STACK_INCR 25
 #endif
 
-/* Report a fatal error. */
+
 #ifndef YY_FATAL_ERROR
 #define YY_FATAL_ERROR(msg) yy_fatal_error( msg , yyscanner)
 #endif
 
 
-/* Default declaration of generated scanner - a define so the user can
- * easily add parameters.
- */
+
+
+
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
@@ -8170,18 +8170,18 @@ extern int yylex \
 
 #define YY_DECL int yylex \
                (YYSTYPE * yylval_param , yyscan_t yyscanner)
-#endif /* !YY_DECL */
+#endif
 
-/* Code executed at the beginning of each rule, after yytext and yyleng
- * have been set up.
- */
+
+
+
 #ifndef YY_USER_ACTION
 #define YY_USER_ACTION
 #endif
 
-/* Code executed at the end of each rule. */
+
 #ifndef YY_BREAK
-#define YY_BREAK /*LINTED*/break;
+#define YY_BREAK           break;
 #endif
 
 #define YY_RULE_SETUP \
@@ -8190,8 +8190,8 @@ extern int yylex \
 				(yytext[yyleng - 1] == '\n'); \
 	YY_USER_ACTION
 
-/** The main scanner function which does all the work.
- */
+
+
 YY_DECL
 {
 	yy_state_type yy_current_state;
@@ -8210,7 +8210,7 @@ YY_DECL
 #endif
 
 		if ( ! yyg->yy_start )
-			yyg->yy_start = 1;	/* first start state */
+			yyg->yy_start = 1;
 
 		if ( ! yyin )
 			yyin = stdin;
@@ -8231,16 +8231,16 @@ YY_DECL
 
 
 
-	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
+	while (              1 )
 		{
 		yy_cp = yyg->yy_c_buf_p;
 
-		/* Support of yytext. */
+
 		*yy_cp = yyg->yy_hold_char;
 
-		/* yy_bp points to the position in yy_ch_buf of the start of
-		 * the current run.
-		 */
+
+
+
 		yy_bp = yy_cp;
 
 		yy_current_state = yyg->yy_start;
@@ -8284,12 +8284,12 @@ yy_find_action:
 ;
 			}
 
-do_action:	/* This label is used only to access EOF actions. */
+do_action:
 
 		switch ( yy_act )
-	{ /* beginning of action switch */
-			case 0: /* must back up */
-			/* undo the effects of YY_DO_BEFORE_ACTION */
+	{
+			case 0:
+
 			*yy_cp = yyg->yy_hold_char;
 			yy_cp = yyg->yy_last_accepting_cpos;
 			yy_current_state = yyg->yy_last_accepting_state;
@@ -8300,13 +8300,13 @@ YY_RULE_SETUP
 { BEGIN SINGLE_LINE_COMMENT; }
 	YY_BREAK
 case 2:
-/* rule 2 can match eol */
+
 YY_RULE_SETUP
 { BEGIN INITIAL; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-{ /* ignore */ }
+{              }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
@@ -8318,19 +8318,19 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-{ /* ignore */ }
+{              }
 	YY_BREAK
 case 7:
-/* rule 7 can match eol */
+
 YY_RULE_SETUP
-{ /* ignore */ }
+{              }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 { BEGIN STRING; }
 	YY_BREAK
 case 9:
-/* rule 9 can match eol */
+
 YY_RULE_SETUP
 { libconfig_scanctx_append_string(yyextra, yytext); }
 	YY_BREAK
@@ -8382,7 +8382,7 @@ YY_RULE_SETUP
 { BEGIN INCLUDE; }
 	YY_BREAK
 case 20:
-/* rule 20 can match eol */
+
 YY_RULE_SETUP
 { libconfig_scanctx_append_string(yyextra, yytext); }
 	YY_BREAK
@@ -8420,13 +8420,13 @@ YY_RULE_SETUP
 }
 	YY_BREAK
 case 24:
-/* rule 24 can match eol */
+
 YY_RULE_SETUP
-{ /* ignore */ }
+{              }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-{ /* ignore */ }
+{              }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
@@ -8548,7 +8548,7 @@ case YY_STATE_EOF(INCLUDE):
   }
   else
   {
-    /* No more files in the current include list. */
+
     YY_BUFFER_STATE buf = (YY_BUFFER_STATE)libconfig_scanctx_pop_include(yyextra);
     if(buf)
     {
@@ -8567,52 +8567,52 @@ ECHO;
 
 	case YY_END_OF_BUFFER:
 		{
-		/* Amount of text matched not including the EOB char. */
+
 		int yy_amount_of_matched_text = (int) (yy_cp - yyg->yytext_ptr) - 1;
 
-		/* Undo the effects of YY_DO_BEFORE_ACTION. */
+
 		*yy_cp = yyg->yy_hold_char;
 		YY_RESTORE_YY_MORE_OFFSET
 
 		if ( YY_CURRENT_BUFFER_LVALUE->yy_buffer_status == YY_BUFFER_NEW )
 			{
-			/* We're scanning a new file or input source.  It's
-			 * possible that this happened because the user
-			 * just pointed yyin at a new source and called
-			 * yylex().  If so, then we have to assure
-			 * consistency between YY_CURRENT_BUFFER and our
-			 * globals.  Here is the right place to do so, because
-			 * this is the first action (other than possibly a
-			 * back-up) that will match for the new input source.
-			 */
+
+
+
+
+
+
+
+
+
 			yyg->yy_n_chars = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
 			YY_CURRENT_BUFFER_LVALUE->yy_input_file = yyin;
 			YY_CURRENT_BUFFER_LVALUE->yy_buffer_status = YY_BUFFER_NORMAL;
 			}
 
-		/* Note that here we test for yy_c_buf_p "<=" to the position
-		 * of the first EOB in the buffer, since yy_c_buf_p will
-		 * already have been incremented past the NUL character
-		 * (since all states make transitions on EOB to the
-		 * end-of-buffer state).  Contrast this with the test
-		 * in input().
-		 */
+
+
+
+
+
+
+
 		if ( yyg->yy_c_buf_p <= &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[yyg->yy_n_chars] )
-			{ /* This was really a NUL. */
+			{
 			yy_state_type yy_next_state;
 
 			yyg->yy_c_buf_p = yyg->yytext_ptr + yy_amount_of_matched_text;
 
 			yy_current_state = yy_get_previous_state( yyscanner );
 
-			/* Okay, we're now positioned to make the NUL
-			 * transition.  We couldn't have
-			 * yy_get_previous_state() go ahead and do it
-			 * for us because it doesn't know how to deal
-			 * with the possibility of jamming (and we don't
-			 * want to build jamming into it because then it
-			 * will run more slowly).
-			 */
+
+
+
+
+
+
+
+
 
 			yy_next_state = yy_try_NUL_trans( yy_current_state , yyscanner);
 
@@ -8620,7 +8620,7 @@ ECHO;
 
 			if ( yy_next_state )
 				{
-				/* Consume the NUL. */
+
 				yy_cp = ++yyg->yy_c_buf_p;
 				yy_current_state = yy_next_state;
 				goto yy_match;
@@ -8642,15 +8642,15 @@ ECHO;
 
 				if ( yywrap( yyscanner ) )
 					{
-					/* Note: because we've taken care in
-					 * yy_get_next_buffer() to have set up
-					 * yytext, we can now set up
-					 * yy_c_buf_p so that if some total
-					 * hoser (like flex itself) wants to
-					 * call the scanner after we return the
-					 * YY_NULL, it'll still work - another
-					 * YY_NULL will get returned.
-					 */
+
+
+
+
+
+
+
+
+
 					yyg->yy_c_buf_p = yyg->yytext_ptr + YY_MORE_ADJ;
 
 					yy_act = YY_STATE_EOF(YY_START);
@@ -8691,18 +8691,18 @@ ECHO;
 	default:
 		YY_FATAL_ERROR(
 			"fatal flex scanner internal error--no action found" );
-	} /* end of action switch */
-		} /* end of scanning one token */
-	} /* end of user's declarations */
-} /* end of yylex */
+	}
+		}
+	}
+}
 
-/* yy_get_next_buffer - try to read in a new buffer
- *
- * Returns a code representing an action:
- *	EOB_ACT_LAST_MATCH -
- *	EOB_ACT_CONTINUE_SCAN - continue scanning from current position
- *	EOB_ACT_END_OF_FILE - end of file
- */
+
+
+
+
+
+
+
 static int yy_get_next_buffer (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -8716,36 +8716,36 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		"fatal flex scanner internal error--end of buffer missed" );
 
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_fill_buffer == 0 )
-		{ /* Don't try to fill the buffer, so this is an EOF. */
+		{
 		if ( yyg->yy_c_buf_p - yyg->yytext_ptr - YY_MORE_ADJ == 1 )
 			{
-			/* We matched a single character, the EOB, so
-			 * treat this as a final EOF.
-			 */
+
+
+
 			return EOB_ACT_END_OF_FILE;
 			}
 
 		else
 			{
-			/* We matched some text prior to the EOB, first
-			 * process it.
-			 */
+
+
+
 			return EOB_ACT_LAST_MATCH;
 			}
 		}
 
-	/* Try to read more data. */
 
-	/* First move last chars to start of buffer. */
+
+
 	number_to_move = (int) (yyg->yy_c_buf_p - yyg->yytext_ptr - 1);
 
 	for ( i = 0; i < number_to_move; ++i )
 		*(dest++) = *(source++);
 
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_buffer_status == YY_BUFFER_EOF_PENDING )
-		/* don't do the read, it's not guaranteed to return an EOF,
-		 * just force an EOF
-		 */
+
+
+
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = yyg->yy_n_chars = 0;
 
 	else
@@ -8754,9 +8754,9 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
-			{ /* Not enough room in the buffer - grow it. */
+			{
 
-			/* just a shorter name for the current buffer */
+
 			YY_BUFFER_STATE b = YY_CURRENT_BUFFER_LVALUE;
 
 			int yy_c_buf_p_offset =
@@ -8772,12 +8772,12 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 					b->yy_buf_size *= 2;
 
 				b->yy_ch_buf = (char *)
-					/* Include room in for 2 EOB chars. */
+
 					yyrealloc( (void *) b->yy_ch_buf,
 							 (yy_size_t) (b->yy_buf_size + 2) , yyscanner );
 				}
 			else
-				/* Can't grow it, we don't own it. */
+
 				b->yy_ch_buf = NULL;
 
 			if ( ! b->yy_ch_buf )
@@ -8794,7 +8794,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		if ( num_to_read > YY_READ_BUF_SIZE )
 			num_to_read = YY_READ_BUF_SIZE;
 
-		/* Read in more data. */
+
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
 			yyg->yy_n_chars, num_to_read );
 
@@ -8821,13 +8821,13 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		ret_val = EOB_ACT_CONTINUE_SCAN;
 
 	if ((yyg->yy_n_chars + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
-		/* Extend the array by 50%, plus the number we really need. */
+
 		int new_size = yyg->yy_n_chars + number_to_move + (yyg->yy_n_chars >> 1);
 		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc(
 			(void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, (yy_size_t) new_size , yyscanner );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
-		/* "- 2" to take care of EOB's */
+
 		YY_CURRENT_BUFFER_LVALUE->yy_buf_size = (int) (new_size - 2);
 	}
 
@@ -8840,7 +8840,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	return ret_val;
 }
 
-/* yy_get_previous_state - get the state just before the EOB char was reached */
+
 
     static yy_state_type yy_get_previous_state (yyscan_t yyscanner)
 {
@@ -8871,15 +8871,15 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	return yy_current_state;
 }
 
-/* yy_try_NUL_trans - try to make a transition on the NUL character
- *
- * synopsis
- *	next_state = yy_try_NUL_trans( current_state );
- */
+
+
+
+
+
     static yy_state_type yy_try_NUL_trans  (yy_state_type yy_current_state , yyscan_t yyscanner)
 {
 	int yy_is_jam;
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner; /* This var may be unused depending upon options. */
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	char *yy_cp = yyg->yy_c_buf_p;
 
 	YY_CHAR yy_c = 1;
@@ -8920,36 +8920,36 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 	if ( *yyg->yy_c_buf_p == YY_END_OF_BUFFER_CHAR )
 		{
-		/* yy_c_buf_p now points to the character we want to return.
-		 * If this occurs *before* the EOB characters, then it's a
-		 * valid NUL; if not, then we've hit the end of the buffer.
-		 */
+
+
+
+
 		if ( yyg->yy_c_buf_p < &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[yyg->yy_n_chars] )
-			/* This was really a NUL. */
+
 			*yyg->yy_c_buf_p = '\0';
 
 		else
-			{ /* need more input */
+			{
 			int offset = (int) (yyg->yy_c_buf_p - yyg->yytext_ptr);
 			++yyg->yy_c_buf_p;
 
 			switch ( yy_get_next_buffer( yyscanner ) )
 				{
 				case EOB_ACT_LAST_MATCH:
-					/* This happens because yy_g_n_b()
-					 * sees that we've accumulated a
-					 * token and flags that we need to
-					 * try matching the token before
-					 * proceeding.  But for input(),
-					 * there's no matching to consider.
-					 * So convert the EOB_ACT_LAST_MATCH
-					 * to EOB_ACT_END_OF_FILE.
-					 */
 
-					/* Reset buffer status. */
+
+
+
+
+
+
+
+
+
+
 					yyrestart( yyin , yyscanner);
 
-					/*FALLTHROUGH*/
+
 
 				case EOB_ACT_END_OF_FILE:
 					{
@@ -8972,8 +8972,8 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 			}
 		}
 
-	c = *(unsigned char *) yyg->yy_c_buf_p;	/* cast for 8-bit char's */
-	*yyg->yy_c_buf_p = '\0';	/* preserve yytext */
+	c = *(unsigned char *) yyg->yy_c_buf_p;
+	*yyg->yy_c_buf_p = '\0';
 	yyg->yy_hold_char = *++yyg->yy_c_buf_p;
 
 	YY_CURRENT_BUFFER_LVALUE->yy_at_bol = (c == '\n');
@@ -8986,13 +8986,13 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 	return c;
 }
-#endif	/* ifndef YY_NO_INPUT */
+#endif
 
-/** Immediately switch to a different input stream.
- * @param input_file A readable stream.
- * @param yyscanner The scanner object.
- * @note This function does not reset the start condition to @c INITIAL .
- */
+
+
+
+
+
     void yyrestart  (FILE * input_file , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -9007,26 +9007,26 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	yy_load_buffer_state( yyscanner );
 }
 
-/** Switch to a different input buffer.
- * @param new_buffer The new input buffer.
- * @param yyscanner The scanner object.
- */
+
+
+
+
     void yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-	/* TODO. We should be able to replace this entire function body
-	 * with
-	 *		yypop_buffer_state();
-	 *		yypush_buffer_state(new_buffer);
-     */
+
+
+
+
+
 	yyensure_buffer_stack (yyscanner);
 	if ( YY_CURRENT_BUFFER == new_buffer )
 		return;
 
 	if ( YY_CURRENT_BUFFER )
 		{
-		/* Flush out information for old buffer. */
+
 		*yyg->yy_c_buf_p = yyg->yy_hold_char;
 		YY_CURRENT_BUFFER_LVALUE->yy_buf_pos = yyg->yy_c_buf_p;
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = yyg->yy_n_chars;
@@ -9035,11 +9035,11 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
 	yy_load_buffer_state( yyscanner );
 
-	/* We don't actually know whether we did this switch during
-	 * EOF (yywrap()) processing, but the only time this flag
-	 * is looked at is after yywrap() is called, so it's safe
-	 * to go ahead and always set it.
-	 */
+
+
+
+
+
 	yyg->yy_did_buffer_switch_on_eof = 1;
 }
 
@@ -9052,12 +9052,12 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 	yyg->yy_hold_char = *yyg->yy_c_buf_p;
 }
 
-/** Allocate and initialize an input buffer state.
- * @param file A readable stream.
- * @param size The character buffer size in bytes. When in doubt, use @c YY_BUF_SIZE.
- * @param yyscanner The scanner object.
- * @return the allocated buffer state.
- */
+
+
+
+
+
+
     YY_BUFFER_STATE yy_create_buffer  (FILE * file, int  size , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
@@ -9068,9 +9068,9 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 
 	b->yy_buf_size = size;
 
-	/* yy_ch_buf has to be 2 characters longer than the size given because
-	 * we need to put in 2 end-of-buffer characters.
-	 */
+
+
+
 	b->yy_ch_buf = (char *) yyalloc( (yy_size_t) (b->yy_buf_size + 2) , yyscanner );
 	if ( ! b->yy_ch_buf )
 		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
@@ -9082,10 +9082,10 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 	return b;
 }
 
-/** Destroy the buffer.
- * @param b a buffer created with yy_create_buffer()
- * @param yyscanner The scanner object.
- */
+
+
+
+
     void yy_delete_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -9093,7 +9093,7 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 	if ( ! b )
 		return;
 
-	if ( b == YY_CURRENT_BUFFER ) /* Not sure if we should pop here. */
+	if ( b == YY_CURRENT_BUFFER )
 		YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
 	if ( b->yy_is_our_buffer )
@@ -9102,10 +9102,10 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 	yyfree( (void *) b , yyscanner );
 }
 
-/* Initializes or reinitializes a buffer.
- * This function is sometimes called more than once on the same buffer,
- * such as during a yyrestart() or at EOF.
- */
+
+
+
+
     static void yy_init_buffer  (YY_BUFFER_STATE  b, FILE * file , yyscan_t yyscanner)
 
 {
@@ -9117,10 +9117,10 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 	b->yy_input_file = file;
 	b->yy_fill_buffer = 1;
 
-    /* If b is the current buffer, then yy_init_buffer was _probably_
-     * called from yyrestart() or through yy_get_next_buffer.
-     * In that case, we don't want to reset the lineno or column.
-     */
+
+
+
+
     if (b != YY_CURRENT_BUFFER){
         b->yy_bs_lineno = 1;
         b->yy_bs_column = 0;
@@ -9131,10 +9131,10 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 	errno = oerrno;
 }
 
-/** Discard all buffered characters. On the next scan, YY_INPUT will be called.
- * @param b the buffer state to be flushed, usually @c YY_CURRENT_BUFFER.
- * @param yyscanner The scanner object.
- */
+
+
+
+
     void yy_flush_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -9143,10 +9143,10 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 
 	b->yy_n_chars = 0;
 
-	/* We always need two end-of-buffer characters.  The first causes
-	 * a transition to the end-of-buffer state.  The second causes
-	 * a jam in that state.
-	 */
+
+
+
+
 	b->yy_ch_buf[0] = YY_END_OF_BUFFER_CHAR;
 	b->yy_ch_buf[1] = YY_END_OF_BUFFER_CHAR;
 
@@ -9159,12 +9159,12 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 		yy_load_buffer_state( yyscanner );
 }
 
-/** Pushes the new state onto the stack. The new state becomes
- *  the current state. This function will allocate the stack
- *  if necessary.
- *  @param new_buffer The new state.
- *  @param yyscanner The scanner object.
- */
+
+
+
+
+
+
 void yypush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -9173,29 +9173,29 @@ void yypush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
 
 	yyensure_buffer_stack(yyscanner);
 
-	/* This block is copied from yy_switch_to_buffer. */
+
 	if ( YY_CURRENT_BUFFER )
 		{
-		/* Flush out information for old buffer. */
+
 		*yyg->yy_c_buf_p = yyg->yy_hold_char;
 		YY_CURRENT_BUFFER_LVALUE->yy_buf_pos = yyg->yy_c_buf_p;
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = yyg->yy_n_chars;
 		}
 
-	/* Only push if top exists. Otherwise, replace top. */
+
 	if (YY_CURRENT_BUFFER)
 		yyg->yy_buffer_stack_top++;
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
 
-	/* copied from yy_switch_to_buffer. */
+
 	yy_load_buffer_state( yyscanner );
 	yyg->yy_did_buffer_switch_on_eof = 1;
 }
 
-/** Removes and deletes the top of the stack, if present.
- *  The next element becomes the new top.
- *  @param yyscanner The scanner object.
- */
+
+
+
+
 void yypop_buffer_state (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -9213,9 +9213,9 @@ void yypop_buffer_state (yyscan_t yyscanner)
 	}
 }
 
-/* Allocates the stack if it does not exist.
- *  Guarantees space for at least one push.
- */
+
+
+
 static void yyensure_buffer_stack (yyscan_t yyscanner)
 {
 	yy_size_t num_to_alloc;
@@ -9223,11 +9223,11 @@ static void yyensure_buffer_stack (yyscan_t yyscanner)
 
 	if (!yyg->yy_buffer_stack) {
 
-		/* First allocation is just for 2 elements, since we don't know if this
-		 * scanner will even need a stack. We use 2 instead of 1 to avoid an
-		 * immediate realloc on the next call.
-         */
-      num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
+
+
+
+
+      num_to_alloc = 1;
 		yyg->yy_buffer_stack = (struct yy_buffer_state**)yyalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								, yyscanner);
@@ -9243,8 +9243,8 @@ static void yyensure_buffer_stack (yyscan_t yyscanner)
 
 	if (yyg->yy_buffer_stack_top >= (yyg->yy_buffer_stack_max) - 1){
 
-		/* Increase the buffer to prepare for a possible push. */
-		yy_size_t grow_size = 8 /* arbitrary grow size */;
+
+		yy_size_t grow_size = 8                          ;
 
 		num_to_alloc = yyg->yy_buffer_stack_max + grow_size;
 		yyg->yy_buffer_stack = (struct yy_buffer_state**)yyrealloc
@@ -9254,18 +9254,18 @@ static void yyensure_buffer_stack (yyscan_t yyscanner)
 		if ( ! yyg->yy_buffer_stack )
 			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
 
-		/* zero only the new slots.*/
+
 		memset(yyg->yy_buffer_stack + yyg->yy_buffer_stack_max, 0, grow_size * sizeof(struct yy_buffer_state*));
 		yyg->yy_buffer_stack_max = num_to_alloc;
 	}
 }
 
-/** Setup the input buffer state to scan directly from a user-specified character buffer.
- * @param base the character buffer
- * @param size the size in bytes of the character buffer
- * @param yyscanner The scanner object.
- * @return the newly allocated buffer state object.
- */
+
+
+
+
+
+
 YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
@@ -9273,14 +9273,14 @@ YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscann
 	if ( size < 2 ||
 	     base[size-2] != YY_END_OF_BUFFER_CHAR ||
 	     base[size-1] != YY_END_OF_BUFFER_CHAR )
-		/* They forgot to leave room for the EOB's. */
+
 		return NULL;
 
 	b = (YY_BUFFER_STATE) yyalloc( sizeof( struct yy_buffer_state ) , yyscanner );
 	if ( ! b )
 		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
 
-	b->yy_buf_size = (int) (size - 2);	/* "- 2" to take care of EOB's */
+	b->yy_buf_size = (int) (size - 2);
 	b->yy_buf_pos = b->yy_ch_buf = base;
 	b->yy_is_our_buffer = 0;
 	b->yy_input_file = NULL;
@@ -9295,27 +9295,27 @@ YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscann
 	return b;
 }
 
-/** Setup the input buffer state to scan a string. The next call to yylex() will
- * scan from a @e copy of @a str.
- * @param yystr a NUL-terminated string to scan
- * @param yyscanner The scanner object.
- * @return the newly allocated buffer state object.
- * @note If you want to scan bytes that may contain NUL values, then use
- *       yy_scan_bytes() instead.
- */
+
+
+
+
+
+
+
+
 YY_BUFFER_STATE yy_scan_string (const char * yystr , yyscan_t yyscanner)
 {
 
 	return yy_scan_bytes( yystr, (int) strlen(yystr) , yyscanner);
 }
 
-/** Setup the input buffer state to scan the given bytes. The next call to yylex() will
- * scan from a @e copy of @a bytes.
- * @param yybytes the byte buffer to scan
- * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
- * @param yyscanner The scanner object.
- * @return the newly allocated buffer state object.
- */
+
+
+
+
+
+
+
 YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, int  _yybytes_len , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
@@ -9323,7 +9323,7 @@ YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, int  _yybytes_len , yyscan
 	yy_size_t n;
 	int i;
 
-	/* Get memory for full buffer, including space for trailing EOB's. */
+
 	n = (yy_size_t) (_yybytes_len + 2);
 	buf = (char *) yyalloc( n , yyscanner );
 	if ( ! buf )
@@ -9338,9 +9338,9 @@ YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, int  _yybytes_len , yyscan
 	if ( ! b )
 		YY_FATAL_ERROR( "bad buffer in yy_scan_bytes()" );
 
-	/* It's okay to grow etc. this buffer, and we should throw it
-	 * away when we're done.
-	 */
+
+
+
 	b->yy_is_our_buffer = 1;
 
 	return b;
@@ -9358,13 +9358,13 @@ static void yynoreturn yy_fatal_error (const char* msg , yyscan_t yyscanner)
 	exit( YY_EXIT_FAILURE );
 }
 
-/* Redefine yyless() so it works in section 3 code. */
+
 
 #undef yyless
 #define yyless(n) \
 	do \
 		{ \
-		/* Undo effects of setting up yytext. */ \
+		                                         \
         int yyless_macro_arg = (n); \
         YY_LESS_LINENO(yyless_macro_arg);\
 		yytext[yyleng] = yyg->yy_hold_char; \
@@ -9375,20 +9375,20 @@ static void yynoreturn yy_fatal_error (const char* msg , yyscan_t yyscanner)
 		} \
 	while ( 0 )
 
-/* Accessor  methods (get/set functions) to struct members. */
 
-/** Get the user-defined data for this scanner.
- * @param yyscanner The scanner object.
- */
+
+
+
+
 YY_EXTRA_TYPE yyget_extra  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyextra;
 }
 
-/** Get the current line number.
- * @param yyscanner The scanner object.
- */
+
+
+
 int yyget_lineno  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -9399,9 +9399,9 @@ int yyget_lineno  (yyscan_t yyscanner)
     return yylineno;
 }
 
-/** Get the current column number.
- * @param yyscanner The scanner object.
- */
+
+
+
 int yyget_column  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -9412,36 +9412,36 @@ int yyget_column  (yyscan_t yyscanner)
     return yycolumn;
 }
 
-/** Get the input stream.
- * @param yyscanner The scanner object.
- */
+
+
+
 FILE *yyget_in  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyin;
 }
 
-/** Get the output stream.
- * @param yyscanner The scanner object.
- */
+
+
+
 FILE *yyget_out  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyout;
 }
 
-/** Get the length of the current token.
- * @param yyscanner The scanner object.
- */
+
+
+
 int yyget_leng  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyleng;
 }
 
-/** Get the current token.
- * @param yyscanner The scanner object.
- */
+
+
+
 
 char *yyget_text  (yyscan_t yyscanner)
 {
@@ -9449,52 +9449,52 @@ char *yyget_text  (yyscan_t yyscanner)
     return yytext;
 }
 
-/** Set the user-defined data. This data is never touched by the scanner.
- * @param user_defined The data to be associated with this scanner.
- * @param yyscanner The scanner object.
- */
+
+
+
+
 void yyset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyextra = user_defined ;
 }
 
-/** Set the current line number.
- * @param _line_number line number
- * @param yyscanner The scanner object.
- */
+
+
+
+
 void yyset_lineno (int  _line_number , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-        /* lineno is only valid if an input buffer exists. */
+
         if (! YY_CURRENT_BUFFER )
            YY_FATAL_ERROR( "yyset_lineno called with no buffer" );
 
     yylineno = _line_number;
 }
 
-/** Set the current column.
- * @param _column_no column number
- * @param yyscanner The scanner object.
- */
+
+
+
+
 void yyset_column (int  _column_no , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-        /* column is only valid if an input buffer exists. */
+
         if (! YY_CURRENT_BUFFER )
            YY_FATAL_ERROR( "yyset_column called with no buffer" );
 
     yycolumn = _column_no;
 }
 
-/** Set the input stream. This does not discard the current
- * input buffer.
- * @param _in_str A readable stream.
- * @param yyscanner The scanner object.
- * @see yy_switch_to_buffer
- */
+
+
+
+
+
+
 void yyset_in (FILE *  _in_str , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -9519,7 +9519,7 @@ void yyset_debug (int  _bdebug , yyscan_t yyscanner)
     yy_flex_debug = _bdebug ;
 }
 
-/* Accessor methods for yylval and yylloc */
+
 
 YYSTYPE * yyget_lval  (yyscan_t yyscanner)
 {
@@ -9533,12 +9533,12 @@ void yyset_lval (YYSTYPE *  yylval_param , yyscan_t yyscanner)
     yylval = yylval_param;
 }
 
-/* User-visible API */
 
-/* yylex_init is special because it creates the scanner itself, so it is
- * the ONLY reentrant function that doesn't take the scanner as the last argument.
- * That's why we explicitly handle the declaration, instead of using our macros.
- */
+
+
+
+
+
 int yylex_init(yyscan_t* ptr_yy_globals)
 {
     if (ptr_yy_globals == NULL){
@@ -9553,19 +9553,19 @@ int yylex_init(yyscan_t* ptr_yy_globals)
         return 1;
     }
 
-    /* By setting to 0xAA, we expose bugs in yy_init_globals. Leave at 0x00 for releases. */
+
     memset(*ptr_yy_globals,0x00,sizeof(struct yyguts_t));
 
     return yy_init_globals ( *ptr_yy_globals );
 }
 
-/* yylex_init_extra has the same functionality as yylex_init, but follows the
- * convention of taking the scanner as the last argument. Note however, that
- * this is a *pointer* to a scanner, as it will be allocated by this call (and
- * is the reason, too, why this function also must handle its own declaration).
- * The user defined value in the first argument will be available to yyalloc in
- * the yyextra field.
- */
+
+
+
+
+
+
+
 int yylex_init_extra( YY_EXTRA_TYPE yy_user_defined, yyscan_t* ptr_yy_globals )
 {
     struct yyguts_t dummy_yyguts;
@@ -9584,8 +9584,8 @@ int yylex_init_extra( YY_EXTRA_TYPE yy_user_defined, yyscan_t* ptr_yy_globals )
         return 1;
     }
 
-    /* By setting to 0xAA, we expose bugs in
-    yy_init_globals. Leave at 0x00 for releases. */
+
+
     memset(*ptr_yy_globals,0x00,sizeof(struct yyguts_t));
 
     yyset_extra (yy_user_defined, *ptr_yy_globals);
@@ -9596,9 +9596,9 @@ int yylex_init_extra( YY_EXTRA_TYPE yy_user_defined, yyscan_t* ptr_yy_globals )
 static int yy_init_globals (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    /* Initialization is the same as for the non-reentrant scanner.
-     * This function is called from yylex_destroy(), so don't allocate here.
-     */
+
+
+
 
     yyg->yy_buffer_stack = NULL;
     yyg->yy_buffer_stack_top = 0;
@@ -9611,7 +9611,7 @@ static int yy_init_globals (yyscan_t yyscanner)
     yyg->yy_start_stack_depth = 0;
     yyg->yy_start_stack =  NULL;
 
-/* Defined in main.c */
+
 #ifdef YY_STDINIT
     yyin = stdin;
     yyout = stdout;
@@ -9620,45 +9620,45 @@ static int yy_init_globals (yyscan_t yyscanner)
     yyout = NULL;
 #endif
 
-    /* For future reference: Set errno on error, since we are called by
-     * yylex_init()
-     */
+
+
+
     return 0;
 }
 
-/* yylex_destroy is for both reentrant and non-reentrant scanners. */
+
 int yylex_destroy  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-    /* Pop the buffer stack, destroying each element. */
+
 	while(YY_CURRENT_BUFFER){
 		yy_delete_buffer( YY_CURRENT_BUFFER , yyscanner );
 		YY_CURRENT_BUFFER_LVALUE = NULL;
 		yypop_buffer_state(yyscanner);
 	}
 
-	/* Destroy the stack itself. */
+
 	yyfree(yyg->yy_buffer_stack , yyscanner);
 	yyg->yy_buffer_stack = NULL;
 
-    /* Destroy the start condition stack. */
+
         yyfree( yyg->yy_start_stack , yyscanner );
         yyg->yy_start_stack = NULL;
 
-    /* Reset the globals. This is important in a non-reentrant scanner so the next time
-     * yylex() is called, initialization will occur. */
+
+
     yy_init_globals( yyscanner);
 
-    /* Destroy the main struct (reentrant only). */
+
     yyfree ( yyscanner , yyscanner );
     yyscanner = NULL;
     return 0;
 }
 
-/*
- * Internal utility routines.
- */
+
+
+
 
 #ifndef yytext_ptr
 static void yy_flex_strncpy (char* s1, const char * s2, int n , yyscan_t yyscanner)
@@ -9695,13 +9695,13 @@ void *yyrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	(void)yyg;
 
-	/* The cast to (char *) in the following accommodates both
-	 * implementations that use char* generic pointers, and those
-	 * that use void* generic pointers.  It works with the latter
-	 * because both ANSI C and C++ allow castless assignment from
-	 * any pointer type to void*, and deal with argument conversions
-	 * as though doing an assignment.
-	 */
+
+
+
+
+
+
+
 	return realloc(ptr, size);
 }
 
@@ -9709,32 +9709,32 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 {
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	(void)yyg;
-	free( (char *) ptr );	/* see yyrealloc() for (char *) cast */
+	free( (char *) ptr );
 }
 
 #define YYTABLES_NAME "yytables"
 
-/* ----------------------------------------------------------------------------
-   libconfig - A library for processing structured configuration files
-   Copyright (C) 2005-2020  Mark A Lindner
 
-   This file is part of libconfig.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation; either version 2.1 of
-   the License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, see
-   <http://www.gnu.org/licenses/>.
-   ----------------------------------------------------------------------------
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifdef HAVE_CONFIG_H
 #endif
@@ -9759,7 +9759,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 #define DEFAULT_TAB_WIDTH 2
 #define DEFAULT_FLOAT_PRECISION 6
 
-/* ------------------------------------------------------------------------- */
+
 
 #ifndef LIBCONFIG_STATIC
 #if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__) \
@@ -9770,10 +9770,10 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
   return(TRUE);
 }
 
-#endif /* WIN32 || WIN64 */
-#endif /* LIBCONFIG_STATIC */
+#endif
+#endif
 
-/* ------------------------------------------------------------------------- */
+
 
 static const char *__io_error = "file I/O error";
 
@@ -9782,7 +9782,7 @@ static void __config_write_setting(const config_t *config,
                                    const config_setting_t *setting,
                                    FILE *stream, int depth);
 
-/* ------------------------------------------------------------------------- */
+
 
 static void __config_locale_override(void)
 {
@@ -9809,7 +9809,7 @@ static void __config_locale_override(void)
 #endif
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static void __config_locale_restore(void)
 {
@@ -9830,7 +9830,7 @@ static void __config_locale_restore(void)
 #endif
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static int __config_name_compare(const char *a, const char *b)
 {
@@ -9856,7 +9856,7 @@ static int __config_name_compare(const char *a, const char *b)
   return(0);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static void __config_indent(FILE *stream, int depth, unsigned short w)
 {
@@ -9870,7 +9870,7 @@ static void __config_indent(FILE *stream, int depth, unsigned short w)
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static void __config_write_value(const config_t *config,
                                  const config_value_t *value, int type,
@@ -9880,12 +9880,12 @@ static void __config_write_value(const config_t *config,
 
   switch(type)
   {
-    /* boolean */
+
     case CONFIG_TYPE_BOOL:
       fputs(value->ival ? "true" : "false", stream);
       break;
 
-    /* int */
+
     case CONFIG_TYPE_INT:
       switch(format)
       {
@@ -9900,7 +9900,7 @@ static void __config_write_value(const config_t *config,
       }
       break;
 
-    /* 64-bit int */
+
     case CONFIG_TYPE_INT64:
       switch(format)
       {
@@ -9915,7 +9915,7 @@ static void __config_write_value(const config_t *config,
       }
       break;
 
-    /* float */
+
     case CONFIG_TYPE_FLOAT:
     {
       const int sci_ok = config_get_option(
@@ -9926,7 +9926,7 @@ static void __config_write_value(const config_t *config,
       break;
     }
 
-    /* string */
+
     case CONFIG_TYPE_STRING:
     {
       char *p;
@@ -9974,7 +9974,7 @@ static void __config_write_value(const config_t *config,
       break;
     }
 
-    /* list */
+
     case CONFIG_TYPE_LIST:
     {
       config_list_t *list = value->list;
@@ -10003,7 +10003,7 @@ static void __config_write_value(const config_t *config,
       break;
     }
 
-    /* array */
+
     case CONFIG_TYPE_ARRAY:
     {
       config_list_t *list = value->list;
@@ -10032,7 +10032,7 @@ static void __config_write_value(const config_t *config,
       break;
     }
 
-    /* group */
+
     case CONFIG_TYPE_GROUP:
     {
       config_list_t *list = value->list;
@@ -10069,13 +10069,13 @@ static void __config_write_value(const config_t *config,
     }
 
     default:
-      /* this shouldn't happen, but handle it gracefully... */
+
       fputs("???", stream);
       break;
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static void __config_list_add(config_list_t *list, config_setting_t *setting)
 {
@@ -10090,7 +10090,7 @@ static void __config_list_add(config_list_t *list, config_setting_t *setting)
   list->length++;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static config_setting_t *__config_list_search(config_list_t *list,
                                               const char *name,
@@ -10119,7 +10119,7 @@ static config_setting_t *__config_list_search(config_list_t *list,
   return(NULL);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static config_setting_t *__config_list_remove(config_list_t *list, int idx)
 {
@@ -10133,12 +10133,12 @@ static config_setting_t *__config_list_remove(config_list_t *list, int idx)
 
   list->length--;
 
-  /* possibly realloc smaller? */
+
 
   return(removed);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static void __config_setting_destroy(config_setting_t *setting)
 {
@@ -10163,7 +10163,7 @@ static void __config_setting_destroy(config_setting_t *setting)
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static void __config_list_destroy(config_list_t *list)
 {
@@ -10184,11 +10184,11 @@ static void __config_list_destroy(config_list_t *list)
   __delete(list);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static int __config_list_checktype(const config_setting_t *setting, int type)
 {
-  /* if the array is empty, then it has no type yet */
+
 
   if(! setting->value.list)
     return(CONFIG_TRUE);
@@ -10196,25 +10196,25 @@ static int __config_list_checktype(const config_setting_t *setting, int type)
   if(setting->value.list->length == 0)
     return(CONFIG_TRUE);
 
-  /* if it's a list, any type is allowed */
+
 
   if(setting->type == CONFIG_TYPE_LIST)
     return(CONFIG_TRUE);
 
-  /* otherwise the first element added determines the type of the array */
+
 
   return((setting->value.list->elements[0]->type == type)
          ? CONFIG_TRUE : CONFIG_FALSE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static int __config_type_is_scalar(int type)
 {
   return((type >= CONFIG_TYPE_INT) && (type <= CONFIG_TYPE_BOOL));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static int __config_validate_name(const char *name)
 {
@@ -10235,7 +10235,7 @@ static int __config_validate_name(const char *name)
   return(CONFIG_TRUE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static int __config_read(config_t *config, FILE *stream, const char *filename,
                          const char *str)
@@ -10261,7 +10261,7 @@ static int __config_read(config_t *config, FILE *stream, const char *filename,
 
   if(stream)
     libconfig_yyrestart(stream, scanner);
-  else /* read from string */
+  else
     (void)libconfig_yy_scan_string(str, scanner);
 
   libconfig_yyset_lineno(1, scanner);
@@ -10274,7 +10274,7 @@ static int __config_read(config_t *config, FILE *stream, const char *filename,
     config->error_file = libconfig_scanctx_current_filename(&scan_ctx);
     config->error_type = CONFIG_ERR_PARSE;
 
-    /* Unwind the include stack, freeing the buffers and closing the files. */
+
     while((buf = (YY_BUFFER_STATE)libconfig_scanctx_pop_include(&scan_ctx))
           != NULL)
       libconfig_yy_delete_buffer(buf, scanner);
@@ -10289,21 +10289,21 @@ static int __config_read(config_t *config, FILE *stream, const char *filename,
   return(r == 0 ? CONFIG_TRUE : CONFIG_FALSE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_read(config_t *config, FILE *stream)
 {
   return(__config_read(config, stream, NULL, NULL));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_read_string(config_t *config, const char *str)
 {
   return(__config_read(config, NULL, NULL, str));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static void __config_write_setting(const config_t *config,
                                    const config_setting_t *setting,
@@ -10339,7 +10339,7 @@ static void __config_write_setting(const config_t *config,
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_write(const config_t *config, FILE *stream)
 {
@@ -10350,7 +10350,7 @@ void config_write(const config_t *config, FILE *stream)
   __config_locale_restore();
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_read_file(config_t *config, const char *filename)
 {
@@ -10359,13 +10359,13 @@ int config_read_file(config_t *config, const char *filename)
   FILE *stream = fopen(filename, "rt");
   if(stream != NULL)
   {
-    // On some operating systems, fopen() succeeds on a directory.
+
     int fd = fileno(stream);
     struct stat statbuf;
 
     if(fstat(fd, &statbuf) == 0)
     {
-      // Only proceed if this is not a directory.
+
       if(!S_ISDIR(statbuf.st_mode))
         ok = 1;
     }
@@ -10387,7 +10387,7 @@ int config_read_file(config_t *config, const char *filename)
   return(ret);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_write_file(config_t *config, const char *filename)
 {
@@ -10422,7 +10422,7 @@ int config_write_file(config_t *config, const char *filename)
   return(CONFIG_TRUE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_destroy(config_t *config)
 {
@@ -10432,11 +10432,11 @@ void config_destroy(config_t *config)
   __zero(config);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_clear(config_t *config)
 {
-  /* Destroy the root setting (recursively) and then create a new one. */
+
   __config_setting_destroy(config->root);
 
   libconfig_strvec_delete(config->filenames);
@@ -10447,43 +10447,43 @@ void config_clear(config_t *config)
   config->root->config = config;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_set_tab_width(config_t *config, unsigned short width)
 {
-  /* As per documentation: valid range is 0 - 15. */
+
   config->tab_width = (width <= 15) ? width : 15;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 unsigned short config_get_tab_width(const config_t *config)
 {
   return config->tab_width;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_set_float_precision(config_t *config, unsigned short digits)
 {
   config->float_precision = digits;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 unsigned short config_get_float_precision(const config_t *config)
 {
   return config->float_precision;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_init(config_t *config)
 {
   __zero(config);
   config_clear(config);
 
-  /* Set default options. */
+
   config->options = (CONFIG_OPTION_SEMICOLON_SEPARATORS
                      | CONFIG_OPTION_COLON_ASSIGNMENT_FOR_GROUPS
                      | CONFIG_OPTION_OPEN_BRACE_ON_SEPARATE_LINE);
@@ -10492,21 +10492,21 @@ void config_init(config_t *config)
   config->include_fn = config_default_include_func;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_set_options(config_t *config, int options)
 {
   config->options = options;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_get_options(const config_t *config)
 {
   return(config->options);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_set_option(config_t *config, int option, int flag)
 {
@@ -10516,21 +10516,21 @@ void config_set_option(config_t *config, int option, int flag)
     config->options &= ~option;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_get_option(const config_t *config, int option)
 {
   return((config->options & option) == option);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_set_hook(config_t *config, void *hook)
 {
   config->hook = hook;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static config_setting_t *config_setting_create(config_setting_t *parent,
                                                const char *name, int type)
@@ -10559,7 +10559,7 @@ static config_setting_t *config_setting_create(config_setting_t *parent,
   return(setting);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static int __config_setting_get_int(const config_setting_t *setting,
                                     int *value)
@@ -10594,7 +10594,7 @@ static int __config_setting_get_int(const config_setting_t *setting,
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_get_int(const config_setting_t *setting)
 {
@@ -10603,7 +10603,7 @@ int config_setting_get_int(const config_setting_t *setting)
   return(value);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static int __config_setting_get_int64(const config_setting_t *setting,
                                       long long *value)
@@ -10632,7 +10632,7 @@ static int __config_setting_get_int64(const config_setting_t *setting,
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 long long config_setting_get_int64(const config_setting_t *setting)
 {
@@ -10641,7 +10641,7 @@ long long config_setting_get_int64(const config_setting_t *setting)
   return(value);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_lookup_int(const config_setting_t *setting,
                               const char *name, int *value)
@@ -10653,7 +10653,7 @@ int config_setting_lookup_int(const config_setting_t *setting,
   return(__config_setting_get_int(member, value));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_lookup_int64(const config_setting_t *setting,
                                 const char *name, long long *value)
@@ -10665,7 +10665,7 @@ int config_setting_lookup_int64(const config_setting_t *setting,
   return(__config_setting_get_int64(member, value));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 static int __config_setting_get_float(const config_setting_t *setting,
                                       double *value)
@@ -10699,7 +10699,7 @@ static int __config_setting_get_float(const config_setting_t *setting,
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 double config_setting_get_float(const config_setting_t *setting)
 {
@@ -10708,7 +10708,7 @@ double config_setting_get_float(const config_setting_t *setting)
   return(value);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_lookup_float(const config_setting_t *setting,
                                 const char *name, double *value)
@@ -10720,7 +10720,7 @@ int config_setting_lookup_float(const config_setting_t *setting,
   return(__config_setting_get_float(member, value));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_lookup_string(const config_setting_t *setting,
                                  const char *name, const char **value)
@@ -10736,7 +10736,7 @@ int config_setting_lookup_string(const config_setting_t *setting,
   return(CONFIG_TRUE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_lookup_bool(const config_setting_t *setting,
                                const char *name, int *value)
@@ -10752,7 +10752,7 @@ int config_setting_lookup_bool(const config_setting_t *setting,
   return(CONFIG_TRUE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_set_int(config_setting_t *setting, int value)
 {
@@ -10760,7 +10760,7 @@ int config_setting_set_int(config_setting_t *setting, int value)
   {
     case CONFIG_TYPE_NONE:
       setting->type = CONFIG_TYPE_INT;
-      /* fall through */
+
 
     case CONFIG_TYPE_INT:
       setting->value.ival = value;
@@ -10780,7 +10780,7 @@ int config_setting_set_int(config_setting_t *setting, int value)
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_set_int64(config_setting_t *setting, long long value)
 {
@@ -10788,7 +10788,7 @@ int config_setting_set_int64(config_setting_t *setting, long long value)
   {
     case CONFIG_TYPE_NONE:
       setting->type = CONFIG_TYPE_INT64;
-      /* fall through */
+
 
     case CONFIG_TYPE_INT64:
       setting->value.llval = value;
@@ -10817,7 +10817,7 @@ int config_setting_set_int64(config_setting_t *setting, long long value)
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_set_float(config_setting_t *setting, double value)
 {
@@ -10825,7 +10825,7 @@ int config_setting_set_float(config_setting_t *setting, double value)
   {
     case CONFIG_TYPE_NONE:
       setting->type = CONFIG_TYPE_FLOAT;
-      /* fall through */
+
 
     case CONFIG_TYPE_FLOAT:
       setting->value.fval = value;
@@ -10854,14 +10854,14 @@ int config_setting_set_float(config_setting_t *setting, double value)
   }
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_get_bool(const config_setting_t *setting)
 {
   return((setting->type == CONFIG_TYPE_BOOL) ? setting->value.ival : 0);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_set_bool(config_setting_t *setting, int value)
 {
@@ -10874,14 +10874,14 @@ int config_setting_set_bool(config_setting_t *setting, int value)
   return(CONFIG_TRUE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 const char *config_setting_get_string(const config_setting_t *setting)
 {
   return((setting->type == CONFIG_TYPE_STRING) ? setting->value.sval : NULL);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_set_string(config_setting_t *setting, const char *value)
 {
@@ -10897,7 +10897,7 @@ int config_setting_set_string(config_setting_t *setting, const char *value)
   return(CONFIG_TRUE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_set_format(config_setting_t *setting, short format)
 {
@@ -10911,7 +10911,7 @@ int config_setting_set_format(config_setting_t *setting, short format)
   return(CONFIG_TRUE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 short config_setting_get_format(const config_setting_t *setting)
 {
@@ -10919,7 +10919,7 @@ short config_setting_get_format(const config_setting_t *setting)
          : setting->config->default_format);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 config_setting_t *config_setting_lookup(config_setting_t *setting,
                                         const char *path)
@@ -10950,14 +10950,14 @@ config_setting_t *config_setting_lookup(config_setting_t *setting,
   return(*p || (found == setting) ? NULL : found);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 config_setting_t *config_lookup(const config_t *config, const char *path)
 {
   return(config_setting_lookup(config->root, path));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_lookup_string(const config_t *config, const char *path,
                          const char **value)
@@ -10974,7 +10974,7 @@ int config_lookup_string(const config_t *config, const char *path,
   return(CONFIG_TRUE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_lookup_int(const config_t *config, const char *path,
                       int *value)
@@ -10986,7 +10986,7 @@ int config_lookup_int(const config_t *config, const char *path,
   return(__config_setting_get_int(s, value));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_lookup_int64(const config_t *config, const char *path,
                         long long *value)
@@ -10998,7 +10998,7 @@ int config_lookup_int64(const config_t *config, const char *path,
   return(__config_setting_get_int64(s, value));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_lookup_float(const config_t *config, const char *path,
                         double *value)
@@ -11010,7 +11010,7 @@ int config_lookup_float(const config_t *config, const char *path,
   return(__config_setting_get_float(s, value));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_lookup_bool(const config_t *config, const char *path, int *value)
 {
@@ -11025,7 +11025,7 @@ int config_lookup_bool(const config_t *config, const char *path, int *value)
   return(CONFIG_TRUE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_get_int_elem(const config_setting_t *setting, int idx)
 {
@@ -11034,7 +11034,7 @@ int config_setting_get_int_elem(const config_setting_t *setting, int idx)
   return(element ? config_setting_get_int(element) : 0);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 config_setting_t *config_setting_set_int_elem(config_setting_t *setting,
                                               int idx, int value)
@@ -11066,7 +11066,7 @@ config_setting_t *config_setting_set_int_elem(config_setting_t *setting,
   return(element);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 long long config_setting_get_int64_elem(const config_setting_t *setting,
                                         int idx)
@@ -11076,7 +11076,7 @@ long long config_setting_get_int64_elem(const config_setting_t *setting,
   return(element ? config_setting_get_int64(element) : 0);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 config_setting_t *config_setting_set_int64_elem(config_setting_t *setting,
                                                 int idx, long long value)
@@ -11108,7 +11108,7 @@ config_setting_t *config_setting_set_int64_elem(config_setting_t *setting,
   return(element);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 double config_setting_get_float_elem(const config_setting_t *setting, int idx)
 {
@@ -11117,7 +11117,7 @@ double config_setting_get_float_elem(const config_setting_t *setting, int idx)
   return(element ? config_setting_get_float(element) : 0.0);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 config_setting_t *config_setting_set_float_elem(config_setting_t *setting,
                                                 int idx, double value)
@@ -11147,7 +11147,7 @@ config_setting_t *config_setting_set_float_elem(config_setting_t *setting,
   return(element);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_get_bool_elem(const config_setting_t *setting, int idx)
 {
@@ -11162,7 +11162,7 @@ int config_setting_get_bool_elem(const config_setting_t *setting, int idx)
   return(element->value.ival);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 config_setting_t *config_setting_set_bool_elem(config_setting_t *setting,
                                                int idx, int value)
@@ -11192,7 +11192,7 @@ config_setting_t *config_setting_set_bool_elem(config_setting_t *setting,
   return(element);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 const char *config_setting_get_string_elem(const config_setting_t *setting,
                                            int idx)
@@ -11208,7 +11208,7 @@ const char *config_setting_get_string_elem(const config_setting_t *setting,
   return(element->value.sval);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 config_setting_t *config_setting_set_string_elem(config_setting_t *setting,
                                                  int idx, const char *value)
@@ -11238,7 +11238,7 @@ config_setting_t *config_setting_set_string_elem(config_setting_t *setting,
   return(element);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 config_setting_t *config_setting_get_elem(const config_setting_t *setting,
                                           unsigned int idx)
@@ -11258,7 +11258,7 @@ config_setting_t *config_setting_get_elem(const config_setting_t *setting,
   return(list->elements[idx]);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 config_setting_t *config_setting_get_member(const config_setting_t *setting,
                                             const char *name)
@@ -11269,14 +11269,14 @@ config_setting_t *config_setting_get_member(const config_setting_t *setting,
   return(__config_list_search(setting->value.list, name, NULL));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_set_destructor(config_t *config, void (*destructor)(void *))
 {
   config->destructor = destructor;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_set_include_dir(config_t *config, const char *include_dir)
 {
@@ -11284,14 +11284,14 @@ void config_set_include_dir(config_t *config, const char *include_dir)
   config->include_dir = strdup(include_dir);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_set_include_func(config_t *config, config_include_fn_t func)
 {
   config->include_fn = func ? func : config_default_include_func;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_length(const config_setting_t *setting)
 {
@@ -11304,14 +11304,14 @@ int config_setting_length(const config_setting_t *setting)
   return(setting->value.list->length);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 void config_setting_set_hook(config_setting_t *setting, void *hook)
 {
   setting->hook = hook;
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 config_setting_t *config_setting_add(config_setting_t *parent,
                                      const char *name, int type)
@@ -11323,7 +11323,7 @@ config_setting_t *config_setting_add(config_setting_t *parent,
     return(NULL);
 
   if((parent->type == CONFIG_TYPE_ARRAY) && !__config_type_is_scalar(type))
-    return(NULL); /* only scalars can be added to arrays */
+    return(NULL);
 
   if((parent->type == CONFIG_TYPE_ARRAY) || (parent->type == CONFIG_TYPE_LIST))
     name = NULL;
@@ -11339,13 +11339,13 @@ config_setting_t *config_setting_add(config_setting_t *parent,
     if(config_get_option(parent->config, CONFIG_OPTION_ALLOW_OVERRIDES))
       config_setting_remove(parent, name);
     else
-      return(NULL); /* already exists */
+      return(NULL);
   }
 
   return(config_setting_create(parent, name, type));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_remove(config_setting_t *parent, const char *name)
 {
@@ -11388,7 +11388,7 @@ int config_setting_remove(config_setting_t *parent, const char *name)
   return(CONFIG_TRUE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_remove_elem(config_setting_t *parent, unsigned int idx)
 {
@@ -11414,7 +11414,7 @@ int config_setting_remove_elem(config_setting_t *parent, unsigned int idx)
   return(CONFIG_TRUE);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_index(const config_setting_t *setting)
 {
@@ -11436,7 +11436,7 @@ int config_setting_index(const config_setting_t *setting)
   return(-1);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 const char **config_default_include_func(config_t *config,
                                          const char *include_dir,
@@ -11465,14 +11465,14 @@ const char **config_default_include_func(config_t *config,
   return(files);
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_is_scalar(const config_setting_t *setting)
 {
   return(__config_type_is_scalar(setting->type));
 }
 
-/* ------------------------------------------------------------------------- */
+
 
 int config_setting_is_aggregate(const config_setting_t *setting)
 {
@@ -11481,7 +11481,7 @@ int config_setting_is_aggregate(const config_setting_t *setting)
          || (setting->type == CONFIG_TYPE_GROUP));
 }
 
-/* ------------------------------------------------------------------------- */
+
 #undef BEGIN
 #undef CHUNK_SIZE
 #undef ECHO
@@ -11489,10 +11489,10 @@ int config_setting_is_aggregate(const config_setting_t *setting)
 
 
 
-// Grouped editable compilation unit for all control subsystems.
 
 
-// Grouped editable compilation unit for inflow and velocity control.
+
+
 
 
 #define DEV_CUDA
@@ -11507,19 +11507,19 @@ int config_setting_is_aggregate(const config_setting_t *setting)
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
 struct Coords_v {
-    int xc, yc, zc; /* rank coordinates        */
-    int xd, yd, zd; /* rank sizes              */
-    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+    int xc, yc, zc;
+    int xd, yd, zd;
+    int Lx, Ly, Lz;
 };
-#endif /* UDX_CONTROL_COORDS_COMMON */
+#endif
 struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -11560,27 +11560,27 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 #ifndef UDX_CONTROL_UTILS_COMMON
 #define UDX_CONTROL_UTILS_COMMON
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#endif /* UDX_CONTROL_UTILS_COMMON */
+#endif
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
 #define ERR(fmt, ...)  do {                                     \
@@ -11589,7 +11589,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -11600,7 +11600,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -11622,7 +11622,7 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-#endif /* UDX_CONTROL_ERROR_COMMON */
+#endif
 
 struct Inflow;
 struct Config;
@@ -11638,16 +11638,16 @@ void inflow_ini_velocity(Inflow *i);
 
 void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float L2,
                              float3 u, bool upoiseuille, bool vpoiseuille,
-                             /**/ Inflow *i);
+                                  Inflow *i);
 void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float u, bool poiseuille,
-                              /**/ Inflow *i);
+                                   Inflow *i);
 
-void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow *i);
+void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow *i);
 
-void inflow_create_pp(float kBT, int numdensity, float dt, Inflow *i, int *n, Particle *pp); // <1>
-void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Inflow *i, int *n, Particle *pp, int *cc); // <2>
+void inflow_create_pp(float kBT, int numdensity, float dt, Inflow *i, int *n, Particle *pp);
+void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Inflow *i, int *n, Particle *pp, int *cc);
 
-void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow *i) {
+void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow *i) {
     const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
 
@@ -11661,7 +11661,7 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow
         UC(conf_lookup_float(cfg, "inflow.U", &U));
         UC(conf_lookup_bool(cfg, "inflow.poiseuille", &poiseuille));
         UC(conf_lookup_float3(cfg, "inflow.center", &center));
-        UC(inflow_ini_params_circle(coords, center, R, H, U, poiseuille, /**/ i));
+        UC(inflow_ini_params_circle(coords, center, R, H, U, poiseuille,      i));
     }
     else if (same_str(type, "plate")) {
         int upois, vpois, dir;
@@ -11676,7 +11676,7 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow
         UC(conf_lookup_float3(cfg, "inflow.origin", &origin));
         UC(conf_lookup_float3(cfg, "inflow.u", &u));
 
-        UC(inflow_ini_params_plate(coords, origin, dir, L1, L2, u, upois, vpois, /**/ i));
+        UC(inflow_ini_params_plate(coords, origin, dir, L1, L2, u, upois, vpois,      i));
     }
     else {
         ERR("unknown inflow type <%s>", type);
@@ -11689,33 +11689,33 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow
 #include <stdio.h>
 #include <curand_kernel.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -11733,7 +11733,7 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -11744,7 +11744,7 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -11766,12 +11766,12 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-#endif /* UDX_CONTROL_ERROR_COMMON */
+#endif
 
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -11779,7 +11779,7 @@ void error_print_stack();
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -11792,20 +11792,20 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_CONTROL_KL_COMMON */
+#endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 #include "device.cuh"
-#endif /* UDX_CONTROL_D_API_COMMON */
+#endif
 
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -11814,35 +11814,35 @@ void check(int rc, const char *file, int line);
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_CONTROL_TYPE_COMMON */
+#endif
 
 
 struct Coords;
@@ -11859,24 +11859,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -11891,36 +11891,36 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 #ifndef UDX_CONTROL_MATH_COMMON
 #define UDX_CONTROL_MATH_COMMON
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -11932,14 +11932,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -11947,19 +11947,19 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
 }
-#endif /* UDX_CONTROL_MATH_COMMON */
+#endif
 
 
 
@@ -11971,20 +11971,20 @@ struct VParamsPlate {
     float3 u;
     bool upoiseuille, vpoiseuille;
 };
-static __device__ void coords2pos(ParamsPlate p, float2 xi, /**/ float3 *r) {
+static __device__ void coords2pos(ParamsPlate p, float2 xi,      float3 *r) {
     *r = p.o;
-    axpy(xi.x, &p.a, /**/ r);
-    axpy(xi.y, &p.b, /**/ r);
+    axpy(xi.x, &p.a,      r);
+    axpy(xi.y, &p.b,      r);
 }
 
 static __device__ float3 get_normal(ParamsPlate p, int2 nc, int i, int j) {
     float3 n;
-    cross(&p.a, &p.b, /**/ &n);
-    scal(1.f / (nc.x * nc.y), /**/ &n);
+    cross(&p.a, &p.b,      &n);
+    scal(1.f / (nc.x * nc.y),      &n);
     return n;
 }
 
-static __device__ void coords2vel(VParamsPlate vp, ParamsPlate p, float2 xi, /**/ float3 *u) {
+static __device__ void coords2vel(VParamsPlate vp, ParamsPlate p, float2 xi,      float3 *u) {
     float fact;
     fact = 1.f;
     if (vp.upoiseuille)
@@ -11994,19 +11994,19 @@ static __device__ void coords2vel(VParamsPlate vp, ParamsPlate p, float2 xi, /**
         fact *= 4 * xi.y * (1 - xi.y);
 
     *u = vp.u;
-    scal(fact, /**/ u);
+    scal(fact,      u);
 }
 
 struct ParamsCircle {
-    float3 o;   /* center of cylinder */
-    float R, H; /* radius, hight      */
+    float3 o;
+    float R, H;
 };
 
 struct VParamsCircle {
     float u;
     bool poiseuille;
 };
-static __device__ void coords2pos(ParamsCircle p, float2 xi, /**/ float3 *r) {
+static __device__ void coords2pos(ParamsCircle p, float2 xi,      float3 *r) {
     float th, h, cth, sth;
     th = xi.x * 2 * M_PI;
     h = xi.y * p.H;
@@ -12028,11 +12028,11 @@ static __device__ float3 get_normal(ParamsCircle p, int2 nc, int i, int j) {
 
     n = make_float3(cth, sth, 0);
     area = p.H * p.R * 2 * M_PI / (nc.x * nc.y);
-    scal(area, /**/ &n);
+    scal(area,      &n);
     return n;
 }
 
-static __device__ void coords2vel(VParamsCircle vp, ParamsCircle p, float2 xi, /**/ float3 *u) {
+static __device__ void coords2vel(VParamsCircle vp, ParamsCircle p, float2 xi,      float3 *u) {
     float th, cth, sth, fact;
     th = xi.x * 2 * M_PI;
     cth = cos(th);
@@ -12045,7 +12045,7 @@ static __device__ void coords2vel(VParamsCircle vp, ParamsCircle p, float2 xi, /
     }
 
     *u = make_float3(cth, sth, 0);
-    scal(fact * vp.u, /**/ u);
+    scal(fact * vp.u,      u);
 }
 
 
@@ -12056,11 +12056,11 @@ enum Type {
 };
 
 struct Desc {
-    curandState_t *rnds; /* random states on device         */
-    float3 *uu;          /* target flux                     */
-    float *cumflux;      /* cumulative flux                 */
-    int *ndev;           /* number of particles on device   */
-    int2 nc;             /* number of cells in 2 directions */
+    curandState_t *rnds;
+    float3 *uu;
+    float *cumflux;
+    int *ndev;
+    int2 nc;
 };
 
 union ParamsU {
@@ -12081,10 +12081,10 @@ struct Inflow {
 };
 
 struct SolventWrap {
-    Particle *pp;       /* particles               */
-    int *cc;            /* colors                  */
-    bool multisolvent;  /* true if color activated */
-    int color;          /* color of new particles  */
+    Particle *pp;
+    int *cc;
+    bool multisolvent;
+    int color;
 };
 
 __global__ void inflow_ini_rnd_kernel(long seed, int n, curandState_t *rr) {
@@ -12094,14 +12094,14 @@ __global__ void inflow_ini_rnd_kernel(long seed, int n, curandState_t *rr) {
     curand_init(seed, i, 0, &rr[i]);
 }
 
-__global__ void inflow_ini_flux_kernel(int n, /**/ curandState_t *rr, float *cumflux) {
+__global__ void inflow_ini_flux_kernel(int n,      curandState_t *rr, float *cumflux) {
     long i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     cumflux[i] = curand_uniform(rr + i);
 }
 template <typename Par, typename VPar>
-__global__ void inflow_ini_vel_kernel(VPar vparams, Par params, int2 nc, /**/ float3 *uu) {
+__global__ void inflow_ini_vel_kernel(VPar vparams, Par params, int2 nc,      float3 *uu) {
     int i, xcid, ycid;
     float3 u;
     float2 xi;
@@ -12115,13 +12115,13 @@ __global__ void inflow_ini_vel_kernel(VPar vparams, Par params, int2 nc, /**/ fl
     xi.x = (xcid + 0.5f) / nc.x;
     xi.y = (ycid + 0.5f) / nc.y;
 
-    coords2vel(vparams, params, xi, /**/ &u);
+    coords2vel(vparams, params, xi,      &u);
 
     uu[i] = u;
 }
 
 template <typename Par>
-__global__ void inflow_cumulative_flux_kernel(float nxdt, Par params, int2 nc, const float3 *uu, /**/ float *cumflux) {
+__global__ void inflow_cumulative_flux_kernel(float nxdt, Par params, int2 nc, const float3 *uu,      float *cumflux) {
     int i, xcid, ycid;
     float dn;
     float3 normal, u;
@@ -12132,7 +12132,7 @@ __global__ void inflow_cumulative_flux_kernel(float nxdt, Par params, int2 nc, c
     xcid = i % nc.x;
     ycid = i / nc.x;
 
-    // normal is scaled by area of element
+
     normal = get_normal(params, nc, xcid, ycid);
     u      = uu[i];
     dn = nxdt * dot<float>(&normal, &u);
@@ -12149,21 +12149,21 @@ static __device__ Particle create_particle(float kBT, Par params, int2 nc,
     xi.x = (xcid + curand_uniform(rg)) / nc.x;
     xi.y = (ycid + curand_uniform(rg)) / nc.y;
 
-    coords2pos(params, xi, /**/ &r);
+    coords2pos(params, xi,      &r);
 
     sigma = sqrtf(kBT);
     u.x += curand_normal(rg) * sigma;
     u.y += curand_normal(rg) * sigma;
     u.z += curand_normal(rg) * sigma;
 
-    // printf("create one particle: %g %g %g   %g %g %g\n", r.x, r.y, r.z, u.x, u.y, u.z);
+
 
     return Particle({r.x, r.y, r.z, u.x, u.y, u.z});
 }
 
 template <typename Par>
 __global__ void inflow_create_particles_kernel(float kBT, Par params, int2 nc, const float3 *flux,
-                                 /*io*/ curandState_t *rnds, float *cumflux, /**/ int *n, SolventWrap wrap) {
+                                        curandState_t *rnds, float *cumflux,      int *n, SolventWrap wrap) {
     int i, xcid, ycid, j, nnew, strt;
     float c;
     float3 f;
@@ -12188,7 +12188,7 @@ __global__ void inflow_create_particles_kernel(float kBT, Par params, int2 nc, c
     strt = atomicAdd(n, nnew);
 
     for (j = strt; j < strt + nnew; ++j) {
-        wrap.pp[j] = create_particle(kBT, params, nc, xcid, ycid, f, /*io*/ &rndstate);
+        wrap.pp[j] = create_particle(kBT, params, nc, xcid, ycid, f,        &rndstate);
         if (wrap.multisolvent)
             wrap.cc[j] = wrap.color;
     }
@@ -12211,12 +12211,12 @@ static float3 crop(float3 r, float3 lo, float3 hi) {
 
 void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float L2,
                              float3 u, bool upoiseuille, bool vpoiseuille,
-                             /**/ Inflow *i) {
+                                  Inflow *i) {
     enum {X, Y, Z};
     ParamsPlate *pp;
     VParamsPlate *vpp;
     float3 a, b, lo, hi;
-    float3 co, ca, cb; // corners of the local plane : co (origin), ca, cb
+    float3 co, ca, cb;
 
     lo = make_float3(-xs(c)/2, -ys(c)/2, -zs(c)/2);
     hi = make_float3( xs(c)/2,  ys(c)/2,  zs(c)/2);
@@ -12244,20 +12244,20 @@ void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float
         break;
     };
 
-    // shift to local coordinates
-    global2local(c, o, /**/ &o);
+
+    global2local(c, o,      &o);
 
     co = ca = cb = o;
-    add(&a, /**/ &ca);
-    add(&b, /**/ &cb);
+    add(&a,      &ca);
+    add(&b,      &cb);
 
     co = crop(co, lo, hi);
     ca = crop(ca, lo, hi);
     cb = crop(cb, lo, hi);
 
     pp->o = co;
-    diff(&ca, &co, /**/ &pp->a);
-    diff(&cb, &co, /**/ &pp->b);
+    diff(&ca, &co,      &pp->a);
+    diff(&cb, &co,      &pp->b);
 
     vpp->u = u;
     vpp->upoiseuille = upoiseuille;
@@ -12274,7 +12274,7 @@ static bool is_inside_subdomain(const Coords *c, float3 r) {
 }
 
 void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float u, bool poiseuille,
-                              /**/ Inflow *i) {
+                                   Inflow *i) {
     enum {X, Y, Z};
     ParamsCircle *pp;
     VParamsCircle *vpp;
@@ -12283,7 +12283,7 @@ void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float
         pp  = &i->p.circle;
         vpp = &i->vp.circle;
 
-        global2local(c, o, /**/ &o);
+        global2local(c, o,      &o);
 
         pp->o = o;
         pp->R = R;
@@ -12334,14 +12334,14 @@ void inflow_ini(int2 nc, Inflow **i) {
     ip->t = TYPE_NONE;
 }
 
-static void ini_velocity(Type t, int2 nc, const ParamsU *p, const VParamsU *vp, /**/ float3 *uu) {
+static void ini_velocity(Type t, int2 nc, const ParamsU *p, const VParamsU *vp,      float3 *uu) {
     int n = nc.x * nc.y;
     switch(t) {
     case TYPE_PLATE:
-        KL(inflow_ini_vel_kernel, (k_cnf(n)), (vp->plate, p->plate, nc, /**/ uu));
+        KL(inflow_ini_vel_kernel, (k_cnf(n)), (vp->plate, p->plate, nc,      uu));
         break;
     case TYPE_CIRCLE:
-        KL(inflow_ini_vel_kernel, (k_cnf(n)), (vp->circle, p->circle, nc, /**/ uu));
+        KL(inflow_ini_vel_kernel, (k_cnf(n)), (vp->circle, p->circle, nc,      uu));
         break;
     case TYPE_NONE:
         break;
@@ -12352,7 +12352,7 @@ static void ini_velocity(Type t, int2 nc, const ParamsU *p, const VParamsU *vp, 
 }
 
 void inflow_ini_velocity(Inflow *i) {
-    ini_velocity(i->t, i->d.nc, &i->p, &i->vp, /**/ i->d.uu);
+    ini_velocity(i->t, i->d.nc, &i->p, &i->vp,      i->d.uu);
 }
 
 void inflow_fin(Inflow *i) {
@@ -12379,14 +12379,14 @@ static void create_solvent(float kBT, int numdensity, float dt, Inflow *i, int *
 
     switch(i->t) {
     case TYPE_PLATE:
-        KL(inflow_cumulative_flux_kernel, (k_cnf(nctot)), (nxdt, i->p.plate, nc, d->uu, /**/ d->cumflux));
+        KL(inflow_cumulative_flux_kernel, (k_cnf(nctot)), (nxdt, i->p.plate, nc, d->uu,      d->cumflux));
         KL(inflow_create_particles_kernel, (k_cnf(nctot)),
-           (kBT, i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
+           (kBT, i->p.plate, nc, d->uu,        d->rnds, d->cumflux,      d->ndev, wrap));
         break;
     case TYPE_CIRCLE:
-        KL(inflow_cumulative_flux_kernel, (k_cnf(nctot)), (nxdt, i->p.circle, nc, d->uu, /**/ d->cumflux));
+        KL(inflow_cumulative_flux_kernel, (k_cnf(nctot)), (nxdt, i->p.circle, nc, d->uu,      d->cumflux));
         KL(inflow_create_particles_kernel, (k_cnf(nctot)),
-           (kBT, i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
+           (kBT, i->p.circle, nc, d->uu,        d->rnds, d->cumflux,      d->ndev, wrap));
         break;
     case TYPE_NONE:
         break;
@@ -12396,7 +12396,7 @@ static void create_solvent(float kBT, int numdensity, float dt, Inflow *i, int *
     };
 
     CC(d::MemcpyAsync(n, d->ndev, sizeof(int), D2H));
-    dSync(); // wait for n
+    dSync();
 }
 
 void inflow_create_pp(float kBT, int numdensity, float dt, Inflow *i, int *n, Particle *pp) {
@@ -12434,23 +12434,23 @@ void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Infl
 
 #ifndef UDX_CONTROL_UTILS_COMMON
 #define UDX_CONTROL_UTILS_COMMON
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#endif /* UDX_CONTROL_UTILS_COMMON */
+#endif
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
 #define ERR(fmt, ...)  do {                                     \
@@ -12459,7 +12459,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -12470,7 +12470,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -12492,15 +12492,15 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-#endif /* UDX_CONTROL_ERROR_COMMON */
+#endif
 struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -12541,8 +12541,8 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 
 struct PidVCont;
 struct Coords;
@@ -12551,24 +12551,24 @@ struct float3;
 struct int3;
 struct Particle;
 
-void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c);
-void vcont_fin(/**/ PidVCont *cont);
+void vcont_ini(MPI_Comm comm, int3 L,      PidVCont **c);
+void vcont_fin(     PidVCont *cont);
 
-void vcont_set_params(float factor, float Kp, float Ki, float Kd, /**/ PidVCont *c); // <1>
-void vcont_set_target(float3 vtarget, /**/ PidVCont *c);  // <2>
-void vcont_set_cart(/**/ PidVCont *c);  // <3>
-void vcont_set_radial(/**/ PidVCont *c);  // <4>
+void vcont_set_params(float factor, float Kp, float Ki, float Kd,      PidVCont *c);
+void vcont_set_target(float3 vtarget,      PidVCont *c);
+void vcont_set_cart(     PidVCont *c);
+void vcont_set_radial(     PidVCont *c);
 
-void vcont_set_conf(const Config *cfg, /**/ PidVCont *c);
+void vcont_set_conf(const Config *cfg,      PidVCont *c);
 
-void vcont_strt_dump(MPI_Comm, const char *base, int id, const PidVCont*); // <1>
-void vcont_strt_read(          const char *base, int id, PidVCont*);       // <2>
+void vcont_strt_dump(MPI_Comm, const char *base, int id, const PidVCont*);
+void vcont_strt_read(          const char *base, int id, PidVCont*);
 
-void   vcont_sample(const Coords *coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c); // <1>
-float3 vcont_adjustF(/**/ PidVCont *c); // <2>
-void   vcont_log(const PidVCont *c);    // <3>
+void   vcont_sample(const Coords *coords, int n, const Particle *pp, const int *starts, const int *counts,      PidVCont *c);
+float3 vcont_adjustF(     PidVCont *c);
+void   vcont_log(const PidVCont *c);
 
-void vcont_set_conf(const Config *cfg, /**/ PidVCont *c) {
+void vcont_set_conf(const Config *cfg,      PidVCont *c) {
     const char *type;
     float3 U;
     float factor, Kp, Ki, Kd;
@@ -12580,13 +12580,13 @@ void vcont_set_conf(const Config *cfg, /**/ PidVCont *c) {
     UC(conf_lookup_float(cfg, "vcon.Ki", &Ki));
     UC(conf_lookup_float(cfg, "vcon.Kd", &Kd));
 
-    UC(vcont_set_params(factor, Kp, Ki, Kd, /**/ c));
-    UC(vcont_set_target(U, /**/ c));
+    UC(vcont_set_params(factor, Kp, Ki, Kd,      c));
+    UC(vcont_set_target(U,      c));
 
     if      (same_str(type, "cart"))
-        UC(vcont_set_cart(/**/ c));
+        UC(vcont_set_cart(     c));
     else if (same_str(type, "rad"))
-        UC(vcont_set_radial(/**/ c));
+        UC(vcont_set_radial(     c));
     else
         ERR("Unrecognised type <%s>", type);
 
@@ -12598,33 +12598,33 @@ void vcont_set_conf(const Config *cfg, /**/ PidVCont *c) {
 #include <mpi.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -12633,8 +12633,8 @@ void vcont_set_conf(const Config *cfg, /**/ PidVCont *c) {
 #define DUMP_BASE "."
 #endif
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
@@ -12644,7 +12644,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -12655,7 +12655,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -12677,17 +12677,17 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-#endif /* UDX_CONTROL_ERROR_COMMON */
+#endif
 
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_CONTROL_TYPE_COMMON */
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#endif
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -12696,35 +12696,35 @@ void error_print_stack();
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 #include "device.cuh"
-#endif /* UDX_CONTROL_D_API_COMMON */
+#endif
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -12767,17 +12767,17 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -12785,7 +12785,7 @@ int status2errcode(MPI_Status *status);
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -12798,12 +12798,12 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_CONTROL_KL_COMMON */
-/* [m]pi [c]heck macros */
+#endif
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -12813,26 +12813,26 @@ void check(int code, const char *file, int line);
 
 #ifndef UDX_CONTROL_MATH_COMMON
 #define UDX_CONTROL_MATH_COMMON
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -12844,14 +12844,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -12859,28 +12859,28 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
 }
-#endif /* UDX_CONTROL_MATH_COMMON */
+#endif
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
 struct Coords_v {
-    int xc, yc, zc; /* rank coordinates        */
-    int xd, yd, zd; /* rank sizes              */
-    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+    int xc, yc, zc;
+    int xd, yd, zd;
+    int Lx, Ly, Lz;
 };
-#endif /* UDX_CONTROL_COORDS_COMMON */
-/* domain sizes */
+#endif
+
 
 static __device__ int xdomain(const Coords_v c) {
     return c.Lx * c.xd;
@@ -12894,7 +12894,7 @@ static __device__ int zdomain(const Coords_v c) {
     return c.Lz * c.zd;
 }
 
-/* [l]ocal to [c]enter */
+
 
 static __device__ float xl2xc(const Coords_v c, float xl) {
     return xl - 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
@@ -12908,13 +12908,13 @@ static __device__ float zl2zc(const Coords_v c, float zl) {
     return zl - 0.5f * c.Lz * (c.zd - 2 * c.zc - 1);
 }
 
-static __device__ void local2center(const Coords_v c, float3 rl, /**/ float3 *rc) {
+static __device__ void local2center(const Coords_v c, float3 rl,      float3 *rc) {
     rc->x = xl2xc(c, rl.x);
     rc->y = yl2yc(c, rl.y);
     rc->z = zl2zc(c, rl.z);
 }
 
-/* [c]enter to [l]ocal  */
+
 
 static __device__ float xc2xl(const Coords_v c, float xc) {
     return xc + 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
@@ -12928,13 +12928,13 @@ static __device__ float zc2zl(const Coords_v c, float zc) {
     return zc + 0.5f * c.Lz * (c.zd - 2.f * c.zc - 1);
 }
 
-static __device__ void center2local(Coords_v c, float3 rc, /**/ float3 *rl) {
+static __device__ void center2local(Coords_v c, float3 rc,      float3 *rl) {
     rl->x = xc2xl(c, rc.x);
     rl->y = yc2yl(c, rc.y);
     rl->z = zc2zl(c, rc.z);
 }
 
-/* [l]ocal to [g]lobal */
+
 
 static __device__ float xl2xg(const Coords_v c, float xl) {
     return (c.xc + 0.5f) * c.Lx + xl;
@@ -12948,13 +12948,13 @@ static __device__ float zl2zg(const Coords_v c, float zl) {
     return (c.zc + 0.5f) * c.Lz + zl;
 }
 
-static __device__ void local2global(const Coords_v c, float3 rl, /**/ float3 *rg) {
+static __device__ void local2global(const Coords_v c, float3 rl,      float3 *rg) {
     rg->x = xl2xg(c, rl.x);
     rg->y = yl2yg(c, rl.y);
     rg->z = zl2zg(c, rl.z);
 }
 
-/* [g]lobal to [l]ocal */
+
 
 static __device__ float xg2xl(const Coords_v c, float xg) {
     return xg - (c.xc + 0.5f) * c.Lx;
@@ -12968,7 +12968,7 @@ static __device__ float zg2zl(const Coords_v c, float zg) {
     return zg - (c.zc + 0.5f) * c.Lz;
 }
 
-static __device__ void global2local(const Coords_v c, float3 rg, /**/ float3 *rl) {
+static __device__ void global2local(const Coords_v c, float3 rg,      float3 *rl) {
     rl->x = xg2xl(c, rg.x);
     rl->y = yg2yl(c, rg.y);
     rl->z = zg2zl(c, rg.z);
@@ -12988,24 +12988,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -13020,13 +13020,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 #ifndef UDX_CONTROL_SHFL_COMMON
@@ -13052,14 +13052,14 @@ _I_ T shfl(T val, unsigned int width) {
 #define _I_ static __device__
 
 template <typename T>
-_I_ T warpReduceSum(T v)  // <1>
+_I_ T warpReduceSum(T v)
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-_I_ float2 warpReduceSum(float2 val)  // <2>
+_I_ float2 warpReduceSum(float2 val)
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -13068,7 +13068,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-_I_ float3 warpReduceSum(float3 val)  // <3>
+_I_ float3 warpReduceSum(float3 val)
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -13081,7 +13081,7 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _S_
 #undef _I_
 
-#endif /* UDX_CONTROL_SHFL_COMMON */
+#endif
 
 struct Coords;
 struct Particle;
@@ -13094,10 +13094,10 @@ enum {RESTART_BEGIN=RESTART_FINAL};
 typedef void (*StreamWriter)(const void*, FILE*);
 typedef void (*StreamReader)(FILE*, void*);
 
-void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
-void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
-void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
-void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp);
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter);
 
 void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
 void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
@@ -13112,11 +13112,11 @@ enum {
     VCONT_TYPE_RAD
 };
 
-// empty for now
+
 struct TCart {};
 struct TRad {};
 
-/* parameters for transformation */
+
 union Trans {
     TCart cart;
     TRad  rad;
@@ -13124,49 +13124,49 @@ union Trans {
 
 
 struct Sampler {
-    int3 L;                   /* subdomain size                                  */
-    long nsamples;            /* number of "pending" avg on grid                 */
+    int3 L;
+    long nsamples;
 
-    float3 *gridvel;          /* sum of velocity per grid point                  */
-    int    *gridnum;          /* sum of number of particles per grid point       */
-    float3 *totvel;           /* chunk sums (pinned memory)                      */
+    float3 *gridvel;
+    int    *gridnum;
+    float3 *totvel;
     int    *totnum;
-    float3 *dtotvel;          /* device pointer of the above                     */
+    float3 *dtotvel;
     int    *dtotnum;
 };
 
 struct State {
-    float3 cur;               /* current average velocity                        */
-    float3 olde, sume;        /* previous error, sum of all previous errors      */
-    float3 f;                 /* force estimate                                  */
+    float3 cur;
+    float3 olde, sume;
+    float3 f;
 };
 
 struct Param {
-    float3 target;            /* target average velocity                         */
-    float Kp, Ki, Kd;         /* parameters of the pid controller                */
+    float3 target;
+    float Kp, Ki, Kd;
 };
 
-/* pid velocity controller */
+
 struct PidVCont {
     Param param;
     State state;
-    Sampler sampler;          /* helper to average velocity on device            */
+    Sampler sampler;
 
     MPI_Comm comm;
 
-    FILE *fdump;              /* output file for logging info                    */
+    FILE *fdump;
 
-    Trans trans;              /* transformation of the velocity before averaging */
-    int type;                 /* type of the transformation                      */
+    Trans trans;
+    int type;
 };
 
-__global__ void vcont_reduce_by_warp_kernel(const float3 *gvel, const int *gnum, const uint ncells, /**/ float3 *vel, int *num) {
+__global__ void vcont_reduce_by_warp_kernel(const float3 *gvel, const int *gnum, const uint ncells,      float3 *vel, int *num) {
     assert(blockDim.x == 32);
     int i, c;
     float3 v = make_float3(0, 0, 0);
     int n = 0;
     i = threadIdx.x + blockIdx.x * blockDim.x;
-    c = blockIdx.x; /* [c]hunk id */
+    c = blockIdx.x;
 
     if (i < ncells) {
         v = gvel[i];
@@ -13191,7 +13191,7 @@ static __device__ float3 transform(Coords_v, TCart, const Particle p) {
 }
 static __device__ float3 transform(Coords_v c, TRad, const Particle p) {
     enum {X, Y, Z};
-    float3 u; // radial coordinates
+    float3 u;
     float x, y, r, rinv;
     float cost, sint;
     x = xl2xc(c, p.r[X]);
@@ -13217,7 +13217,7 @@ static __device__ int get_cid(int3 L, int3 c) {
 
 template<typename Trans>
 __global__ void vcont_sample_kernel(Coords_v coords, Trans t, int3 L, const int *cellsstart, const int *cellscount, const Particle *pp,
-                       /**/ float3 *gridv, int *gridn) {
+                            float3 *gridv, int *gridn) {
     Particle p;
     float3 u;
     int pid, cid, num;
@@ -13246,10 +13246,10 @@ __global__ void vcont_sample_kernel(Coords_v coords, Trans t, int3 L, const int 
 enum {WARPSIZE = 32};
 #endif
 
-static void ini_dump(int rank, /**/ FILE **f) {
+static void ini_dump(int rank,      FILE **f) {
     *f = NULL;
     if (rank) return;
-    UC(efopen(DUMP_BASE "/vcont.txt", "w", /**/ f));
+    UC(efopen(DUMP_BASE "/vcont.txt", "w",      f));
     fprintf(*f, "#vx vy vz fx fy fz\n");
     msg_print("Velocity controller: dump to " DUMP_BASE "/vcont.txt");
 }
@@ -13258,7 +13258,7 @@ static void fin_dump(FILE *f) {
     if (f) UC(efclose(f));
 }
 
-static void reini_sampler(/**/ Sampler *s) {
+static void reini_sampler(     Sampler *s) {
     int3 L = s->L;
     int ncells = L.x * L.y * L.z;
 
@@ -13290,7 +13290,7 @@ static void ini_state(State *s) {
     s->f = s->sume = s->cur = make_float3(0, 0, 0);
 }
 
-static void ini(MPI_Comm comm, int3 L, /**/ PidVCont *c) {
+static void ini(MPI_Comm comm, int3 L,      PidVCont *c) {
     int rank;
 
     UC(ini_sampler(L, &c->sampler));
@@ -13300,16 +13300,16 @@ static void ini(MPI_Comm comm, int3 L, /**/ PidVCont *c) {
     MC(m::Comm_rank(comm, &rank));
     MC(m::Comm_dup(comm, &c->comm));
 
-    UC(ini_dump(rank, /**/ &c->fdump));
+    UC(ini_dump(rank,      &c->fdump));
 
     c->type = VCONT_TYPE_NONE;
 }
 
-void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c) {
+void vcont_ini(MPI_Comm comm, int3 L,      PidVCont **c) {
     PidVCont *vc;
     EMALLOC(1, c);
     vc = *c;
-    UC(ini(comm, L, /**/ vc));
+    UC(ini(comm, L,      vc));
 }
 
 static void fin_sampler(Sampler *s) {
@@ -13319,7 +13319,7 @@ static void fin_sampler(Sampler *s) {
     CC(d::FreeHost(s->totnum));
 }
 
-void vcont_fin(/**/ PidVCont *c) {
+void vcont_fin(     PidVCont *c) {
     UC(fin_sampler(&c->sampler));
     MC(m::Comm_free(&c->comm));
     UC(fin_dump(c->fdump));
@@ -13332,25 +13332,25 @@ static void set_params(float f, float Kp, float Ki, float Kd, Param *p) {
     p->Kd = f * Kd;
 }
 
-void vcont_set_params(float factor, float Kp, float Ki, float Kd, /**/ PidVCont *c) {
+void vcont_set_params(float factor, float Kp, float Ki, float Kd,      PidVCont *c) {
     set_params(factor, Kp, Ki, Kd, &c->param);
 }
 
-void vcont_set_target(float3 vtarget, /**/ PidVCont *c) {
+void vcont_set_target(float3 vtarget,      PidVCont *c) {
     c->param.target = vtarget;
     c->state.olde   = vtarget;
 }
 
-void vcont_set_cart(/**/ PidVCont *cont) {
+void vcont_set_cart(     PidVCont *cont) {
     cont->type = VCONT_TYPE_CART;
 }
 
-void vcont_set_radial(/**/ PidVCont *cont) {
+void vcont_set_radial(     PidVCont *cont) {
     cont->type = VCONT_TYPE_RAD;
 }
 
 template <typename Trans>
-static void sample(Trans t, const Coords *coords, const Particle *pp, const int *starts, const int *counts, /**/ Sampler *s) {
+static void sample(Trans t, const Coords *coords, const Particle *pp, const int *starts, const int *counts,      Sampler *s) {
     int3 L = s->L;
     Coords_v coordsv;
 
@@ -13361,19 +13361,19 @@ static void sample(Trans t, const Coords *coords, const Particle *pp, const int 
               ceiln(L.y, block.y),
               ceiln(L.z, block.z));
 
-    KL(vcont_sample_kernel, (grid, block), (coordsv, t, L, starts, counts, pp, /**/ s->gridvel, s->gridnum));
+    KL(vcont_sample_kernel, (grid, block), (coordsv, t, L, starts, counts, pp,      s->gridvel, s->gridnum));
     s->nsamples++;
 }
 
-void vcont_sample(const Coords *coords, int, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
+void vcont_sample(const Coords *coords, int, const Particle *pp, const int *starts, const int *counts,      PidVCont *c) {
     switch (c->type) {
     case VCONT_TYPE_NONE:
         break;
     case VCONT_TYPE_CART:
-        sample(c->trans.cart, coords, pp, starts, counts, /**/ &c->sampler);
+        sample(c->trans.cart, coords, pp, starts, counts,      &c->sampler);
         break;
     case VCONT_TYPE_RAD:
-        sample(c->trans.cart, coords, pp, starts, counts, /**/ &c->sampler);
+        sample(c->trans.cart, coords, pp, starts, counts,      &c->sampler);
         break;
     default:
         ERR("Unknown type");
@@ -13387,14 +13387,14 @@ static void reduce_local(Sampler *s, double3 *v, long *n) {
     ncells = L.x * L.y * L.z;
     nchunks = ceiln(ncells, WARPSIZE);
 
-    KL(vcont_reduce_by_warp_kernel, (nchunks, WARPSIZE), (s->gridvel, s->gridnum, ncells, /**/ s->dtotvel, s->dtotnum));
+    KL(vcont_reduce_by_warp_kernel, (nchunks, WARPSIZE), (s->gridvel, s->gridnum, ncells,      s->dtotvel, s->dtotnum));
     dSync();
 
     *v = make_double3(0, 0, 0);
     *n = 0;
 
     for (i = 0; i < nchunks; ++i) {
-        add(s->totvel + i, /**/ v);
+        add(s->totvel + i,      v);
         *n += s->totnum[i];
     }
 }
@@ -13410,7 +13410,7 @@ static float3 average_samples(MPI_Comm comm, Sampler *s) {
     MC(m::Allreduce(MPI_IN_PLACE, &ncur,   1, MPI_LONG,   MPI_SUM, comm));
 
     fac = ncur ? (1.0 / ncur) : 1.0;
-    scal(fac, /**/ &vcur);
+    scal(fac,      &vcur);
 
     return make_float3(vcur.x, vcur.y, vcur.z);
 }
@@ -13419,21 +13419,21 @@ static float3 update_state(const Param *p, float3 vcur, State *s) {
     float3 e, de, f;
 
     s->cur = vcur;
-    diff(&p->target, &vcur, /**/ &e);
-    diff(&e, &s->olde, /**/ &de);
-    add(&e, /**/ &s->sume);
+    diff(&p->target, &vcur,      &e);
+    diff(&e, &s->olde,      &de);
+    add(&e,      &s->sume);
     s->olde = e;
 
     f = make_float3(0, 0, 0);
 
-    axpy(p->Kp, &e,       /**/ &f);
-    axpy(p->Ki, &s->sume, /**/ &f);
-    axpy(p->Kd, &de,      /**/ &f);
+    axpy(p->Kp, &e,            &f);
+    axpy(p->Ki, &s->sume,      &f);
+    axpy(p->Kd, &de,           &f);
     s->f = f;
     return f;
 }
 
-float3 vcont_adjustF(/**/ PidVCont *c) {
+float3 vcont_adjustF(     PidVCont *c) {
     float3 vcur;
     vcur = average_samples(c->comm, &c->sampler);
     UC(reini_sampler(&c->sampler));
@@ -13502,7 +13502,7 @@ void vcont_strt_read(const char *base, int id, PidVCont *c) {
 
 
 
-// Grouped editable compilation unit for density and outflow control.
+
 
 
 #define DEV_CUDA
@@ -13518,7 +13518,7 @@ void vcont_strt_read(const char *base, int id, PidVCont *c) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -13529,7 +13529,7 @@ void vcont_strt_read(const char *base, int id, PidVCont *c) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -13551,30 +13551,30 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -13615,15 +13615,15 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 struct DCont;
 struct DContMap;
 
 struct Config;
 struct Coords;
 
-void den_ini(int maxp, /**/ DCont**);
+void den_ini(int maxp,      DCont**);
 void den_map_ini(DContMap**);
 
 void den_fin(DCont*);
@@ -13634,24 +13634,24 @@ void den_map_set_circle(const Coords*, float R, DContMap*);
 
 void den_map_set_conf(const Config*, const Coords*, DContMap*);
 
-void den_reset(int n, /**/ DCont*d); // <1>
-void den_filter_particles(int maxdensity, const DContMap*, const int *starts, const int *counts, /**/ DCont*); // <2>
-void den_download_ndead(DCont*); // <3>
+void den_reset(int n,      DCont*d);
+void den_filter_particles(int maxdensity, const DContMap*, const int *starts, const int *counts,      DCont*);
+void den_download_ndead(DCont*);
 
-const int* den_get_deathlist(DCont*); // <1>
-int        den_get_ndead(DCont*); // <2>
+const int* den_get_deathlist(DCont*);
+int        den_get_ndead(DCont*);
 
 void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
     const char *type;
 
     UC(conf_lookup_string(cfg, "denoutflow.type", &type));
     if (same_str(type, "none")) {
-        UC(den_map_set_none(c, /**/ m));
+        UC(den_map_set_none(c,      m));
     }
     else if (same_str(type, "circle")) {
         float R;
         UC(conf_lookup_float(cfg, "denoutflow.R", &R));
-        UC(den_map_set_circle(c, R, /**/ m));
+        UC(den_map_set_circle(c, R,      m));
     } else {
         ERR("Unrecognized type <%s>", type);
     }
@@ -13662,33 +13662,33 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 #include <stdio.h>
 #include <curand_kernel.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -13704,7 +13704,7 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -13715,7 +13715,7 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -13738,10 +13738,10 @@ void error_abort();
 
 void error_print_stack();
 
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -13749,7 +13749,7 @@ void error_print_stack();
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -13762,7 +13762,7 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #include "launch.cuh"
@@ -13772,10 +13772,10 @@ void check(int rc, const char *file, int line);
 #include "device.cuh"
 #endif
 
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -13784,29 +13784,29 @@ void check(int rc, const char *file, int line);
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_CONTROL_TYPE_COMMON
@@ -13817,9 +13817,9 @@ void check(int rc, const char *file, int line);
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
 struct Coords_v {
-    int xc, yc, zc; /* rank coordinates        */
-    int xd, yd, zd; /* rank sizes              */
-    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+    int xc, yc, zc;
+    int xd, yd, zd;
+    int Lx, Ly, Lz;
 };
 #endif
 struct Coords;
@@ -13836,24 +13836,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -13868,13 +13868,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 #ifndef UDX_CONTROL_SHFL_COMMON
@@ -13900,14 +13900,14 @@ _I_ T shfl(T val, unsigned int width) {
 #define _I_ static __device__
 
 template <typename T>
-_I_ T warpReduceSum(T v)  // <1>
+_I_ T warpReduceSum(T v)
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-_I_ float2 warpReduceSum(float2 val)  // <2>
+_I_ float2 warpReduceSum(float2 val)
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -13916,7 +13916,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-_I_ float3 warpReduceSum(float3 val)  // <3>
+_I_ float3 warpReduceSum(float3 val)
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -13929,11 +13929,11 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _S_
 #undef _I_
 
-#endif /* UDX_CONTROL_SHFL_COMMON */
+#endif
 
 
 
-__global__ void den_kill_kernel(int maxden, const int *starts, const int *counts, int n, const int *cids, /**/ int *ndead, int *kk) {
+__global__ void den_kill_kernel(int maxden, const int *starts, const int *counts, int n, const int *cids,      int *ndead, int *kk) {
     int i, nd, cid, s, c, pid, j;
     nd = 0;
     c = maxden;
@@ -13947,15 +13947,15 @@ __global__ void den_kill_kernel(int maxden, const int *starts, const int *counts
 
     nd = max(0, c - maxden);
 
-    // TODO select randomly
+
     if (i < n) {
         for (j = 0; j < nd; ++j) {
             pid = s + j;
-            kk[pid] = 1; // mark dead
+            kk[pid] = 1;
         }
     }
 
-    // count number of killed in the warp
+
     nd = warpReduceSum(nd);
     if (threadIdx.x % warpSize == 0)
         atomicAdd(ndead, nd);
@@ -13963,19 +13963,19 @@ __global__ void den_kill_kernel(int maxden, const int *starts, const int *counts
 struct DCont {
     int *ndead_dev, ndead;
     int *kk;
-    // curandState_t *rnd; // random states
+
 };
 
 struct DContMap {
-    int n;     // cells to be controlled
-    int *cids; // cell ids of the controlled cells
+    int n;
+    int *cids;
 };
 static void reset_ndead(DCont *d) {
     CC(d::MemsetAsync(d->ndead_dev, 0, sizeof(int)));
     d->ndead = 0;
 }
 
-void den_ini(int maxp, /**/ DCont **d0) {
+void den_ini(int maxp,      DCont **d0) {
     DCont *d;
     size_t sz;
 
@@ -13996,18 +13996,18 @@ void den_fin(DCont *d) {
     EFREE(d);
 }
 
-void den_reset(int n, /**/ DCont *d) {
+void den_reset(int n,      DCont *d) {
     reset_ndead(d);
     CC(d::MemsetAsync(d->kk, 0, n * sizeof(int)));
 }
 
-void den_filter_particles(int maxdensity, const DContMap *m, const int *starts, const int *counts, /**/ DCont *d) {
-    KL( den_kill_kernel, (k_cnf(m->n)), (maxdensity, starts, counts, m->n, m->cids, /**/ d->ndead_dev, d->kk) );
+void den_filter_particles(int maxdensity, const DContMap *m, const int *starts, const int *counts,      DCont *d) {
+    KL( den_kill_kernel, (k_cnf(m->n)), (maxdensity, starts, counts, m->n, m->cids,      d->ndead_dev, d->kk) );
 }
 
 void den_download_ndead(DCont *d) {
     CC(d::Memcpy(&d->ndead, d->ndead_dev, sizeof(int), D2H));
-    // msg_print("killed %d particles", o->ndead);
+
 }
 
 
@@ -14018,21 +14018,21 @@ struct Circle {
 };
 
 struct Plate {
-    // TODO
+
 };
 
 struct None {};
 
 static int predicate(const Coords *c, Circle p, int i, int j, int k) {
     enum {X, Y, Z};
-    // TODO: for now assume centered at the center of the domain
+
     float3 r;
     float R;
 
     r = make_float3(i + (1 - xs(c)) * 0.5f,
                     j + (1 - ys(c)) * 0.5f,
                     k + (1 - zs(c)) * 0.5f);
-    local2center(c, r, /**/ &r);
+    local2center(c, r,      &r);
 
     R = sqrt(r.x * r.x + r.y * r.y);
     return R < p.R && R >= p.R - 1;
@@ -14109,7 +14109,7 @@ void den_map_fin(DContMap *m) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -14120,7 +14120,7 @@ void den_map_fin(DContMap *m) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -14142,30 +14142,30 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -14206,8 +14206,8 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 
 struct Outflow;
 
@@ -14216,20 +14216,20 @@ struct Coords;
 struct Particle;
 struct float3;
 
-void outflow_ini(int maxp, /**/ Outflow **o);
-void outflow_fin(/**/ Outflow *o);
+void outflow_ini(int maxp,      Outflow **o);
+void outflow_fin(     Outflow *o);
 
 void outflow_set_params_circle(const Coords*, float3 c, float R, Outflow *o);
 void outflow_set_params_plate(const Coords*, int dir, float r0, Outflow *o);
 
 void outflow_set_conf(const Config *cfg, const Coords*, Outflow *);
 
-void outflow_filter_particles(int n, const Particle *pp, /**/ Outflow *o); // <1>
+void outflow_filter_particles(int n, const Particle *pp,      Outflow *o);
 
-void outflow_download_ndead(Outflow *o);                                   // <2>
+void outflow_download_ndead(Outflow *o);
 
-int* outflow_get_deathlist(Outflow *o);                                    // <3>
-int  outflow_get_ndead(Outflow *o);                                        // <4>
+int* outflow_get_deathlist(Outflow *o);
+int  outflow_get_ndead(Outflow *o);
 
 
 void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
@@ -14242,14 +14242,14 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
         UC(conf_lookup_float(cfg, "outflow.R", &R));
         UC(conf_lookup_float3(cfg, "outflow.center", &center));
 
-        outflow_set_params_circle(coords, center, R, /**/ o);
+        outflow_set_params_circle(coords, center, R,      o);
     }
     else if (same_str(type, "plate")) {
         int dir;
         float r0;
         UC(conf_lookup_int(cfg, "outflow.direction", &dir));
         UC(conf_lookup_float(cfg, "outflow.position", &r0));
-        outflow_set_params_plate(coords, dir, r0, /**/ o);
+        outflow_set_params_plate(coords, dir, r0,      o);
     }
     else {
         ERR("Unrecognized type <%s>", type);
@@ -14260,33 +14260,33 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
 
 #include <stdio.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -14302,7 +14302,7 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -14313,7 +14313,7 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -14336,10 +14336,10 @@ void error_abort();
 
 void error_print_stack();
 
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -14347,7 +14347,7 @@ void error_print_stack();
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -14360,7 +14360,7 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #include "launch.cuh"
@@ -14372,26 +14372,26 @@ void check(int rc, const char *file, int line);
 
 #ifndef UDX_CONTROL_MATH_COMMON
 #define UDX_CONTROL_MATH_COMMON
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -14403,14 +14403,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -14418,26 +14418,26 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
 }
-#endif /* UDX_CONTROL_MATH_COMMON */
+#endif
 
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
 struct Coords_v {
-    int xc, yc, zc; /* rank coordinates        */
-    int xd, yd, zd; /* rank sizes              */
-    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+    int xc, yc, zc;
+    int xd, yd, zd;
+    int Lx, Ly, Lz;
 };
 #endif
 struct Coords;
@@ -14454,24 +14454,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -14486,19 +14486,19 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -14507,29 +14507,29 @@ int coords_size(const Coords *c);
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_CONTROL_TYPE_COMMON
@@ -14546,11 +14546,11 @@ enum {
 };
 
 struct OutflowParamsCircle {
-    float Rsq;  /* radius squared  */
-    float3 c;   /* center          */
+    float Rsq;
+    float3 c;
 };
 
-/* plane is described as a*x + b*y + c*z + d = 0 */
+
 struct OutflowParamsPlate {
     float a, b, c, d;
 };
@@ -14561,12 +14561,12 @@ union OutflowParamsU {
 };
 
 struct Outflow {
-    int *kk;        /* die or stay alive?      */
-    int *ndead_dev; /* number of kills on dev  */
-    int ndead;      /* number of kils          */
+    int *kk;
+    int *ndead_dev;
+    int ndead;
 
-    OutflowParamsU params; /* shape parameters */
-    int type;       /* shape type       */
+    OutflowParamsU params;
+    int type;
 };
 
 static __device__ int outflow_predicate(OutflowParamsPlate p, const float r[3]) {
@@ -14589,7 +14589,7 @@ static __device__ int outflow_predicate(OutflowParamsCircle p, const float r[3])
 }
 
 template <typename Par>
-__global__ void outflow_filter_kernel(int n, const Particle *pp, Par params, /**/ int *ndead, int *kk) {
+__global__ void outflow_filter_kernel(int n, const Particle *pp, Par params,      int *ndead, int *kk) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     int dead;
     Particle p;
@@ -14607,7 +14607,7 @@ static void reset_ndead(Outflow *o) {
     o->ndead = 0;
 }
 
-void outflow_ini(int maxp, /**/ Outflow **o0) {
+void outflow_ini(int maxp,      Outflow **o0) {
     Outflow *o;
     size_t sz;
 
@@ -14623,7 +14623,7 @@ void outflow_ini(int maxp, /**/ Outflow **o0) {
     o->type = OFLOW_TYPE_NONE;
 }
 
-void outflow_fin(/**/ Outflow *o) {
+void outflow_fin(     Outflow *o) {
     Dfree(o->kk);
     Dfree(o->ndead_dev);
     EFREE(o);
@@ -14634,8 +14634,8 @@ void outflow_set_params_circle(const Coords *coords, float3 c, float R, Outflow 
     OutflowParamsCircle p;
     p.Rsq = R*R;
 
-    // shift to local referential
-    global2local(coords, c, /**/ &p.c);
+
+    global2local(coords, c,      &p.c);
 
     o->params.circle = p;
     o->type = OFLOW_TYPE_CIRCLE;
@@ -14667,15 +14667,15 @@ void outflow_set_params_plate(const Coords *c, int dir, float r0, Outflow *o) {
     o->type = OFLOW_TYPE_PLATE;
 }
 
-void outflow_filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
+void outflow_filter_particles(int n, const Particle *pp,      Outflow *o) {
     reset_ndead(o);
 
     switch(o->type) {
     case OFLOW_TYPE_CIRCLE:
-        KL(outflow_filter_kernel, (k_cnf(n)), (n, pp, o->params.circle, /**/ o->ndead_dev, o->kk) );
+        KL(outflow_filter_kernel, (k_cnf(n)), (n, pp, o->params.circle,      o->ndead_dev, o->kk) );
         break;
     case OFLOW_TYPE_PLATE:
-        KL(outflow_filter_kernel, (k_cnf(n)), (n, pp, o->params.plate, /**/ o->ndead_dev, o->kk) );
+        KL(outflow_filter_kernel, (k_cnf(n)), (n, pp, o->params.plate,      o->ndead_dev, o->kk) );
         break;
     case OFLOW_TYPE_NONE:
     default:
@@ -14686,7 +14686,7 @@ void outflow_filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
 
 void outflow_download_ndead(Outflow *o) {
     CC(d::Memcpy(&o->ndead, o->ndead_dev, sizeof(int), D2H));
-    // printf("killed %d particles\n", o->ndead);
+
 }
 
 int* outflow_get_deathlist(Outflow *o) {return o->kk;}
@@ -14698,10 +14698,10 @@ int  outflow_get_ndead(Outflow *o)     {return o->ndead;}
 
 
 
-// Grouped editable compilation unit for BOP support, grid utilities, and algorithms.
 
 
-// Grouped editable compilation unit for BOP support and grid utilities.
+
+
 
 
 #ifndef UDX_BOP_COMMON
@@ -14722,44 +14722,44 @@ typedef int BopStatus;
 enum {BopFLOAT, BopDOUBLE, BopINT, BopFASCII, BopIASCII, _BopNTYPES};
 typedef int BopType;
 
-BopStatus bop_ini(BopData **d);  // <1>
-BopStatus bop_alloc(BopData *d); // <2>
-BopStatus bop_fin(BopData *d);   // <3>
+BopStatus bop_ini(BopData **d);
+BopStatus bop_alloc(BopData *d);
+BopStatus bop_fin(BopData *d);
 
-BopStatus bop_set_n(long n, BopData *d);                     // <1>
-BopStatus bop_set_vars(int n, const char *vars, BopData *d); // <2>
-BopStatus bop_set_type(BopType type, BopData *d);            // <3>
-void* bop_get_data(BopData *d);                              // <4>
+BopStatus bop_set_n(long n, BopData *d);
+BopStatus bop_set_vars(int n, const char *vars, BopData *d);
+BopStatus bop_set_type(BopType type, BopData *d);
+void* bop_get_data(BopData *d);
 
-BopStatus bop_get_n(const BopData *d, long *n);              // <1>
-BopStatus bop_get_nvars(const BopData *d, int *n);           // <2>
-BopStatus bop_get_vars(const BopData *d, Cbuf *vars);        // <3>
-BopStatus bop_get_vars(const BopData *d, const char **vars); // <4>
-BopStatus bop_get_type(const BopData *d, BopType *type);     // <5>
-const void* bop_get_data(const BopData *d);                  // <6>
+BopStatus bop_get_n(const BopData *d, long *n);
+BopStatus bop_get_nvars(const BopData *d, int *n);
+BopStatus bop_get_vars(const BopData *d, Cbuf *vars);
+BopStatus bop_get_vars(const BopData *d, const char **vars);
+BopStatus bop_get_type(const BopData *d, BopType *type);
+const void* bop_get_data(const BopData *d);
 
-BopStatus bop_summary(const BopData *d);                                    // <1>
-BopStatus bop_concatenate(const int nd, const BopData **dd, BopData *dall); // <2>
+BopStatus bop_summary(const BopData *d);
+BopStatus bop_concatenate(const int nd, const BopData **dd, BopData *dall);
 
-bool         bop_success(BopStatus status);           // <1>
-const char * bop_report_error_desc(BopStatus status); // <2>
-char *       bop_report_error_mesg();                 // <3>
+bool         bop_success(BopStatus status);
+const char * bop_report_error_desc(BopStatus status);
+char *       bop_report_error_mesg();
 
-/* use define instead of enum because of implementation details */
-/* see str macro                                                */
+
+
 #define CBUFSIZE 256
 #define CERRSIZE 1024
 
-/* structure to describe bop file */
+
 struct BopData {
-    long n;              /* number of particles (per node)     */
-    int nvars;           /* number of variables per particle   */
-    char vars[CBUFSIZE]; /* variable descriptions              */
+    long n;
+    int nvars;
+    char vars[CBUFSIZE];
     BopType type;
-    void *data;          /* particle data                      */
+    void *data;
 };
 
-/* error handling */
+
 extern char bop_error_msg[CERRSIZE];
 
 enum {
@@ -14792,19 +14792,19 @@ BopType str2type(const char *str);
 void report_err(const char *fmt, ...);
 
 enum {SERIAL = -1};
-BopStatus read_header(int rank, const char *fname, /**/ char *dfname, BopData *d);
+BopStatus read_header(int rank, const char *fname,      char *dfname, BopData *d);
 
-BopStatus bop_write_header(MPI_Comm comm, const char *name, const BopData *d); // <1>
-BopStatus bop_write_values(MPI_Comm comm, const char *name, const BopData *d); // <2>
+BopStatus bop_write_header(MPI_Comm comm, const char *name, const BopData *d);
+BopStatus bop_write_values(MPI_Comm comm, const char *name, const BopData *d);
 
-BopStatus bop_read_header(MPI_Comm comm, const char *hfname, BopData *d, char *dfname);  // <1>
-BopStatus bop_read_values(MPI_Comm comm, const char *dfname, BopData *d);                // <2>
+BopStatus bop_read_header(MPI_Comm comm, const char *hfname, BopData *d, char *dfname);
+BopStatus bop_read_values(MPI_Comm comm, const char *dfname, BopData *d);
 
-BopStatus bop_write_header(const char *name, const BopData *d); // <1>
-BopStatus bop_write_values(const char *name, const BopData *d); // <2>
+BopStatus bop_write_header(const char *name, const BopData *d);
+BopStatus bop_write_values(const char *name, const BopData *d);
 
-BopStatus bop_read_header(const char *hfname, BopData *d, char *dfname); // <1>
-BopStatus bop_read_values(const char *dfname, BopData *d);               // <2>
+BopStatus bop_read_header(const char *hfname, BopData *d, char *dfname);
+BopStatus bop_read_values(const char *dfname, BopData *d);
 
 #define UDX_BOP_COMMON
 #endif
@@ -14896,7 +14896,7 @@ BopStatus bop_get_nvars(const BopData *d, int *n) {
     return BOP_NULLPTR;
 }
 
-static BopStatus extract_vars(int n, const char *v, /**/ Cbuf *vars) {
+static BopStatus extract_vars(int n, const char *v,      Cbuf *vars) {
     int i, ret;
     for (i = 0; i < n; ++i) {
         ret = sscanf(v, "%s", vars[i].c);
@@ -14910,7 +14910,7 @@ static BopStatus extract_vars(int n, const char *v, /**/ Cbuf *vars) {
 
 BopStatus bop_get_vars(const BopData *d, Cbuf *vars) {
    if (d) {
-        return extract_vars(d->nvars, d->vars, /**/ vars);
+        return extract_vars(d->nvars, d->vars,      vars);
     }
     return BOP_NULLPTR;
 }
@@ -15071,7 +15071,7 @@ BopType str2type(const char *str) {
     else if (strcmp(str,    "int") == 0) return BopINT;
     else if (strcmp(str,  "ascii") == 0) return BopFASCII;
     else if (strcmp(str, "iascii") == 0) return BopIASCII;
-    // default is float
+
     return BopFLOAT;
 }
 
@@ -15102,19 +15102,19 @@ static int is_desc(const char *s, const char *d) {
     return 0;
 }
 
-static void read_data_file(const char *data, /**/ char *df) {
+static void read_data_file(const char *data,      char *df) {
     strcpy(df, data);
 }
 
-static void read_variables(const char *data, /**/ BopData *d) {
+static void read_variables(const char *data,      BopData *d) {
     strcpy(d->vars, data);
 }
 
-static void read_type(const char *data, /**/ BopData *d) {
+static void read_type(const char *data,      BopData *d) {
     d->type = str2type(data);
 }
 
-static void extract_desc_data(const char *l, /**/ char *desc, char *data) {
+static void extract_desc_data(const char *l,      char *desc, char *data) {
     const char *c;
     char *d;
     for (c = l, d = desc; l < l + strlen(l); ++c, ++d) {
@@ -15126,7 +15126,7 @@ static void extract_desc_data(const char *l, /**/ char *desc, char *data) {
     strcpy(data, c);
 }
 
-static void read_nrank(int rank, const char *data, /* io */ FILE *f, /**/ BopData *d) {
+static void read_nrank(int rank, const char *data,          FILE *f,      BopData *d) {
     int i, size;
     long nloc;
     sscanf(data, "%d", &size);
@@ -15136,18 +15136,18 @@ static void read_nrank(int rank, const char *data, /* io */ FILE *f, /**/ BopDat
     }
 }
 
-static BopStatus parse_entry(int rank, const char *l, /**/ FILE *f, char *dfname, BopData *d) {
+static BopStatus parse_entry(int rank, const char *l,      FILE *f, char *dfname, BopData *d) {
     char desc[CBUFSIZE] = {0}, data[CBUFSIZE] = {0};
-    extract_desc_data(l, /**/ desc, data);
+    extract_desc_data(l,      desc, data);
 
     if (is_desc(desc, "DATA_FILE"))
-        read_data_file(data, /**/ dfname);
+        read_data_file(data,      dfname);
     else if (is_desc(desc, "DATA_FORMAT"))
-        read_type(data, /**/ d);
+        read_type(data,      d);
     else if (is_desc(desc, "VARIABLES"))
-        read_variables(data, /**/ d);
+        read_variables(data,      d);
     else if (is_desc(desc, "NRANK"))
-        read_nrank(rank, data, /**/ f, /**/ d);
+        read_nrank(rank, data,      f,      d);
     else {
         report_err("unprocessed desc: <%s>, data: <%s>\n", desc, data);
         return BOP_WFORMAT;
@@ -15155,7 +15155,7 @@ static BopStatus parse_entry(int rank, const char *l, /**/ FILE *f, char *dfname
     return BOP_SUCCESS;
 }
 
-static BopStatus read_n_data(const char *data, /**/ BopData *d) {
+static BopStatus read_n_data(const char *data,      BopData *d) {
     long n;
     if (1 != sscanf(data, "%ld", &n))
         return BOP_WFORMAT;
@@ -15181,7 +15181,7 @@ static bool read_entry(FILE *f, char *l) {
     return EOF != ret;
 }
 
-BopStatus read_header(int rank, const char *fname, /**/ char *dfname, BopData *d) {
+BopStatus read_header(int rank, const char *fname,      char *dfname, BopData *d) {
     FILE *f;
     char line[CBUFSIZE];
     int l = 0;
@@ -15191,9 +15191,9 @@ BopStatus read_header(int rank, const char *fname, /**/ char *dfname, BopData *d
     if (s != BOP_SUCCESS) return s;
 
     while (read_entry(f, line)) {
-        /* first entry must contain number of particles */
-        if (l == 0) s = read_n_data(line, /**/ d);
-        else        s = parse_entry(rank, line, /**/ f, dfname, d);
+
+        if (l == 0) s = read_n_data(line,      d);
+        else        s = parse_entry(rank, line,      f, dfname, d);
 
         if (s != BOP_SUCCESS) return s;
         ++l;
@@ -15339,7 +15339,7 @@ BopStatus bop_read_header(MPI_Comm comm, const char *hfname, BopData *d, char *d
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &size);
 
-    s = read_header(rank, hfname, /**/ dfname0, d);
+    s = read_header(rank, hfname,      dfname0, d);
 
     get_path(hfname, locdfname);
     strcat(locdfname, dfname0);
@@ -15471,7 +15471,7 @@ BopStatus bop_write_values(const char *name, const BopData *d) {
 BopStatus bop_read_header(const char *hfname, BopData *d, char *dfname) {
     BopStatus s;
     char dfname0[CBUFSIZE] = {0}, locdfname[CBUFSIZE] = {0};
-    s = read_header(SERIAL, hfname, /**/ dfname0, d);
+    s = read_header(SERIAL, hfname,      dfname0, d);
 
     get_path(hfname, locdfname);
     strcat(locdfname, dfname0);
@@ -15540,43 +15540,43 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
 
 
 
-// Grouped editable compilation unit for grid interaction and utility math.
 
 
-// Grouped editable compilation unit for grid sampling and color interaction.
+
+
 
 
 
 #include <mpi.h>
 #include <stdio.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -15592,7 +15592,7 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -15603,7 +15603,7 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -15625,31 +15625,31 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #include "launch.cuh"
 #endif
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -15657,7 +15657,7 @@ const char* get_filename_ext(const char*);
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -15670,7 +15670,7 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
@@ -15685,10 +15685,10 @@ void check(int rc, const char *file, int line);
 #define UDX_GRID_INTER_DEF_COMMON
 #include "constants.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -15697,29 +15697,29 @@ void check(int rc, const char *file, int line);
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
@@ -15733,17 +15733,17 @@ struct Particle;
 void grid_sampler_data_ini(GridSampleData **);
 void grid_sampler_data_fin(GridSampleData  *);
 
-void grid_sampler_data_reset(GridSampleData *); // <1>
+void grid_sampler_data_reset(GridSampleData *);
 void grid_sampler_data_push(long n, const Particle *pp, const int *cc,
-                            const float *ss, GridSampleData *); // <2>
+                            const float *ss, GridSampleData *);
 
 
-void grid_sampler_ini(bool colors, bool stress, int3 L, int3 N, GridSampler**); // <1>
-void grid_sampler_fin(GridSampler*); // <2>
+void grid_sampler_ini(bool colors, bool stress, int3 L, int3 N, GridSampler**);
+void grid_sampler_fin(GridSampler*);
 
-void grid_sampler_reset(GridSampler*); // <1>
-void grid_sampler_add(const GridSampleData*, GridSampler*); // <2>
-void grid_sampler_dump(MPI_Comm, const char *dir, long id, GridSampler*); // <3>
+void grid_sampler_reset(GridSampler*);
+void grid_sampler_add(const GridSampleData*, GridSampler*);
+void grid_sampler_dump(MPI_Comm, const char *dir, long id, GridSampler*);
 enum {
     RHO, VX, VY, VZ,
     NFIELDS_P
@@ -15772,14 +15772,14 @@ static const char *names_s[NFIELDS_S] =
 
 #define make_str(a) #a ,
 static const char *names_c[NFIELDS_C] =
-    {XMACRO_COLOR(make_str)}; /* see inc/def.h */
+    {XMACRO_COLOR(make_str)};
 #undef make_str
 
 struct Grid {
-    int3 L, N; /* subdomain size, grid size */
-    float *p[NFIELDS_P]; /* particle density and velocity */
-    float *s[NFIELDS_S]; /* stress                        */
-    float *c[NFIELDS_C]; /* color density                 */
+    int3 L, N;
+    float *p[NFIELDS_P];
+    float *s[NFIELDS_S];
+    float *c[NFIELDS_C];
     bool colors, stress;
 };
 
@@ -15900,8 +15900,8 @@ _S_ int sampler_get_grid_id(const SamplerPart *p, const Grid *g) {
     return sampler_get_grid_id(gcoords, g->N);
 }
 
-__global__ void sampler_add_kernel(SampleDatum data, /**/ Grid grid) {
-    int pid, gid; /* particle and grid id */
+__global__ void sampler_add_kernel(SampleDatum data,      Grid grid) {
+    int pid, gid;
     SamplerPart p;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= data.n) return;
@@ -15941,7 +15941,7 @@ __global__ void sampler_space_avg_kernel(Grid g) {
     long i;
     float inv_rho;
     float rho, vol;
-    float sv, sr, ss; /* scales for v, rho, stress */
+    float sv, sr, ss;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= sampler_get_size(&g)) return;
 
@@ -16173,9 +16173,9 @@ static void dump(MPI_Comm cart, const char *dir, long id, const Grid *g) {
     const char *names[TOT_NFIELDS];
 
     ncmp = 0;
-    build_desc               (NFIELDS_P, names_p, g->p, /**/ &ncmp, names, data);
-    if (g->colors) build_desc(NFIELDS_C, names_c, g->c, /**/ &ncmp, names, data);
-    if (g->stress) build_desc(NFIELDS_S, names_s, g->s, /**/ &ncmp, names, data);
+    build_desc               (NFIELDS_P, names_p, g->p,      &ncmp, names, data);
+    if (g->colors) build_desc(NFIELDS_C, names_c, g->c,      &ncmp, names, data);
+    if (g->stress) build_desc(NFIELDS_S, names_s, g->s,      &ncmp, names, data);
 
     snprintf(path, FILENAME_MAX, DUMP_BASE "/%s/%04ld.raw", dir, id);
 
@@ -16229,7 +16229,7 @@ void grid_sampler_data_push(long n, const Particle *pp, const int *cc, const flo
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -16240,7 +16240,7 @@ void grid_sampler_data_push(long n, const Particle *pp, const int *cc, const flo
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -16262,30 +16262,30 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -16326,8 +16326,8 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 
 struct GenColor;
 struct Particle;
@@ -16337,13 +16337,13 @@ struct Config;
 void inter_color_ini(GenColor**);
 void inter_color_fin(GenColor*);
 
-void inter_color_set_drop(float R, GenColor*); // <1>
-void inter_color_set_uniform(GenColor*); // <2>
+void inter_color_set_drop(float R, GenColor*);
+void inter_color_set_uniform(GenColor*);
 
 void inter_color_set_conf(const Config*, GenColor*);
 
-void inter_color_apply_hst(const Coords*, const GenColor*, int n, const Particle *pp, /**/ int *cc);
-void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle *pp, /**/ int *cc);
+void inter_color_apply_hst(const Coords*, const GenColor*, int n, const Particle *pp,      int *cc);
+void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle *pp,      int *cc);
 
 
 void inter_color_set_conf(const Config *cfg, GenColor *gc) {
@@ -16370,33 +16370,33 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 
 #include <stdio.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -16410,10 +16410,10 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 #define UDX_GRID_INTER_DEF_COMMON
 #include "constants.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -16422,29 +16422,29 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_CONTROL_TYPE_COMMON
@@ -16463,7 +16463,7 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -16474,7 +16474,7 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -16497,12 +16497,12 @@ void error_abort();
 
 void error_print_stack();
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-/* [c]uda [c]heck macros */
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -16510,7 +16510,7 @@ void msg_print(const char *fmt, ...); // <2>
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -16523,7 +16523,7 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 
 struct Coords;
 struct Coords_v;
@@ -16539,24 +16539,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -16571,13 +16571,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 
@@ -16591,13 +16591,13 @@ struct GenColor {
     int kind;
     float R;
 };
-static void set_color_unif(int n, /**/ int* cc) {
+static void set_color_unif(int n,      int* cc) {
     int i;
     for (i = 0; i < n; i++) cc[i] = BLUE_COLOR;
 }
-static void set_color_drop(float rad, const Coords *coords, int n, const Particle *pp, /**/ int *cc) {
+static void set_color_drop(float rad, const Coords *coords, int n, const Particle *pp,      int *cc) {
     enum {X, Y, Z};
-    int lx, ly, lz; /* domain */
+    int lx, ly, lz;
     int i, r, g;
     bool inside;
     float x, y, z;
@@ -16644,13 +16644,13 @@ void inter_color_set_uniform(GenColor *c) {
     c->kind = COLOR_UNIF;
 }
 
-void inter_color_apply_hst(const Coords *coords, const GenColor *gc, int n, const Particle *pp, /**/ int *cc) {
+void inter_color_apply_hst(const Coords *coords, const GenColor *gc, int n, const Particle *pp,      int *cc) {
     switch (gc->kind) {
     case COLOR_UNIF:
-        set_color_unif(n, /**/ cc);
+        set_color_unif(n,      cc);
         break;
     case COLOR_DROP:
-        set_color_drop(gc->R, coords, n, pp, /**/ cc);
+        set_color_drop(gc->R, coords, n, pp,      cc);
         break;
     case COLOR_NONE:
         break;
@@ -16660,7 +16660,7 @@ void inter_color_apply_hst(const Coords *coords, const GenColor *gc, int n, cons
     };
 }
 
-void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, const Particle *pp, /**/ int *cc) {
+void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, const Particle *pp,      int *cc) {
     int *cc_hst;
     Particle *pp_hst;
 
@@ -16671,7 +16671,7 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
 
     cD2H(pp_hst, pp, n);
 
-    UC(inter_color_apply_hst(coords, gc, n, pp_hst, /**/ cc_hst));
+    UC(inter_color_apply_hst(coords, gc, n, pp_hst,      cc_hst));
 
     cH2D(cc, cc_hst, n);
 
@@ -16683,42 +16683,42 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
 
 
 
-// Grouped editable compilation unit for general utilities and math helpers.
 
 
-// Grouped editable compilation unit for general and string utilities.
+
+
 
 
 
 #include <stdio.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -16734,7 +16734,7 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -16745,7 +16745,7 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -16795,15 +16795,15 @@ void check(int rc, const char *file, int line) {
 #include <stdarg.h>
 #include <assert.h>
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -16814,7 +16814,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -16837,14 +16837,14 @@ void error_abort();
 
 void error_print_stack();
 
-/* context information */
+
 static int         err_line;
 static const char *err_file;
 static char        err_msg [BUFSIZ];
 static char        err_kind[BUFSIZ];
 static int         err_status = 0;
 
-/* stack used to dump backtrace in case of error */
+
 enum {MAX_TRACE = 128};
 static char stack      [ MAX_TRACE ][ BUFSIZ ];
 static char back_trace [ MAX_TRACE  * BUFSIZ ];
@@ -16940,12 +16940,12 @@ void error_print_stack() {
 #include <string.h>
 #include <errno.h>
 
-void os_mkdir(const char* path); // <1>
-long os_time();                  // <2>
-void os_srand(long int seedval); // <3>
-double os_drand();               // <4>
-void os_sleep(unsigned int seconds); // <5>
-void os_malloc_stats();              // TODO
+void os_mkdir(const char* path);
+long os_time();
+void os_srand(long int seedval);
+double os_drand();
+void os_sleep(unsigned int seconds);
+void os_malloc_stats();
 
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -16953,7 +16953,7 @@ void os_malloc_stats();              // TODO
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -16964,7 +16964,7 @@ void os_malloc_stats();              // TODO
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -16987,28 +16987,28 @@ void error_abort();
 
 void error_print_stack();
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
 static double Bytes2MBytes(size_t sz) {
     return (double) sz / (double) (1 << 20);
 }
 
-void emalloc(size_t size, /**/ void **data) {
+void emalloc(size_t size,      void **data) {
     *data = malloc(size);
     if (NULL == *data) {
         msg_print("standard library: %s", strerror(errno));
@@ -17028,7 +17028,7 @@ void *ememcpy(void *dest, const void *src, size_t n) {
     return memcpy(dest, src, n);
 }
 
-void efopen(const char *fname, const char *mode, /**/ FILE **pq) {
+void efopen(const char *fname, const char *mode,      FILE **pq) {
     FILE *q;
     q = fopen(fname, mode);
     if (NULL == q)
@@ -17123,7 +17123,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -17136,7 +17136,7 @@ int status2errcode(MPI_Status *status);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -17147,7 +17147,7 @@ int status2errcode(MPI_Status *status);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -17169,7 +17169,7 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -17182,13 +17182,13 @@ void check(int code, const char *file, int line) {
     char msg[BUFSIZ], msg0[BUFSIZ];
     int n;
     if (m::is_success(code)) return;
-    m::Error_string(code, /**/ msg0, &n);
+    m::Error_string(code,      msg0, &n);
     sprintf(msg, "%s (%d)", msg0, code);
     error_signal_mpi(file, line, msg);
     error_report();
     error_abort();
 }
-} // mpicheck
+}
 
 
 
@@ -17274,7 +17274,7 @@ void msg_print(const char *fmt, ...) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -17285,7 +17285,7 @@ void msg_print(const char *fmt, ...) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -17369,7 +17369,7 @@ void os_malloc_stats() { malloc_stats(); }
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -17380,7 +17380,7 @@ void os_malloc_stats() { malloc_stats(); }
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -17431,7 +17431,7 @@ int string_nword(const char *s) {
 
 
 
-// Grouped editable compilation unit for small math helpers.
+
 
 
 
@@ -17441,7 +17441,7 @@ int string_nword(const char *s) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -17452,7 +17452,7 @@ int string_nword(const char *s) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -17474,17 +17474,17 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void linal_inv3x3(const float m0[6], /**/ float minv0[6]); // <1>
+void linal_inv3x3(const float m0[6],      float minv0[6]);
 
-/* inverts symmetric matrix m[6] (see poc/3x3) */
-void linal_inv3x3(const float *m, /**/ float *r) {
+
+void linal_inv3x3(const float *m,      float *r) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     double eps = 1e-8;
 
     double xx, yy, zz, xy, xz, yz;
     double yz2, xz2, xy2;
-    double mx, my, mz; /* minors */
-    double d, i; /* determinant and its inverse */
+    double mx, my, mz;
+    double d, i;
 
     xx = m[XX]; yy = m[YY]; zz = m[ZZ];
     xy = m[XY]; xz = m[XZ];
@@ -17521,7 +17521,7 @@ void linal_inv3x3(const float *m, /**/ float *r) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -17532,7 +17532,7 @@ void linal_inv3x3(const float *m, /**/ float *r) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -17554,31 +17554,31 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-struct RNDunif;                                             // <1>
-void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
-void rnd_fin(RNDunif *r);                                   // <3>
-float rnd_get(RNDunif *r);                                  // <4>
+struct RNDunif;
+void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
+void rnd_fin(RNDunif *r);
+float rnd_get(RNDunif *r);
 typedef uint32_t integer;
 struct RNDunif { integer x, y, z, c; };
 
-void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **pq) {
+void rnd_ini(int x, int y, int z, int c,      RNDunif **pq) {
     RNDunif *q;
     EMALLOC(1, &q);
     *pq = q;
@@ -17592,9 +17592,9 @@ static integer get_int(RNDunif *r) {
     r->x = 69069 * r->x + 12345;
     r->y ^= ( r->y << 13 );
     r->y ^= ( r->y >> 17 );
-    r->y ^= ( r->y << 5 ); /* y must never be set to zero! */
+    r->y ^= ( r->y << 5 );
     t = a * r->z + r->c;
-    r->c = ( t >> 32 ); /* Also avoid setting z=c=0! */
+    r->c = ( t >> 32 );
     return r->x + r->y + ( r->z = t );
 }
 
@@ -17609,13 +17609,13 @@ float rnd_get(RNDunif *r) {
 #include <math.h>
 
 namespace tri_hst {
-double kahan_area0(double a, double b, double c); // <1>
-double kahan_area(const double a[3], const double b[3], const double c[3]); // <2>
-void   ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]); // <3>
-double shewchuk_area(const double a[3], const double b[3], const double c[3]); // <4>
-double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]); // <5>
+double kahan_area0(double a, double b, double c);
+double kahan_area(const double a[3], const double b[3], const double c[3]);
+void   ac_bc_cross(const double a[3], const double b[3], const double c[3],      double r[3]);
+double shewchuk_area(const double a[3], const double b[3], const double c[3]);
+double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]);
 void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
-                   double *x, double *y); // <6>
+                   double *x, double *y);
 }
 
 #define _I_
@@ -17625,7 +17625,7 @@ void dihedral_xy(const double a[3], const double b[3], const double c[3], const 
 
 BEGIN
 
-_S_ void diff(const double *a, const double *b, /**/ double  *c) {
+_S_ void diff(const double *a, const double *b,      double  *c) {
     enum {X, Y, Z};
     c[X] = a[X] - b[X];
     c[Y] = a[Y] - b[Y];
@@ -17649,15 +17649,15 @@ _S_ void  sort3(double *a, double *b, double *c) {
 }
 
 _I_ double kahan_area0(double a, double b, double c) {
-    sort3(&c, &b, &a); /* make a > b > c */
+    sort3(&c, &b, &a);
     return sqrt((a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c)))/4;
 }
 
 _I_ double kahan_area(const double r0[3], const double r1[3], const double r2[3]) {
     double r01[3], r12[3], r20[3], a, b, c;
-    diff(r0, r1, /**/ r01);
-    diff(r1, r2, /**/ r12);
-    diff(r2, r0, /**/ r20);
+    diff(r0, r1,      r01);
+    diff(r1, r2,      r12);
+    diff(r2, r0,      r20);
     a = vabs(r01); b = vabs(r12); c = vabs(r20);
     return kahan_area0(a, b, c);
 }
@@ -17700,7 +17700,7 @@ _I_ double orient3d(const double a[3], const double b[3], const double c[3], con
     return ax*(by*cz - bz*cy) + bx*(cy*az - cz*ay) + cx*(ay*bz - az*by);
 }
 
-_I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]) {
+_I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3],      double r[3]) {
     enum {X, Y, Z};
     r[X] = orient2d_yz(a, b, c);
     r[Y] = orient2d_zx(a, b, c);
@@ -17721,8 +17721,8 @@ _I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], co
     double bcx, bcy, bcz, bc;
     double k[3], l[3];
 
-    ac_bc_cross(b, c, a, /**/ k);
-    ac_bc_cross(c, b, d, /**/ l);
+    ac_bc_cross(b, c, a,      k);
+    ac_bc_cross(c, b, d,      l);
 
     bcx = b[X] - c[X];
     bcy = b[Y] - c[Y];
@@ -17746,33 +17746,33 @@ END
 
 #include <stdio.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -17782,23 +17782,23 @@ END
 #endif
 
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -17806,7 +17806,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -17817,7 +17817,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -17847,18 +17847,18 @@ struct Tform_v;
 void tform_ini(Tform**);
 void tform_fin(Tform*);
 
-void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform*); // <1>
-void tform_chain(const Tform *A, const Tform *B, /**/ Tform *C); // <2>
-void tform_to_grid(const float lo[3], const float hi[3], const int n[3], /**/ Tform*); // <3>
-void tform_from_grid(const float a0[3], const float b0[3], const int n[3], /**/ Tform*); // <4>
+void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3],      Tform*);
+void tform_chain(const Tform *A, const Tform *B,      Tform *C);
+void tform_to_grid(const float lo[3], const float hi[3], const int n[3],      Tform*);
+void tform_from_grid(const float a0[3], const float b0[3], const int n[3],      Tform*);
 void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
-                     Tform*); // <5>
+                     Tform*);
 
 
-void tform_convert(const Tform*, const float a0[3], /**/ float a1[3]);
+void tform_convert(const Tform*, const float a0[3],      float a1[3]);
 
-void tform_to_view(const Tform*, /**/ Tform_v*);
+void tform_to_view(const Tform*,      Tform_v*);
 
 void tform_log(Tform*);
 void tform_dump(Tform*, FILE*);
@@ -17875,8 +17875,8 @@ static void report(const float a0[3], const float a1[3],   const float b0[3], co
     msg_print("b1: %g %g %g", b1[X], b1[Y], b1[Z]);
 }
 enum {TFORM_OK, TFORM_ZERO};
-static int os(float a0, float a1,   float b0, float b1, /**/ float *o, float *s) {
-    /* origin, space */
+static int os(float a0, float a1,   float b0, float b1,      float *o, float *s) {
+
     const float eps = 1e-8;
     float d;
     d = b0 - a0;
@@ -17885,16 +17885,16 @@ static int os(float a0, float a1,   float b0, float b1, /**/ float *o, float *s)
     *s = (b1-a1)      /(b0-a0);
     return TFORM_OK;
 }
-void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform* t) {
+void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3],      Tform* t) {
     int r;
     enum {X, Y, Z};
-    r = os(a0[X], a1[X], b0[X], b1[X], /**/ &t->o[X], &t->s[X]);
+    r = os(a0[X], a1[X], b0[X], b1[X],      &t->o[X], &t->s[X]);
     if (r != TFORM_OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
 
-    r = os(a0[Y], a1[Y], b0[Y], b1[Y], /**/ &t->o[Y], &t->s[Y]);
+    r = os(a0[Y], a1[Y], b0[Y], b1[Y],      &t->o[Y], &t->s[Y]);
     if (r != TFORM_OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
 
-    r = os(a0[Z], a1[Z], b0[Z], b1[Z], /**/ &t->o[Z], &t->s[Z]);
+    r = os(a0[Z], a1[Z], b0[Z], b1[Z],      &t->o[Z], &t->s[Z]);
     if (r != TFORM_OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
 }
 
@@ -17907,7 +17907,7 @@ static int smallp(const float s[3]) {
     cz = -eps < s[Z] && s[Z] < eps;
     return cx && cy && cz;
 }
-void tform_convert(const Tform *t, const float a0[3], /**/ float a1[3]) {
+void tform_convert(const Tform *t, const float a0[3],      float a1[3]) {
     enum {X, Y, Z};
     const float *o, *s;
     o = t->o; s = t->s;
@@ -17918,16 +17918,16 @@ void tform_convert(const Tform *t, const float a0[3], /**/ float a1[3]) {
     a1[Z] = s[Z]*a0[Z] + o[Z];
 }
 
-void tform_chain(const Tform *t1, const Tform *t2, /**/ Tform *t) {
+void tform_chain(const Tform *t1, const Tform *t2,      Tform *t) {
     float a0[3] = {0, 0, 0};
     float b0[3] = {1, 1, 1};
     float a1[3], b1[3], a2[3], b2[3];
 
-    tform_convert(t1, a0, /**/ a1);
-    tform_convert(t1, b0, /**/ b1);
+    tform_convert(t1, a0,      a1);
+    tform_convert(t1, b0,      b1);
 
-    tform_convert(t2, a1, /**/ a2);
-    tform_convert(t2, b1, /**/ b2);
+    tform_convert(t2, a1,      a2);
+    tform_convert(t2, b1,      b2);
 
     UC(tform_vector(a0, a2, b0, b2, t));
 }
@@ -17948,19 +17948,19 @@ void tform_dump(Tform *t, FILE *f) {
     fprintf(f, "%16.10e %16.10e %16.10e\n", s[X], s[Y], s[Z]);
 }
 
-void tform_to_grid(const float a0[3], const float b0[3], const int n[3], /**/ Tform *t) {
+void tform_to_grid(const float a0[3], const float b0[3], const int n[3],      Tform *t) {
     enum {X, Y, Z};
     float a1[3], b1[3];
     a1[X] = a1[Y] = a1[Z] = -0.5;
     b1[X] = n[X] - 0.5; b1[Y] = n[Y] - 0.5; b1[Z] = n[Z] - 0.5;
-    UC(tform_vector(a0, a1,   b0, b1, /**/ t));
+    UC(tform_vector(a0, a1,   b0, b1,      t));
 }
-void tform_from_grid(const float a0[3], const float b0[3], const int n[3], /**/ Tform *t) {
+void tform_from_grid(const float a0[3], const float b0[3], const int n[3],      Tform *t) {
     enum {X, Y, Z};
     float a1[3], b1[3];
     a1[X] = a1[Y] = a1[Z] = -0.5;
     b1[X] = n[X] - 0.5; b1[Y] = n[Y] - 0.5; b1[Z] = n[Z] - 0.5;
-    UC(tform_vector(a1, a0,   b1, b0, /**/ t)); /* inverted */
+    UC(tform_vector(a1, a0,   b1, b0,      t));
 }
 enum {LH_OK, LH_BAD};
 static int assert_lh(const float lo[3], const float hi[3]) {
@@ -17970,10 +17970,10 @@ static int assert_lh(const float lo[3], const float hi[3]) {
     return c ? LH_OK : LH_BAD;
 }
 void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
-                     const float t_lo[3], const float t_hi[3], const int t_n[3], /**/
+                     const float t_lo[3], const float t_hi[3], const int t_n[3],
                      Tform *t) {
     enum {X, Y, Z};
-    /* f: from, t: to, g: global */
+
     Tform *f2g, *g2t;
     if (assert_lh(f_lo, f_hi) == LH_BAD)
         ERR("wrong f_[lo|hi]: [%g %g %g] [%g %g %g]",
@@ -17986,9 +17986,9 @@ void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
     UC(tform_ini(&f2g));
     UC(tform_ini(&g2t));
 
-    UC(tform_from_grid(f_lo, f_hi, f_n, /**/ f2g));
-    UC(tform_to_grid  (t_lo, t_hi, t_n, /**/ g2t));
-    UC(tform_chain(f2g, g2t, /**/ t));
+    UC(tform_from_grid(f_lo, f_hi, f_n,      f2g));
+    UC(tform_to_grid  (t_lo, t_hi, t_n,      g2t));
+    UC(tform_chain(f2g, g2t,      t));
 
     tform_fin(g2t);
     tform_fin(f2g);
@@ -18015,13 +18015,13 @@ void tform_to_view(const Tform *t, Tform_v *v) {
 
 
 
-// Grouped editable compilation unit for all algorithm helpers.
 
 
-// Grouped editable compilation unit for all scalar, vector, conversion, and force-stat algorithms.
 
 
-// Grouped editable compilation unit for scalar and vector algorithms.
+
+
+
 
 
 #define DEV_CUDA
@@ -18031,21 +18031,21 @@ void tform_to_view(const Tform *t, Tform_v *v) {
 
 #include <stdio.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -18053,7 +18053,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -18064,7 +18064,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -18091,26 +18091,26 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 
 struct Particle;
 struct Scalars;
 struct Vectors;
 
-void scalars_float_ini(int n, const float*, /**/ Scalars**);
-void scalars_double_ini(int n, const double*, /**/ Scalars**);
-void scalars_vectors_ini(int n, const Vectors*, int dim, /**/ Scalars**);
+void scalars_float_ini(int n, const float*,      Scalars**);
+void scalars_double_ini(int n, const double*,      Scalars**);
+void scalars_vectors_ini(int n, const Vectors*, int dim,      Scalars**);
 
-void scalars_zero_ini(int n, /**/ Scalars**);
-void scalars_one_ini(int n, /**/ Scalars**);
+void scalars_zero_ini(int n,      Scalars**);
+void scalars_one_ini(int n,      Scalars**);
 
 void scalars_fin(Scalars*);
 double scalars_get(const Scalars*, int i);
@@ -18139,7 +18139,7 @@ static double one_get(const Scalars*, int i);
 enum {SCALAR_FLOAT, SCALAR_DOUBLE, SCALAR_VECX, SCALAR_VECY, SCALAR_VECZ, SCALAR_ZERO, SCALAR_ONE};
 static double (*scalar_get_table[])(const Scalars*, int i) =
 { float_get,  double_get, vecx_get, vecy_get, vecz_get, zero_get, one_get};
-void scalars_float_ini(int n, const float *rr, /**/ Scalars **pq) {
+void scalars_float_ini(int n, const float *rr,      Scalars **pq) {
     Scalars *q;
     EMALLOC(1, &q);
     q->type = SCALAR_FLOAT; q->n = n; q->D.ff = rr;
@@ -18147,7 +18147,7 @@ void scalars_float_ini(int n, const float *rr, /**/ Scalars **pq) {
     *pq = q;
 }
 
-void scalars_double_ini(int n, const double *rr, /**/ Scalars **pq) {
+void scalars_double_ini(int n, const double *rr,      Scalars **pq) {
     Scalars *q;
     EMALLOC(1, &q);
     q->type = SCALAR_DOUBLE; q->n = n; q->D.dd = rr;
@@ -18155,7 +18155,7 @@ void scalars_double_ini(int n, const double *rr, /**/ Scalars **pq) {
     *pq = q;
 }
 
-void scalars_vectors_ini(int n, const Vectors *vec, int dim, /**/ Scalars **pq) {
+void scalars_vectors_ini(int n, const Vectors *vec, int dim,      Scalars **pq) {
     enum {X, Y, Z};
     Scalars *q;
     EMALLOC(1, &q);
@@ -18170,7 +18170,7 @@ void scalars_vectors_ini(int n, const Vectors *vec, int dim, /**/ Scalars **pq) 
     *pq =q;
 }
 
-void scalars_zero_ini(int n, /**/ Scalars **pq) {
+void scalars_zero_ini(int n,      Scalars **pq) {
     Scalars *q;
     EMALLOC(1, &q);
     q->type = SCALAR_ZERO; q->n = n;
@@ -18179,7 +18179,7 @@ void scalars_zero_ini(int n, /**/ Scalars **pq) {
 }
 
 
-void scalars_one_ini(int n, /**/ Scalars **pq) {
+void scalars_one_ini(int n,      Scalars **pq) {
     Scalars *q;
     EMALLOC(1, &q);
     q->type = SCALAR_ONE; q->n = n;
@@ -18194,19 +18194,19 @@ static double double_get(const Scalars *q, int i) { return q->D.dd[i]; }
 static double vecx_get(const Scalars *q, int i)   {
     enum {X};
     float r[3];
-    vectors_get(q->D.vec, i, /**/ r);
+    vectors_get(q->D.vec, i,      r);
     return r[X];
 }
 static double vecy_get(const Scalars *q, int i)   {
     enum {X, Y};
     float r[3];
-    vectors_get(q->D.vec, i, /**/ r);
+    vectors_get(q->D.vec, i,      r);
     return r[Y];
 }
 static double vecz_get(const Scalars *q, int i)   {
     enum {X, Y, Z};
     float r[3];
-    vectors_get(q->D.vec, i, /**/ r);
+    vectors_get(q->D.vec, i,      r);
     return r[Z];
 }
 
@@ -18232,21 +18232,21 @@ double scalars_get(const Scalars *q, int i) {
 
 #include <stdio.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -18254,7 +18254,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -18265,7 +18265,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -18290,7 +18290,7 @@ void error_print_stack();
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_GRID_INTER_TYPE_COMMON */
+#endif
 struct Coords;
 struct Coords_v;
 struct float3;
@@ -18305,24 +18305,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -18337,13 +18337,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 struct Tform;
 struct Tform_v;
@@ -18351,18 +18351,18 @@ struct Tform_v;
 void tform_ini(Tform**);
 void tform_fin(Tform*);
 
-void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform*); // <1>
-void tform_chain(const Tform *A, const Tform *B, /**/ Tform *C); // <2>
-void tform_to_grid(const float lo[3], const float hi[3], const int n[3], /**/ Tform*); // <3>
-void tform_from_grid(const float a0[3], const float b0[3], const int n[3], /**/ Tform*); // <4>
+void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3],      Tform*);
+void tform_chain(const Tform *A, const Tform *B,      Tform *C);
+void tform_to_grid(const float lo[3], const float hi[3], const int n[3],      Tform*);
+void tform_from_grid(const float a0[3], const float b0[3], const int n[3],      Tform*);
 void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
-                     Tform*); // <5>
+                     Tform*);
 
 
-void tform_convert(const Tform*, const float a0[3], /**/ float a1[3]);
+void tform_convert(const Tform*, const float a0[3],      float a1[3]);
 
-void tform_to_view(const Tform*, /**/ Tform_v*);
+void tform_to_view(const Tform*,      Tform_v*);
 
 void tform_log(Tform*);
 void tform_dump(Tform*, FILE*);
@@ -18371,15 +18371,15 @@ struct Particle;
 struct Vectors;
 struct Coords;
 
-void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
-void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
-void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
-void vectors_postions_center_ini(const Coords*, int n, const Particle*, /**/ Vectors**); // <4>
-void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**); // <5>
-void vectors_zero_ini(int n, /**/ Vectors**); // <6>
+void vectors_float_ini(int n, const float*,      Vectors**);
+void vectors_postions_ini(int n, const Particle*,      Vectors**);
+void vectors_postions_edge_ini  (const Coords*, int n, const Particle*,      Vectors**);
+void vectors_postions_center_ini(const Coords*, int n, const Particle*,      Vectors**);
+void vectors_velocities_ini(int n, const Particle*,      Vectors**);
+void vectors_zero_ini(int n,      Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
+void vectors_get(const Vectors*, int i,      float r[3]);
 struct Vectors {
     int type;
     int n;
@@ -18402,28 +18402,28 @@ enum {VECTOR_FLOAT, VECTOR_POSITIONS, VECTOR_POSITIONS_EDGE, VECTOR_POSITIONS_CE
 static void (*vector_get_table[])(const Vectors*, int i, float r[3]) =
 { float_get,  positions_get, positions_edge_get, positions_center_get, velocities_get, zero_get };
 
-typedef  void (*Local2Global)(const Coords *coords, float a[3], /**/ float b[3]);
-void vectors_float_ini(int n, const float *rr, /**/ Vectors **pq) {
+typedef  void (*Local2Global)(const Coords *coords, float a[3],      float b[3]);
+void vectors_float_ini(int n, const float *rr,      Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
     q->type = VECTOR_FLOAT; q->n = n; q->D.rr = rr;
     *pq = q;
 }
 
-void vectors_postions_ini(int n, const Particle *pp, /**/ Vectors **pq) {
+void vectors_postions_ini(int n, const Particle *pp,      Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
     q->type = VECTOR_POSITIONS; q->n = n; q->D.pp = pp;
     *pq = q;
 }
 
-static void l2edge(const Coords *coords, float a[3], /**/ float b[3]) {
+static void l2edge(const Coords *coords, float a[3],      float b[3]) {
     enum {X, Y, Z};
     b[X] = xl2xg(coords, a[X]);
     b[Y] = yl2yg(coords, a[Y]);
     b[Z] = zl2zg(coords, a[Z]);
 }
-static void l2center(const Coords *coords, float a[3], /**/ float b[3]) {
+static void l2center(const Coords *coords, float a[3],      float b[3]) {
     enum {X, Y, Z};
     b[X] = xl2xc(coords, a[X]);
     b[Y] = yl2yc(coords, a[Y]);
@@ -18436,36 +18436,36 @@ static void edge_ini_tform(const Coords *coords, Local2Global local2global, Tfor
     float a0[3], a1[3], b0[3], b1[3];
     a0[X] = a0[Y] = a0[Z] = 0;
     b0[X] = b0[Y] = b0[Z] = 1;
-    local2global(coords, a0, /**/ a1);
-    local2global(coords, b0, /**/ b1);
+    local2global(coords, a0,      a1);
+    local2global(coords, b0,      b1);
     tform_ini(&q);
-    UC(tform_vector(a0, a1, b0, b1, /**/ q));
+    UC(tform_vector(a0, a1, b0, b1,      q));
     *pq = q;
 }
-void vectors_postions_edge_ini(const Coords *coords, int n, const Particle *pp, /**/ Vectors **pq) {
+void vectors_postions_edge_ini(const Coords *coords, int n, const Particle *pp,      Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
     q->type = VECTOR_POSITIONS_EDGE; q->n = n; q->D.pp = pp;
-    edge_ini_tform(coords, l2edge, /**/ &q->tform);
+    edge_ini_tform(coords, l2edge,      &q->tform);
     *pq = q;
 }
 
-void vectors_postions_center_ini(const Coords *coords, int n, const Particle *pp, /**/ Vectors **pq) {
+void vectors_postions_center_ini(const Coords *coords, int n, const Particle *pp,      Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
     q->type = VECTOR_POSITIONS_EDGE; q->n = n; q->D.pp = pp;
-    edge_ini_tform(coords, l2center, /**/ &q->tform);
+    edge_ini_tform(coords, l2center,      &q->tform);
     *pq = q;
 }
 
-void vectors_velocities_ini(int n, const Particle *pp, /**/ Vectors **pq) {
+void vectors_velocities_ini(int n, const Particle *pp,      Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
     q->type = VECTOR_VELOCITIES; q->n = n; q->D.pp = pp;
     *pq = q;
 }
 
-void vectors_zero_ini(int n, /**/ Vectors **pq) {
+void vectors_zero_ini(int n,      Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
     q->type = VECTOR_ZERO; q->n = n;
@@ -18500,7 +18500,7 @@ static void shift_get(const Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
     const Particle *pp;
     pp = q->D.pp;
-    UC(tform_convert(q->tform, pp[i].r, /**/ r));
+    UC(tform_convert(q->tform, pp[i].r,      r));
 }
 static void positions_edge_get(const Vectors *q, int i, float r[3]) { shift_get(q, i, r); }
 static void positions_center_get(const Vectors *q, int i, float r[3]) { shift_get(q, i, r); }
@@ -18516,7 +18516,7 @@ static void zero_get(const Vectors*, int, float r[3]) {
     enum {X, Y, Z};
     r[X] = r[Y] = r[Z] = 0;
 }
-void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
+void vectors_get(const Vectors *q, int i,      float r[3]) {
     int n;
     n = q->n;
     if (i >= n) ERR("i = %d    >=   n = %d", i, n);
@@ -18528,7 +18528,7 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
 
 
 
-// Grouped editable compilation unit for algorithm conversion and force statistics.
+
 
 
 #define DEV_CUDA
@@ -18536,33 +18536,33 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
 #define KL_RELEASE
 #include "api.cuh"
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -18574,11 +18574,11 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_GRID_INTER_TYPE_COMMON */
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#endif
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -18587,35 +18587,35 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_GRID_INTER_KL_COMMON */
+#endif
 
 struct Particle;
 struct Positioncp;
@@ -18623,7 +18623,7 @@ struct float4;
 
 void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr);
 void convert_pp2rr_previous(long n, const Particle *pp, Positioncp *rr);
-void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp);
+void convert_pp2f4_pos(int n, const float *pp,      float4 *zpp);
 
 __global__ void convert_pp2rr_current_kernel (long n, const Particle *pp, Positioncp *rr) {
     enum {X, Y, Z};
@@ -18655,7 +18655,7 @@ __global__ void convert_pp2rr_previous_kernel(long n, const Particle *pp, Positi
     d[Z] = s[Z];
 }
 
-__global__ void convert_pp2f4_pos_kernel(int n, const float *pp, /**/ float4 *zpp) {
+__global__ void convert_pp2f4_pos_kernel(int n, const float *pp,      float4 *zpp) {
     enum {X, Y, Z};
     int i;
     const float *r, *v;
@@ -18682,7 +18682,7 @@ void convert_pp2rr_previous(long n, const Particle *pp, Positioncp *rr) {
     KL(convert_pp2rr_previous_kernel, (k_cnf(n)), (n, pp, rr));
 }
 
-void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
+void convert_pp2f4_pos(int n, const float *pp,      float4 *zpp) {
     static_assert(sizeof(Particle) == 6 * sizeof(float),
                   "sizeof(Particle) != 6 * sizeof(float)");
     KL(convert_pp2f4_pos_kernel, (k_cnf(n)), (n, pp, zpp));
@@ -18702,14 +18702,14 @@ void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_GRID_INTER_TYPE_COMMON */
+#endif
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -18720,7 +18720,7 @@ void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -18742,16 +18742,16 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 #include "device.cuh"
-#endif /* UDX_GRID_INTER_DEVICE_API_COMMON */
+#endif
 
 struct Force;
 
-/* sqrt(max(fx^2 + fy^2 + fz^2)) */
+
 float force_stat_max(int n, const Force*);
 static __device__ float sumsq(Force f) {
     enum {X, Y, Z};
@@ -18787,13 +18787,13 @@ float force_stat_max(int n, const Force *dev) {
 
 
 
-// Grouped editable compilation unit for edge algorithms, accumulators, and scans.
 
 
-// Grouped editable compilation unit for edge algorithms and accumulators.
 
 
-// Grouped editable compilation unit for edge and min/max algorithms.
+
+
+
 
 
 #define DEV_CUDA
@@ -18810,7 +18810,7 @@ float force_stat_max(int n, const Force *dev) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -18821,7 +18821,7 @@ float force_stat_max(int n, const Force *dev) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -18844,9 +18844,9 @@ void error_abort();
 
 void error_print_stack();
 void edg_ini(int md, int nv,                     int *hx);
-void edg_set(int md, int i, int j, int val, /**/ int *hx,       int *hy); // <1>
-int  edg_get(int md, int i, int j,         const int *hx, const int *hy); // <2>
-int  edg_valid(int md, int i, int j,         const int *hx); // <3>
+void edg_set(int md, int i, int j, int val,      int *hx,       int *hy);
+int  edg_get(int md, int i, int j,         const int *hx, const int *hy);
+int  edg_valid(int md, int i, int j,         const int *hx);
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -18857,7 +18857,7 @@ int  edg_valid(int md, int i, int j,         const int *hx); // <3>
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -18868,7 +18868,7 @@ int  edg_valid(int md, int i, int j,         const int *hx); // <3>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -18890,13 +18890,13 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void edg_ini(int md, int nv, /**/ int *hx) {
+void edg_ini(int md, int nv,      int *hx) {
     int n, i;
     n = md * nv;
     for (i = 0; i < n; i ++) hx[i] = -1;
 }
 
-void edg_set(int md, int f, int x, int y,  /**/ int *hx, int *hy) {
+void edg_set(int md, int f, int x, int y,       int *hx, int *hy) {
     int d, j;
     j = f*md; d = 0;
     while (hx[j] != -1) {
@@ -18906,7 +18906,7 @@ void edg_set(int md, int f, int x, int y,  /**/ int *hx, int *hy) {
     hx[j] = x; hy[j] = y;
 }
 
-int edg_get(int md, int i, int x, const int *hx, const int *hy) { /* next */
+int edg_get(int md, int i, int x, const int *hx, const int *hy) {
     int d;
     i *= md; d = 0;
     while (hx[i] != x) {
@@ -18916,7 +18916,7 @@ int edg_get(int md, int i, int x, const int *hx, const int *hy) { /* next */
     return hy[i];
 }
 
-int edg_valid(int md, int i, int x, const int *hx) { /* valid? */
+int edg_valid(int md, int i, int x, const int *hx) {
     int d;
     i *= md; d = 0;
     while (hx[i] != x) {
@@ -18936,33 +18936,33 @@ int edg_valid(int md, int i, int x, const int *hx) { /* valid? */
 
 #include <stdio.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -18975,16 +18975,16 @@ int edg_valid(int md, int i, int x, const int *hx) { /* valid? */
 #ifndef UDX_GRID_INTER_DEF_COMMON
 #define UDX_GRID_INTER_DEF_COMMON
 #include "constants.cuh"
-#endif /* UDX_GRID_INTER_DEF_COMMON */
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-/* function and variable type [q]ualifiers */
+#endif
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -19010,8 +19010,8 @@ void msg_print(const char *fmt, ...); // <2>
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -19083,16 +19083,16 @@ static int   warpSize = 1;
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 #include "device.cuh"
-#endif /* UDX_GRID_INTER_DEVICE_API_COMMON */
+#endif
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_GRID_INTER_TYPE_COMMON */
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#endif
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -19101,29 +19101,29 @@ static int   warpSize = 1;
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_CONTROL_SHFL_COMMON
@@ -19149,14 +19149,14 @@ _I_ T shfl(T val, unsigned int width) {
 #define _I_ static __device__
 
 template <typename T>
-_I_ T warpReduceSum(T v)  // <1>
+_I_ T warpReduceSum(T v)
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-_I_ float2 warpReduceSum(float2 val)  // <2>
+_I_ float2 warpReduceSum(float2 val)
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -19165,7 +19165,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-_I_ float3 warpReduceSum(float3 val)  // <3>
+_I_ float3 warpReduceSum(float3 val)
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -19178,12 +19178,12 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _S_
 #undef _I_
 
-#endif /* UDX_CONTROL_SHFL_COMMON */
+#endif
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_GRID_INTER_KL_COMMON */
+#endif
 
 #ifndef UDX_CONTROL_PARTICLE_DEV_COMMON
 #define UDX_CONTROL_PARTICLE_DEV_COMMON
@@ -19200,11 +19200,11 @@ static __device__ float3 fetch_vel(int i, const Particle *pp) {
     v.x = pp[i].v[X]; v.y = pp[i].v[Y]; v.z = pp[i].v[Z];
     return v;
 }
-#endif /* UDX_CONTROL_PARTICLE_DEV_COMMON */
+#endif
 
 struct Particle;
 struct float3;
-void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi);
+void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
 
 #ifndef UDX_CONTROL_WARPSIZE_COMMON
 #define UDX_CONTROL_WARPSIZE_COMMON
@@ -19295,7 +19295,7 @@ __global__ void minmax_kernel(int nv, const Particle *pp, float3 *lo, float3 *hi
         }
     }
 }
-void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi) {
+void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi) {
     dim3 thrd(BLOCK_SIZE, 1);
     dim3 blck(1, nobj);
 
@@ -19306,7 +19306,7 @@ void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi) {
 
 
 
-// Grouped editable compilation unit for Kahan sums and key lists.
+
 
 
 #define DEV_CUDA
@@ -19316,21 +19316,21 @@ void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi) {
 
 #include <stdio.h>
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -19338,7 +19338,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -19349,7 +19349,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -19374,30 +19374,30 @@ void error_print_stack();
 
 struct KahanSum;
 
-void kahan_sum_ini(/**/ KahanSum**);
+void kahan_sum_ini(     KahanSum**);
 void kahan_sum_fin(KahanSum*);
 
-void kahan_sum_add(KahanSum*, double input); // <1>
-double kahan_sum_get(const KahanSum*); // <2>
-double kahan_sum_compensation(const KahanSum*); // <3>
-/*
+void kahan_sum_add(KahanSum*, double input);
+double kahan_sum_get(const KahanSum*);
+double kahan_sum_compensation(const KahanSum*);
 
-var sum = 0.0
-    var c = 0.0
-    for i = 1 to input.length do
-        var y = input[i] - c
-        var t = sum + y
-        c = (t - sum) - y
-        sum = t
-    next i
-    return sum
 
- */
+
+
+
+
+
+
+
+
+
+
+
 
 struct KahanSum {
     double c, y, sum;
 };
-void kahan_sum_ini(/**/ KahanSum **pq) {
+void kahan_sum_ini(     KahanSum **pq) {
     KahanSum *q;
     EMALLOC(1, &q);
     q->c = q->sum = 0;
@@ -19438,7 +19438,7 @@ double kahan_sum_compensation(const KahanSum *q) { return q->c; }
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -19449,7 +19449,7 @@ double kahan_sum_compensation(const KahanSum *q) { return q->c; }
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -19471,30 +19471,30 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 int string_nword(const char *s);
 
 struct KeyList;
 
 void key_list_ini(KeyList**);
-void key_list_copy(KeyList*, /**/ KeyList**);
+void key_list_copy(KeyList*,      KeyList**);
 void key_list_fin(KeyList*);
 
 void key_list_push(KeyList*, const char*);
@@ -19513,8 +19513,8 @@ enum {MAX_NK = 100 };
 enum {STAMP_GOOD = 42 };
 
 struct KeyList {
-    int nk; /* number of keys */
-    int  ww[MAX_NK]; /* width */
+    int nk;
+    int  ww[MAX_NK];
     int  mark[MAX_NK];
     char keys[MAX_NK][FILENAME_MAX];
     int stamp;
@@ -19528,7 +19528,7 @@ void key_list_ini(KeyList **pq) {
     *pq = q;
 }
 
-void key_list_copy(KeyList *a, /**/ KeyList **pq) {
+void key_list_copy(KeyList *a,      KeyList **pq) {
     int i, nk;
     KeyList *q;
     EMALLOC(1, &q);
@@ -19660,33 +19660,33 @@ void key_list_log(KeyList *q) {
 #include "api.cuh"
 
 #include <stdio.h>
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -19696,10 +19696,10 @@ void key_list_log(KeyList *q) {
 #endif
 
 
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -19708,46 +19708,46 @@ void key_list_log(KeyList *q) {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -19755,7 +19755,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -19766,7 +19766,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -19788,10 +19788,10 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -19799,7 +19799,7 @@ void error_print_stack();
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -19812,25 +19812,25 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_GRID_INTER_KL_COMMON */
+#endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 #ifndef UDX_ALGO_DEVICE_API_COMMON
 #define UDX_ALGO_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_GRID_INTER_DEVICE_API_COMMON */
 #endif
-/* function and variable type [q]ualifiers */
+#endif
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -19856,8 +19856,8 @@ void check(int rc, const char *file, int line);
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -19929,11 +19929,11 @@ static int   warpSize = 1;
 
 struct Scan;
 
-void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan*); // <1>
-void scan_ini(int size, /**/ Scan**);                                       // <2>
-void scan_fin(Scan*);                                                       // <3>
+void scan_apply(const int *input, int size,      int *output,       Scan*);
+void scan_ini(int size,      Scan**);
+void scan_fin(Scan*);
 
-/* scan device helpers */
+
 #define _I_ static __device__
 
 template <typename T>
@@ -20062,7 +20062,7 @@ __global__ void scan_gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, 
     if (tid < n) val[0] = vin[tid];
     else         val[0] = make_uint4(0,0,0,0);
 
-    // read bytes B0 B1 B2 B3 into VAL[*].y VAL[*].z VAL[*].w VAL[*].x
+
     val[3].y = (val[0].w & 0x000000FF);
     val[3].z = (val[0].w & 0x0000FF00) >>  8;
     val[3].w = (val[0].w & 0x00FF0000) >> 16;
@@ -20156,24 +20156,24 @@ struct Scan {
     unsigned char *compressed;
 };
 enum { THREADS = 128 };
-static void scan0(const unsigned char *input, int size, /**/ uint *output, /*w*/ uint *tmp) {
+static void scan0(const unsigned char *input, int size,      uint *output,       uint *tmp) {
     int nblocks = ((size / 16) + THREADS - 1 ) / THREADS;
     KL(scan_breduce<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, size / 16));
     KL(scan_bexscan<THREADS>   , (1, THREADS, nblocks*sizeof(uint)), (tmp, nblocks));
     KL(scan_gexscan<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, (uint4 *)output, size / 16));
 }
 
-void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan *w) {
+void scan_apply(const int *input, int size,      int *output,       Scan *w) {
     if (size > w->size)
         ERR(" size = %d > w->size = %d", size, w->size);
     if (!d::is_device_pointer(input))  ERR("`input`  is not a device pointer");
     if (!d::is_device_pointer(output)) ERR("`output` is not a device pointer");
 
-    KL(scan_compress, (k_cnf(size)), (size, (const int4*) input, /**/ (uchar4 *) w->compressed));
-    scan0(w->compressed, size, /**/ (uint*) output, /*w*/ w->tmp);
+    KL(scan_compress, (k_cnf(size)), (size, (const int4*) input,      (uchar4 *) w->compressed));
+    scan0(w->compressed, size,      (uint*) output,       w->tmp);
 }
 
-void scan_ini(int size, /**/ Scan **work) {
+void scan_ini(int size,      Scan **work) {
     Scan *w;
     EMALLOC(1, work);
     w = *work;
@@ -20182,7 +20182,7 @@ void scan_ini(int size, /**/ Scan **work) {
     Dalloc(&w->compressed, 4 * size);
 }
 
-void scan_fin(/**/ Scan *w) {
+void scan_fin(     Scan *w) {
     Dfree(w->tmp);
     Dfree(w->compressed);
     EFREE(w);
@@ -20192,7 +20192,7 @@ struct Scan { };
 void scan_ini(int, Scan**) { }
 void scan_fin(Scan*) { }
 
-void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
+void scan_apply(const int* input, int size,      int* output,       Scan*) {
     int i, s;
     s = 0;
     for (i = 0; i < size; i++) {
@@ -20218,10 +20218,10 @@ void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
 
 
 
-// Grouped editable compilation unit for debug, contact-list, and contact code.
 
 
-// Grouped editable compilation unit for debug and contact-list code.
+
+
 
 
 
@@ -20233,7 +20233,7 @@ void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -20244,7 +20244,7 @@ void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -20270,10 +20270,10 @@ struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -20314,8 +20314,8 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 
 struct Dbg;
 
@@ -20328,12 +20328,12 @@ struct Coords;
 #ifndef UDX_DEBUG_KIND_COMMON
 #define UDX_DEBUG_KIND_COMMON
 enum {
-    DBG_POS,      // <1>
-    DBG_POS_SOFT, // <2>
-    DBG_VEL,      // <3>
-    DBG_FORCES,   // <4>
-    DBG_COLORS,   // <5>
-    DBG_CLIST,    // <6>
+    DBG_POS,
+    DBG_POS_SOFT,
+    DBG_VEL,
+    DBG_FORCES,
+    DBG_COLORS,
+    DBG_CLIST,
     DBG_NKIND_
 };
 #endif
@@ -20381,33 +20381,33 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 
 #include <stdio.h>
 #include <assert.h>
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -20424,10 +20424,10 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 #define UDX_DBG_CLIST_TYPE_COMMON
 #include "types.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -20436,47 +20436,47 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -20484,7 +20484,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -20495,7 +20495,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -20517,10 +20517,10 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -20528,7 +20528,7 @@ void error_print_stack();
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -20541,15 +20541,15 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
 #include "launch.cuh"
 #endif
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #endif
 #ifndef UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_D_API_COMMON
@@ -20558,11 +20558,11 @@ void msg_print(const char *fmt, ...); // <2>
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
 struct Coords_v {
-    int xc, yc, zc; /* rank coordinates        */
-    int xd, yd, zd; /* rank sizes              */
-    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+    int xc, yc, zc;
+    int xd, yd, zd;
+    int Lx, Ly, Lz;
 };
-#endif /* UDX_CONTROL_COORDS_COMMON */
+#endif
 struct Coords;
 struct Coords_v;
 struct float3;
@@ -20577,24 +20577,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -20609,13 +20609,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 struct Particle;
 struct Force;
@@ -20634,10 +20634,10 @@ const Particle* txt_read_get_pp(const TxtRead *);
 const Force*    txt_read_get_ff(const TxtRead *);
 
 
-#define ERRLIST(_) _(NONE),  /* no error */     \
-        _(INVALID),  /* invalid value */        \
-        _(INF_VAL),  /* inf value */            \
-        _(NAN_VAL)   /* nan value */
+#define ERRLIST(_) _(NONE),                     \
+        _(INVALID),                             \
+        _(INF_VAL),                             \
+        _(NAN_VAL)
 
 #define make_str(s) #s
 #define make_enum(s) ERR_##s
@@ -20963,10 +20963,10 @@ static bool error() {
     return e != ERR_NONE;
 }
 
-static void gen_name(const Coords *c, const char *base, /**/ char *name) {
+static void gen_name(const Coords *c, const char *base,      char *name) {
     int r;
     char stamp[FILENAME_MAX];
-    coord_stamp(c, /**/ stamp);
+    coord_stamp(c,      stamp);
     r = sprintf(name, "dbg.%s.%s.txt", base, stamp);
     if (r < 0) ERR("sprintf failed");
 }
@@ -21088,33 +21088,33 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
 #include <stdio.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -21130,7 +21130,7 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -21141,7 +21141,7 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -21165,24 +21165,24 @@ void error_abort();
 void error_print_stack();
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #endif
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
 #ifndef UDX_DBG_CLIST_DEF_COMMON
@@ -21193,10 +21193,10 @@ const char* get_filename_ext(const char*);
 #define UDX_DBG_CLIST_TYPE_COMMON
 #include "types.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -21205,45 +21205,45 @@ const char* get_filename_ext(const char*);
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 struct Scan;
 
-void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan*); // <1>
-void scan_ini(int size, /**/ Scan**);                                       // <2>
-void scan_fin(Scan*);                                                       // <3>
+void scan_apply(const int *input, int size,      int *output,       Scan*);
+void scan_ini(int size,      Scan**);
+void scan_fin(Scan*);
 
 #ifndef UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_D_API_COMMON
 #include "device.cuh"
 #endif
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -21251,7 +21251,7 @@ void scan_fin(Scan*);                                                       // <
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -21264,7 +21264,7 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
 #include "launch.cuh"
@@ -21277,12 +21277,12 @@ enum {
     DEAD  = 1
 };
 
-/* structure of particle                           */
-/* optional "deathlist" for particles to be killed */
+
+
 
 struct PartList {
-    const Particle *pp;   /* particles array          */
-    const int *deathlist; /* what pp is dead or alive */
+    const Particle *pp;
+    const int *deathlist;
 };
 #endif
 static __device__ bool is_dead(int i, const PartList lp) {
@@ -21310,15 +21310,15 @@ static __device__ float3 fetch_vel(int i, const Particle *pp) {
     v.x = pp[i].v[X]; v.y = pp[i].v[Y]; v.z = pp[i].v[Z];
     return v;
 }
-#endif /* UDX_CONTROL_PARTICLE_DEV_COMMON */
+#endif
 
 struct Clist;
 struct ClistMap;
 
-void clist_ini(int LX, int LY, int LZ, /**/ Clist **c);
-void clist_fin(/**/ Clist *c);
+void clist_ini(int LX, int LY, int LZ,      Clist **c);
+void clist_fin(     Clist *c);
 
-void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
+void clist_ini_map(int maxp, int nA, const Clist *c,      ClistMap **m);
 void clist_fin_map(ClistMap *m);
 
 const int* clists_get_ss(const Clist *c);
@@ -21328,18 +21328,18 @@ int        clists_get_n(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
 
 void clist_ini_counts(Clist *c);
-void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m);
+void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-/* special for fluid distribution */
-void clist_subindex_local(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_subindex_remote(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
 
-void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout, /**/ Particle *ppout);
-void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout, /**/ int *iiout);
+void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
-/* quick cell build for single array */
-void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
+void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
+void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
+
+
+void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 #ifndef UDX_CLIST_DEV_COMMON
 #define UDX_CLIST_DEV_COMMON
 #define _I_ static __device__
@@ -21348,14 +21348,14 @@ enum { CLIST_NMAX = (256*256*256) };
 
 _I_ uint clist_encode_id(int s, int pid)
 {
-    /* pid: particle id; s: array id */
+
     assert(pid < CLIST_NMAX);
     return CLIST_NMAX * s + pid;
 }
 
-_I_ void clist_decode_id(uint c, /**/ int *s, int *pid)
+_I_ void clist_decode_id(uint c,      int *s, int *pid)
 {
-    /* pid: particle id; s: array id; c : code */
+
     *pid = c % CLIST_NMAX;
     *s   = c / CLIST_NMAX;
 }
@@ -21370,11 +21370,11 @@ struct Clist {
 };
 
 struct ClistMap {
-    int nA;       /* number of source arrays to build the cell lists, e.g remote+bulk -> 2 */
-    uchar4 **ee;  /* cell entries */
-    uint *ii;     /* codes containing: indices of data to fetch and array id from which to fetch */
-    Scan *scan;   /* scan workspace */
-    long maxp;    /* maximum number of particles per input vector */
+    int nA;
+    uchar4 **ee;
+    uint *ii;
+    Scan *scan;
+    long maxp;
 };
 enum {
     CLIST_VALID   = 0,
@@ -21396,7 +21396,7 @@ static __device__ uchar4 clist_get_entry(const bool project, float3 r, int3 L) {
     uchar4 e;
     int ix, iy, iz;
 
-    /* must be done in double precision */
+
     ix = (int) ((double) r.x + L.x/2);
     iy = (int) ((double) r.y + L.y/2);
     iz = (int) ((double) r.z + L.z/2);
@@ -21418,8 +21418,8 @@ static __device__ int clist_get_cid(int3 L, uchar4 e) {
     return e.x + L.x * (e.y + L.y * e.z);
 }
 
-/* project:: if particle is outside of domain L, include it in closest cell */
-__global__ void clist_subindex_kernel(bool project, int3 L, int n, const PartList lp, /*io*/ int *counts, /**/ uchar4 *ee) {
+
+__global__ void clist_subindex_kernel(bool project, int3 L, int n, const PartList lp,        int *counts,      uchar4 *ee) {
     int i, cid;
     float3 r;
     uchar4 e;
@@ -21445,7 +21445,7 @@ __global__ void clist_subindex_kernel(bool project, int3 L, int n, const PartLis
     ee[i] = e;
 }
 
-__global__ void clist_get_ids_kernel(int array_id, int3 L, int n, const int *starts, const uchar4 *ee, /**/ uint *ii) {
+__global__ void clist_get_ids_kernel(int array_id, int3 L, int n, const int *starts, const uchar4 *ee,      uint *ii) {
     int i, cid, id, start;
     uchar4 e;
 
@@ -21463,21 +21463,21 @@ __global__ void clist_get_ids_kernel(int array_id, int3 L, int n, const int *sta
 }
 
 template <typename T, int N>
-__device__ void clist_fetch(const Sarray<const T*, N> src, uint i, /**/ T *d) {
+__device__ void clist_fetch(const Sarray<const T*, N> src, uint i,      T *d) {
     int src_id, array_id;
-    clist_decode_id(i, /**/ &array_id, &src_id);
+    clist_decode_id(i,      &array_id, &src_id);
     *d = src.d[array_id][src_id];
 }
 
 template <typename T, int N>
-__global__ void clist_gather_kernel(const Sarray<const T*, N> src, const uint *ii, int n, /**/ T *dd) {
+__global__ void clist_gather_kernel(const Sarray<const T*, N> src, const uint *ii, int n,      T *dd) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
 
     uint code = ii[i];
-    clist_fetch(src, code, /**/ dd + i);
+    clist_fetch(src, code,      dd + i);
 }
-void clist_ini(int LX, int LY, int LZ, /**/ Clist **cl) {
+void clist_ini(int LX, int LY, int LZ,      Clist **cl) {
     Clist *c;
     EMALLOC(1, cl);
     c = *cl;
@@ -21491,12 +21491,12 @@ void clist_ini(int LX, int LY, int LZ, /**/ Clist **cl) {
     Dalloc(&c->counts, n);
 }
 
-void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **map) {
+void clist_ini_map(int maxp, int nA, const Clist *c,      ClistMap **map) {
     long i, size;
     EMALLOC(1, map);
     ClistMap *m = *map;
 
-    UC(scan_ini(c->ncells + 16, /**/ &m->scan));
+    UC(scan_ini(c->ncells + 16,      &m->scan));
 
     m->maxp = maxp;
 
@@ -21508,14 +21508,14 @@ void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **map) {
     size = nA * maxp;
     Dalloc(&m->ii, size);
 }
-void clist_fin(/**/ Clist *c) {
+void clist_fin(     Clist *c) {
     Dfree(c->starts);
     Dfree(c->counts);
     EFREE(c);
 }
 
 void clist_fin_map(ClistMap *m) {
-    UC(scan_fin(/**/ m->scan));
+    UC(scan_fin(     m->scan));
 
     for (int i = 0; i < m->nA; ++i) Dfree(m->ee[i]);
     EFREE(m->ee);
@@ -21530,7 +21530,7 @@ int3       clists_get_dim(const Clist *c)  {return c->dims;}
 int        clists_get_n(const Clist *c)  {return c->ncells;}
 const uint* clist_get_ids(const ClistMap *m) {return m->ii;}
 
-void clist_ini_counts(/**/ Clist *c) {
+void clist_ini_counts(     Clist *c) {
     if (c->ncells) CC(d::MemsetAsync(c->counts, 0, (c->ncells + 16) * sizeof(int)));
 }
 
@@ -21540,24 +21540,24 @@ static void check_input_size(int id, long n, const ClistMap *m) {
         ERR("Too many input particles for array %d (%ld / %ld)", id, n, cap);
 }
 
-static void comp_subindices(bool project, int n, const PartList lp, int3 dims, /**/ int *cc, uchar4 *ee) {
-    if (n) KL(clist_subindex_kernel, (k_cnf(n)), (project, dims, n, lp, /*io*/ cc, /**/ ee));
+static void comp_subindices(bool project, int n, const PartList lp, int3 dims,      int *cc, uchar4 *ee) {
+    if (n) KL(clist_subindex_kernel, (k_cnf(n)), (project, dims, n, lp,        cc,      ee));
 }
 
-void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m) {
+void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m) {
     UC(check_input_size(aid, n, m));
-    UC(comp_subindices(project, n, lp, c->dims, /**/ c->counts, m->ee[aid]));
+    UC(comp_subindices(project, n, lp, c->dims,      c->counts, m->ee[aid]));
 }
 
-void clist_subindex_local(int n, const PartList lp, /**/ Clist *c, ClistMap *m) {
-    UC(clist_subindex(false, LOCAL, n, lp, /**/ c, m));
+void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m) {
+    UC(clist_subindex(false, LOCAL, n, lp,      c, m));
 }
 
-void clist_subindex_remote(int n, const PartList lp, /**/ Clist *c, ClistMap *m) {
-    UC(clist_subindex(false, REMOTE, n, lp, /**/ c, m));
+void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m) {
+    UC(clist_subindex(false, REMOTE, n, lp,      c, m));
 }
 
-void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m) {
+void clist_build_map(const int nn[],      Clist *c, ClistMap *m) {
     int nc, *cc, *ss, n, i;
     const uchar4 *ee;
     uint *ii = m->ii;
@@ -21566,13 +21566,13 @@ void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m) {
     cc = c->counts;
     ss = c->starts;
 
-    scan_apply(cc, nc + 16, /**/ ss, /*w*/ m->scan);
+    scan_apply(cc, nc + 16,      ss,       m->scan);
 
     for (i = 0; i < m->nA; ++i) {
         n = nn[i];
         ee = m->ee[i];
         UC(check_input_size(i, n, m));
-        if (n) KL(clist_get_ids_kernel, (k_cnf(n)), (i, dims, n, ss, ee, /**/ ii));
+        if (n) KL(clist_get_ids_kernel, (k_cnf(n)), (i, dims, n, ss, ee,      ii));
     }
 }
 
@@ -21582,28 +21582,28 @@ static void check_map_capacity(long n, const ClistMap *m) {
         ERR("Too many particles for this cell list (%ld / %ld)", n, cap);
 }
 
-void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout, /**/ Particle *ppout) {
+void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout) {
     Sarray <const Particle*, 2> src = {pplo, ppre};
     UC(check_map_capacity(nout, m));
     if (nout)
-        KL(clist_gather_kernel, (k_cnf(nout)), (src, m->ii, nout, /**/ ppout));
+        KL(clist_gather_kernel, (k_cnf(nout)), (src, m->ii, nout,      ppout));
 }
 
-void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout, /**/ int *iiout) {
+void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout) {
     Sarray <const int*, 2> src = {iilo, iire};
     UC(check_map_capacity(nout, m));
     if (nout)
-        KL(clist_gather_kernel, (k_cnf(nout)), (src, m->ii, nout, /**/ iiout));
+        KL(clist_gather_kernel, (k_cnf(nout)), (src, m->ii, nout,      iiout));
 }
 
-void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m) {
+void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m) {
     const int nn[] = {nlo, 0};
     PartList lp;
     lp.pp = pplo;
     lp.deathlist = NULL;
-    UC(clist_ini_counts(/**/ c));
-    UC(clist_subindex_local (nlo, lp, /**/ c, m));
-    UC(clist_build_map(nn, /**/ c, m));
+    UC(clist_ini_counts(     c));
+    UC(clist_subindex_local (nlo, lp,      c, m));
+    UC(clist_build_map(nn,      c, m));
     UC(clist_gather_pp(pplo, NULL, m, nout, ppout));
 }
 
@@ -21614,33 +21614,33 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 
 #include <assert.h>
 #include <stdio.h>
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -21654,13 +21654,13 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 #define UDX_DBG_CLIST_D_API_COMMON
 #include "device.cuh"
 #endif
-/* function and variable type [q]ualifiers */
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -21686,8 +21686,8 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -21763,7 +21763,7 @@ static int   warpSize = 1;
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -21774,7 +21774,7 @@ static int   warpSize = 1;
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -21796,67 +21796,67 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-struct RNDunif;                                             // <1>
-void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
-void rnd_fin(RNDunif *r);                                   // <3>
-float rnd_get(RNDunif *r);                                  // <4>
+struct RNDunif;
+void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
+void rnd_fin(RNDunif *r);
+float rnd_get(RNDunif *r);
 namespace rnd {
-/* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
-   mean = 0, variance = 1 */
 
-// passes of logistic map
+
+
+
 static __const__ int N = 18;
-// spacing coefficints for low discrepancy numbers
+
 static __const__ float gold   = 0.6180339887498948482;
 static __const__ float silver = 0.4142135623730950488;
 static __const__ float bronze = 0.00008877875787352212838853023;
 static __const__ float tin    = 0.00004602357186447026756768986;
 static __const__ float sqrt2 = 1.41421356237309514547;
 
-/************************* Trunk generator ***********************
- * Make one global random number per each timestep
- * cite G. Marsaglia
- * passes BigCrush
- *****************************************************************/
 
-/************************* Branch generator **********************
- * Make one random number per pair of particles per timestep
- * Based on the Logistic map on interval [-1,1]
- * each branch no weaker than trunk
- * zero dependency between branches
- *****************************************************************/
 
-// floating point version of LCG
+
+
+
+
+
+
+
+
+
+
+
+
 __inline__ __device__ float rem( float r ) {
     return r - floorf( r );
 }
 
-// FMA wrapper for the convenience of switching rouding modes
+
 __inline__ __device__ float FMA( float x, float y, float z ) {
     return __fmaf_rz( x, y, z );
 }
 
-// logistic rounds
-// <3> : 4 FMA + 1 MUL
-// <2> : 2 FMA + 1 MUL
-// <1> : 1 FMA + 1 MUL
+
+
+
+
 
 template<int N> __inline__ __device__ float __logistic_core( float x )
 {
@@ -21875,44 +21875,44 @@ template<> __inline__ __device__ float __logistic_core<0>( float x ) {
 
 inline __device__ float mean0var1ii( float seed, int u, int v )
 {
-    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
+    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin );
     float l = __logistic_core<N>( seed - p );
     return l * sqrt2;
 }
 
 inline __device__ float mean0var1uu( float seed, uint u, uint v )
 {
-    // 7 FLOPS
-    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin ); // safe for large u or v
-    // 45+1 FLOPS
+
+    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin );
+
     float l = __logistic_core<N>( seed - p );
-    // 1 FLOP
+
     return l * sqrt2;
 }
 
 }
 #ifndef UDX_CONTROL_MATH_COMMON
 #define UDX_CONTROL_MATH_COMMON
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -21924,14 +21924,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -21939,19 +21939,19 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
 }
-#endif /* UDX_CONTROL_MATH_COMMON */
+#endif
 
 #ifndef UDX_DBG_CLIST_DEF_COMMON
 #define UDX_DBG_CLIST_DEF_COMMON
@@ -21959,13 +21959,13 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
 #endif
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #endif
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -21973,7 +21973,7 @@ void msg_print(const char *fmt, ...); // <2>
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -21986,7 +21986,7 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 
 #ifndef UDX_SHARED_FRAG_COMMON
 #define UDX_SHARED_FRAG_COMMON
@@ -21996,23 +21996,23 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
-#endif /* UDX_SHARED_FRAG_COMMON */
+}
+#endif
 
 #ifndef UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
@@ -22022,10 +22022,10 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 #define UDX_DBG_CLIST_TYPE_COMMON
 #include "types.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -22034,29 +22034,29 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #include "fragment.cuh"
@@ -22072,12 +22072,12 @@ struct Coords;
 #ifndef UDX_DEBUG_KIND_COMMON
 #define UDX_DEBUG_KIND_COMMON
 enum {
-    DBG_POS,      // <1>
-    DBG_POS_SOFT, // <2>
-    DBG_VEL,      // <3>
-    DBG_FORCES,   // <4>
-    DBG_COLORS,   // <5>
-    DBG_CLIST,    // <6>
+    DBG_POS,
+    DBG_POS_SOFT,
+    DBG_VEL,
+    DBG_FORCES,
+    DBG_COLORS,
+    DBG_CLIST,
     DBG_NKIND_
 };
 #endif
@@ -22099,7 +22099,7 @@ void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *db
 void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
 void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
 
-/* maximum of pairwise dpd parameters */
+
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
@@ -22114,7 +22114,7 @@ struct PairDPDC {
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
 
-/* mirrored */
+
 struct PairDPDCM {
     int ncolors;
     float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
@@ -22132,7 +22132,7 @@ struct PairAdhesion {
 struct PairPa {
     float x, y, z;
     float vx, vy, vz;
-    /* optional fields */
+
     int color;
 };
 
@@ -22142,7 +22142,7 @@ struct PairFo {
 
 struct PairSFo {
     float x, y, z;
-    /* stress */
+
     float sxx, syy, szz, sxy, sxz, syz;
 };
 #define _S_ static __device__
@@ -22156,8 +22156,8 @@ _S_ float cap(float x, float lo, float hi) {
 
 static const float EPS = 1e-6;
 enum {NORM_OK, NORM_BIG, NORM_SMALL};
-_S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
-    /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
+_S_ int norm(       float3 *pos,      float *pr, float *pinvr) {
+
     float x, y, z, invr, r, r2;
     x = pos->x; y = pos->y; z = pos->z;
 
@@ -22225,13 +22225,13 @@ _S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
     return magn_adhesion(p->k1, p->k2, r, ev);
 }
 
-_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+_S_ void magn2fo(float f0, float3 er, float3 dr,      PairFo *f) {
     f->x = f0 * er.x;
     f->y = f0 * er.y;
     f->z = f0 * er.z;
 }
 
-_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+_S_ void magn2fo(float f0, float3 er, float3 dr,      PairSFo *f) {
     f->x = f0 * er.x;
     f->y = f0 * er.y;
     f->z = f0 * er.z;
@@ -22255,11 +22255,11 @@ _S_ void make_zero(PairSFo *f) {
 }
 
 template <typename Param, typename Fo>
-_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd,      Fo *f)
 {
     float r, invr, ev, f0;
     float3 dr, er, dv;
-    int vnstat; /* vector normalization status */
+    int vnstat;
 
     dr.x = a.x - b.x;
     dr.y = a.y - b.y;
@@ -22271,7 +22271,7 @@ _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
 
     er = dr;
 
-    vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
+    vnstat = norm(       &er,       &r, &invr);
     if (vnstat == NORM_BIG) {
         make_zero(f);
         return;
@@ -22280,7 +22280,7 @@ _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
     ev = dot<float>(&er, &dv);
 
     f0 = force_magn(p, rnd, ev, r, invr);
-    magn2fo(f0, er, dr, /**/ f);
+    magn2fo(f0, er, dr,      f);
 }
 
 _S_ int colors2pid(int ca, int cb) {
@@ -22291,7 +22291,7 @@ _S_ int colors2pid(int ca, int cb) {
 }
 
 template <typename Fo>
-_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
     int pid;
     pid = colors2pid(a.color, b.color);
@@ -22299,30 +22299,30 @@ _I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *
     p.g = pc->g[pid];
     p.s = pc->s[pid];
     p.spow = pc->spow;
-    pair_force(&p, a, b, rnd, /**/ f);
+    pair_force(&p, a, b, rnd,      f);
 }
 
-/* mirrored: parameters from particle "a" only */
+
 template <typename Fo>
-_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
     int pid = a.color;
     p.a = pc->a[pid];
     p.g = pc->g[pid];
     p.s = pc->s[pid];
     p.spow = pc->spow;
-    pair_force(&p, a, b, rnd, /**/ f);
+    pair_force(&p, a, b, rnd,      f);
 }
 
 
-_I_ void pair_add(const PairFo *b, /**/ PairFo *a)
+_I_ void pair_add(const PairFo *b,      PairFo *a)
 {
     a->x += b->x;
     a->y += b->y;
     a->z += b->z;
 }
 
-_I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
+_I_ void pair_add(const PairSFo *b,      PairSFo *a)
 {
     a->x += b->x;
     a->y += b->y;
@@ -22350,8 +22350,8 @@ struct PairAdhesion;
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
 
-void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
-void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p);
+void pair_set_lj(float sigma, float eps, PairParams *p);
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
@@ -22371,22 +22371,22 @@ enum {
     DEAD  = 1
 };
 
-/* structure of particle                           */
-/* optional "deathlist" for particles to be killed */
+
+
 
 struct PartList {
-    const Particle *pp;   /* particles array          */
-    const int *deathlist; /* what pp is dead or alive */
+    const Particle *pp;
+    const int *deathlist;
 };
 #endif
 
 struct Clist;
 struct ClistMap;
 
-void clist_ini(int LX, int LY, int LZ, /**/ Clist **c);
-void clist_fin(/**/ Clist *c);
+void clist_ini(int LX, int LY, int LZ,      Clist **c);
+void clist_fin(     Clist *c);
 
-void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
+void clist_ini_map(int maxp, int nA, const Clist *c,      ClistMap **m);
 void clist_fin_map(ClistMap *m);
 
 const int* clists_get_ss(const Clist *c);
@@ -22396,18 +22396,18 @@ int        clists_get_n(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
 
 void clist_ini_counts(Clist *c);
-void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m);
+void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-/* special for fluid distribution */
-void clist_subindex_local(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_subindex_remote(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
 
-void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout, /**/ Particle *ppout);
-void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout, /**/ int *iiout);
+void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
-/* quick cell build for single array */
-void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
+void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
+void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
+
+
+void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 #ifndef UDX_CLIST_DEV_COMMON
 #define UDX_CLIST_DEV_COMMON
 #define _I_ static __device__
@@ -22416,14 +22416,14 @@ enum { CLIST_NMAX = (256*256*256) };
 
 _I_ uint clist_encode_id(int s, int pid)
 {
-    /* pid: particle id; s: array id */
+
     assert(pid < CLIST_NMAX);
     return CLIST_NMAX * s + pid;
 }
 
-_I_ void clist_decode_id(uint c, /**/ int *s, int *pid)
+_I_ void clist_decode_id(uint c,      int *s, int *pid)
 {
-    /* pid: particle id; s: array id; c : code */
+
     *pid = c % CLIST_NMAX;
     *s   = c / CLIST_NMAX;
 }
@@ -22435,32 +22435,32 @@ struct Contact;
 struct int3;
 struct PairParams;
 
-void cnt_ini(int maxp, int rank, int3 L, int nobj, /**/ Contact **c);
+void cnt_ini(int maxp, int rank, int3 L, int nobj,      Contact **c);
 void cnt_fin(Contact *c);
 
-void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw, /**/ Contact *c); // <1>
-void cnt_bulk(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw); // <2>
-void cnt_halo(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw, Pap26 all_pp, Fop26 all_ff, const int *all_counts); // <3>
+void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw,      Contact *c);
+void cnt_bulk(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw);
+void cnt_halo(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw, Pap26 all_pp, Fop26 all_ff, const int *all_counts);
 
 template <typename Par>
-static __device__ void cnt_pair(Par params, PairPa a, PairPa b, float rnd, /**/
+static __device__ void cnt_pair(Par params, PairPa a, PairPa b, float rnd,
                             float *fx, float *fy, float *fz) {
     PairFo f;
-    pair_force(&params, a, b, rnd, /**/ &f);
+    pair_force(&params, a, b, rnd,      &f);
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
-/** TODO: should be merged with CntMap in fsi:: */
-enum {CNT_FULL, CNT_EMPTY}; /* map status */
-struct CntMap { /* helps to find remote particle */
+
+enum {CNT_FULL, CNT_EMPTY};
+struct CntMap {
     int  org0, org1, org2;
     int cnt0, cnt1, cnt2;
 };
 
-/* true if `i' is bigger than the number of remote particles */
+
 static __device__ int cnt_endp(const CntMap m, int i) { return i >= m.cnt2; }
 
 static __device__ int cnt_m2id(const CntMap m, int i) {
-    /* return remote particle id */
+
     int m1, m2;
     int id;
     m1 = (int)(i >= m.cnt0);
@@ -22468,7 +22468,7 @@ static __device__ int cnt_m2id(const CntMap m, int i) {
     id = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
     return id;
 }
-static __device__ int cnt_tex2map(int3 L, int zplane, float x, float y, float z, const int *starts, /**/ CntMap *m) {
+static __device__ int cnt_tex2map(int3 L, int zplane, float x, float y, float z, const int *starts,      CntMap *m) {
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int xcenter, xstart, xcount;
@@ -22520,8 +22520,8 @@ static __device__ int cnt_tex2map(int3 L, int zplane, float x, float y, float z,
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
     return CNT_FULL;
 }
-static __device__ int cnt_r2map(int3 L, int zplane, int n, float x, float y, float z, const int *starts, /**/ CntMap *m) {
-    /* coordinate [r] to map */
+static __device__ int cnt_r2map(int3 L, int zplane, int n, float x, float y, float z, const int *starts,      CntMap *m) {
+
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int xcenter, xstart, xcount;
@@ -22583,8 +22583,8 @@ static __device__ void cnt_fetch(int i, const float2 *pp, PairPa *p) {
 template <typename Par>
 __global__ void cnt_bulk_kernel(bool self, Par params, int3 L, int n_dst, const float2 *pp_dst,
                      const int *starts, const uint *ids_src, const float2 *pp_src,
-                     float seed, /**/ float *ff_dst, float *ff_src) {
-    CntMap m; /* see map/ */
+                     float seed,      float *ff_dst, float *ff_src) {
+    CntMap m;
 
     float fx, fy, fz, rnd;
     PairPa a, b;
@@ -22601,14 +22601,14 @@ __global__ void cnt_bulk_kernel(bool self, Par params, int3 L, int n_dst, const 
     if (aid >= n_dst) return;
 
     cnt_fetch(aid, pp_dst, &a);
-    mapstatus = cnt_r2map(L, zplane, n_dst, a.x, a.y, a.z, starts, /**/ &m);
+    mapstatus = cnt_r2map(L, zplane, n_dst, a.x, a.y, a.z, starts,      &m);
 
     if (mapstatus == CNT_EMPTY) return;
     xforce = yforce = zforce = 0;
     for (i = 0; !cnt_endp(m, i); ++i) {
         slot = cnt_m2id(m, i);
         code = ids_src[slot];
-        clist_decode_id(code, /**/ &objid, &bid);
+        clist_decode_id(code,      &objid, &bid);
 
         if (self && aid <= bid) continue;
 
@@ -22616,7 +22616,7 @@ __global__ void cnt_bulk_kernel(bool self, Par params, int3 L, int n_dst, const 
 
         rnd = rnd::mean0var1ii(seed, aid, bid);
 
-        cnt_pair(params, a, b, rnd, /**/ &fx, &fy, &fz);
+        cnt_pair(params, a, b, rnd,      &fx, &fy, &fz);
 
         xforce += fx;
         yforce += fy;
@@ -22636,7 +22636,7 @@ template <typename Par>
 static __device__
 void interactions_one_p(Par params, int3 L, float seed, PairPa a, int aid,
                         const int *starts, const uint *ids_src, const float2 *pp_src,
-                        /**/ float *ff_src, float *fA) {
+                             float *ff_src, float *fA) {
     enum {X, Y, Z};
     CntMap m;
     int mapstatus;
@@ -22649,16 +22649,16 @@ void interactions_one_p(Par params, int3 L, float seed, PairPa a, int aid,
     float rnd;
 
     for (zplane = 0; zplane < 3; ++zplane) {
-        mapstatus = cnt_tex2map(L, zplane, a.x, a.y, a.z, starts, /**/ &m);
+        mapstatus = cnt_tex2map(L, zplane, a.x, a.y, a.z, starts,      &m);
         if (mapstatus == CNT_EMPTY) continue;
         for (i = 0; !cnt_endp(m, i); ++i) {
             slot = cnt_m2id(m, i);
             code = ids_src[slot];
-            clist_decode_id(code, /**/ &oid, &bid);
+            clist_decode_id(code,      &oid, &bid);
 
-            cnt_fetch(bid, pp_src, /**/ &b);
+            cnt_fetch(bid, pp_src,      &b);
             rnd = rnd::mean0var1ii(seed, aid, bid);
-            cnt_pair(params, a, b, rnd, /**/ &fx, &fy, &fz);
+            cnt_pair(params, a, b, rnd,      &fx, &fy, &fz);
             xforce += fx;
             yforce += fy;
             zforce += fz;
@@ -22676,7 +22676,7 @@ template <typename Par>
 __global__ void cnt_halo_kernel(Par params, int3 L, float seed,
                      const int27 starts, int n_dst, Pap26 hpp,
                      const int *cellstarts, const uint *ids_src, const float2 *pp_src,
-                     /**/ Fop26 hff, float *ff_src) {
+                          Fop26 hff, float *ff_src) {
     int aid, start;
     int fid;
     PairPa a;
@@ -22690,14 +22690,14 @@ __global__ void cnt_halo_kernel(Par params, int3 L, float seed,
     cnt_fetch(aid - start, (const float2*)hpp.d[fid], &a);
     fA = hff.d[fid][aid - start].f;
     interactions_one_p(params, L, seed, a, aid, cellstarts, ids_src, pp_src,
-                       /**/ ff_src, fA);
+                            ff_src, fA);
 }
 struct Contact {
-    int nobj;         /* number of objects       */
-    Clist    **cells; /* cell lists              */
-    ClistMap **cmap;  /* helper to build clists  */
-    RNDunif *rgen;    /* random number generator */
-    int3 L;           /* dimensions of subdomain */
+    int nobj;
+    Clist    **cells;
+    ClistMap **cmap;
+    RNDunif *rgen;
+    int3 L;
 };
 static int get_id_inter(int a, int b) {
     int i, j;
@@ -22740,7 +22740,7 @@ void cnt_bulk(const Contact *c, int nw, const PairParams **prms, PaWrap *pw, FoW
                (self, pv, c->L,
                 pwi.n, (const float2*) pwi.pp,
                 starts, ids, (const float2*) pwj.pp,
-                rnd, /**/ (float*) fwi.ff, (float*) fwj.ff));
+                rnd,      (float*) fwi.ff, (float*) fwj.ff));
         }
     }
 }
@@ -22782,7 +22782,7 @@ static void halo_one_type(int idh, const Contact *c, int nw, const PairParams **
         KL(cnt_halo_kernel, (k_cnf(n)),
            (pv, c->L, rnd_get(c->rgen), starts,
             n, PP, cellstarts, ids, (const float2*) pwi.pp,
-            /**/ FF, (float*) fwi.ff));
+                 FF, (float*) fwi.ff));
     }
 }
 
@@ -22809,7 +22809,7 @@ enum {
     CN_SUBINDICES
 };
 
-void cnt_ini(int maxp, int rank, int3 L, int nobj, /**/ Contact **cnt) {
+void cnt_ini(int maxp, int rank, int3 L, int nobj,      Contact **cnt) {
     EMALLOC(1, cnt);
     Contact *c = *cnt;
 
@@ -22820,16 +22820,16 @@ void cnt_ini(int maxp, int rank, int3 L, int nobj, /**/ Contact **cnt) {
     EMALLOC(nobj, &c->cmap);
 
     for (int i = 0; i < nobj; ++i) {
-        clist_ini(L.x, L.y, L.z, /**/ &c->cells[i]);
-        clist_ini_map(maxp, CN_SUBINDICES, c->cells[i], /**/ &c->cmap[i]);
+        clist_ini(L.x, L.y, L.z,      &c->cells[i]);
+        clist_ini_map(maxp, CN_SUBINDICES, c->cells[i],      &c->cmap[i]);
     }
-    UC(rnd_ini(7119 - rank, 187 + rank, 18278, 15674, /**/ &c->rgen));
+    UC(rnd_ini(7119 - rank, 187 + rank, 18278, 15674,      &c->rgen));
 }
 
 void cnt_fin(Contact *c) {
     for (int i = 0; i < c->nobj; ++i) {
-        clist_fin(/**/ c->cells[i]);
-        clist_fin_map(/**/ c->cmap[i]);
+        clist_fin(     c->cells[i]);
+        clist_fin_map(     c->cmap[i]);
     }
     UC(rnd_fin(c->rgen));
     EFREE(c->cells);
@@ -22846,8 +22846,8 @@ static void build_cells(const PaWrap *w, Clist *c, ClistMap *m) {
     lp.deathlist = NULL;
 
     clist_ini_counts(c);
-    clist_subindex(project, CID_SUBINDEX, w->n, lp, /**/ c, m);
-    clist_build_map(cc, /**/ c, m);
+    clist_subindex(project, CID_SUBINDEX, w->n, lp,      c, m);
+    clist_build_map(cc,      c, m);
 }
 
 static bool has_work(int i, int, const PairParams **prms) {
@@ -22859,7 +22859,7 @@ static bool has_work(int i, int, const PairParams **prms) {
     return false;
 }
 
-void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw, /**/ Contact *c) {
+void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw,      Contact *c) {
     for (int i = 0; i < nw; ++i) {
         if (!has_work(i, nw, prms)) continue;
         build_cells(&pw[i], c->cells[i], c->cmap[i]);
