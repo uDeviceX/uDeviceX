@@ -29,4 +29,4 @@ typedef Sarray<Positioncp*, 26> Pocpp26;
 struct PaWrap { int n; const Particle *pp; };
 struct FoWrap { int n; Force *ff; };
 
-#endif /* UDX_EXCH_TYPE_COMMON */
+#endif
