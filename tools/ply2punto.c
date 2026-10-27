@@ -10,29 +10,29 @@ void usg() {
 }
 
 #define NVMAX 1000000
-#define NVAR  6 /* x, y, z, vx, vy, vz */
+#define NVAR  6
 float  buf[NVAR*NVMAX];
 FILE* fd;
 
-char line[FILENAME_MAX]; /* a line from a file */
-int nv; /* number of vertices */
+char line[FILENAME_MAX];
+int nv;
 
 int comment_line() {
     const char pre[] = "comment";
     return strncmp(pre, line, strlen(pre)) == 0;
 }
 
-#define nl() fgets(line, sizeof(line), fd) /* [n]ext [l]ine */
+#define nl() fgets(line, sizeof(line), fd)
 void read_header() {
-    nl(); /* ply */
-    nl(); /* format binary_little_endian 1.0 */
+    nl();
+    nl();
     do nl(); while (comment_line());
-    /* element vertex %nv% */
+
     sscanf(line, "element vertex %d\n", &nv);
-    nl(); nl(); nl(); nl(); nl(); nl(); /* property float [xyzuvw] */
-    nl(); /* element faces */
-    nl(); /* property list int int vertex_index */
-    nl(); /* end_header */
+    nl(); nl(); nl(); nl(); nl(); nl();
+    nl();
+    nl();
+    nl();
 }
 #undef nl
 
@@ -43,7 +43,7 @@ void read_write_vertices() {
     for (iv = ib = 0; iv < nv; ++iv) {
         x = buf[ib++], y = buf[ib++], z = buf[ib++];
         printf("%g %g %g\n", x, y, z);
-        ib++; ib++; ib++; /* skip vx, vy, vz */
+        ib++; ib++; ib++;
     }
 }
 
