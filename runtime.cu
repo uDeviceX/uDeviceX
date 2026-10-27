@@ -23186,24 +23186,23 @@ struct ClistMap {
     Scan *scan;   /* scan workspace */
     long maxp;    /* maximum number of particles per input vector */
 };
-namespace clist_dev {
 enum {
-    VALID   = 0,
-    INVALID = 255
+    CLIST_VALID   = 0,
+    CLIST_INVALID = 255
 };
 
-static __device__ bool inside(float3 r, int3 L) {
+static __device__ bool clist_inside(float3 r, int3 L) {
     return
         (r.x >= -L.x/2) && (r.x < L.x/2) &&
         (r.y >= -L.y/2) && (r.y < L.y/2) &&
         (r.z >= -L.z/2) && (r.z < L.z/2)  ;
 }
 
-static __device__ int project_cid(int i, const int L) {
+static __device__ int clist_project_cid(int i, const int L) {
     return i < 0 ? 0 : i >= L ? L - 1 : i;
 }
 
-static __device__ uchar4 get_entry(const bool project, float3 r, int3 L) {
+static __device__ uchar4 clist_get_entry(const bool project, float3 r, int3 L) {
     uchar4 e;
     int ix, iy, iz;
 
@@ -23213,24 +23212,24 @@ static __device__ uchar4 get_entry(const bool project, float3 r, int3 L) {
     iz = (int) ((double) r.z + L.z/2);
 
     if (project) {
-        ix = project_cid(ix, L.x);
-        iy = project_cid(iy, L.y);
-        iz = project_cid(iz, L.z);
+        ix = clist_project_cid(ix, L.x);
+        iy = clist_project_cid(iy, L.y);
+        iz = clist_project_cid(iz, L.z);
     }
 
-    if (project || inside(r, L)) e.w =   VALID;
-    else                         e.w = INVALID;
+    if (project || clist_inside(r, L)) e.w =   CLIST_VALID;
+    else                         e.w = CLIST_INVALID;
 
     e.x = ix; e.y = iy; e.z = iz;
     return e;
 }
 
-static __device__ int get_cid(int3 L, uchar4 e) {
+static __device__ int clist_get_cid(int3 L, uchar4 e) {
     return e.x + L.x * (e.y + L.y * e.z);
 }
 
 /* project:: if particle is outside of domain L, include it in closest cell */
-__global__ void subindex(bool project, int3 L, int n, const PartList lp, /*io*/ int *counts, /**/ uchar4 *ee) {
+__global__ void clist_subindex_kernel(bool project, int3 L, int n, const PartList lp, /*io*/ int *counts, /**/ uchar4 *ee) {
     int i, cid;
     float3 r;
     uchar4 e;
@@ -23244,19 +23243,19 @@ __global__ void subindex(bool project, int3 L, int n, const PartList lp, /*io*/ 
 
     if (dead) {
         e.x = e.y = e.z = 0;
-        e.w = INVALID;
+        e.w = CLIST_INVALID;
     } else {
-        e = get_entry(project, r, L);
-        cid = get_cid(L, e);
+        e = clist_get_entry(project, r, L);
+        cid = clist_get_cid(L, e);
     }
 
-    if (e.w != INVALID)
+    if (e.w != CLIST_INVALID)
         e.w = atomicAdd(counts + cid, 1);
 
     ee[i] = e;
 }
 
-__global__ void get_ids(int array_id, int3 L, int n, const int *starts, const uchar4 *ee, /**/ uint *ii) {
+__global__ void clist_get_ids_kernel(int array_id, int3 L, int n, const int *starts, const uchar4 *ee, /**/ uint *ii) {
     int i, cid, id, start;
     uchar4 e;
 
@@ -23264,9 +23263,9 @@ __global__ void get_ids(int array_id, int3 L, int n, const int *starts, const uc
     if (i >= n) return;
 
     e = ee[i];
-    cid = get_cid(L, e);
+    cid = clist_get_cid(L, e);
 
-    if (e.w != INVALID) {
+    if (e.w != CLIST_INVALID) {
         start = starts[cid];
         id = start + e.w;
         ii[id] = clist_encode_id(array_id, i);
@@ -23274,20 +23273,19 @@ __global__ void get_ids(int array_id, int3 L, int n, const int *starts, const uc
 }
 
 template <typename T, int N>
-__device__ void fetch(const Sarray<const T*, N> src, uint i, /**/ T *d) {
+__device__ void clist_fetch(const Sarray<const T*, N> src, uint i, /**/ T *d) {
     int src_id, array_id;
     clist_decode_id(i, /**/ &array_id, &src_id);
     *d = src.d[array_id][src_id];
 }
 
 template <typename T, int N>
-__global__ void gather(const Sarray<const T*, N> src, const uint *ii, int n, /**/ T *dd) {
+__global__ void clist_gather_kernel(const Sarray<const T*, N> src, const uint *ii, int n, /**/ T *dd) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
 
     uint code = ii[i];
-    fetch(src, code, /**/ dd + i);
-}
+    clist_fetch(src, code, /**/ dd + i);
 }
 void clist_ini(int LX, int LY, int LZ, /**/ Clist **cl) {
     Clist *c;
@@ -23353,7 +23351,7 @@ static void check_input_size(int id, long n, const ClistMap *m) {
 }
 
 static void comp_subindices(bool project, int n, const PartList lp, int3 dims, /**/ int *cc, uchar4 *ee) {
-    if (n) KL(clist_dev::subindex, (k_cnf(n)), (project, dims, n, lp, /*io*/ cc, /**/ ee));
+    if (n) KL(clist_subindex_kernel, (k_cnf(n)), (project, dims, n, lp, /*io*/ cc, /**/ ee));
 }
 
 void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m) {
@@ -23384,7 +23382,7 @@ void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m) {
         n = nn[i];
         ee = m->ee[i];
         UC(check_input_size(i, n, m));
-        if (n) KL(clist_dev::get_ids, (k_cnf(n)), (i, dims, n, ss, ee, /**/ ii));
+        if (n) KL(clist_get_ids_kernel, (k_cnf(n)), (i, dims, n, ss, ee, /**/ ii));
     }
 }
 
@@ -23398,14 +23396,14 @@ void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap 
     Sarray <const Particle*, 2> src = {pplo, ppre};
     UC(check_map_capacity(nout, m));
     if (nout)
-        KL(clist_dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ ppout));
+        KL(clist_gather_kernel, (k_cnf(nout)), (src, m->ii, nout, /**/ ppout));
 }
 
 void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout, /**/ int *iiout) {
     Sarray <const int*, 2> src = {iilo, iire};
     UC(check_map_capacity(nout, m));
     if (nout)
-        KL(clist_dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ iiout));
+        KL(clist_gather_kernel, (k_cnf(nout)), (src, m->ii, nout, /**/ iiout));
 }
 
 void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m) {
