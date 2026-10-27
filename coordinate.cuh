@@ -1,14 +1,14 @@
 #ifndef UDX_MESH_COORDINATE_COMMON_CUH
 #define UDX_MESH_COORDINATE_COMMON_CUH
 
-static void mesh_coordinate_compute_com(int nv, Vectors *pos, /**/ double *com) {
+static void mesh_coordinate_compute_com(int nv, Vectors *pos,      double *com) {
     enum {X, Y, Z};
     int i;
     float r[3];
     KahanSum *sx, *sy, *sz;
     kahan_sum_ini(&sx); kahan_sum_ini(&sy); kahan_sum_ini(&sz);
     for (i = 0; i < nv; i++) {
-        UC(vectors_get(pos, i, /**/ r));
+        UC(vectors_get(pos, i,      r));
         kahan_sum_add(sx, r[X]);
         kahan_sum_add(sy, r[Y]);
         kahan_sum_add(sz, r[Z]);
@@ -19,15 +19,15 @@ static void mesh_coordinate_compute_com(int nv, Vectors *pos, /**/ double *com) 
     kahan_sum_fin(sx); kahan_sum_fin(sy); kahan_sum_fin(sz);
 }
 
-static void mesh_coordinate_to_com(int nv, int offset, Vectors *pos, /**/ double *rr) {
+static void mesh_coordinate_to_com(int nv, int offset, Vectors *pos,      double *rr) {
     enum {X, Y, Z};
     int i;
     float r0[3];
     double *r1;
     double com[3];
-    UC(mesh_coordinate_compute_com(nv, pos, /**/ com));
+    UC(mesh_coordinate_compute_com(nv, pos,      com));
     for (i = 0; i < nv; i++) {
-        UC(vectors_get(pos, i + offset, /**/ r0));
+        UC(vectors_get(pos, i + offset,      r0));
         r1 = &rr[3*i];
         r1[X] = r0[X] - com[X];
         r1[Y] = r0[Y] - com[Y];
