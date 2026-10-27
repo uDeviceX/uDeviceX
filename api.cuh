@@ -888,9 +888,7 @@ int libconfig_yyparse (void *scanner, struct parse_context *ctx, struct scan_con
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 6
 #define YY_FLEX_SUBMINOR_VERSION 4
-#if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
-#endif
 
 #ifdef yy_create_buffer
 #define libconfig_yy_create_buffer_ALREADY_DEFINED
