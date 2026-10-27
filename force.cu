@@ -100,30 +100,7 @@
 
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
-namespace d {  /* a wrapper for device API */
-typedef int Stream_t; /* TODO: streams are not supported */
-enum {MemcpyHostToHost, MemcpyHostToDevice,
-      MemcpyDeviceToHost, MemcpyDeviceToDevice,
-      MemcpyDefault};
-
-const char *emsg();
-int alloc_pinned(void **pHost, size_t size);
-int is_device_pointer(const void *ptr);
-
-int GetSymbolAddress(void **devPtr, const void *symbol);
-int Malloc(void **p, size_t);
-int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
-int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
-int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
-int Memcpy (void *dst, const void *src, size_t count, int kind);
-int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
-int Memset (void *devPtr, int value, size_t count);
-int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
-int Free (void *devPtr);
-int FreeHost (void *hstPtr);
-int DeviceSynchronize (void);
-int PeekAtLastError(void);
-}
+#include "device.cuh"
 #endif
 #if   defined(DEV_CUDA)
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
@@ -1292,30 +1269,7 @@ void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
 
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
-namespace d {  /* a wrapper for device API */
-typedef int Stream_t; /* TODO: streams are not supported */
-enum {MemcpyHostToHost, MemcpyHostToDevice,
-      MemcpyDeviceToHost, MemcpyDeviceToDevice,
-      MemcpyDefault};
-
-const char *emsg();
-int alloc_pinned(void **pHost, size_t size);
-int is_device_pointer(const void *ptr);
-
-int GetSymbolAddress(void **devPtr, const void *symbol);
-int Malloc(void **p, size_t);
-int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
-int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
-int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
-int Memcpy (void *dst, const void *src, size_t count, int kind);
-int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
-int Memset (void *devPtr, int value, size_t count);
-int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
-int Free (void *devPtr);
-int FreeHost (void *hstPtr);
-int DeviceSynchronize (void);
-int PeekAtLastError(void);
-}
+#include "device.cuh"
 #endif
 #ifndef UDX_FORCE_KL_COMMON
 #define UDX_FORCE_KL_COMMON
@@ -1920,30 +1874,7 @@ void msg_print(const char *fmt, ...); // <2>
 
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
-namespace d {  /* a wrapper for device API */
-typedef int Stream_t; /* TODO: streams are not supported */
-enum {MemcpyHostToHost, MemcpyHostToDevice,
-      MemcpyDeviceToHost, MemcpyDeviceToDevice,
-      MemcpyDefault};
-
-const char *emsg();
-int alloc_pinned(void **pHost, size_t size);
-int is_device_pointer(const void *ptr);
-
-int GetSymbolAddress(void **devPtr, const void *symbol);
-int Malloc(void **p, size_t);
-int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
-int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
-int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
-int Memcpy (void *dst, const void *src, size_t count, int kind);
-int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
-int Memset (void *devPtr, int value, size_t count);
-int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
-int Free (void *devPtr);
-int FreeHost (void *hstPtr);
-int DeviceSynchronize (void);
-int PeekAtLastError(void);
-}
+#include "device.cuh"
 #endif
 #if   defined(DEV_CUDA)
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
@@ -2553,30 +2484,7 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
-namespace d {  /* a wrapper for device API */
-typedef int Stream_t; /* TODO: streams are not supported */
-enum {MemcpyHostToHost, MemcpyHostToDevice,
-      MemcpyDeviceToHost, MemcpyDeviceToDevice,
-      MemcpyDefault};
-
-const char *emsg();
-int alloc_pinned(void **pHost, size_t size);
-int is_device_pointer(const void *ptr);
-
-int GetSymbolAddress(void **devPtr, const void *symbol);
-int Malloc(void **p, size_t);
-int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
-int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
-int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
-int Memcpy (void *dst, const void *src, size_t count, int kind);
-int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
-int Memset (void *devPtr, int value, size_t count);
-int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
-int Free (void *devPtr);
-int FreeHost (void *hstPtr);
-int DeviceSynchronize (void);
-int PeekAtLastError(void);
-}
+#include "device.cuh"
 #endif
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -3563,30 +3471,7 @@ const char* get_filename_ext(const char*);
 #endif
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
-namespace d {  /* a wrapper for device API */
-typedef int Stream_t; /* TODO: streams are not supported */
-enum {MemcpyHostToHost, MemcpyHostToDevice,
-      MemcpyDeviceToHost, MemcpyDeviceToDevice,
-      MemcpyDefault};
-
-const char *emsg();
-int alloc_pinned(void **pHost, size_t size);
-int is_device_pointer(const void *ptr);
-
-int GetSymbolAddress(void **devPtr, const void *symbol);
-int Malloc(void **p, size_t);
-int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
-int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
-int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
-int Memcpy (void *dst, const void *src, size_t count, int kind);
-int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
-int Memset (void *devPtr, int value, size_t count);
-int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
-int Free (void *devPtr);
-int FreeHost (void *hstPtr);
-int DeviceSynchronize (void);
-int PeekAtLastError(void);
-}
+#include "device.cuh"
  #endif
 #if   defined(DEV_CUDA)
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
@@ -7423,30 +7308,7 @@ void error_abort();
 void error_print_stack();
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
-namespace d {  /* a wrapper for device API */
-typedef int Stream_t; /* TODO: streams are not supported */
-enum {MemcpyHostToHost, MemcpyHostToDevice,
-      MemcpyDeviceToHost, MemcpyDeviceToDevice,
-      MemcpyDefault};
-
-const char *emsg();
-int alloc_pinned(void **pHost, size_t size);
-int is_device_pointer(const void *ptr);
-
-int GetSymbolAddress(void **devPtr, const void *symbol);
-int Malloc(void **p, size_t);
-int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
-int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
-int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
-int Memcpy (void *dst, const void *src, size_t count, int kind);
-int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
-int Memset (void *devPtr, int value, size_t count);
-int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
-int Free (void *devPtr);
-int FreeHost (void *hstPtr);
-int DeviceSynchronize (void);
-int PeekAtLastError(void);
-}
+#include "device.cuh"
 #endif /* UDX_FORCE_DEVICE_API_COMMON */
 /* function and variable type [q]ualifiers */
 
