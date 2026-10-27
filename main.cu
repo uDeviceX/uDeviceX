@@ -5,33 +5,33 @@
 #include <mpi.h>
 #include <vector_types.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -45,10 +45,10 @@ struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -89,8 +89,8 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -98,7 +98,7 @@ void conf_write_history(const Config *cfg, FILE *stream); // <2>
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -109,7 +109,7 @@ void conf_write_history(const Config *cfg, FILE *stream); // <2>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -131,15 +131,15 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void os_mkdir(const char* path); // <1>
-long os_time();                  // <2>
-void os_srand(long int seedval); // <3>
-double os_drand();               // <4>
-void os_sleep(unsigned int seconds); // <5>
-void os_malloc_stats();              // TODO
+void os_mkdir(const char* path);
+long os_time();
+void os_srand(long int seedval);
+double os_drand();
+void os_sleep(unsigned int seconds);
+void os_malloc_stats();
 
-namespace d {  /* a wrapper for device API */
-typedef int Stream_t; /* TODO: streams are not supported */
+namespace d {
+typedef int Stream_t;
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
@@ -166,8 +166,8 @@ int PeekAtLastError(void);
 struct Coords;
 struct Config;
 
-void coords_ini(MPI_Comm cart, int Lx, int Ly, int Lz, Coords **c); // <1>
-void coords_fin(Coords *c); // <2>
+void coords_ini(MPI_Comm cart, int Lx, int Ly, int Lz, Coords **c);
+void coords_fin(Coords *c);
 
 void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c);
 
@@ -185,24 +185,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -217,13 +217,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 namespace m {
@@ -268,7 +268,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -276,7 +276,7 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 
-/* solvent colors */
+
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
     _(RED)
@@ -290,64 +290,64 @@ enum {
 #undef make_enum_color
 
 enum {
-    /* wall margins */
+
     XWM = 6,
     YWM = 6,
     ZWM = 6,
 
     SAFETY_FACTOR_MAXP = 3,
 
-    /* maximum number of particles per solid */
+
     MAX_PSOLID_NUM = 12000,
 
-    /* maximum number of solids per node */
+
     MAX_SOLIDS = 100,
 
-    /* maximum number of object types (solid, rbc, ...) */
+
     MAX_MBR_TYPES = 2,
     MAX_RIG_TYPES = 2,
     MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
 
-    /* maximum number density of particles of the objects */
+
     MAX_OBJ_DENSITY = 30,
 
-    /* maximum number of red blood cells per node */
+
     MAX_CELL_NUM = 1500,
 
-    /* maximum texture size in bytes */
+
     MAX_TEXO_SIZE = 100000000,
 
-    /* safety factor for dpd halo interactions */
+
     HSAFETY_FACTOR = 10,
 
-    /* safety factor for odist fragments */
+
     ODSTR_FACTOR = 3,
 };
 
-/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+
 #define RBC_SPRING_CAP (0.99)
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -355,7 +355,7 @@ const char* get_filename_ext(const char*);
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -368,8 +368,8 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
-/* [m]pi [c]heck macros */
+
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -378,7 +378,7 @@ void check(int code, const char *file, int line);
 }
 
 template <typename T, int N>
-struct Sarray { /* [s]tatic array */
+struct Sarray {
     T d[N];
 };
 
@@ -387,13 +387,13 @@ struct Particle {
 };
 
 struct Rigid {
-    float Iinv[6],            /* moment of inertia            6        */
-        mass,                 /* mass of the solid            7        */
-        com[3],               /* [c]enter [o]f [m]ass         10       */
-        v[3], om[3],          /* linear and angular velocity  13 16    */
-        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
-        fo[3], to[3],         /* force, torque                28 31    */
-        id;                   /* id of the solid              32       */
+    float Iinv[6],
+        mass,
+        com[3],
+        v[3], om[3],
+        e0[3], e1[3], e2[3],
+        fo[3], to[3],
+        id;
 };
 
 struct Force {
@@ -401,12 +401,12 @@ struct Force {
 };
 
 struct Momentum {
-    float P[3], L[3]; /* linear and angular momentum */
+    float P[3], L[3];
 };
 
 struct Positioncp {
-    float rc[3]; /* current position  */
-    float rp[3]; /* previous position */
+    float rc[3];
+    float rp[3];
 };
 
 typedef Sarray<int, 26>       int26;
@@ -418,21 +418,21 @@ typedef Sarray<Force*,    26> Fop26;
 typedef Sarray<Momentum*, 26> Mop26;
 typedef Sarray<Positioncp*, 26> Pocpp26;
 
-/* particles wrap */
+
 struct PaWrap {
     int n;
     const Particle *pp;
 };
 
-/* forces wrap */
+
 struct FoWrap {
     int n;
     Force *ff;
 };
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -441,29 +441,29 @@ struct FoWrap {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
@@ -479,8 +479,8 @@ struct PairAdhesion;
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
 
-void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
-void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p);
+void pair_set_lj(float sigma, float eps, PairParams *p);
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
@@ -508,12 +508,12 @@ void parray_push_cc(const int *cc, PaArray *a);
 
 bool parray_is_colored(const PaArray *a);
 
-void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
-void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+void parray_get_view(const PaArray *a, PaArray_v *v);
+void parray_get_view(const PaArray *a, PaCArray_v *v);
 struct FoArray {
     bool stress;
     float *ff;
-    float *ss; /* stress */
+    float *ss;
 };
 
 struct FoArray_v;
@@ -528,8 +528,8 @@ void farray_clear(FoArray *);
 
 bool farray_has_stress(const FoArray *a);
 
-void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
-void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+void farray_get_view(const FoArray *a, FoArray_v *v);
+void farray_get_view(const FoArray *a, FoSArray_v *v);
 struct PFarray {
     PaArray p;
     FoArray f;
@@ -555,18 +555,18 @@ enum {
     DEAD  = 1
 };
 
-/* structure of particle                           */
-/* optional "deathlist" for particles to be killed */
+
+
 
 struct PartList {
-    const Particle *pp;   /* particles array          */
-    const int *deathlist; /* what pp is dead or alive */
+    const Particle *pp;
+    const int *deathlist;
 };
 
 struct Particle;
 struct DiagPart;
 
-void diag_part_ini(const char *path, /**/ DiagPart**);
+void diag_part_ini(const char *path,      DiagPart**);
 void diag_part_fin(DiagPart*);
 void diag_part_apply(DiagPart*, MPI_Comm, float time, int n, const Particle*);
 struct GridSampler;
@@ -577,17 +577,17 @@ struct Particle;
 void grid_sampler_data_ini(GridSampleData **);
 void grid_sampler_data_fin(GridSampleData  *);
 
-void grid_sampler_data_reset(GridSampleData *); // <1>
+void grid_sampler_data_reset(GridSampleData *);
 void grid_sampler_data_push(long n, const Particle *pp, const int *cc,
-                            const float *ss, GridSampleData *); // <2>
+                            const float *ss, GridSampleData *);
 
 
-void grid_sampler_ini(bool colors, bool stress, int3 L, int3 N, GridSampler**); // <1>
-void grid_sampler_fin(GridSampler*); // <2>
+void grid_sampler_ini(bool colors, bool stress, int3 L, int3 N, GridSampler**);
+void grid_sampler_fin(GridSampler*);
 
-void grid_sampler_reset(GridSampler*); // <1>
-void grid_sampler_add(const GridSampleData*, GridSampler*); // <2>
-void grid_sampler_dump(MPI_Comm, const char *dir, long id, GridSampler*); // <3>
+void grid_sampler_reset(GridSampler*);
+void grid_sampler_add(const GridSampleData*, GridSampler*);
+void grid_sampler_dump(MPI_Comm, const char *dir, long id, GridSampler*);
 
 struct Dbg;
 
@@ -598,12 +598,12 @@ struct int3;
 struct Coords;
 
 enum {
-    DBG_POS,      // <1>
-    DBG_POS_SOFT, // <2>
-    DBG_VEL,      // <3>
-    DBG_FORCES,   // <4>
-    DBG_COLORS,   // <5>
-    DBG_CLIST,    // <6>
+    DBG_POS,
+    DBG_POS_SOFT,
+    DBG_VEL,
+    DBG_FORCES,
+    DBG_COLORS,
+    DBG_CLIST,
     DBG_NKIND_
 };
 
@@ -634,10 +634,10 @@ enum {RESTART_BEGIN=RESTART_FINAL};
 typedef void (*StreamWriter)(const void*, FILE*);
 typedef void (*StreamReader)(FILE*, void*);
 
-void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
-void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
-void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
-void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp);
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter);
 
 void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
 void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
@@ -646,10 +646,10 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
 struct Clist;
 struct ClistMap;
 
-void clist_ini(int LX, int LY, int LZ, /**/ Clist **c);
-void clist_fin(/**/ Clist *c);
+void clist_ini(int LX, int LY, int LZ,      Clist **c);
+void clist_fin(     Clist *c);
 
-void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
+void clist_ini_map(int maxp, int nA, const Clist *c,      ClistMap **m);
 void clist_fin_map(ClistMap *m);
 
 const int* clists_get_ss(const Clist *c);
@@ -659,37 +659,37 @@ int        clists_get_n(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
 
 void clist_ini_counts(Clist *c);
-void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m);
+void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-/* special for fluid distribution */
-void clist_subindex_local(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_subindex_remote(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
 
-void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout, /**/ Particle *ppout);
-void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout, /**/ int *iiout);
+void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
-/* quick cell build for single array */
-void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
+void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
+void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
+
+
+void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 
 struct FluQuants {
-    Particle *pp, *pp0;    /* particles on device  */
-    int       n;           /* particle number      */
-    Clist     *cells;      /* cell lists           */
-    ClistMap *mcells;      /* cell lists map       */
-    Particle *pp_hst;      /* particles on host    */
+    Particle *pp, *pp0;
+    int       n;
+    Clist     *cells;
+    ClistMap *mcells;
+    Particle *pp_hst;
 
-    /* optional data */
+
 
     bool ids, colors;
 
-    int *ii, *ii0;  /* global ids on device */
-    int *ii_hst;    /* global ids on host   */
+    int *ii, *ii0;
+    int *ii_hst;
 
-    int *cc, *cc0;  /* colors on device */
-    int *cc_hst;    /* colors on host   */
+    int *cc, *cc0;
+    int *cc_hst;
 
-    int maxp; /* maximum particle number */
+    int maxp;
 };
 
 struct Coords;
@@ -698,54 +698,54 @@ struct GenColor;
 void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
 void flu_fin(FluQuants *q);
 
-void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q); // <1>
-void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
+void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q);
+void flu_gen_ids(MPI_Comm, const int n, FluQuants *q);
 
-void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);     // <1>
-void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q); // <2>
+void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);
+void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q);
 
-void flu_txt_dump(const Coords*, const FluQuants *q); // <1>
+void flu_txt_dump(const Coords*, const FluQuants *q);
 
-/* build cells only from one array of particles fully contained in the domain */
-/* warning: this will delete particles which are outside                      */
-void flu_build_cells(/**/ FluQuants *q); // <2>
+
+
+void flu_build_cells(     FluQuants *q);
 
 typedef unsigned char data_t;
 
 enum {
-    NFRAGS = 26, /* number of fragments for one halo */
-    BULK   = 26, /* bulk id                          */
-    NBAGS  = 27, /* fragments + bulk                 */
+    NFRAGS = 26,
+    BULK   = 26,
+    NBAGS  = 27,
 };
 
-/* Allocation mod for bags */
+
 enum AllocMod {
-    HST_ONLY,   /* only host bags allocated                 */
-    DEV_ONLY,   /* only device bags allocated               */
-    PINNED,     /* both host and device pinned              */
-    PINNED_HST, /* host pinned; no device memory            */
-    PINNED_DEV, /* host pinned; device global memory on gpu */
-    NONE        /* no allocation                            */
+    HST_ONLY,
+    DEV_ONLY,
+    PINNED,
+    PINNED_HST,
+    PINNED_DEV,
+    NONE
 };
 
 struct dBags {
-    data_t *data[NBAGS]; /* data on the device         */
+    data_t *data[NBAGS];
 };
 
 struct hBags {
-    data_t *data[NBAGS]; /* data on the host                    */
-    int         *counts; /* size of the data                    */
-    int capacity[NBAGS]; /* capacity of each frag (elem number) */
-    size_t bsize;        /* size of one datum in bytes          */
+    data_t *data[NBAGS];
+    int         *counts;
+    int capacity[NBAGS];
+    size_t bsize;
 };
 
 struct Comm;
 struct CommBuffer;
 
-void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-void comm_ini(MPI_Comm cart, /**/ Comm **c);
-void comm_fin(/**/ Comm *c);
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS],      hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod,      hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart,      Comm **c);
+void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
@@ -753,20 +753,20 @@ void comm_buffer_fin(CommBuffer*);
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-void comm_post_recv(hBags *b, Comm *c);           // <1>
-void comm_post_send(const hBags *b, Comm *c);     // <2>
+void comm_post_recv(hBags *b, Comm *c);
+void comm_post_send(const hBags *b, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
-void comm_wait_send(Comm *c);                     // <4>
+void comm_wait_recv(Comm *c,      hBags *b);
+void comm_wait_send(Comm *c);
 
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_recv(Comm *c,      CommBuffer *cb);
 void comm_wait_send(Comm *c);
 
-int    comm_get_number_capacity(int i, const hBags *b); // <1>
-size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+int    comm_get_number_capacity(int i, const hBags *b);
+size_t comm_get_byte_capacity(int i, const hBags *b);
 
 struct DFluPack;
 struct DFluComm;
@@ -774,63 +774,63 @@ struct DFluUnpack;
 struct DFluStatus;
 
 void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **p);
-void dflu_comm_ini(MPI_Comm comm, /**/ DFluComm **c);
+void dflu_comm_ini(MPI_Comm comm,      DFluComm **c);
 void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack **u);
 
 void dflu_pack_fin(DFluPack *p);
 void dflu_comm_fin(DFluComm *c);
 void dflu_unpack_fin(DFluUnpack *u);
 
-/* map */
+
 void dflu_build_map(int n, const PartList lp, DFluPack *p);
 
-/* pack */
-void dflu_pack(const FluQuants *q, /**/ DFluPack *p);
-void dflu_download(DFluPack *p, /**/ DFluStatus *s);
 
-/* communication */
+void dflu_pack(const FluQuants *q,      DFluPack *p);
+void dflu_download(DFluPack *p,      DFluStatus *s);
+
+
 void dflu_post_recv(DFluComm *c, DFluUnpack *u);
 void dflu_post_send(DFluPack *p, DFluComm   *c);
 void dflu_wait_recv(DFluComm *c, DFluUnpack *u);
 void dflu_wait_send(DFluComm *c);
 
-/* unpack */
-void dflu_unpack(/**/ DFluUnpack *u);
+
+void dflu_unpack(     DFluUnpack *u);
 
 
-/* cell lists */
-void dflu_bulk(PartList lp, /**/ FluQuants *q);
-void dflu_halo(const DFluUnpack *u, /**/ FluQuants *q);
-void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuants *q);
+
+void dflu_bulk(PartList lp,      FluQuants *q);
+void dflu_halo(const DFluUnpack *u,      FluQuants *q);
+void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u,      FluQuants *q);
 struct DFluStatus;
 struct Config;
 
-/* ini */
+
 void dflu_status_ini(DFluStatus **s);
 void dflu_status_fin(DFluStatus  *s);
 
-/* get */
+
 int  dflu_status_nullp(DFluStatus *s);
 int  dflu_status_success(DFluStatus *s);
 void dflu_status_log(DFluStatus *s);
 
-/* set */
-void dflu_status_exceed(int frag, int counter, int capacity, /**/ DFluStatus *s);
+
+void dflu_status_exceed(int frag, int counter, int capacity,      DFluStatus *s);
 
 
-/* helpers to communicate between halo interactions and exchanger */
+
 
 namespace flu {
 
 enum { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
-struct LFrag { /* "local" fragment */
+struct LFrag {
     PaArray parray;
-    const int *ii; /* index */
+    const int *ii;
     int n;
 };
 
-struct RFrag { /* "remote" fragment */
+struct RFrag {
     PaArray parray;
     const int *start;
     int dx, dy, dz, xcells, ycells, zcells;
@@ -846,24 +846,24 @@ typedef Sarray<LFrag,   26> LFrag26;
 typedef Sarray<RFrag,   26> RFrag26;
 typedef Sarray<RndFrag, 26> RndFrag26;
 
-} // flu
+}
 struct EFluPack;
 struct EFluComm;
 struct EFluUnpack;
 struct PaArray;
 
 void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **p);
-void eflu_comm_ini(MPI_Comm comm, /**/ EFluComm **c);
+void eflu_comm_ini(MPI_Comm comm,      EFluComm **c);
 void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **u);
 
 void eflu_pack_fin(EFluPack *p);
 void eflu_comm_fin(EFluComm *c);
 void eflu_unpack_fin(EFluUnpack *u);
 
-void eflu_compute_map(const int *start, const int *count, /**/ EFluPack *p);
-void eflu_download_cell_starts(/**/ EFluPack *p);
+void eflu_compute_map(const int *start, const int *count,      EFluPack *p);
+void eflu_download_cell_starts(     EFluPack *p);
 
-void eflu_pack(const PaArray *parray, /**/ EFluPack *p);
+void eflu_pack(const PaArray *parray,      EFluPack *p);
 void eflu_download_data(EFluPack *p);
 
 void eflu_post_recv(EFluComm *c, EFluUnpack *u);
@@ -876,8 +876,8 @@ void eflu_unpack(EFluUnpack *u);
 using flu::LFrag26;
 using flu::RFrag26;
 
-void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags);
-void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags);
+void eflu_get_local_frags(const EFluPack *p,      LFrag26 *lfrags);
+void eflu_get_remote_frags(const EFluUnpack *u,      RFrag26 *rfrags);
 
 
 struct PairParams;
@@ -886,18 +886,18 @@ struct FluForcesHalo;
 struct PaArray;
 struct FoArray;
 
-void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **b);
-void fluforces_bulk_fin(/**/ FluForcesBulk *b);
+void fluforces_bulk_ini(int3 L, int maxp,      FluForcesBulk **b);
+void fluforces_bulk_fin(     FluForcesBulk *b);
 
-void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b);
+void fluforces_bulk_prepare(int n, const PaArray *a,      FluForcesBulk *b);
 void fluforces_bulk_apply(const PairParams*, int n, const FluForcesBulk *b, const int *start, const int *count,
-                          /**/ const FoArray *ff);
+                               const FoArray *ff);
 
-void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd);
-void fluforces_halo_fin(/**/ FluForcesHalo *h);
+void fluforces_halo_ini(MPI_Comm cart, int3 L,      FluForcesHalo **hd);
+void fluforces_halo_fin(     FluForcesHalo *h);
 
-void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h);
-void fluforces_halo_apply(const PairParams*, const FluForcesHalo *h, /**/ const FoArray *farray);
+void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags,      FluForcesHalo *h);
+void fluforces_halo_apply(const PairParams*, const FluForcesHalo *h,      const FoArray *farray);
 
 struct IoBop;
 
@@ -918,13 +918,13 @@ struct Config;
 void inter_color_ini(GenColor**);
 void inter_color_fin(GenColor*);
 
-void inter_color_set_drop(float R, GenColor*); // <1>
-void inter_color_set_uniform(GenColor*); // <2>
+void inter_color_set_drop(float R, GenColor*);
+void inter_color_set_uniform(GenColor*);
 
 void inter_color_set_conf(const Config*, GenColor*);
 
-void inter_color_apply_hst(const Coords*, const GenColor*, int n, const Particle *pp, /**/ int *cc);
-void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle *pp, /**/ int *cc);
+void inter_color_apply_hst(const Coords*, const GenColor*, int n, const Particle *pp,      int *cc);
+void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle *pp,      int *cc);
 
 struct Particle;
 struct Force;
@@ -936,22 +936,22 @@ struct Coords;
 void bforce_ini(BForce **p);
 void bforce_fin(BForce *p);
 
-void bforce_set_none(/**/ BForce *p);            // <1>
-void bforce_set_cste(float3 f, /**/ BForce *p);  // <2>
-void bforce_set_dp(float a, /**/ BForce *p);     // <3>
-void bforce_set_shear(float a, /**/ BForce *p);  // <4>
-void bforce_set_rol(float a, /**/ BForce *p);    // <5>
-void bforce_set_rad(float a, /**/ BForce *p);    // <6>
+void bforce_set_none(     BForce *p);
+void bforce_set_cste(float3 f,      BForce *p);
+void bforce_set_dp(float a,      BForce *p);
+void bforce_set_shear(float a,      BForce *p);
+void bforce_set_rol(float a,      BForce *p);
+void bforce_set_rad(float a,      BForce *p);
 
-void bforce_set_conf(const Config *cfg, /**/ BForce *bf);
+void bforce_set_conf(const Config *cfg,      BForce *bf);
 
-void bforce_adjust(float3 f, /**/ BForce *fpar); // <1>
-void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Particle *pp, /**/ Force *ff); // <2>
+void bforce_adjust(float3 f,      BForce *fpar);
+void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Particle *pp,      Force *ff);
 struct Force;
 struct Particle;
 
-void scheme_move_apply(float dt, float mass, int n, const Force*, Particle*); // <1>
-void scheme_move_clear_vel(int n, Particle*); // <2>
+void scheme_move_apply(float dt, float mass, int n, const Force*, Particle*);
+void scheme_move_clear_vel(int n, Particle*);
 struct Particle;
 struct Config;
 struct Restrain;
@@ -964,45 +964,45 @@ struct SchemeQQ {
 void scheme_restrain_ini(Restrain**);
 void scheme_restrain_fin(Restrain*);
 
-void scheme_restrain_set_red(Restrain*); // <1>
-void scheme_restrain_set_rbc(Restrain*); // <2>
-void scheme_restrain_set_none(Restrain*); // <3>
-void scheme_restrain_set_freq(int freq, Restrain*); // <4>
+void scheme_restrain_set_red(Restrain*);
+void scheme_restrain_set_rbc(Restrain*);
+void scheme_restrain_set_none(Restrain*);
+void scheme_restrain_set_freq(int freq, Restrain*);
 
 void scheme_restrain_set_conf(const Config*, Restrain*);
 
-void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain *r, SchemeQQ qq);
+void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it,      Restrain *r, SchemeQQ qq);
 struct TimeLine;
 
-void time_line_ini(float start, /**/ TimeLine**);
+void time_line_ini(float start,      TimeLine**);
 void time_line_fin(TimeLine*);
 
-void time_line_advance(float dt, TimeLine*);           // <1>
-int  time_line_cross(const TimeLine*, float interval); // <2>
+void time_line_advance(float dt, TimeLine*);
+int  time_line_cross(const TimeLine*, float interval);
 
-void time_line_strt_dump(MPI_Comm, const char *base, int id, const TimeLine*); // <1>
-void time_line_strt_read(const char *base, int id, TimeLine*); // <2>
+void time_line_strt_dump(MPI_Comm, const char *base, int id, const TimeLine*);
+void time_line_strt_read(const char *base, int id, TimeLine*);
 
-float time_line_get_current  (const TimeLine*); // <1>
-long  time_line_get_iteration(const TimeLine*); // <2>
+float time_line_get_current  (const TimeLine*);
+long  time_line_get_iteration(const TimeLine*);
 struct TimeStep;
 struct TimeStepAccel;
 struct Force;
 struct Config;
 
-void time_step_accel_ini(/**/ TimeStepAccel**);
+void time_step_accel_ini(     TimeStepAccel**);
 void time_step_accel_fin(TimeStepAccel*);
 
-void time_step_accel_push(TimeStepAccel*, float m, int n, Force*); // <1>
-void time_step_accel_reset(TimeStepAccel*); // <2>
+void time_step_accel_push(TimeStepAccel*, float m, int n, Force*);
+void time_step_accel_reset(TimeStepAccel*);
 
 
-void time_step_ini(const Config*, /**/ TimeStep**); // <1>
+void time_step_ini(const Config*,      TimeStep**);
 void time_step_fin(TimeStep*);
 
-float time_step_dt(TimeStep*, MPI_Comm, TimeStepAccel*); // <1>
-float time_step_dt0(TimeStep*);                          // <2>
-void time_step_log(TimeStep*);                           // <3>
+float time_step_dt(TimeStep*, MPI_Comm, TimeStepAccel*);
+float time_step_dt0(TimeStep*);
+void time_step_log(TimeStep*);
 
 struct PidVCont;
 struct Coords;
@@ -1011,29 +1011,29 @@ struct float3;
 struct int3;
 struct Particle;
 
-void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c);
-void vcont_fin(/**/ PidVCont *cont);
+void vcont_ini(MPI_Comm comm, int3 L,      PidVCont **c);
+void vcont_fin(     PidVCont *cont);
 
-void vcont_set_params(float factor, float Kp, float Ki, float Kd, /**/ PidVCont *c); // <1>
-void vcont_set_target(float3 vtarget, /**/ PidVCont *c);  // <2>
-void vcont_set_cart(/**/ PidVCont *c);  // <3>
-void vcont_set_radial(/**/ PidVCont *c);  // <4>
+void vcont_set_params(float factor, float Kp, float Ki, float Kd,      PidVCont *c);
+void vcont_set_target(float3 vtarget,      PidVCont *c);
+void vcont_set_cart(     PidVCont *c);
+void vcont_set_radial(     PidVCont *c);
 
-void vcont_set_conf(const Config *cfg, /**/ PidVCont *c);
+void vcont_set_conf(const Config *cfg,      PidVCont *c);
 
-void vcont_strt_dump(MPI_Comm, const char *base, int id, const PidVCont*); // <1>
-void vcont_strt_read(          const char *base, int id, PidVCont*);       // <2>
+void vcont_strt_dump(MPI_Comm, const char *base, int id, const PidVCont*);
+void vcont_strt_read(          const char *base, int id, PidVCont*);
 
-void   vcont_sample(const Coords *coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c); // <1>
-float3 vcont_adjustF(/**/ PidVCont *c); // <2>
-void   vcont_log(const PidVCont *c);    // <3>
+void   vcont_sample(const Coords *coords, int n, const Particle *pp, const int *starts, const int *counts,      PidVCont *c);
+float3 vcont_adjustF(     PidVCont *c);
+void   vcont_log(const PidVCont *c);
 struct DCont;
 struct DContMap;
 
 struct Config;
 struct Coords;
 
-void den_ini(int maxp, /**/ DCont**);
+void den_ini(int maxp,      DCont**);
 void den_map_ini(DContMap**);
 
 void den_fin(DCont*);
@@ -1044,12 +1044,12 @@ void den_map_set_circle(const Coords*, float R, DContMap*);
 
 void den_map_set_conf(const Config*, const Coords*, DContMap*);
 
-void den_reset(int n, /**/ DCont*d); // <1>
-void den_filter_particles(int maxdensity, const DContMap*, const int *starts, const int *counts, /**/ DCont*); // <2>
-void den_download_ndead(DCont*); // <3>
+void den_reset(int n,      DCont*d);
+void den_filter_particles(int maxdensity, const DContMap*, const int *starts, const int *counts,      DCont*);
+void den_download_ndead(DCont*);
 
-const int* den_get_deathlist(DCont*); // <1>
-int        den_get_ndead(DCont*); // <2>
+const int* den_get_deathlist(DCont*);
+int        den_get_ndead(DCont*);
 struct Outflow;
 
 struct Config;
@@ -1057,20 +1057,20 @@ struct Coords;
 struct Particle;
 struct float3;
 
-void outflow_ini(int maxp, /**/ Outflow **o);
-void outflow_fin(/**/ Outflow *o);
+void outflow_ini(int maxp,      Outflow **o);
+void outflow_fin(     Outflow *o);
 
 void outflow_set_params_circle(const Coords*, float3 c, float R, Outflow *o);
 void outflow_set_params_plate(const Coords*, int dir, float r0, Outflow *o);
 
 void outflow_set_conf(const Config *cfg, const Coords*, Outflow *);
 
-void outflow_filter_particles(int n, const Particle *pp, /**/ Outflow *o); // <1>
+void outflow_filter_particles(int n, const Particle *pp,      Outflow *o);
 
-void outflow_download_ndead(Outflow *o);                                   // <2>
+void outflow_download_ndead(Outflow *o);
 
-int* outflow_get_deathlist(Outflow *o);                                    // <3>
-int  outflow_get_ndead(Outflow *o);                                        // <4>
+int* outflow_get_deathlist(Outflow *o);
+int  outflow_get_ndead(Outflow *o);
 
 struct Inflow;
 struct Config;
@@ -1086,14 +1086,14 @@ void inflow_ini_velocity(Inflow *i);
 
 void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float L2,
                              float3 u, bool upoiseuille, bool vpoiseuille,
-                             /**/ Inflow *i);
+                                  Inflow *i);
 void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float u, bool poiseuille,
-                              /**/ Inflow *i);
+                                   Inflow *i);
 
-void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow *i);
+void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow *i);
 
-void inflow_create_pp(float kBT, int numdensity, float dt, Inflow *i, int *n, Particle *pp); // <1>
-void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Inflow *i, int *n, Particle *pp, int *cc); // <2>
+void inflow_create_pp(float kBT, int numdensity, float dt, Inflow *i, int *n, Particle *pp);
+void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Inflow *i, int *n, Particle *pp, int *cc);
 
 struct int3;
 struct Particle;
@@ -1101,7 +1101,7 @@ struct Coords;
 
 struct Rnd;
 
-void color_linear_flux(const Coords*, int3 L, int dir, int color, int n, const Particle *pp, /**/int *cc);
+void color_linear_flux(const Coords*, int3 L, int dir, int color, int n, const Particle *pp,     int *cc);
 
 void color_tracers(const Coords *coords, int color, const float R, const float Po, int n, const Particle *pp, int *cc);
 void decolor_tracers(const Coords *coords, int color, const float R, const float Po, int n, const Particle *pp, int *cc);
@@ -1129,42 +1129,42 @@ void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, O
 void objects_fin(Objects*);
 
 void objects_save_mesh(Objects*);
-void objects_clear_vel(Objects*);         // <1>
-void objects_advance(float dt, Objects*); // <2>
-void objects_distribute(Objects*);        // <3>
-void objects_update_dpd_prms(float dt, float kBT, Objects*); // <4>
+void objects_clear_vel(Objects*);
+void objects_advance(float dt, Objects*);
+void objects_distribute(Objects*);
+void objects_update_dpd_prms(float dt, float kBT, Objects*);
 
-void objects_clear_forces(Objects*);                 // <1>
-void objects_body_forces(const BForce*, Objects *o); // <2>
+void objects_clear_forces(Objects*);
+void objects_body_forces(const BForce*, Objects *o);
 
-void objects_mesh_dump(Objects*);                    // <1>
-void objects_diag_dump(float t, Objects*);           // <2>
-void objects_part_dump(long id, Objects*, IoBop*);   // <3>
+void objects_mesh_dump(Objects*);
+void objects_diag_dump(float t, Objects*);
+void objects_part_dump(long id, Objects*, IoBop*);
 
-void objects_strt_templ(const char *base, Objects*);         // <4>
-void objects_strt_dump(const char *base, long id, Objects*); // <5>
+void objects_strt_templ(const char *base, Objects*);
+void objects_strt_dump(const char *base, long id, Objects*);
 
 bool objects_have_bounce(const Objects*);
 
-void objects_get_particles_all(Objects*, PFarrays*);    // <1>
-void objects_get_particles_mbr(Objects*, PFarrays*);    // <2>
-void objects_get_accel(const Objects*, TimeStepAccel*); // <3>
+void objects_get_particles_all(Objects*, PFarrays*);
+void objects_get_particles_mbr(Objects*, PFarrays*);
+void objects_get_accel(const Objects*, TimeStepAccel*);
 
-void objects_get_params_fsi(const Objects*, const PairParams*[]);           // <4>
-void objects_get_params_adhesion(const Objects*, const PairParams*[]);      // <5>
-void objects_get_params_repulsion(const Objects*, const WallRepulsePrm*[]); // <6>
-void objects_get_params_cnt(const Objects*, const PairParams***);           // <7>
+void objects_get_params_fsi(const Objects*, const PairParams*[]);
+void objects_get_params_adhesion(const Objects*, const PairParams*[]);
+void objects_get_params_repulsion(const Objects*, const WallRepulsePrm*[]);
+void objects_get_params_cnt(const Objects*, const PairParams***);
 
-void objects_gen_mesh(Objects*);                           // <1>
-void objects_remove_from_wall(const Sdf *sdf, Objects *o); // <2>
-void objects_gen_freeze(PFarray*, Objects*);               // <3>
+void objects_gen_mesh(Objects*);
+void objects_remove_from_wall(const Sdf *sdf, Objects *o);
+void objects_gen_freeze(PFarray*, Objects*);
 
 void objects_restart(Objects*);
 
 void objects_activate_mbr_bounce(Objects*);
-void objects_bounce(float dt, float flu_mass, const Clist *flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, Objects *obj); // <1>
-void objects_recolor_flu(Objects*, PFarray *flu); // <2>
-double objects_mbr_tot_volume(const Objects*);    // <3>
+void objects_bounce(float dt, float flu_mass, const Clist *flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, Objects *obj);
+void objects_recolor_flu(Objects*, PFarray *flu);
+double objects_mbr_tot_volume(const Objects*);
 
 void objects_check_size(const Objects*);
 void objects_check_vel(const Objects*, const Dbg*, float dt);
@@ -1177,16 +1177,16 @@ struct Opt;
 struct PFarray;
 struct PFarrays;
 
-void obj_inter_ini(const Config*, const Opt*, MPI_Comm, float dt, int maxp, /**/ ObjInter**);
+void obj_inter_ini(const Config*, const Opt*, MPI_Comm, float dt, int maxp,      ObjInter**);
 void obj_inter_fin(ObjInter*);
 
-void obj_inter_forces(ObjInter*, const PairParams **fsi_prms, const PairParams **cnt_prms, PFarray *flu, const int *flu_start, PFarrays *obj); // <1>
-/* solvent options */
+void obj_inter_forces(ObjInter*, const PairParams **fsi_prms, const PairParams **cnt_prms, PFarray *flu, const int *flu_start, PFarrays *obj);
+
 struct OptFlu {
     bool colors, ids, ss, push;
 };
 
-/* common parameters for membranes and rigid objects */
+
 struct OptObj {
     bool push, bounce;
     int shifttype;
@@ -1196,14 +1196,14 @@ struct OptObj {
     char name[FILENAME_MAX];
 };
 
-/* membrane options */
+
 struct OptMbr : OptObj {
     bool ids, stretch, dump_com;
     int substeps;
     char stretch_file[FILENAME_MAX];
 };
 
-/* rigid options */
+
 struct OptRig : OptObj {
     bool empty_pp;
 };
@@ -1212,11 +1212,11 @@ struct OptWall {
     bool active;
 };
 
-/* global physical parameters */
+
 struct OptParams {
-    int3 L;          /* subdomain sizes */
-    float kBT;       /* temperature     */
-    int numdensity;  /* number density  */
+    int3 L;
+    float kBT;
+    int numdensity;
 };
 
 struct OptDump {
@@ -1257,10 +1257,10 @@ void wall_ini(const Config*, int3 L, Wall**);
 void wall_fin(Wall*);
 
 void wall_gen(MPI_Comm, const Coords*, OptParams, bool dump_sdf,
-              /*io*/ int *n, Particle *pp, /**/ Wall*);
+                     int *n, Particle *pp,      Wall*);
 
 void wall_restart(MPI_Comm, const Coords*, OptParams, bool dump_sdf,
-                  const char *base, /**/ Wall*);
+                  const char *base,      Wall*);
 
 void wall_dump_templ(const Wall*, MPI_Comm, const char *base);
 
@@ -1271,22 +1271,22 @@ void wall_repulse(const Wall*, const WallRepulsePrm *[], PFarrays*);
 
 void wall_update_vel(float t, Wall *);
 
-void wall_get_sdf_ptr(const Wall*, const Sdf**);           // <1>
-double wall_compute_volume(const Wall*, MPI_Comm, int3 L); // <2>
+void wall_get_sdf_ptr(const Wall*, const Sdf**);
+double wall_compute_volume(const Wall*, MPI_Comm, int3 L);
 
 struct Sim;
 struct Config;
 
-void sim_ini(const Config*, MPI_Comm, /**/ Sim**);
+void sim_ini(const Config*, MPI_Comm,      Sim**);
 void sim_fin(Sim*);
 
-void sim_gen(Sim*);  // <1>
-void sim_strt(Sim*); // <2>
+void sim_gen(Sim*);
+void sim_strt(Sim*);
 
 #define _I_ static
 #define _S_ static
 
-/* solvent distribution */
+
 struct FluDistr {
     DFluPack *p;
     DFluComm *c;
@@ -1294,29 +1294,29 @@ struct FluDistr {
     DFluStatus *s;
 };
 
-/* particle exchanger for solvent forces */
+
 struct FluExch {
     EFluPack *p;
     EFluComm *c;
     EFluUnpack *u;
 };
 
-/* flux colorer */
+
 struct Recolorer {
     bool flux_active;
     int flux_dir;
 };
 
-/* Tracer DPD particle colorer */
+
 struct Tracers {
     bool active;
-    int freq; /* recolor frequency */
-    float R; /* radius where tracers are placed */
-    float iniP; /* probability to create tracer */
-    float delP; /* probability to delete tracer */
+    int freq;
+    float R;
+    float iniP;
+    float delP;
 };
 
-/* data holder for solvent */
+
 struct Flu {
     FluQuants q;
     PairParams *params;
@@ -1328,15 +1328,15 @@ struct Flu {
     FluForcesHalo *halo;
 
     Force *ff;
-    Force *ff_hst; /* solvent forces on host    */
+    Force *ff_hst;
 
-    float *ss;     /* stresses */
+    float *ss;
     float *ss_hst;
 
-    float mass;  /* mass of one particle */
+    float mass;
 };
 
-/* velocity controller */
+
 struct Vcon {
     PidVCont *vcont;
     int log_freq;
@@ -1344,14 +1344,14 @@ struct Vcon {
     int sample_freq;
 };
 
-/* optional features */
+
 
 struct Time {
-    TimeLine *t;          /* current time manager         */
-    float eq, end;        /* freeze time, end time        */
-    float mbr_bb;         /* when to activate membrane bounce */
-    TimeStep *step;       /* time step manager            */
-    TimeStepAccel *accel; /* helper for time step manager */
+    TimeLine *t;
+    float eq, end;
+    float mbr_bb;
+    TimeStep *step;
+    TimeStepAccel *accel;
 };
 
 struct Sampler {
@@ -1360,25 +1360,25 @@ struct Sampler {
 };
 
 struct Dump {
-    /* host particles for dump */
+
     Particle *pp;
 
     IoBop *bop;
-    DiagPart *diagpart; /* diagnostic */
+    DiagPart *diagpart;
     Sampler field_sampler;
 
     int id_field, id_bop, id_strt;
 };
 
 struct Sim {
-    /* quantities */
+
     Flu flu;
     Wall *wall;
     Objects *obj;
 
     BForce *bforce;
 
-    /* helpers */
+
     Time time;
     Coords *coords;
     ObjInter *objinter;
@@ -1389,20 +1389,20 @@ struct Sim {
     Dbg *dbg;
     MPI_Comm cart;
 
-    /* open bc tools */
+
     Outflow *outflow;
     Inflow *inflow;
     DCont    *denoutflow;
     DContMap *mapoutflow;
 
-    /* state */
+
     bool equilibrating;
     bool active_mbr_bb;
 
     Opt opt;
     Dump dump;
 
-    /* inter processing helpers */
+
     GenColor *gen_color;
 };
 _I_ bool active_walls(const Sim *s) {
@@ -1470,17 +1470,17 @@ _S_ void push_accel(const Sim *s, TimeStepAccel *aa) {
 }
 
 _I_ float utils_get_dt(Sim *s, TimeLine *time) {
-    /* Possibility to adapt dt only after equilibration */
+
     float dt;
     const Opt *opt = &s->opt;
     if (s->equilibrating)
         dt = time_step_dt0(s->time.step);
     else {
         UC(time_step_accel_reset(s->time.accel));
-        UC(push_accel(s, /**/ s->time.accel));
+        UC(push_accel(s,      s->time.accel));
         dt = time_step_dt(s->time.step, s->cart, s->time.accel);
 
-        // TODO: move to dump_diag?
+
         if (time_line_cross(time, opt->dump.freq_diag))
             time_step_log(s->time.step);
     }
@@ -1506,7 +1506,7 @@ _S_ void body_force(const BForce *bforce, Sim *s) {
     const Opt *opt = &s->opt;
 
     if (opt->flu.push)
-        UC(bforce_apply(s->coords, flu->mass, bforce, flu->q.n, flu->q.pp, /**/ flu->ff));
+        UC(bforce_apply(s->coords, flu->mass, bforce, flu->q.n, flu->q.pp,      flu->ff));
     UC(objects_body_forces(bforce, s->obj));
 }
 
@@ -1574,35 +1574,35 @@ _S_ void forces_dpd(bool stress, Flu *f) {
 
     FluExch *e = &f->e;
 
-    parray_push_pp(f->q.pp, /**/ &parray);
+    parray_push_pp(f->q.pp,      &parray);
     if (f->q.colors)
-        parray_push_cc(f->q.cc, /**/ &parray);
+        parray_push_cc(f->q.cc,      &parray);
 
-    farray_push_ff(f->ff, /**/ &farray);
+    farray_push_ff(f->ff,      &farray);
     if (stress)
-        farray_push_ss(f->ss, /**/ &farray);
+        farray_push_ss(f->ss,      &farray);
 
-    UC(eflu_compute_map(start, count, /**/ e->p));
-    UC(eflu_download_cell_starts(/**/ e->p));
-    UC(eflu_pack(&parray, /**/ e->p));
-    UC(eflu_download_data(/**/ e->p));
+    UC(eflu_compute_map(start, count,      e->p));
+    UC(eflu_download_cell_starts(     e->p));
+    UC(eflu_pack(&parray,      e->p));
+    UC(eflu_download_data(     e->p));
 
     UC(eflu_post_recv(e->c, e->u));
     UC(eflu_post_send(e->p, e->c));
 
-    UC(fluforces_bulk_prepare(f->q.n, &parray, /**/ f->bulk));
-    UC(fluforces_bulk_apply(f->params, f->q.n, f->bulk, start, count, /**/ &farray));
+    UC(fluforces_bulk_prepare(f->q.n, &parray,      f->bulk));
+    UC(fluforces_bulk_apply(f->params, f->q.n, f->bulk, start, count,      &farray));
 
     UC(eflu_wait_recv(e->c, e->u));
     UC(eflu_wait_send(e->c));
 
     UC(eflu_unpack(e->u));
 
-    UC(eflu_get_local_frags(e->p, /**/ &lfrags));
-    UC(eflu_get_remote_frags(e->u, /**/ &rfrags));
+    UC(eflu_get_local_frags(e->p,      &lfrags));
+    UC(eflu_get_remote_frags(e->u,      &rfrags));
 
-    UC(fluforces_halo_prepare(lfrags, rfrags, /**/ f->halo));
-    UC(fluforces_halo_apply(f->params, f->halo, /**/ &farray));
+    UC(fluforces_halo_prepare(lfrags, rfrags,      f->halo));
+    UC(fluforces_halo_apply(f->params, f->halo,      &farray));
 }
 
 _S_ void forces_objects(Sim *sim) {
@@ -1637,7 +1637,7 @@ _I_ void forces(float dt, TimeLine *time, const BForce *bforce, Sim *s) {
 
     UC(forces_dpd(fluss, flu));
     if (active_walls(s)) UC(forces_wall(fluss, s));
-    // UC(objects_internal_forces(dt, s->obj));
+
 
     UC(forces_objects(s));
 
@@ -1646,39 +1646,39 @@ _I_ void forces(float dt, TimeLine *time, const BForce *bforce, Sim *s) {
     dSync();
 }
 
-_S_ void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
+_S_ void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L,      FluExch *e) {
     int maxd = HSAFETY_FACTOR * opt->params.numdensity;
 
-    UC(eflu_pack_ini(opt->flu.colors, L, maxd, /**/ &e->p));
-    UC(eflu_comm_ini(comm, /**/ &e->c));
-    UC(eflu_unpack_ini(opt->flu.colors, L, maxd, /**/ &e->u));
+    UC(eflu_pack_ini(opt->flu.colors, L, maxd,      &e->p));
+    UC(eflu_comm_ini(comm,      &e->c));
+    UC(eflu_unpack_ini(opt->flu.colors, L, maxd,      &e->u));
 }
 
-_S_ void ini_flu_distr(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluDistr *d) {
+_S_ void ini_flu_distr(const Opt *opt, MPI_Comm comm, int3 L,      FluDistr *d) {
     float maxdensity = ODSTR_FACTOR * opt->params.numdensity;
-    UC(dflu_pack_ini(opt->flu.colors, opt->flu.ids, L, maxdensity, /**/ &d->p));
-    UC(dflu_comm_ini(comm, /**/ &d->c));
-    UC(dflu_unpack_ini(opt->flu.colors, opt->flu.ids, L, maxdensity, /**/ &d->u));
-    UC(dflu_status_ini(/**/ &d->s));
+    UC(dflu_pack_ini(opt->flu.colors, opt->flu.ids, L, maxdensity,      &d->p));
+    UC(dflu_comm_ini(comm,      &d->c));
+    UC(dflu_unpack_ini(opt->flu.colors, opt->flu.ids, L, maxdensity,      &d->u));
+    UC(dflu_status_ini(     &d->s));
 }
 
-_S_ void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg, /**/ Vcon *c) {
+_S_ void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg,      Vcon *c) {
     UC(conf_lookup_int(cfg, "vcon.log_freq", &c->log_freq));
     UC(conf_lookup_int(cfg, "vcon.adjust_freq", &c->adjust_freq));
     UC(conf_lookup_int(cfg, "vcon.sample_freq", &c->sample_freq));
 
-    UC(vcont_ini(comm, L, /**/ &c->vcont));
-    UC(vcont_set_conf(cfg, /**/ c->vcont));
+    UC(vcont_ini(comm, L,      &c->vcont));
+    UC(vcont_set_conf(cfg,      c->vcont));
 }
 
 _S_ void ini_outflow(const Coords *coords, int maxp, const Config *cfg, Outflow **o) {
-    UC(outflow_ini(maxp, /**/ o));
+    UC(outflow_ini(maxp,      o));
     UC(outflow_set_conf(cfg, coords, *o));
 }
 
 _S_ void ini_denoutflow(const Coords *c, int maxp, const Config *cfg, DCont **d, DContMap **m) {
-    UC(den_ini(maxp, /**/ d));
-    UC(den_map_ini(/**/ m));
+    UC(den_ini(maxp,      d));
+    UC(den_map_ini(     m));
     UC(den_map_set_conf(cfg, c, *m));
 }
 
@@ -1687,11 +1687,11 @@ _S_ void ini_tracers(const int maxp) {
 }
 
 _S_ void ini_inflow(const Coords *coords, int3 L, const Config *cfg, Inflow **i) {
-    /* number of cells */
+
     int2 nc;
     nc.x = L.y;
     nc.y = L.z/2;
-    UC(inflow_ini(nc, /**/ i));
+    UC(inflow_ini(nc,      i));
     UC(inflow_ini_params_conf(coords, cfg, *i));
     UC(inflow_ini_velocity(*i));
 }
@@ -1709,22 +1709,22 @@ _S_ void ini_pair_params(const Config *cfg, const char *name, const char *pair, 
     UC(read_pair_params(cfg, ns, par));
 }
 
-_S_ void ini_flu(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, /**/ Flu *f) {
+_S_ void ini_flu(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp,      Flu *f) {
     int3 L = opt->params.L;
 
     UC(flu_ini(opt->flu.colors, opt->flu.ids, L, maxp, &f->q));
-    UC(fluforces_bulk_ini(L, maxp, /**/ &f->bulk));
-    UC(fluforces_halo_ini(cart, L, /**/ &f->halo));
+    UC(fluforces_bulk_ini(L, maxp,      &f->bulk));
+    UC(fluforces_halo_ini(cart, L,      &f->halo));
 
-    UC(ini_flu_distr(opt, cart, L, /**/ &f->d));
-    UC(ini_flu_exch(opt, cart, L, /**/ &f->e));
+    UC(ini_flu_distr(opt, cart, L,      &f->d));
+    UC(ini_flu_exch(opt, cart, L,      &f->e));
 
     UC(Dalloc(&f->ff, maxp));
-    EMALLOC(maxp, /**/ &f->ff_hst);
+    EMALLOC(maxp,      &f->ff_hst);
 
     if (opt->flu.ss) {
         UC(Dalloc(&f->ss, 6*maxp));
-        EMALLOC(6*maxp, /**/ &f->ss_hst);
+        EMALLOC(6*maxp,      &f->ss_hst);
     }
 
     UC(conf_lookup_float(cfg, "flu.mass", &f->mass));
@@ -1782,7 +1782,7 @@ _S_ void ini_sampler(const Coords *c, const Opt *opt, Sampler *s) {
 }
 
 _S_ void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, Dump *d) {
-    enum {NPARRAY = 3}; /* flu, rig and rbc */
+    enum {NPARRAY = 3};
     EMALLOC(NPARRAY * maxp, &d->pp);
 
     UC(diag_part_ini("diag.txt", &d->diagpart));
@@ -1795,7 +1795,7 @@ _S_ void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, Dump
     d->id_bop = d->id_strt = 0;
 }
 
-_S_ void ini_time(const Config *cfg, /**/ Time *t) {
+_S_ void ini_time(const Config *cfg,      Time *t) {
     const float t0 = 0;
     UC(conf_lookup_float(cfg, "time.end",    &t->end));
     UC(conf_lookup_float(cfg, "time.wall",   &t->eq));
@@ -1805,9 +1805,9 @@ _S_ void ini_time(const Config *cfg, /**/ Time *t) {
     UC(time_step_accel_ini(&t->accel));
 }
 
-_S_ void ini_common(const Config *cfg, int3 L, MPI_Comm cart, /**/ Sim *s) {
+_S_ void ini_common(const Config *cfg, int3 L, MPI_Comm cart,      Sim *s) {
     MC(m::Comm_dup(cart, &s->cart));
-    UC(coords_ini(s->cart, L.x, L.y, L.z, /**/ &s->coords));
+    UC(coords_ini(s->cart, L.x, L.y, L.z,      &s->coords));
     UC(coords_log(s->coords));
 
     UC(dbg_ini(&s->dbg));
@@ -1821,13 +1821,13 @@ _S_ void ini_optional_features(const Config *cfg, const Opt *opt, Sim *s) {
     int3 L = opt->params.L;
 
     if (opt->tracers)    UC(ini_tracers(maxp));
-    if (opt->vcon)       UC(ini_vcon(s->cart, L, cfg, /**/ &s->vcon));
-    if (opt->outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));
-    if (opt->inflow)     UC(ini_inflow (s->coords, L, cfg,  /**/ &s->inflow ));
-    if (opt->denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg, /**/ &s->denoutflow, &s->mapoutflow));
+    if (opt->vcon)       UC(ini_vcon(s->cart, L, cfg,      &s->vcon));
+    if (opt->outflow)    UC(ini_outflow(s->coords, maxp, cfg,      &s->outflow));
+    if (opt->inflow)     UC(ini_inflow (s->coords, L, cfg,       &s->inflow ));
+    if (opt->denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg,      &s->denoutflow, &s->mapoutflow));
 }
 
-void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
+void sim_ini(const Config *cfg, MPI_Comm cart,      Sim **sim) {
     float dt;
     Sim *s;
     int maxp;
@@ -1844,26 +1844,26 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(opt_check(opt));
     L = opt->params.L;
 
-    UC(ini_common(cfg, L, cart, /**/ s));
+    UC(ini_common(cfg, L, cart,      s));
 
     dt = time_step_dt0(s->time.step);
     time_line_advance(dt, s->time.t);
 
     maxp = opt_estimate_maxp(opt);
 
-    UC(ini_dump(maxp, s->cart, s->coords, opt, /**/ &s->dump));
+    UC(ini_dump(maxp, s->cart, s->coords, opt,      &s->dump));
 
     UC(bforce_ini(&s->bforce));
     UC(bforce_set_conf(cfg, s->bforce));
 
-    UC(ini_flu(cfg, opt, s->cart, maxp, /**/ &s->flu));
+    UC(ini_flu(cfg, opt, s->cart, maxp,      &s->flu));
     if (opt->wall.active) UC(wall_ini(cfg, L, &s->wall));
 
     UC(objects_ini(cfg, opt, s->cart, s->coords, maxp, &s->obj));
 
-    UC(obj_inter_ini(cfg, opt, s->cart, dt, maxp, /**/ &s->objinter));
+    UC(obj_inter_ini(cfg, opt, s->cart, dt, maxp,      &s->objinter));
 
-    UC(ini_optional_features(cfg, opt, /**/ s));
+    UC(ini_optional_features(cfg, opt,      s));
 
     UC(scheme_restrain_ini(&s->restrain));
     UC(scheme_restrain_set_conf(cfg, s->restrain));
@@ -1878,20 +1878,20 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
 
     MC(m::Barrier(s->cart));
 }
-_S_ void fin_flu_exch(/**/ FluExch *e) {
-    UC(eflu_pack_fin(/**/ e->p));
-    UC(eflu_comm_fin(/**/ e->c));
-    UC(eflu_unpack_fin(/**/ e->u));
+_S_ void fin_flu_exch(     FluExch *e) {
+    UC(eflu_pack_fin(     e->p));
+    UC(eflu_comm_fin(     e->c));
+    UC(eflu_unpack_fin(     e->u));
 }
 
-_S_ void fin_flu_distr(/**/ FluDistr *d) {
-    UC(dflu_pack_fin(/**/ d->p));
-    UC(dflu_comm_fin(/**/ d->c));
-    UC(dflu_unpack_fin(/**/ d->u));
+_S_ void fin_flu_distr(     FluDistr *d) {
+    UC(dflu_pack_fin(     d->p));
+    UC(dflu_comm_fin(     d->c));
+    UC(dflu_unpack_fin(     d->u));
 }
 
 _S_ void fin_outflow(Outflow *o) {
-    UC(outflow_fin(/**/ o));
+    UC(outflow_fin(     o));
 }
 
 _S_ void fin_denoutflow(DCont *d, DContMap *m) {
@@ -1900,17 +1900,17 @@ _S_ void fin_denoutflow(DCont *d, DContMap *m) {
 }
 
 _S_ void fin_inflow(Inflow *i) {
-    UC(inflow_fin(/**/ i));
+    UC(inflow_fin(     i));
 }
 
 
 _S_ void fin_flu(const Opt *opt, Flu *f) {
     UC(flu_fin(&f->q));
-    UC(fluforces_bulk_fin(/**/ f->bulk));
-    UC(fluforces_halo_fin(/**/ f->halo));
+    UC(fluforces_bulk_fin(     f->bulk));
+    UC(fluforces_halo_fin(     f->halo));
 
-    UC(fin_flu_distr(/**/ &f->d));
-    UC(fin_flu_exch(/**/ &f->e));
+    UC(fin_flu_distr(     &f->d));
+    UC(fin_flu_exch(     &f->e));
 
     UC(Dfree(f->ff));
     EFREE(f->ff_hst);
@@ -1948,10 +1948,10 @@ _S_ void fin_time(Time *t) {
 
 _S_ void fin_optional_features(const Opt *opt, Sim *s) {
     if (opt->tracers)    UC(tracers_fin());
-    if (opt->vcon)       UC(fin_vcon(/**/ &s->vcon));
-    if (opt->outflow)    UC(fin_outflow(/**/ s->outflow));
-    if (opt->inflow)     UC(fin_inflow (/**/ s->inflow ));
-    if (opt->denoutflow) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
+    if (opt->vcon)       UC(fin_vcon(     &s->vcon));
+    if (opt->outflow)    UC(fin_outflow(     s->outflow));
+    if (opt->inflow)     UC(fin_inflow (     s->inflow ));
+    if (opt->denoutflow) UC(fin_denoutflow(     s->denoutflow, s->mapoutflow));
 }
 
 void sim_fin(Sim *s) {
@@ -1969,7 +1969,7 @@ void sim_fin(Sim *s) {
 
     UC(fin_dump(opt, &s->dump));
     UC(scheme_restrain_fin(s->restrain));
-    UC(coords_fin(/**/ s->coords));
+    UC(coords_fin(     s->coords));
     UC(fin_time(&s->time));
     UC(fin_pair_params(s));
     UC(inter_color_fin(s->gen_color));
@@ -2003,7 +2003,7 @@ _I_ void check_forces(float dt, Sim *s) {
     UC(dbg_check_forces(dt, c, "flu.ff", s->dbg, s->flu.q.n, s->flu.q.pp, s->flu.ff));
     UC(objects_check_forces(s->obj, s->dbg, dt));
 }
-_S_ long download_all_pp(Sim *s) { /* device to host  data transfer */
+_S_ long download_all_pp(Sim *s) {
     long i, np = 0;
     Flu *flu = &s->flu;
     PFarrays *pf;
@@ -2075,7 +2075,7 @@ _S_ void dump_field(Sim *s) {
     d->id_field ++;
 }
 
-_I_ void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
+_I_ void dump_strt_templ(Sim *s) {
     const Opt *opt = &s->opt;
     const char *base = opt->dump.strt_base_dump;
     if (opt->dump.strt) {
@@ -2114,24 +2114,24 @@ _I_ void dump(TimeLine *time, Sim *s) {
     if (o->strt  && time_line_cross(time, o->freq_strt))
         dump_strt(s);
 }
-/* velocity controller */
+
 
 _S_ bool valid_step(long id, const int freq) {
     return (freq != 0) && (id % freq == 0);
 }
 
-_I_ void sample_vcont(const Coords *coords, long id, const Flu *f, /**/ Vcon *c) {
+_I_ void sample_vcont(const Coords *coords, long id, const Flu *f,      Vcon *c) {
     if (valid_step(id, c->sample_freq)) {
         const FluQuants *q = &f->q;
-        vcont_sample(coords, q->n, q->pp, clists_get_ss(q->cells), clists_get_cc(q->cells), /**/ c->vcont);
+        vcont_sample(coords, q->n, q->pp, clists_get_ss(q->cells), clists_get_cc(q->cells),      c->vcont);
     }
 }
 
-_I_ void adjust_bforce(long id, /**/ Vcon *c, BForce *bforce) {
+_I_ void adjust_bforce(long id,      Vcon *c, BForce *bforce) {
     if (valid_step(id, c->adjust_freq)) {
         float3 f;
-        f = vcont_adjustF(/**/ c->vcont);
-        bforce_adjust(f, /**/ bforce);
+        f = vcont_adjustF(     c->vcont);
+        bforce_adjust(f,      bforce);
     }
 }
 
@@ -2140,20 +2140,20 @@ _I_ void log_vcont(long id, const Vcon *c) {
         vcont_log(c->vcont);
 }
 
-/* set colors of particles */
+
 
 _I_ void recolor_flux(const Coords *c, const Recolorer *opt, Flu *f) {
     int3 L = subdomain(c);
     if (opt->flux_active)
-        UC(color_linear_flux(c, L, opt->flux_dir, RED_COLOR, f->q.n, f->q.pp, /**/ f->q.cc));
+        UC(color_linear_flux(c, L, opt->flux_dir, RED_COLOR, f->q.n, f->q.pp,      f->q.cc));
 }
 
 _I_ void recolor_tracers(const Coords *c, const Tracers *opt, const int it, Flu *f) {
     bool cond;
     cond = opt->active && it % opt->freq == 0;
     if (cond) {
-        UC(  color_tracers(c, RED_COLOR,  opt->R, opt->iniP, f->q.n, f->q.pp, /**/ f->q.cc));
-        UC(decolor_tracers(c, BLUE_COLOR, opt->R, opt->delP, f->q.n, f->q.pp, /**/ f->q.cc));
+        UC(  color_tracers(c, RED_COLOR,  opt->R, opt->iniP, f->q.n, f->q.pp,      f->q.cc));
+        UC(decolor_tracers(c, BLUE_COLOR, opt->R, opt->delP, f->q.n, f->q.pp,      f->q.cc));
     }
 }
 
@@ -2166,20 +2166,20 @@ _I_ void apply_inflow(float kBT, int numdensity, float dt, Inflow *i, Flu *f) {
 }
 
 _I_ void mark_outflow(const Flu *f, Outflow *o) {
-    UC(outflow_filter_particles(f->q.n, f->q.pp, /**/ o));
+    UC(outflow_filter_particles(f->q.n, f->q.pp,      o));
     UC(outflow_download_ndead(o));
 }
 
-_I_ void mark_outflowden(OptParams params, const Flu *f, const DContMap *m, /**/ DCont *d) {
+_I_ void mark_outflowden(OptParams params, const Flu *f, const DContMap *m,      DCont *d) {
     const int *ss, *cc;
     int n;
     n = f->q.n;
     ss = clists_get_ss(f->q.cells);
     cc = clists_get_cc(f->q.cells);
 
-    UC(den_reset(n, /**/ d));
-    UC(den_filter_particles(params.numdensity, m, ss, cc, /**/ d));
-    UC(den_download_ndead(/**/ d));
+    UC(den_reset(n,      d));
+    UC(den_filter_particles(params.numdensity, m, ss, cc,      d));
+    UC(den_download_ndead(     d));
 }
 
 _S_ void sample(Sim *s) {
@@ -2226,7 +2226,7 @@ _I_ void clear_vel(Sim *s) {
     UC(objects_clear_vel(s->obj));
 }
 
-_I_ void update_solvent(float dt, /**/ Flu *f) {
+_I_ void update_solvent(float dt,      Flu *f) {
     UC(scheme_move_apply(dt, f->mass, f->q.n, f->ff, f->q.pp));
 }
 
@@ -2255,7 +2255,7 @@ _I_ void restrain(long it, Sim *s) {
     qq.o = s->flu.q.pp;
     qq.on = s->flu.q.n;
 
-    UC(scheme_restrain_apply(s->cart, s->flu.q.cc, it, /**/ s->restrain, qq));
+    UC(scheme_restrain_apply(s->cart, s->flu.q.cc, it,      s->restrain, qq));
 
     UC(pfarrays_fin(pf));
 }
@@ -2282,7 +2282,7 @@ _I_ void bounce_objects(float dt, Sim *s) {
 }
 
 _S_ void flu_update_dpd_prms(float dt, float kBT, Sim *s) {
-    UC(pair_compute_dpd_sigma(kBT, dt, /**/ s->flu.params));
+    UC(pair_compute_dpd_sigma(kBT, dt,      s->flu.params));
 }
 
 _I_ void update_params(float dt, Sim *s) {
@@ -2292,8 +2292,8 @@ _I_ void update_params(float dt, Sim *s) {
     UC(flu_update_dpd_prms(dt, kBT, s));
     UC(objects_update_dpd_prms(dt, kBT, s->obj));
 }
-/* the following functions will need to be splitted in the future
-   for performance reasons */
+
+
 
 _S_ void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
     unsigned int time;
@@ -2301,7 +2301,7 @@ _S_ void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
     UC(dflu_status_log(s));
     UC(flu_txt_dump(c, q));
     msg_print("sleep for %d seconds", time);
-    os_sleep(time); /* hope all ranks dump */
+    os_sleep(time);
     ERR("dflu_download failed");
 }
 
@@ -2325,25 +2325,25 @@ _I_ void distribute_flu(Sim *s) {
         lp.deathlist = NULL;
         ndead = 0;
     }
-    UC(dflu_build_map(q->n, lp, /**/ d->p));
-    UC(dflu_pack(q, /**/ d->p));
+    UC(dflu_build_map(q->n, lp,      d->p));
+    UC(dflu_pack(q,      d->p));
 
-    UC(dflu_download(/**/ d->p, d->s));
+    UC(dflu_download(     d->p, d->s));
     if (!dflu_status_success(d->s))
         UC(log_and_fail(s->coords, d->s, q));
 
     UC(dflu_post_send(d->p, d->c));
     UC(dflu_post_recv(d->c, d->u));
 
-    UC(dflu_bulk(lp, /**/ q));
+    UC(dflu_bulk(lp,      q));
 
     UC(dflu_wait_send(d->c));
     UC(dflu_wait_recv(d->c, d->u));
 
-    UC(dflu_unpack(/**/ d->u));
+    UC(dflu_unpack(     d->u));
 
-    UC(dflu_halo(d->u, /**/ q));
-    UC(dflu_gather(ndead, d->p, d->u, /**/ q));
+    UC(dflu_halo(d->u,      q));
+    UC(dflu_gather(ndead, d->p, d->u,      q));
 
     dSync();
 }
@@ -2388,15 +2388,15 @@ _S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
     UC(field_sample(s));
     UC(dump(time, s));
 
-    UC(restrain(it, /**/ s));
-    UC(update_solvent(dt, /**/ flu));
+    UC(restrain(it,      s));
+    UC(update_solvent(dt,      flu));
     UC(objects_advance(dt, s->obj));
     UC(recolor_from_rbc(it, s));
 
     UC(check_vel(dt, s));
     if (opt->vcon && !s->equilibrating) {
-        sample_vcont(s->coords, it, flu, /**/ &s->vcon);
-        adjust_bforce(it, /**/ &s->vcon, bforce);
+        sample_vcont(s->coords, it, flu,      &s->vcon);
+        adjust_bforce(it,      &s->vcon, bforce);
         log_vcont(it, &s->vcon);
     }
 
@@ -2408,15 +2408,15 @@ _S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
     UC(check_vel(dt, s));
 
     if (!s->equilibrating) {
-        if (opt->inflow)     UC(apply_inflow(s->opt.params.kBT, s->opt.params.numdensity, dt, s->inflow, /**/ flu));
-        if (opt->outflow)    UC(mark_outflow(flu, /**/ s->outflow));
-        if (opt->denoutflow) UC(mark_outflowden(s->opt.params, flu, s->mapoutflow, /**/ s->denoutflow));
+        if (opt->inflow)     UC(apply_inflow(s->opt.params.kBT, s->opt.params.numdensity, dt, s->inflow,      flu));
+        if (opt->outflow)    UC(mark_outflow(flu,      s->outflow));
+        if (opt->denoutflow) UC(mark_outflowden(s->opt.params, flu, s->mapoutflow,      s->denoutflow));
         if (opt->flu.colors) UC(recolor_flux(s->coords, &s->recolorer, flu));
         if (opt->flu.colors) UC(recolor_tracers(s->coords, &s->tracers, it, flu));
     }
 }
 
-/* ts, te: time start and end */
+
 _I_ void run(float ts, float te, Sim *s) {
     float dt;
 
@@ -2426,7 +2426,7 @@ _I_ void run(float ts, float te, Sim *s) {
         time_line_advance(dt, s->time.t);
         dt = utils_get_dt(s, s->time.t);
     }
-    UC(distribute_flu(/**/ s));
+    UC(distribute_flu(     s));
 }
 _S_ void gen_flu(Sim *s) {
     Flu *flu = &s->flu;
@@ -2446,7 +2446,7 @@ _S_ void gen_wall(Sim *s) {
                 &flu->q.n, flu->q.pp, w));
 }
 
-_S_ void freeze(Sim *s) { /* generate */
+_S_ void freeze(Sim *s) {
     Flu *flu = &s->flu;
     const Sdf *sdf = NULL;
     PFarray pfflu;
@@ -2473,7 +2473,7 @@ _S_ void freeze(Sim *s) { /* generate */
         Particle *pp = flu->q.pp;
         int n = flu->q.n;
         int *cc = flu->q.cc;
-        inter_color_apply_dev(s->coords, s->gen_color, n, pp, /*o*/ cc);
+        inter_color_apply_dev(s->coords, s->gen_color, n, pp,       cc);
     }
 }
 
@@ -2488,7 +2488,7 @@ void sim_gen(Sim *s) {
 
     run(tstart, s->time.eq, s);
 
-    freeze(/**/ s);
+    freeze(     s);
     dSync();
 
     if (opt->flu.colors) UC(colors_from_rbc(s));
@@ -2497,7 +2497,7 @@ void sim_gen(Sim *s) {
     pre_run(s);
     run(tstart, s->time.end, s);
 
-    /* final strt dump*/
+
     if (opt->dump.strt) dump_strt_final(s);
 }
 
