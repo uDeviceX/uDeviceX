@@ -3,8 +3,8 @@
 
 #define UDX_DISTR_EXCH_DEVICE_API_COMMON
 
-namespace d {  /* a wrapper for device API */
-typedef int Stream_t; /* TODO: streams are not supported */
+namespace d {
+typedef int Stream_t;
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
