@@ -757,10 +757,9 @@ struct EMeshUnpackM {
 };
 
 typedef Sarray<MMap, 26> MMap26;
-namespace emesh_dev {
 
 /* L0: subdomain cropped by one cutoff radius */
-__global__ void build_map(int3 L0, int n, const float3 *minext, const float3 *maxext, /**/ EMap map) {
+__global__ void emesh_build_map_kernel(int3 L0, int n, const float3 *minext, const float3 *maxext, /**/ EMap map) {
     int i, fid, fids[MAX_DSTS], ndsts, j;
     float3 lo, hi;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -777,7 +776,7 @@ __global__ void build_map(int3 L0, int n, const float3 *minext, const float3 *ma
 }
 
 template <typename T>
-static __device__ void pack_p(int nv, const T *pp, int vid, int frag_mid, int *indices, /**/ T *buf) {
+static __device__ void emesh_pack_p(int nv, const T *pp, int vid, int frag_mid, int *indices, /**/ T *buf) {
     int dst, src, mid;
     mid = __ldg(indices + frag_mid);
     dst = nv * frag_mid + vid;
@@ -786,7 +785,7 @@ static __device__ void pack_p(int nv, const T *pp, int vid, int frag_mid, int *i
 }
 
 template <typename T>
-__global__ void pack_mesh(int nv, const T *pp, EMap map, /**/ Sarray<T*, 26> buf) {
+__global__ void emesh_pack_mesh_kernel(int nv, const T *pp, EMap map, /**/ Sarray<T*, 26> buf) {
     int gid, hi, step, fid, mid, vid, frag_mid;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     hi = map.starts[26] * nv;
@@ -801,24 +800,24 @@ __global__ void pack_mesh(int nv, const T *pp, EMap map, /**/ Sarray<T*, 26> buf
         frag_mid = mid - map.starts[fid];
 
         if (frag_mid < map.cap[fid])
-            pack_p(nv, pp, vid, frag_mid, map.ids[fid], /**/ buf.d[fid]);
+            emesh_pack_p(nv, pp, vid, frag_mid, map.ids[fid], /**/ buf.d[fid]);
     }
 }
 
-/* compress kernels */
+/* emesh_compress_kernel kernels */
 
-enum {SKIP=-1};
+enum {EMESH_SKIP=-1};
 
 // TODO this is copy paste from meshbb, might be removed from there
-static __device__ bool nz(float a) {return fabs(a) > 1e-6f;}
+static __device__ bool emesh_nz(float a) {return fabs(a) > 1e-6f;}
 
-static __device__ bool nonzero(const Momentum *m) {
+static __device__ bool emesh_nonzero(const Momentum *m) {
     enum {X, Y, Z};
-    return nz(m->P[X]) && nz(m->P[Y]) && nz(m->P[Z]) &&
-        nz(m->L[X]) && nz(m->L[Y]) && nz(m->L[Z]);
+    return emesh_nz(m->P[X]) && emesh_nz(m->P[Y]) && emesh_nz(m->P[Z]) &&
+        emesh_nz(m->L[X]) && emesh_nz(m->L[Y]) && emesh_nz(m->L[Z]);
 }
 
-__global__ void subindex_compress(int nt, int nm, const Momentum *mm, /**/ int *counts, int *subids) {
+__global__ void emesh_subindex_compress_kernel(int nt, int nm, const Momentum *mm, /**/ int *counts, int *subids) {
     int i, mid, subid;
     Momentum m;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -828,15 +827,15 @@ __global__ void subindex_compress(int nt, int nm, const Momentum *mm, /**/ int *
 
     m = mm[i];
 
-    if (nonzero(&m))
+    if (emesh_nonzero(&m))
         subid = atomicAdd(counts + mid, 1);
     else
-        subid = SKIP;
+        subid = EMESH_SKIP;
     subids[i] = subid;
 }
 
 /* inclusive scan */
-static __device__ int warpScan(int val) {
+static __device__ int emesh_warp_scan(int val) {
     int tid;
     tid = threadIdx.x % warpSize;
     for (int L = 1; L < 32; L <<= 1) val += (tid >= L) * shfl_up(val, L) ;
@@ -845,7 +844,7 @@ static __device__ int warpScan(int val) {
 
 /* exclusive scan on one block */
 template<int NWARP>
-__global__ void block_scan(int n, const int *cc, /**/ int *ss) {
+__global__ void emesh_block_scan_kernel(int n, const int *cc, /**/ int *ss) {
     assert(n < blockDim.x);
     assert(gridDim.x == 1);
 
@@ -862,7 +861,7 @@ __global__ void block_scan(int n, const int *cc, /**/ int *ss) {
 
     if (i < n) cnt = cc[i];
 
-    val = warpScan(cnt);
+    val = emesh_warp_scan(cnt);
 
     if (lid == warpSize - 1) warp_cnt[wid] = val;
 
@@ -872,7 +871,7 @@ __global__ void block_scan(int n, const int *cc, /**/ int *ss) {
         int v, c;
         v = c = 0;
         if (lid < NWARP) c = warp_cnt[lid];
-        v = warpScan(c);
+        v = emesh_warp_scan(c);
         if (lid < NWARP) warp_cnt[lid] = v - c;
     }
 
@@ -885,7 +884,7 @@ __global__ void block_scan(int n, const int *cc, /**/ int *ss) {
     if (i <= n) ss[i] = val - cnt;
 }
 
-__global__ void compress(int nt, int nm, const Momentum *mm, const int *starts, const int *subids, /**/ int *ids, Momentum *mmc) {
+__global__ void emesh_compress_kernel(int nt, int nm, const Momentum *mm, const int *starts, const int *subids, /**/ int *ids, Momentum *mmc) {
     int i, mid, subid, entry;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= nt * nm) return;
@@ -894,14 +893,14 @@ __global__ void compress(int nt, int nm, const Momentum *mm, const int *starts, 
 
     subid = subids[i];
 
-    if (subid == SKIP) return;
+    if (subid == EMESH_SKIP) return;
 
     entry = subid + starts[mid];
     mmc[entry] = mm[i];
     ids[i] = i;
 }
 
-__global__ void collect_counts(int26 nm, MMap26 mm, /**/ int *counts) {
+__global__ void emesh_collect_counts_kernel(int26 nm, MMap26 mm, /**/ int *counts) {
     int i, c, end;
     i = threadIdx.x;
     if (i > 26) return;
@@ -910,7 +909,7 @@ __global__ void collect_counts(int26 nm, MMap26 mm, /**/ int *counts) {
     counts[i] = c;
 }
 
-static __device__ void addMom(const Momentum src, /**/ Momentum *dst) {
+static __device__ void emesh_add_mom(const Momentum src, /**/ Momentum *dst) {
     enum {X, Y, Z};
     atomicAdd(dst->P + X, src.P[X]);
     atomicAdd(dst->P + Y, src.P[Y]);
@@ -921,7 +920,7 @@ static __device__ void addMom(const Momentum src, /**/ Momentum *dst) {
     atomicAdd(dst->L + Z, src.L[Z]);
 }
 
-static __device__ void unpack_mom_frag(int nt, int i, const int *hii, const Momentum *hmm, const int *mapii, /**/ Momentum *mm) {
+static __device__ void emesh_unpack_mom_frag(int nt, int i, const int *hii, const Momentum *hmm, const int *mapii, /**/ Momentum *mm) {
     int hid, hmid, tid, lmid, lid;
 
     hid = hii[i];        /* global index in frag                */
@@ -932,10 +931,10 @@ static __device__ void unpack_mom_frag(int nt, int i, const int *hii, const Mome
 
     lid = lmid * nt + tid;
 
-    addMom(hmm[i], /**/ mm + lid);
+    emesh_add_mom(hmm[i], /**/ mm + lid);
 }
 
-__global__ void unpack_mom(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, EMap map, /**/ Momentum *mm) {
+__global__ void emesh_unpack_mom_kernel(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, EMap map, /**/ Momentum *mm) {
     int i, fid;
     i = threadIdx.x + blockIdx.x * blockDim.x;
 
@@ -945,10 +944,9 @@ __global__ void unpack_mom(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, EMap
 
     i -= fragstarts.d[fid];
 
-    unpack_mom_frag(nt, i, hii.d[fid], hmm.d[fid], map.ids[fid], /**/ mm);
+    emesh_unpack_mom_frag(nt, i, hii.d[fid], hmm.d[fid], map.ids[fid], /**/ mm);
 }
 
-} // dev
 // TODO this can be refined
 static void get_capacity(int nfrags, int max_mesh_num, /**/ int cap[]) {
     for (int i = 0; i < nfrags; ++i)
@@ -1124,7 +1122,7 @@ void emesh_unpackm_fin(EMeshUnpackM *u) {
 }
 static void fill_map(int3 L, int n, const float3 *lo, const float3 *hi, /**/ EMap map) {
     int3 L0 = make_int3(L.x-2, L.y-2, L.z-2);
-    KL(emesh_dev::build_map, (k_cnf(n)), (L0, n, lo, hi, /**/ map));
+    KL(emesh_build_map_kernel, (k_cnf(n)), (L0, n, lo, hi, /**/ map));
 }
 
 void emesh_build_map(int nm, int nv, const Particle *pp, /**/ EMeshPack *p) {
@@ -1134,7 +1132,7 @@ void emesh_build_map(int nm, int nv, const Particle *pp, /**/ EMeshPack *p) {
     emap_scan(1, NFRAGS, /**/ p->map);
 }
 static void pack_mesh_pp(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
-    KL(emesh_dev::pack_mesh, (14 * 16, 128), (nv, pp, map, /**/ buf));
+    KL(emesh_pack_mesh_kernel, (14 * 16, 128), (nv, pp, map, /**/ buf));
 }
 
 void emesh_pack_pp(int nv, const Particle *pp, /**/ EMeshPack *p) {
@@ -1144,7 +1142,7 @@ void emesh_pack_pp(int nv, const Particle *pp, /**/ EMeshPack *p) {
 }
 
 static void pack_mesh_rrcp(int nv, const Positioncp *rr, EMap map, /**/ Pocpp26 buf) {
-    KL(emesh_dev::pack_mesh, (14 * 16, 128), (nv, rr, map, /**/ buf));
+    KL(emesh_pack_mesh_kernel, (14 * 16, 128), (nv, rr, map, /**/ buf));
 }
 
 void emesh_pack_rrcp(int nv, const Positioncp *rr, /**/ EMeshPack *p) {
@@ -1164,13 +1162,13 @@ static void reini_map(int nm, /**/ MMap *m) {
 
 static void compress_mom(int nt, int nm, const Momentum *mm, /**/ MMap *m, int *ids, Momentum *mmc) {
     UC(reini_map(nm, /**/ m));
-    KL(emesh_dev::subindex_compress, (k_cnf(nt * nm)), (nt, nm, mm, /**/ m->cc, m->subids));
+    KL(emesh_subindex_compress_kernel, (k_cnf(nt * nm)), (nt, nm, mm, /**/ m->cc, m->subids));
 
     enum {NWRP=4, WRPSZ=32};
     enum {BLCK=1, THRD=NWRP*WRPSZ};
-    KL(emesh_dev::block_scan<NWRP>, (BLCK, THRD), (nm, m->cc, /**/ m->ss));
+    KL(emesh_block_scan_kernel<NWRP>, (BLCK, THRD), (nm, m->cc, /**/ m->ss));
 
-    KL(emesh_dev::compress, (k_cnf(nt * nm)), (nt, nm, mm, m->ss, m->subids, /**/ ids, mmc));
+    KL(emesh_compress_kernel, (k_cnf(nt * nm)), (nt, nm, mm, m->ss, m->subids, /**/ ids, mmc));
 }
 
 static void pack_mom(int nt, const int counts[NFRAGS], const Momentum *mm,
@@ -1196,7 +1194,7 @@ void emesh_downloadM(const int counts[NFRAGS], EMeshPackM *p) {
     memcpy(ii.d, counts, sz);
     memcpy(mm.d, p->maps, NFRAGS * sizeof(MMap));
 
-    KL(emesh_dev::collect_counts, (32, 1), (ii, mm, /**/ p->ccdev));
+    KL(emesh_collect_counts_kernel, (32, 1), (ii, mm, /**/ p->ccdev));
 
     dSync();
 
@@ -1325,7 +1323,7 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
 
     n = get_fragstarts(NFRAGS, u->hii->counts, /**/ fragstarts.d);
 
-    KL(emesh_dev::unpack_mom, (k_cnf(n)), (nt, fragstarts, wrapii, wrapmm, p->map, /**/ mm));
+    KL(emesh_unpack_mom_kernel, (k_cnf(n)), (nt, fragstarts, wrapii, wrapmm, p->map, /**/ mm));
 }
 
 
