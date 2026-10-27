@@ -7123,11 +7123,10 @@ END
 #undef END
 #endif /* UDX_RBC_KANTOR0_COMMON */
 
-namespace kantor_dev {
-struct Part { double3 r, v; };
+struct KantorPart { double3 r, v; };
 typedef double3 Pos;
 
-static __device__ Pos fetchPos(const Particle *pp, int i) {
+static __device__ Pos kantor_fetch_pos(const Particle *pp, int i) {
     enum {X, Y, Z};
     Pos r;
     r.x = pp[i].r[X];
@@ -7136,9 +7135,9 @@ static __device__ Pos fetchPos(const Particle *pp, int i) {
     return r;
 }
 
-static __device__ Part fetchPart(const Particle *pp, int i) {
+static __device__ KantorPart kantor_fetch_part(const Particle *pp, int i) {
     enum {X, Y, Z};
-    Part p;
+    KantorPart p;
     const float *r, *v;
     r = pp[i].r; v = pp[i].v;
     p.r.x = r[X]; p.r.y = r[Y]; p.r.z = r[Z];
@@ -7146,16 +7145,16 @@ static __device__ Part fetchPart(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp, double3 r0,
+static __device__ void kantor_adj_dihedrals(const RbcParams_v *par, const Particle *pp, double3 r0,
                                      AdjMap *m, /*io*/ double f[3]) {
     enum {X, Y, Z};
     Pos r1, r2, r3, r4;
     double3 f0;
     double phi, kb;
-    r1 = fetchPos(pp, m->i1);
-    r2 = fetchPos(pp, m->i2);
-    r3 = fetchPos(pp, m->i3);
-    r4 = fetchPos(pp, m->i4);
+    r1 = kantor_fetch_pos(pp, m->i1);
+    r2 = kantor_fetch_pos(pp, m->i2);
+    r3 = kantor_fetch_pos(pp, m->i3);
+    r4 = kantor_fetch_pos(pp, m->i4);
 
     phi = par->phi / 180.0 * M_PI;
     kb  = par->kb;
@@ -7167,7 +7166,7 @@ static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp,
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 }
 
-__global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *pp,
+__global__ void kantor_force_kernel(RbcParams_v par, int md, int nv, int nc, const Particle *pp,
                       Adj_v adj, /**/ float *ff) {
     enum {X, Y, Z};
     int i, pid, valid;
@@ -7181,17 +7180,15 @@ __global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *p
     valid = adj_get_map(i, &adj, /**/ &m);
     if (!valid) return;
 
-    const Part p0 = fetchPart(pp, m.i0);
+    const KantorPart p0 = kantor_fetch_part(pp, m.i0);
 
     f[X] = f[Y] = f[Z] = 0;
-    adj_dihedrals(&par, pp, p0.r, &m,          /*io*/ f);
+    kantor_adj_dihedrals(&par, pp, p0.r, &m,          /*io*/ f);
 
     atomicAdd(&ff[3 * pid + 0], f[X]);
     atomicAdd(&ff[3 * pid + 1], f[Y]);
     atomicAdd(&ff[3 * pid + 2], f[Z]);
 }
-}
-
 void kantor_ini(const MeshRead *cell, Kantor **pq) {
     Kantor *q;
     int md, nt, nv;
@@ -7223,7 +7220,7 @@ void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Forc
         ERR("`ff` is not a device pointer");
     md = q->md; nv = q->nv; nc = q->nc;
     parv = rbc_params_get_view(par);
-    KL(kantor_dev::force, (k_cnf(nc*nv*md)),
+    KL(kantor_force_kernel, (k_cnf(nc*nv*md)),
        (parv, md, nv, nc, q->pp, *t->adj_v, /**/ (float*)ff));
 }
 
