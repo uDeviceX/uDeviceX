@@ -14,39 +14,6 @@
 #include <assert.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #ifndef UDX_FORCE_TYPE_COMMON
@@ -1061,39 +1028,6 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
 #include <cuda_fp16.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #define ERR(fmt, ...)  do {                                     \
@@ -1583,39 +1517,6 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h,      co
 #include <assert.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #ifndef UDX_FORCE_TYPE_COMMON
@@ -2108,39 +2009,6 @@ void area_volume_host(AreaVolume *q,      float **pav) {
 #include <curand.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #define ERR(fmt, ...)  do {                                     \
@@ -2289,39 +2157,6 @@ int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
 #include <curand.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 void os_mkdir(const char* path);
@@ -2556,39 +2391,6 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
 #include <stddef.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 #define CONTAINER_OF(ptr, type, member) \
     ((type*)((char*)(ptr) - offsetof(type, member)))
 
@@ -2933,39 +2735,6 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 #include <assert.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #ifndef UDX_FORCE_DEF_COMMON
@@ -4040,39 +3809,6 @@ int he_hdg_edg(He *, int);
 #include <assert.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 
@@ -5650,39 +5386,6 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants,   
 #include <assert.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 
@@ -6745,39 +6448,6 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
 #include <math.h>
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -6982,39 +6652,6 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
 
 
 
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
 
 
 #define ERR(fmt, ...)  do {                                     \
