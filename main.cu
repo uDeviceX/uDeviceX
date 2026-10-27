@@ -4,43 +4,6 @@
 #include <assert.h>
 #include <mpi.h>
 #include <vector_types.h>
-
-
-#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
-    !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-
-#if !defined(CC_RELEASE) && !defined(CC_SYNC)
-  #define CC_RELEASE
-#endif
-
-
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
-#endif
-
-
-#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
-  #define CUDA_ALLOC_RELEASE
-#endif
-
-
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-
-#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_IGNORE
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
-
-
 struct Config;
 struct float3;
 struct int3;
