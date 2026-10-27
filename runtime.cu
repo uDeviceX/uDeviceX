@@ -22298,69 +22298,66 @@ static const char *err_str[NERRORS] = {ERRLIST(make_str)};
 
 typedef int err_type;
 
-namespace dbg_dev {
-static __device__ err_type error;
-} // dev
+static __device__ err_type dbg_error;
 
 static void err_ini() {
     err_type e = ERR_NONE;
     void *devPtr;
-    CC(d::GetSymbolAddress(&devPtr, &dbg_dev::error));
-    CC(d::MemcpyToSymbol(&dbg_dev::error, &e, sizeof(err_type)));
+    CC(d::GetSymbolAddress(&devPtr, &dbg_error));
+    CC(d::MemcpyToSymbol(&dbg_error, &e, sizeof(err_type)));
 }
 
 static err_type err_get() {
     err_type e;
-    CC(d::MemcpyFromSymbol(&e, &dbg_dev::error, sizeof(err_type)));
+    CC(d::MemcpyFromSymbol(&e, &dbg_error, sizeof(err_type)));
     return e;
 }
 
 static const char* get_err_str(err_type e) {return err_str[e];}
 
-namespace dbg_dev {
-static __device__ void report(err_type e) {
-    if (e != ERR_NONE) atomicExch(&error, e);
+static __device__ void dbg_report(err_type e) {
+    if (e != ERR_NONE) atomicExch(&dbg_error, e);
 }
 
-static __device__ err_type check_float(float a) {
+static __device__ err_type dbg_check_float(float a) {
     if (isnan(a)) return ERR_NAN_VAL;
     if (isinf(a)) return ERR_INF_VAL;
     return ERR_NONE;
 }
 
-static __device__ err_type check_float3(const float a[3]) {
+static __device__ err_type dbg_check_float3(const float a[3]) {
     enum {X, Y, Z};
     err_type e;
-#define check_ret(A) if ((e = check_float(A)) != ERR_NONE) return e
+#define check_ret(A) if ((e = dbg_check_float(A)) != ERR_NONE) return e
     check_ret(a[X]);
     check_ret(a[Y]);
     check_ret(a[Z]);
 #undef check_ret
     return ERR_NONE;
 }
-static __device__ bool valid_pos(float x, int L) {
+static __device__ bool dbg_valid_pos(float x, int L) {
     if (x < -0.5*L || x > 0.5*L)
         return false;
     return true;
 }
 
-static __device__ bool valid_unpacked_pos(int3 L, float x, float y, float z) {
+static __device__ bool dbg_valid_unpacked_pos(int3 L, float x, float y, float z) {
     bool ok = true;
-    ok &= valid_pos(x, L.x);
-    ok &= valid_pos(y, L.y);
-    ok &= valid_pos(z, L.z);
+    ok &= dbg_valid_pos(x, L.x);
+    ok &= dbg_valid_pos(y, L.y);
+    ok &= dbg_valid_pos(z, L.z);
 
     return ok;
 }
 
-static __device__ err_type valid_pos(int3 L, const Particle p, bool verbose) {
+static __device__ err_type dbg_valid_pos(int3 L, const Particle p, bool verbose) {
     enum {X, Y, Z};
     float x, y, z;
     err_type e;
     x  = p.r[X];  y = p.r[Y];  z = p.r[Z];
-    e = check_float3(p.r);
+    e = dbg_check_float3(p.r);
     if (e != ERR_NONE) return e;
-    if (valid_unpacked_pos(L, x, y, z)) e = ERR_NONE;
+    if (dbg_valid_unpacked_pos(L, x, y, z)) e = ERR_NONE;
     else                                e = ERR_INVALID;
 
     if (verbose && e != ERR_NONE)
@@ -22370,32 +22367,32 @@ static __device__ err_type valid_pos(int3 L, const Particle p, bool verbose) {
     return e;
 }
 
-__global__ void check_pos(int3 L, const Particle *pp, int n, bool verbose = true) {
+__global__ void dbg_check_pos_kernel(int3 L, const Particle *pp, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     Particle p;
     if (i >= n) return;
     p = pp[i];
-    err_type e = valid_pos(L, p, verbose);
-    report(e);
+    err_type e = dbg_valid_pos(L, p, verbose);
+    dbg_report(e);
 }
 
-static __device__ bool valid_unpacked_pos_pu(int3 L, float x, float y, float z) {
+static __device__ bool dbg_valid_unpacked_pos_pu(int3 L, float x, float y, float z) {
     bool ok = true;
-    ok &= valid_pos(x, L.x + 3);
-    ok &= valid_pos(y, L.y + 3);
-    ok &= valid_pos(z, L.z + 3);
+    ok &= dbg_valid_pos(x, L.x + 3);
+    ok &= dbg_valid_pos(y, L.y + 3);
+    ok &= dbg_valid_pos(z, L.z + 3);
 
     return ok;
 }
 
-static __device__ err_type valid_pos_pu(int3 L, const Particle p, bool verbose) {
+static __device__ err_type dbg_valid_pos_pu(int3 L, const Particle p, bool verbose) {
     enum {X, Y, Z};
     float x, y, z;
     err_type e;
     x  = p.r[X];  y = p.r[Y];  z = p.r[Z];
-    e = check_float3(p.r);
+    e = dbg_check_float3(p.r);
     if (e != ERR_NONE) return e;
-    if (valid_unpacked_pos_pu(L, x, y, z)) e = ERR_NONE;
+    if (dbg_valid_unpacked_pos_pu(L, x, y, z)) e = ERR_NONE;
     else                                   e = ERR_INVALID;
 
     if (verbose && e != ERR_NONE)
@@ -22405,37 +22402,37 @@ static __device__ err_type valid_pos_pu(int3 L, const Particle p, bool verbose) 
     return e;
 }
 
-__global__ void check_pos_pu(int3 L, const Particle *pp, int n, bool verbose = true) {
+__global__ void dbg_check_pos_pu_kernel(int3 L, const Particle *pp, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     Particle p;
     if (i >= n) return;
     p = pp[i];
-    err_type e = valid_pos_pu(L, p, verbose);
-    report(e);
+    err_type e = dbg_valid_pos_pu(L, p, verbose);
+    dbg_report(e);
 }
-static __device__ bool valid_vel(float dt, float v, int L) {
+static __device__ bool dbg_valid_vel(float dt, float v, int L) {
     float dx = fabs(v * dt);
     if (dx > L/2)
         return false;
     return true;
 }
 
-static __device__ bool valid_vel3(float dt, int3 L, float vx, float vy, float vz) {
+static __device__ bool dbg_valid_vel3(float dt, int3 L, float vx, float vy, float vz) {
     bool ok = true;
-    ok &= valid_vel(dt, vx, L.x);
-    ok &= valid_vel(dt, vy, L.y);
-    ok &= valid_vel(dt, vz, L.z);
+    ok &= dbg_valid_vel(dt, vx, L.x);
+    ok &= dbg_valid_vel(dt, vy, L.y);
+    ok &= dbg_valid_vel(dt, vz, L.z);
 
     return ok;
 }
 
-static __device__ err_type valid_vv(float dt, int3 L, const Particle p, bool verbose) {
+static __device__ err_type dbg_valid_vv(float dt, int3 L, const Particle p, bool verbose) {
     enum {X, Y, Z};
     err_type e;
     const float *v = p.v;
-    e = check_float3(v);
+    e = dbg_check_float3(v);
     if (e != ERR_NONE) return e;
-    if ( valid_vel3(dt, L, v[X], v[Y], v[Z])) e = ERR_NONE;
+    if ( dbg_valid_vel3(dt, L, v[X], v[Y], v[Z])) e = ERR_NONE;
     else                                       e = ERR_INVALID;
 
     if (verbose && e != ERR_NONE)
@@ -22445,15 +22442,15 @@ static __device__ err_type valid_vv(float dt, int3 L, const Particle p, bool ver
     return e;
 }
 
-__global__ void check_vv(float dt, int3 L, const Particle *pp, int n, bool verbose = true) {
+__global__ void dbg_check_vv_kernel(float dt, int3 L, const Particle *pp, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     Particle p;
     if (i >= n) return;
     p = pp[i];
-    err_type e = valid_vv(dt, L, p, verbose);
-    report(e);
+    err_type e = dbg_valid_vv(dt, L, p, verbose);
+    dbg_report(e);
 }
-static __device__ bool valid_acc(float dt, float a, int L, bool verbose) {
+static __device__ bool dbg_valid_acc(float dt, float a, int L, bool verbose) {
     float dx = fabs(a * dt * dt);
     if (dx > 0.5*L) {
         if (verbose) printf("DBG: a = %g (L = %d)\n", a, L);
@@ -22462,34 +22459,34 @@ static __device__ bool valid_acc(float dt, float a, int L, bool verbose) {
     return true;
 }
 
-static __device__ bool valid_unpacked_f(float dt, int3 L, float fx, float fy, float fz, bool verbose) {
+static __device__ bool dbg_valid_unpacked_f(float dt, int3 L, float fx, float fy, float fz, bool verbose) {
     bool ok = true;
-    ok &= valid_acc(dt, fx, L.x, verbose);
-    ok &= valid_acc(dt, fy, L.y, verbose);
-    ok &= valid_acc(dt, fz, L.z, verbose);
+    ok &= dbg_valid_acc(dt, fx, L.x, verbose);
+    ok &= dbg_valid_acc(dt, fy, L.y, verbose);
+    ok &= dbg_valid_acc(dt, fz, L.z, verbose);
 
     return ok;
 }
 
-static __device__ err_type valid_f(float dt, int3 L, const Force *f, bool verbose) {
+static __device__ err_type dbg_valid_f(float dt, int3 L, const Force *f, bool verbose) {
     enum {X, Y, Z};
     float fx, fy, fz;
     err_type e;
     fx = f->f[X]; fy = f->f[Y]; fz = f->f[Z];
-    e = check_float3(f->f);
+    e = dbg_check_float3(f->f);
     if (e != ERR_NONE) return e;
-    if (valid_unpacked_f(dt, L, fx, fy, fz, verbose)) e = ERR_NONE;
+    if (dbg_valid_unpacked_f(dt, L, fx, fy, fz, verbose)) e = ERR_NONE;
     else                                               e = ERR_INVALID;
     return e;
 }
 
-__global__ void check_ff(float dt, int3 L, const Force *ff, int n, bool verbose = true) {
+__global__ void dbg_check_ff_kernel(float dt, int3 L, const Force *ff, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
-    err_type e = valid_f(dt, L, ff + i, verbose);
-    report(e);
+    err_type e = dbg_valid_f(dt, L, ff + i, verbose);
+    dbg_report(e);
 }
-static __device__ err_type valid_color(int c, bool verbose) {
+static __device__ err_type dbg_valid_color(int c, bool verbose) {
     if (c != BLUE_COLOR && c != RED_COLOR) {
         if (verbose) printf("DBG: color = %d\n", c);
         return ERR_INVALID;
@@ -22497,13 +22494,13 @@ static __device__ err_type valid_color(int c, bool verbose) {
     return ERR_NONE;
 }
 
-__global__ void check_cc(const int *cc, int n, bool verbose = true) {
+__global__ void dbg_check_cc_kernel(const int *cc, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
-    err_type e = valid_color(cc[i], verbose);
-    report(e);
+    err_type e = dbg_valid_color(cc[i], verbose);
+    dbg_report(e);
 }
-static __device__ int3 cell_coords(int3 L, int cid) {
+static __device__ int3 dbg_cell_coords(int3 L, int cid) {
     int3 c;
     c.x = cid % L.x;
     c.z = cid / (L.y * L.x);
@@ -22511,7 +22508,7 @@ static __device__ int3 cell_coords(int3 L, int cid) {
     return c;
 }
 
-static __device__ bool at_coord(float x, int c, int L, bool verbose, const char *dir) {
+static __device__ bool dbg_at_coord(float x, int c, int L, bool verbose, const char *dir) {
     x += L/2;
     if ((x < c) || (x > c + 1)) {
         if (verbose) printf("Particle out of its cell : %s = %f, c = %d, L = %d\n", dir, x, c, L);
@@ -22520,41 +22517,41 @@ static __device__ bool at_coord(float x, int c, int L, bool verbose, const char 
     return true;
 }
 
-static __device__ bool at_coords(const float r[3], int3 coords, int3 L, bool verbose) {
+static __device__ bool dbg_at_coords(const float r[3], int3 coords, int3 L, bool verbose) {
     enum {X, Y, Z};
     bool ok = true;
-    ok &= at_coord(r[X], coords.x, L.x, verbose, "x");
-    ok &= at_coord(r[Y], coords.y, L.y, verbose, "y");
-    ok &= at_coord(r[Z], coords.z, L.z, verbose, "z");
+    ok &= dbg_at_coord(r[X], coords.x, L.x, verbose, "x");
+    ok &= dbg_at_coord(r[Y], coords.y, L.y, verbose, "y");
+    ok &= dbg_at_coord(r[Z], coords.z, L.z, verbose, "z");
     return ok;
 }
 
-static __device__ err_type valid_particle(int3 L, int cid, const Particle *p, bool verbose) {
+static __device__ err_type dbg_valid_particle(int3 L, int cid, const Particle *p, bool verbose) {
     err_type e;
-    e = check_float3(p->r); if (e != ERR_NONE) return e;
-    e = check_float3(p->v); if (e != ERR_NONE) return e;
+    e = dbg_check_float3(p->r); if (e != ERR_NONE) return e;
+    e = dbg_check_float3(p->v); if (e != ERR_NONE) return e;
 
-    int3 coords = cell_coords(L, cid);
-    bool valid = at_coords(p->r, coords, L, verbose);
+    int3 coords = dbg_cell_coords(L, cid);
+    bool valid = dbg_at_coords(p->r, coords, L, verbose);
     if (!valid) e = ERR_INVALID;
 
     return e;
 }
 
-static __device__ err_type valid_cell(int3 L, int cid, int s, int c, const Particle *pp, bool verbose) {
+static __device__ err_type dbg_valid_cell(int3 L, int cid, int s, int c, const Particle *pp, bool verbose) {
     err_type e = ERR_NONE;
     int i;
     Particle p;
 
     for (i = 0; i < c; ++i) {
         p = pp[s + i];
-        e = valid_particle(L, cid, &p, verbose);
+        e = dbg_valid_particle(L, cid, &p, verbose);
         if (e != ERR_NONE) return e;
     }
     return e;
 }
 
-__global__ void check_clist(int3 ncells, const int *ss, const int *cc, const Particle *pp, bool verbose = true) {
+__global__ void dbg_check_clist_kernel(int3 ncells, const int *ss, const int *cc, const Particle *pp, bool verbose = true) {
     int i, c, s;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= ncells.x * ncells.y * ncells.z) return;
@@ -22562,10 +22559,9 @@ __global__ void check_clist(int3 ncells, const int *ss, const int *cc, const Par
     s = ss[i];
     c = cc[i];
 
-    err_type e = valid_cell(ncells, i, s, c, pp, verbose);
-    report(e);
+    err_type e = dbg_valid_cell(ncells, i, s, c, pp, verbose);
+    dbg_report(e);
 }
-} // devdbg
 
 struct Dbg {
     int state[DBG_NKIND_];
@@ -22658,7 +22654,7 @@ void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, con
     if (!check(dbg, DBG_POS))
         return;
     UC(err_ini());
-    KL(dbg_dev::check_pos, (k_cnf(n)), (L, pp, n));
+    KL(dbg_check_pos_kernel, (k_cnf(n)), (L, pp, n));
     if (error()) {
         if (dbg->dump)
             dump_pp(c, base, n, pp);
@@ -22671,7 +22667,7 @@ void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n
     if (!check(dbg, DBG_POS_SOFT))
         return;
     UC(err_ini());
-    KL(dbg_dev::check_pos_pu, (k_cnf(n)), (L, pp, n));
+    KL(dbg_check_pos_pu_kernel, (k_cnf(n)), (L, pp, n));
     if (error()) {
         if (dbg->dump)
             dump_pp(c, base, n, pp);
@@ -22685,7 +22681,7 @@ void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, 
     if (!check(dbg, DBG_VEL))
         return;
     UC(err_ini());
-    KL(dbg_dev::check_vv, (k_cnf(n)), (dt, L, pp, n));
+    KL(dbg_check_vv_kernel, (k_cnf(n)), (dt, L, pp, n));
     if (error()) {
         if (dbg->dump)
             dump_pp(c, base, n, pp);
@@ -22699,7 +22695,7 @@ void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *db
     if (!check(dbg, DBG_FORCES))
         return;
     UC(err_ini());
-    KL(dbg_dev::check_ff, (k_cnf(n)), (dt, L, ff, n));
+    KL(dbg_check_ff_kernel, (k_cnf(n)), (dt, L, ff, n));
     if (error()) {
         if (dbg->dump)
             dump_pp_ff(c, base, n, pp, ff);
@@ -22711,7 +22707,7 @@ void dbg_check_colors(const Coords*, const Dbg *dbg, int n, const int *cc) {
     if (!check(dbg, DBG_COLORS))
         return;
     UC(err_ini());
-    KL(dbg_dev::check_cc, (k_cnf(n)), (cc, n));
+    KL(dbg_check_cc_kernel, (k_cnf(n)), (cc, n));
     if (error()) {
         UC(print());
     }
@@ -22722,7 +22718,7 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
         return;
     int n = L.x * L.y * L.z;
     UC(err_ini());
-    KL(dbg_dev::check_clist, (k_cnf(n)), (L, starts, counts, pp));
+    KL(dbg_check_clist_kernel, (k_cnf(n)), (L, starts, counts, pp));
     if (error()) {
         UC(print());
     }
