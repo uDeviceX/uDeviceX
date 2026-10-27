@@ -861,7 +861,6 @@ const char* get_filename_ext(const char*);
 #define UDX_DISTR_EXCH_SHFL_COMMON
 #define _I_ static __device__
 
-#if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
 _I_ T shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
@@ -875,21 +874,6 @@ template <typename T>
 _I_ T shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
-#else
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down(val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up(val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl(val, width);
-}
-#endif
 
 #undef _I_
 #endif /* UDX_DISTR_EXCH_SHFL_COMMON */
@@ -1163,7 +1147,6 @@ void emap_download_tot_counts(int nw, int nfrags, EMap map, /**/ int counts[]); 
 void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[], int *counts[]);
 #define _I_ static __device__
 
-#if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
 _I_ T emap_shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
@@ -1177,21 +1160,6 @@ template <typename T>
 _I_ T emap_shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
-#else
-template <typename T>
-_I_ T emap_shfl_down(T val, unsigned int width) {
-    return __shfl_down(val, width);
-}
-
-template <typename T>
-_I_ T emap_shfl_up(T val, unsigned int width) {
-    return __shfl_up(val, width);
-}
-template <typename T>
-_I_ T emap_shfl(T val, unsigned int width) {
-    return __shfl(val, width);
-}
-#endif
 
 #undef _I_
 namespace emap_dev {
@@ -1625,7 +1593,6 @@ void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, c
 #define UDX_DISTR_EXCH_SHFL_COMMON
 #define _I_ static __device__
 
-#if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
 _I_ T shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
@@ -1639,21 +1606,6 @@ template <typename T>
 _I_ T shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
-#else
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down(val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up(val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl(val, width);
-}
-#endif
 
 #undef _I_
 #endif /* UDX_DISTR_EXCH_SHFL_COMMON */
@@ -2224,7 +2176,6 @@ void scan_fin(Scan*);                                                       // <
 #define UDX_DISTR_EXCH_SHFL_COMMON
 #define _I_ static __device__
 
-#if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
 _I_ T shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
@@ -2238,21 +2189,6 @@ template <typename T>
 _I_ T shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
-#else
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down(val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up(val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl(val, width);
-}
-#endif
 
 #undef _I_
 #endif /* UDX_DISTR_EXCH_SHFL_COMMON */
@@ -3329,7 +3265,6 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
 #define UDX_DISTR_EXCH_SHFL_COMMON
 #define _I_ static __device__
 
-#if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
 _I_ T shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
@@ -3343,21 +3278,6 @@ template <typename T>
 _I_ T shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
-#else
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down(val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up(val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl(val, width);
-}
-#endif
 
 #undef _I_
 #endif /* UDX_DISTR_EXCH_SHFL_COMMON */
@@ -4074,7 +3994,6 @@ typedef Sarray<RndFrag, 26> RndFrag26;
 #define UDX_DISTR_EXCH_SHFL_COMMON
 #define _I_ static __device__
 
-#if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
 _I_ T shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
@@ -4088,21 +4007,6 @@ template <typename T>
 _I_ T shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
-#else
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down(val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up(val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl(val, width);
-}
-#endif
 
 #undef _I_
 #endif /* UDX_DISTR_EXCH_SHFL_COMMON */
