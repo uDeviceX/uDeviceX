@@ -3092,17 +3092,10 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 #endif
-#ifdef TRI_HOST
-  #define _I_
-  #define _S_ static
-  #define BEGIN namespace tri_hst {
-  #define END }
-#else
   #define _I_ static __device__
   #define _S_ static __device__
   #define BEGIN namespace tri_dev {
   #define END }
-#endif
 
 BEGIN
 
@@ -4300,17 +4293,10 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-#ifdef TRI_HOST
-  #define _I_
-  #define _S_ static
-  #define BEGIN namespace tri_hst {
-  #define END }
-#else
   #define _I_ static __device__
   #define _S_ static __device__
   #define BEGIN namespace tri_dev {
   #define END }
-#endif
 
 BEGIN
 
@@ -4957,29 +4943,16 @@ struct Juelicher {
 /* shared Kantor angle helpers used by both bending implementations */
 #ifndef UDX_RBC_KANTOR0_COMMON
 #define UDX_RBC_KANTOR0_COMMON
-#ifdef FORCE_KANTOR0_HOST
-  #define _I_
-  #define _S_ static
-  #define BEGIN namespace force_kantor0_hst {
-  #define END }
-#else
   #define _I_ static __device__
   #define _S_ static __device__
   #define BEGIN namespace force_kantor0_dev {
   #define END }
-#endif
 
 BEGIN
 
-#ifdef FORCE_KANTOR0_HOST
-_S_ double rsqrt0(double x) { return pow(x, -0.5); }
-#define PRINT(fmt, ...) msg_print((fmt), ##__VA_ARGS__)
-#define EXIT() ERR("assert")
-#else
 _S_ double rsqrt0(double x) { return rsqrt(x); }
 #define PRINT(fmt, ...) printf((fmt), ##__VA_ARGS__)
 #define EXIT() assert(0)
-#endif
 
 _S_ double max(double a, double b) { return a > b ? a : b; }
 
@@ -6341,29 +6314,16 @@ struct Kantor {
 /* shared Kantor angle helpers used by both bending implementations */
 #ifndef UDX_RBC_KANTOR0_COMMON
 #define UDX_RBC_KANTOR0_COMMON
-#ifdef FORCE_KANTOR0_HOST
-  #define _I_
-  #define _S_ static
-  #define BEGIN namespace force_kantor0_hst {
-  #define END }
-#else
   #define _I_ static __device__
   #define _S_ static __device__
   #define BEGIN namespace force_kantor0_dev {
   #define END }
-#endif
 
 BEGIN
 
-#ifdef FORCE_KANTOR0_HOST
-_S_ double rsqrt0(double x) { return pow(x, -0.5); }
-#define PRINT(fmt, ...) msg_print((fmt), ##__VA_ARGS__)
-#define EXIT() ERR("assert")
-#else
 _S_ double rsqrt0(double x) { return rsqrt(x); }
 #define PRINT(fmt, ...) printf((fmt), ##__VA_ARGS__)
 #define EXIT() assert(0)
-#endif
 
 _S_ double max(double a, double b) { return a > b ? a : b; }
 
