@@ -1,48 +1,48 @@
 
-// Editable compilation unit for particle distribution and fluid halo exchange.
 
 
-// Grouped editable compilation unit for all distribution units.
 
 
-// Grouped editable compilation unit for distribution exchange and rigid distribution.
 
 
-// Grouped editable compilation unit for distribution exchange helpers.
 
 
-// Grouped editable compilation unit for distribution and exchange common code.
+
+
+
+
+
 
 
 #include "config.cuh"
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -60,10 +60,10 @@
 #define UDX_DISTR_EXCH_TYPE_COMMON
 #include "types.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -72,39 +72,39 @@
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -112,7 +112,7 @@
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -125,7 +125,7 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #define UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #include "fragment.cuh"
@@ -138,47 +138,47 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
+}
 #endif
 
 #ifndef UDX_DISTR_EXCH_DMAP_TYPE_COMMON
 #define UDX_DISTR_EXCH_DMAP_TYPE_COMMON
-/* [D]istr Map */
-struct DMap {
-    int *counts;  /* number of entities leaving in each fragment */
-    int *starts;  /* cumulative sum of the above                 */
-    int *ids[27]; /* indices of leaving objects                  */
 
-    int *hcounts; /* counts on host (pinned) */
+struct DMap {
+    int *counts;
+    int *starts;
+    int *ids[27];
+
+    int *hcounts;
 };
 #endif
 
 struct Particle;
 struct int3;
 
-void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m, /**/ Sarray<Particle*, 27> buf); // <1>
-void dcommon_shift_one_frag(int3 L, int n, const int fid, /**/ Particle *pp); // <2>
-void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Particle *pp); // <3>
+void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m,      Sarray<Particle*, 27> buf);
+void dcommon_shift_one_frag(int3 L, int n, const int fid,      Particle *pp);
+void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts,      Particle *pp);
 
 
 namespace dcommon_dev {
-/* pack packets of nv particles into 27 buffers according to map  */
-__global__ void pack_pp_packets(int nv, const Particle *pp, DMap m, /**/ Sarray<Particle*, 27> buf) {
+
+__global__ void pack_pp_packets(int nv, const Particle *pp, DMap m,      Sarray<Particle*, 27> buf) {
     int i, cid, fid, scid;
     int dst, src, offset;
     i   = threadIdx.x + blockDim.x * blockIdx.x;
@@ -196,30 +196,30 @@ __global__ void pack_pp_packets(int nv, const Particle *pp, DMap m, /**/ Sarray<
     buf.d[fid][dst] = pp[src];
 }
 
-static __device__ void fid2shift(int3 L, int id, /**/ int s[3]) {
+static __device__ void fid2shift(int3 L, int id,      int s[3]) {
     enum {X, Y, Z};
     s[X] = L.x * frag_dev::i2dx(id);
     s[Y] = L.y * frag_dev::i2dy(id);
     s[Z] = L.z * frag_dev::i2dz(id);
 }
 
-static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
+static  __device__ void shift_1p(const int s[3],      Particle *p) {
     enum {X, Y, Z};
     p->r[X] += s[X];
     p->r[Y] += s[Y];
     p->r[Z] += s[Z];
 }
 
-__global__ void shift_one_frag(int3 L, int n, const int fid, /**/ Particle *pp) {
+__global__ void shift_one_frag(int3 L, int n, const int fid,      Particle *pp) {
     int i, s[3];
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;
 
-    fid2shift(L, fid, /**/ s);
-    shift_1p(s, /**/ pp + i);
+    fid2shift(L, fid,      s);
+    shift_1p(s,      pp + i);
 }
 
-__global__ void shift_halo(int3 L, const Sarray<int, 27> starts, /**/ Particle *pp) {
+__global__ void shift_halo(int3 L, const Sarray<int, 27> starts,      Particle *pp) {
     int pid, fid, s[3];
 
     pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -227,24 +227,24 @@ __global__ void shift_halo(int3 L, const Sarray<int, 27> starts, /**/ Particle *
     fid = frag_dev::frag_get_fid(starts.d, pid);
 
     fid2shift(L, fid, s);
-    shift_1p(s, /**/ pp + pid);
+    shift_1p(s,      pp + pid);
 }
 }
 
-void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m, /**/ Sarray<Particle*, 27> buf) {
+void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m,      Sarray<Particle*, 27> buf) {
     enum {THR=128};
     dim3 thrd(THR, 1);
     dim3 blck(ceiln(nv, THR), nc);
 
-    KL(dcommon_dev::pack_pp_packets, (blck, thrd), (nv, pp, m, /**/ buf));
+    KL(dcommon_dev::pack_pp_packets, (blck, thrd), (nv, pp, m,      buf));
 }
 
-void dcommon_shift_one_frag(int3 L, int n, const int fid, /**/ Particle *pp) {
-    KL(dcommon_dev::shift_one_frag, (k_cnf(n)), (L, n, fid, /**/ pp));
+void dcommon_shift_one_frag(int3 L, int n, const int fid,      Particle *pp) {
+    KL(dcommon_dev::shift_one_frag, (k_cnf(n)), (L, n, fid,      pp));
 }
 
-void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Particle *pp) {
-    KL(dcommon_dev::shift_halo, (k_cnf(nhalo)), (L, starts, /**/ pp));
+void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts,      Particle *pp) {
+    KL(dcommon_dev::shift_halo, (k_cnf(nhalo)), (L, starts,      pp));
 }
 
 
@@ -253,33 +253,33 @@ void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Pa
 
 #include <mpi.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -289,10 +289,10 @@ void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Pa
 #endif
 
 
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -300,7 +300,7 @@ void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Pa
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -313,16 +313,16 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
 
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -331,29 +331,29 @@ void check(int rc, const char *file, int line);
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
@@ -368,22 +368,22 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
+}
 #endif
 
 #ifndef UDX_DISTR_EXCH_COMM_COMMON
@@ -391,39 +391,39 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 typedef unsigned char data_t;
 
 enum {
-    NFRAGS = 26, /* number of fragments for one halo */
-    BULK   = 26, /* bulk id                          */
-    NBAGS  = 27, /* fragments + bulk                 */
+    NFRAGS = 26,
+    BULK   = 26,
+    NBAGS  = 27,
 };
 
-/* Allocation mod for bags */
+
 enum AllocMod {
-    HST_ONLY,   /* only host bags allocated                 */
-    DEV_ONLY,   /* only device bags allocated               */
-    PINNED,     /* both host and device pinned              */
-    PINNED_HST, /* host pinned; no device memory            */
-    PINNED_DEV, /* host pinned; device global memory on gpu */
-    NONE        /* no allocation                            */
+    HST_ONLY,
+    DEV_ONLY,
+    PINNED,
+    PINNED_HST,
+    PINNED_DEV,
+    NONE
 };
 
 struct dBags {
-    data_t *data[NBAGS]; /* data on the device         */
+    data_t *data[NBAGS];
 };
 
 struct hBags {
-    data_t *data[NBAGS]; /* data on the host                    */
-    int         *counts; /* size of the data                    */
-    int capacity[NBAGS]; /* capacity of each frag (elem number) */
-    size_t bsize;        /* size of one datum in bytes          */
+    data_t *data[NBAGS];
+    int         *counts;
+    int capacity[NBAGS];
+    size_t bsize;
 };
 
 struct Comm;
 struct CommBuffer;
 
-void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-void comm_ini(MPI_Comm cart, /**/ Comm **c);
-void comm_fin(/**/ Comm *c);
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS],      hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod,      hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart,      Comm **c);
+void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
@@ -431,22 +431,22 @@ void comm_buffer_fin(CommBuffer*);
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-void comm_post_recv(hBags *b, Comm *c);           // <1>
-void comm_post_send(const hBags *b, Comm *c);     // <2>
+void comm_post_recv(hBags *b, Comm *c);
+void comm_post_send(const hBags *b, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
-void comm_wait_send(Comm *c);                     // <4>
+void comm_wait_recv(Comm *c,      hBags *b);
+void comm_wait_send(Comm *c);
 
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_recv(Comm *c,      CommBuffer *cb);
 void comm_wait_send(Comm *c);
 
-int    comm_get_number_capacity(int i, const hBags *b); // <1>
-size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+int    comm_get_number_capacity(int i, const hBags *b);
+size_t comm_get_byte_capacity(int i, const hBags *b);
 
-#endif /* UDX_DISTR_EXCH_COMM_COMMON */
+#endif
 struct int3;
 
 struct PackHelper {
@@ -456,11 +456,11 @@ struct PackHelper {
     int *cap;
 };
 
-void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf); // <1>
-void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp); // <2>
-void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *rr);
+void ecommon_pack_pp(const Particle *pp, PackHelper ph,      Pap26 buf);
+void ecommon_shift_pp_one_frag(int3 L, int n, const int fid,      Particle *pp);
+void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid,      Positioncp *rr);
 namespace exch_dev {
-static __device__ void pack_p(const Particle *pp, int offset, int *indices, int cap, int i, /**/ Particle *buf) {
+static __device__ void pack_p(const Particle *pp, int offset, int *indices, int cap, int i,      Particle *buf) {
     int dst, src;
     dst = offset + i;
     if (dst >= cap) return;
@@ -468,7 +468,7 @@ static __device__ void pack_p(const Particle *pp, int offset, int *indices, int 
     buf[dst] = pp[src];
 }
 
-__global__ void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf) {
+__global__ void ecommon_pack_pp(const Particle *pp, PackHelper ph,      Pap26 buf) {
     int gid, fid, frag_i, hi, step;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     hi = ph.starts[26];
@@ -477,68 +477,68 @@ __global__ void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 bu
     for (  ; gid < hi; gid += step) {
         fid = frag_dev::frag_get_fid(ph.starts, gid);
 
-        /* index in the fragment coordinates */
+
         frag_i = gid - ph.starts[fid];
 
-        pack_p(pp, ph.offsets[fid], ph.indices[fid], ph.cap[fid], frag_i, /**/ buf.d[fid]);
+        pack_p(pp, ph.offsets[fid], ph.indices[fid], ph.cap[fid], frag_i,      buf.d[fid]);
     }
 }
 
-// TODO this is copy/paste from distr/common
-static __device__ void fid2shift(int3 L, int id, /**/ int s[3]) {
+
+static __device__ void fid2shift(int3 L, int id,      int s[3]) {
     enum {X, Y, Z};
     s[X] = L.x * frag_dev::i2dx(id);
     s[Y] = L.y * frag_dev::i2dy(id);
     s[Z] = L.z * frag_dev::i2dz(id);
 }
 
-static  __device__ void shift_f3(const int s[3], /**/ float *r) {
+static  __device__ void shift_f3(const int s[3],      float *r) {
     enum {X, Y, Z};
     r[X] += s[X];
     r[Y] += s[Y];
     r[Z] += s[Z];
 }
 
-__global__ void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp) {
+__global__ void ecommon_shift_pp_one_frag(int3 L, int n, const int fid,      Particle *pp) {
     int i, s[3];
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;
 
-    fid2shift(L, fid, /**/ s);
-    shift_f3(s, /**/ pp[i].r);
+    fid2shift(L, fid,      s);
+    shift_f3(s,      pp[i].r);
 }
 
-__global__ void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *rr) {
+__global__ void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid,      Positioncp *rr) {
     int i, s[3];
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;
 
-    fid2shift(L, fid, /**/ s);
-    shift_f3(s, /**/ rr[i].rp);
-    shift_f3(s, /**/ rr[i].rc);
+    fid2shift(L, fid,      s);
+    shift_f3(s,      rr[i].rp);
+    shift_f3(s,      rr[i].rc);
 }
 }
 
-void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf) {
-    KL(exch_dev::ecommon_pack_pp, (14 * 16, 128), (pp, ph, /**/ buf));
+void ecommon_pack_pp(const Particle *pp, PackHelper ph,      Pap26 buf) {
+    KL(exch_dev::ecommon_pack_pp, (14 * 16, 128), (pp, ph,      buf));
 }
 
-void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp) {
-    KL(exch_dev::ecommon_shift_pp_one_frag, (k_cnf(n)), (L, n, fid, /**/ pp));
+void ecommon_shift_pp_one_frag(int3 L, int n, const int fid,      Particle *pp) {
+    KL(exch_dev::ecommon_shift_pp_one_frag, (k_cnf(n)), (L, n, fid,      pp));
 }
 
-void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *rr) {
-    KL(exch_dev::ecommon_shift_rrcp_one_frag, (k_cnf(n)), (L, n, fid, /**/ rr));
+void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid,      Positioncp *rr) {
+    KL(exch_dev::ecommon_shift_rrcp_one_frag, (k_cnf(n)), (L, n, fid,      rr));
 }
 
 
 
 
 
-// Grouped editable compilation unit for distribution and exchange maps.
 
 
-// Grouped editable compilation unit for fluid status and distribution maps.
+
+
 
 
 #define DEV_CUDA
@@ -547,21 +547,21 @@ void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *
 #include "api.cuh"
 
 #include <stdio.h>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -569,7 +569,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -580,7 +580,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -602,8 +602,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #ifndef UDX_DISTR_EXCH_FRAG_IMP_COMMON
 #define UDX_DISTR_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
@@ -613,43 +613,43 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
+}
 
 struct DFluStatus;
 struct Config;
 
-/* ini */
+
 void dflu_status_ini(DFluStatus **s);
 void dflu_status_fin(DFluStatus  *s);
 
-/* get */
+
 int  dflu_status_nullp(DFluStatus *s);
 int  dflu_status_success(DFluStatus *s);
 void dflu_status_log(DFluStatus *s);
 
-/* set */
-void dflu_status_exceed(int frag, int counter, int capacity, /**/ DFluStatus *s);
+
+void dflu_status_exceed(int frag, int counter, int capacity,      DFluStatus *s);
 
 
 enum {SUCCESS, PACK_FAILURE};
 struct DFluStatus {
     int errorcode;
-    int cap, cnt, fid; /* capacity, count, fragment */
+    int cap, cnt, fid;
 };
 
 void dflu_status_ini(DFluStatus **ps) {
@@ -688,7 +688,7 @@ void dflu_status_log(DFluStatus *s) {
     }
 }
 
-void dflu_status_exceed(int fid, int cnt, int cap, /**/ DFluStatus *s) {
+void dflu_status_exceed(int fid, int cnt, int cap,      DFluStatus *s) {
     if (s == NULL) ERR("status == NULL");
     s->fid = fid; s->cnt = cnt; s->cap = cap;
     s->errorcode = PACK_FAILURE;
@@ -704,33 +704,33 @@ int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
 #include <stdlib.h>
 #include <stdio.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -739,10 +739,10 @@ int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
 #define DUMP_BASE "."
 #endif
 
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -751,36 +751,36 @@ int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -788,7 +788,7 @@ int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -801,14 +801,14 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -819,7 +819,7 @@ void check(int rc, const char *file, int line);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -841,21 +841,21 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #ifndef UDX_DISTR_EXCH_SHFL_COMMON
 #define UDX_DISTR_EXCH_SHFL_COMMON
@@ -876,21 +876,21 @@ _I_ T shfl(T val, unsigned int width) {
 }
 
 #undef _I_
-#endif /* UDX_DISTR_EXCH_SHFL_COMMON */
+#endif
 
 #ifndef UDX_DISTR_EXCH_DMAP_TYPE_COMMON
 #define UDX_DISTR_EXCH_DMAP_TYPE_COMMON
-/* [D]istr Map */
-struct DMap {
-    int *counts;  /* number of entities leaving in each fragment */
-    int *starts;  /* cumulative sum of the above                 */
-    int *ids[27]; /* indices of leaving objects                  */
 
-    int *hcounts; /* counts on host (pinned) */
+struct DMap {
+    int *counts;
+    int *starts;
+    int *ids[27];
+
+    int *hcounts;
 };
 #endif
 
-void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m) {
+void dmap_ini(int nfrags, const int capacity[],      DMap *m) {
     Dalloc(&m->counts,  nfrags);
     Dalloc(&m->starts, (nfrags + 1));
 
@@ -905,7 +905,7 @@ void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m) {
 
 }
 
-void dmap_fin(int nfrags, /**/ DMap *m) {
+void dmap_fin(int nfrags,      DMap *m) {
     Dfree(m->counts);
     Dfree(m->starts);
     CC(d::FreeHost(m->hcounts));
@@ -914,15 +914,15 @@ void dmap_fin(int nfrags, /**/ DMap *m) {
             Dfree(m->ids[i]);
 }
 
-void dmap_reini(int nfrags, /**/ DMap m) {
+void dmap_reini(int nfrags,      DMap m) {
     CC(d::MemsetAsync(m.counts, 0, nfrags * sizeof(int)));
 }
 
-void dmap_download_counts(int nfrags, /**/ DMap *m) {
+void dmap_download_counts(int nfrags,      DMap *m) {
     CC(d::MemcpyAsync(m->hcounts, m->counts, nfrags * sizeof(int), D2H));
 }
 
-void dmap_ini_host(int nfrags, const int capacity[], /**/ DMap *m) {
+void dmap_ini_host(int nfrags, const int capacity[],      DMap *m) {
     EMALLOC(nfrags    ,  &m->counts);
     EMALLOC(nfrags + 1,  &m->starts);
 
@@ -934,18 +934,18 @@ void dmap_ini_host(int nfrags, const int capacity[], /**/ DMap *m) {
     }
 }
 
-void dmap_fin_host(int nfrags, /**/ DMap *m) {
+void dmap_fin_host(int nfrags,      DMap *m) {
     EFREE(m->counts);
     EFREE(m->starts);
     for (int i = 0; i < nfrags; ++i)
         EFREE(m->ids[i]);
 }
 
-void dmap_reini_host(int nfrags, /**/ DMap m) {
+void dmap_reini_host(int nfrags,      DMap m) {
     memset(m.counts, 0, nfrags * sizeof(int));
 }
 
-void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h) {
+void dmap_D2H(int nfrags, const DMap *d,      DMap *h) {
     CC(d::MemcpyAsync(h->counts, d->counts,  nfrags      * sizeof(int), D2H));
     CC(d::MemcpyAsync(h->starts, d->starts, (nfrags + 1) * sizeof(int), D2H));
 
@@ -969,33 +969,33 @@ void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h) {
 #include <stdio.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -1004,10 +1004,10 @@ void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h) {
 #define DUMP_BASE "."
 #endif
 
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -1016,29 +1016,29 @@ void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h) {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
@@ -1046,10 +1046,10 @@ void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h) {
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -1057,7 +1057,7 @@ void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h) {
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -1070,14 +1070,14 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -1088,7 +1088,7 @@ void check(int rc, const char *file, int line);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -1110,41 +1110,41 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-// [E]xchange map
+
 
 enum {MAX_FRAGS=26};
 
 struct EMap {
-    int *counts;         /* number of entities leaving in each fragment */
-    int *starts;         /* cumulative sum of the above                 */
-    int *offsets;        /* offsets per fragment for each solute        */
-    int *ids[MAX_FRAGS]; /* indices of leaving objects                  */
-    int *cap;            /* capacity of ids                             */
+    int *counts;
+    int *starts;
+    int *offsets;
+    int *ids[MAX_FRAGS];
+    int *cap;
 };
 
-void emap_ini(int nw, int nfrags, int cap[], /**/ EMap *map);               // <1>
-void emap_fin(int nfrags, EMap *map);                                       // <2>
-void emap_reini(int nw, int nfrags, /**/ EMap map);                         // <3>
-void emap_scan(int nw, int nfrags, /**/ EMap map);                          // <4>
-void emap_download_tot_counts(int nw, int nfrags, EMap map, /**/ int counts[]); // <5>
-void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[], int *counts[]);
+void emap_ini(int nw, int nfrags, int cap[],      EMap *map);
+void emap_fin(int nfrags, EMap *map);
+void emap_reini(int nw, int nfrags,      EMap map);
+void emap_scan(int nw, int nfrags,      EMap map);
+void emap_download_tot_counts(int nw, int nfrags, EMap map,      int counts[]);
+void emap_download_all_counts(int nw, int nfrags, EMap map,      int tot_counts[], int *counts[]);
 #define _I_ static __device__
 
 template <typename T>
@@ -1172,7 +1172,7 @@ static __device__ int warpexscan(int cnt, int t) {
     return scan - cnt;
 }
 
-__global__ void scan2d(int nfrags, const int *counts, const int *offsets, /**/ int *nextoffsets, int *starts) {
+__global__ void scan2d(int nfrags, const int *counts, const int *offsets,      int *nextoffsets, int *starts) {
     int t, cnt, scan, nextoffset;
     t = threadIdx.x;
     cnt = 0;
@@ -1185,7 +1185,7 @@ __global__ void scan2d(int nfrags, const int *counts, const int *offsets, /**/ i
     if (t <= nfrags) starts[t] = scan;
 }
 
-} // dev
+}
 
 static void check_frags(int nfrags) {
     if (nfrags > MAX_FRAGS)
@@ -1194,7 +1194,7 @@ static void check_frags(int nfrags) {
 static int get_stride(int nfrags)       {return nfrags + 1;}
 static int get_size(int nw, int nfrags) {return (nw + 1) * get_stride(nfrags);}
 
-void emap_ini(int nw, int nfrags, int cap[], /**/ EMap *map) {
+void emap_ini(int nw, int nfrags, int cap[],      EMap *map) {
     int i, c, sz;
     UC(check_frags(nfrags));
     sz = get_size(nw, nfrags);
@@ -1221,7 +1221,7 @@ void emap_fin(int nfrags, EMap *map) {
         Dfree(map->ids[i]);
 }
 
-void emap_reini(int nw, int nfrags, /**/ EMap map) {
+void emap_reini(int nw, int nfrags,      EMap map) {
     size_t sz;
     UC(check_frags(nfrags));
     sz = get_size(nw, nfrags) * sizeof(int);
@@ -1231,7 +1231,7 @@ void emap_reini(int nw, int nfrags, /**/ EMap map) {
     CC(d::MemsetAsync(map.offsets, 0, sz));
 }
 
-void emap_scan(int nw, int nfrags, /**/ EMap map) {
+void emap_scan(int nw, int nfrags,      EMap map) {
     int i, *cc, *ss, *oo, *oon, stride;
     UC(check_frags(nfrags));
     stride = get_stride(nfrags);
@@ -1239,12 +1239,12 @@ void emap_scan(int nw, int nfrags, /**/ EMap map) {
         cc  = map.counts  + i * stride;
         ss  = map.starts  + i * stride;
         oo  = map.offsets + i * stride;
-        oon = oo + stride; /* oo next */
-        KL(emap_dev::scan2d, (1, 32), (nfrags, cc, oo, /**/ oon, ss));
+        oon = oo + stride;
+        KL(emap_dev::scan2d, (1, 32), (nfrags, cc, oo,      oon, ss));
     }
 }
 
-void emap_download_tot_counts(int nw, int nfrags, EMap map, /**/ int counts[]) {
+void emap_download_tot_counts(int nw, int nfrags, EMap map,      int counts[]) {
     int *src, stride;
     UC(check_frags(nfrags));
     stride = get_stride(nfrags);
@@ -1252,7 +1252,7 @@ void emap_download_tot_counts(int nw, int nfrags, EMap map, /**/ int counts[]) {
     cD2H(counts, src, nfrags);
 }
 
-static void transpose(int nw, int stride, int nfrags, const int *buf, /**/ int tot_counts[], int *counts[]) {
+static void transpose(int nw, int stride, int nfrags, const int *buf,      int tot_counts[], int *counts[]) {
     int i, j, c, tc;
     for (i = 0; i < nfrags; ++i) {
         tc = 0;
@@ -1265,14 +1265,14 @@ static void transpose(int nw, int stride, int nfrags, const int *buf, /**/ int t
     }
 }
 
-void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[], int *counts[]) {
+void emap_download_all_counts(int nw, int nfrags, EMap map,      int tot_counts[], int *counts[]) {
     int *buf, stride, sz;
     UC(check_frags(nfrags));
     stride = get_stride(nfrags);
     sz = stride * nw;
     EMALLOC(stride * nw, &buf);
     cD2H(buf, map.counts, sz);
-    transpose(nw, stride, nfrags, buf, /**/ tot_counts, counts);
+    transpose(nw, stride, nfrags, buf,      tot_counts, counts);
     EFREE(buf);
 }
 
@@ -1285,33 +1285,33 @@ void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[
 #include <mpi.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -1321,32 +1321,32 @@ void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[
 #endif
 
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #ifndef UDX_DISTR_EXCH_DEVICE_API_COMMON
 #define UDX_DISTR_EXCH_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_DISTR_EXCH_DEVICE_API_COMMON */
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+#endif
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -1354,7 +1354,7 @@ const char* get_filename_ext(const char*);
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -1367,18 +1367,18 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_DISTR_EXCH_KL_COMMON */
+#endif
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -1389,7 +1389,7 @@ void check(int rc, const char *file, int line);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -1411,10 +1411,10 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -1423,44 +1423,44 @@ void error_print_stack();
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_DISTR_EXCH_TYPE_COMMON
 #define UDX_DISTR_EXCH_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_DISTR_EXCH_TYPE_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_DEF_COMMON
 #define UDX_DISTR_EXCH_DEF_COMMON
 #include "constants.cuh"
-#endif /* UDX_DISTR_EXCH_DEF_COMMON */
+#endif
 
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #define UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #include "fragment.cuh"
-#endif /* UDX_DISTR_EXCH_FRAG_DEV_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_FRAG_IMP_COMMON
 #define UDX_DISTR_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
@@ -1469,61 +1469,61 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
-#endif /* UDX_DISTR_EXCH_FRAG_IMP_COMMON */
+}
+#endif
 #ifndef UDX_DISTR_EXCH_COMM_COMMON
 #define UDX_DISTR_EXCH_COMM_COMMON
 typedef unsigned char data_t;
 
 enum {
-    NFRAGS = 26, /* number of fragments for one halo */
-    BULK   = 26, /* bulk id                          */
-    NBAGS  = 27, /* fragments + bulk                 */
+    NFRAGS = 26,
+    BULK   = 26,
+    NBAGS  = 27,
 };
 
-/* Allocation mod for bags */
+
 enum AllocMod {
-    HST_ONLY,   /* only host bags allocated                 */
-    DEV_ONLY,   /* only device bags allocated               */
-    PINNED,     /* both host and device pinned              */
-    PINNED_HST, /* host pinned; no device memory            */
-    PINNED_DEV, /* host pinned; device global memory on gpu */
-    NONE        /* no allocation                            */
+    HST_ONLY,
+    DEV_ONLY,
+    PINNED,
+    PINNED_HST,
+    PINNED_DEV,
+    NONE
 };
 
 struct dBags {
-    data_t *data[NBAGS]; /* data on the device         */
+    data_t *data[NBAGS];
 };
 
 struct hBags {
-    data_t *data[NBAGS]; /* data on the host                    */
-    int         *counts; /* size of the data                    */
-    int capacity[NBAGS]; /* capacity of each frag (elem number) */
-    size_t bsize;        /* size of one datum in bytes          */
+    data_t *data[NBAGS];
+    int         *counts;
+    int capacity[NBAGS];
+    size_t bsize;
 };
 
 struct Comm;
 struct CommBuffer;
 
-void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-void comm_ini(MPI_Comm cart, /**/ Comm **c);
-void comm_fin(/**/ Comm *c);
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS],      hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod,      hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart,      Comm **c);
+void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
@@ -1531,22 +1531,22 @@ void comm_buffer_fin(CommBuffer*);
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-void comm_post_recv(hBags *b, Comm *c);           // <1>
-void comm_post_send(const hBags *b, Comm *c);     // <2>
+void comm_post_recv(hBags *b, Comm *c);
+void comm_post_send(const hBags *b, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
-void comm_wait_send(Comm *c);                     // <4>
+void comm_wait_recv(Comm *c,      hBags *b);
+void comm_wait_send(Comm *c);
 
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_recv(Comm *c,      CommBuffer *cb);
 void comm_wait_send(Comm *c);
 
-int    comm_get_number_capacity(int i, const hBags *b); // <1>
-size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+int    comm_get_number_capacity(int i, const hBags *b);
+size_t comm_get_byte_capacity(int i, const hBags *b);
 
-#endif /* UDX_DISTR_EXCH_COMM_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_COMM_UTILS_COMMON
 #define UDX_DISTR_EXCH_COMM_UTILS_COMMON
 template <typename BAGT, typename T, int N>
@@ -1555,23 +1555,23 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
     for (int i = 0; i < N; ++i)
         buf->d[i] = (T*) bags.data[i];
 }
-#endif /* UDX_DISTR_EXCH_COMM_UTILS_COMMON */
+#endif
 
 struct RigQuants {
-    int n, ns, nps;              /* number of particles (total), solid, particle per solid        */
-    Particle *pp_hst, *pp;       /* particles on hst and device                                   */
-    Rigid    *ss_hst, *ss;       /* rigid strutures                                               */
-    float   *rr0_hst, *rr0;      /* frozen particle templates                                     */
+    int n, ns, nps;
+    Particle *pp_hst, *pp;
+    Rigid    *ss_hst, *ss;
+    float   *rr0_hst, *rr0;
 
-    /* mesh related quantities */
-    int nt, nv;                   /* number of [t]riangles and [v]ertices                          */
-    int4 *dtt;                    /* triangle indices on device                                    */
-    float *dvv;                   /* vertices on device (template)                                 */
-    Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
+
+    int nt, nv;
+    int4 *dtt;
+    float *dvv;
+    Particle *i_pp_hst, *i_pp;
 
     Rigid *ss_dmp;
 
-    long maxp; /* maximum particle number */
+    long maxp;
 };
 
 struct Coords;
@@ -1581,13 +1581,13 @@ struct MeshRead;
 void rig_ini(long maxs, long maxp, const MeshRead*, RigQuants*);
 void rig_fin(RigQuants *q);
 
-void rig_gen_mesh(const Coords*, MPI_Comm, const MeshRead*, const char *ic, /**/ RigQuants *); // <1>
+void rig_gen_mesh(const Coords*, MPI_Comm, const MeshRead*, const char *ic,      RigQuants *);
 void rig_gen_freeze(const Coords*, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo*,
-                    MPI_Comm, const MeshRead*, Particle *opp, int *on, RigQuants *q);          // <2>
-void rig_strt_quants(MPI_Comm, const MeshRead*, const char *base, const char *name, const int id, RigQuants *q); // <3>
+                    MPI_Comm, const MeshRead*, Particle *opp, int *on, RigQuants *q);
+void rig_strt_quants(MPI_Comm, const MeshRead*, const char *base, const char *name, const int id, RigQuants *q);
 
-void rig_strt_dump_templ(MPI_Comm, const char *base, const char *name, const RigQuants *q);         // <1>
-void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, const RigQuants *q); // <2>
+void rig_strt_dump_templ(MPI_Comm, const char *base, const char *name, const RigQuants *q);
+void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, const RigQuants *q);
 
 #ifndef UDX_DISTR_EXCH_SHFL_COMMON
 #define UDX_DISTR_EXCH_SHFL_COMMON
@@ -1608,23 +1608,23 @@ _I_ T shfl(T val, unsigned int width) {
 }
 
 #undef _I_
-#endif /* UDX_DISTR_EXCH_SHFL_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_DMAP_TYPE_COMMON
 #define UDX_DISTR_EXCH_DMAP_TYPE_COMMON
-/* [D]istr Map */
-struct DMap {
-    int *counts;  /* number of entities leaving in each fragment */
-    int *starts;  /* cumulative sum of the above                 */
-    int *ids[27]; /* indices of leaving objects                  */
 
-    int *hcounts; /* counts on host (pinned) */
+struct DMap {
+    int *counts;
+    int *starts;
+    int *ids[27];
+
+    int *hcounts;
 };
-#endif /* UDX_DISTR_EXCH_DMAP_TYPE_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_DMAP_DEV_COMMON
 #define UDX_DISTR_EXCH_DMAP_DEV_COMMON
-/* exclusive scan */
+
 template <int NCOUNTS>
-static __global__ void dmap_scan(/**/ DMap m)              // <1>
+static __global__ void dmap_scan(     DMap m)
 {
     int tid, val, cnt;
     tid = threadIdx.x;
@@ -1635,7 +1635,7 @@ static __global__ void dmap_scan(/**/ DMap m)              // <1>
     if (tid <= NCOUNTS) m.starts[tid] = val - cnt;
 }
 
-static __device__ int dmap_get_fid(int3 L, const float r[3])       // <2>
+static __device__ int dmap_get_fid(int3 L, const float r[3])
 {
     enum {X, Y, Z};
     int x, y, z;
@@ -1645,27 +1645,27 @@ static __device__ int dmap_get_fid(int3 L, const float r[3])       // <2>
     return frag_dev::d2i(x, y, z);
 }
 
-static __device__ void dmap_add(int pid, int fid, DMap m)  // <3>
+static __device__ void dmap_add(int pid, int fid, DMap m)
 {
     int entry;
     entry = atomicAdd(m.counts + fid, 1);
     m.ids[fid][entry] = pid;
 }
-#endif /* UDX_DISTR_EXCH_DMAP_DEV_COMMON */
-void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m);
-void dmap_fin(int nfrags, /**/ DMap *m);
-void dmap_reini(int nfrags, /**/ DMap m);
-void dmap_download_counts(int nfrags, /**/ DMap *m);
-void dmap_ini_host(int nfrags, const int capacity[], /**/ DMap *m);
-void dmap_fin_host(int nfrags, /**/ DMap *m);
-void dmap_reini_host(int nfrags, /**/ DMap m);
-void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h);
+#endif
+void dmap_ini(int nfrags, const int capacity[],      DMap *m);
+void dmap_fin(int nfrags,      DMap *m);
+void dmap_reini(int nfrags,      DMap m);
+void dmap_download_counts(int nfrags,      DMap *m);
+void dmap_ini_host(int nfrags, const int capacity[],      DMap *m);
+void dmap_fin_host(int nfrags,      DMap *m);
+void dmap_reini_host(int nfrags,      DMap m);
+void dmap_D2H(int nfrags, const DMap *d,      DMap *h);
 struct Particle;
 struct int3;
 
-void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m, /**/ Sarray<Particle*, 27> buf); // <1>
-void dcommon_shift_one_frag(int3 L, int n, const int fid, /**/ Particle *pp); // <2>
-void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Particle *pp); // <3>
+void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m,      Sarray<Particle*, 27> buf);
+void dcommon_shift_one_frag(int3 L, int n, const int fid,      Particle *pp);
+void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts,      Particle *pp);
 
 
 struct DRigPack;
@@ -1673,15 +1673,15 @@ struct DRigComm;
 struct DRigUnpack;
 
 void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **p);
-void drig_comm_ini(MPI_Comm comm, /**/ DRigComm **c);
+void drig_comm_ini(MPI_Comm comm,      DRigComm **c);
 void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **u);
 
 void drig_pack_fin(DRigPack *p);
 void drig_comm_fin(DRigComm *c);
 void drig_unpack_fin(DRigUnpack *u);
 
-void drig_build_map(int ns, const Rigid *ss, /**/ DRigPack *p);
-void drig_pack(int ns, int nv, const Rigid *ss, const Particle *ipp, /**/ DRigPack *p);
+void drig_build_map(int ns, const Rigid *ss,      DRigPack *p);
+void drig_pack(int ns, int nv, const Rigid *ss, const Particle *ipp,      DRigPack *p);
 void drig_download(DRigPack *p);
 
 void drig_post_recv(DRigComm *c, DRigUnpack *u);
@@ -1689,12 +1689,12 @@ void drig_post_send(DRigPack *p, DRigComm *c);
 void drig_wait_recv(DRigComm *c, DRigUnpack *u);
 void drig_wait_send(DRigComm *c);
 
-void drig_unpack_bulk(const DRigPack *p, /**/ RigQuants *q);
-void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q);
+void drig_unpack_bulk(const DRigPack *p,      RigQuants *q);
+void drig_unpack_halo(const DRigUnpack *u,      RigQuants *q);
 
 namespace drig_dev {
 
-__global__ void build_map(int3 L, int n, const Rigid *ss, /**/ DMap m) {
+__global__ void build_map(int3 L, int n, const Rigid *ss,      DMap m) {
     enum {X, Y, Z};
     int i, fid;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -1706,11 +1706,11 @@ __global__ void build_map(int3 L, int n, const Rigid *ss, /**/ DMap m) {
     r[Z] = ss[i].com[Z];
 
     fid = dmap_get_fid(L, r);
-    dmap_add(i, fid, /**/ m);
+    dmap_add(i, fid,      m);
 }
 
-__global__ void pack_ss(const Rigid *ss, DMap m, /**/ Sarray<Rigid*, 27> buf) {
-    int i, fid; /* [f]ragment [id] */
+__global__ void pack_ss(const Rigid *ss, DMap m,      Sarray<Rigid*, 27> buf) {
+    int i, fid;
     int d, s;
 
     i = threadIdx.x + blockDim.x * blockIdx.x;
@@ -1724,10 +1724,10 @@ __global__ void pack_ss(const Rigid *ss, DMap m, /**/ Sarray<Rigid*, 27> buf) {
 }
 
 }
-/*
- ipp: particles of the mesh
- ss:  "Rigid" structures
-*/
+
+
+
+
 
 enum {
     ID_PP,
@@ -1741,7 +1741,7 @@ struct DRigPack {
     hBags hbags[DRIG_MAX_NBAGS], *hipp, *hss;
     CommBuffer *hbuf;
     int nbags;
-    int3 L;  /* subdomain size */
+    int3 L;
 };
 
 struct DRigComm {
@@ -1752,10 +1752,10 @@ struct DRigUnpack {
     hBags hbags[DRIG_MAX_NBAGS], *hipp, *hss;
     CommBuffer *hbuf;
     int nbags;
-    int3 L;  /* subdomain size */
+    int3 L;
 };
-static void drig_get_num_capacity(int maxns, /**/ int numc[NBAGS]) {
-    // TODO save memory here?
+static void drig_get_num_capacity(int maxns,      int numc[NBAGS]) {
+
     for (int i = 0; i < NBAGS; ++i)
         numc[i] = maxns;
 }
@@ -1767,27 +1767,27 @@ void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **pack) {
     p = *pack;
 
     p->L = L;
-    drig_get_num_capacity(maxns, /**/ numc);
+    drig_get_num_capacity(maxns,      numc);
 
-    UC(dmap_ini(NBAGS, numc, /**/ &p->map));
+    UC(dmap_ini(NBAGS, numc,      &p->map));
 
     p->hipp = &p->hbags[ID_PP];  p->hss = &p->hbags[ID_SS];
     p->dipp = &p->dbags[ID_PP];  p->dss = &p->dbags[ID_SS];
 
-    /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
-    UC(comm_bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ p->hipp, p->dipp));
-    UC(comm_bags_ini(PINNED, DEV_ONLY, sizeof(Rigid), numc, /**/ p->hss, p->dss));
+
+    UC(comm_bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc,      p->hipp, p->dipp));
+    UC(comm_bags_ini(PINNED, DEV_ONLY, sizeof(Rigid), numc,      p->hss, p->dss));
 
     p->nbags = DRIG_MAX_NBAGS;
 
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
 }
 
-void drig_comm_ini(MPI_Comm cart, /**/ DRigComm **com) {
+void drig_comm_ini(MPI_Comm cart,      DRigComm **com) {
     DRigComm *c;
     EMALLOC(1, com);
     c = *com;
-    UC(comm_ini(cart, /**/ &c->comm));
+    UC(comm_ini(cart,      &c->comm));
 }
 
 void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {
@@ -1797,23 +1797,23 @@ void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {
     u = *unpack;
 
     u->L = L;
-    drig_get_num_capacity(maxns, /**/ numc);
+    drig_get_num_capacity(maxns,      numc);
 
     u->hipp = &u->hbags[ID_PP];  u->hss = &u->hbags[ID_SS];
 
-    /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
-    UC(comm_bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ u->hipp, NULL));
 
-    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Rigid), numc, /**/ u->hss, NULL));
+    UC(comm_bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc,      u->hipp, NULL));
+
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Rigid), numc,      u->hss, NULL));
 
     u->nbags = DRIG_MAX_NBAGS;
 
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
 void drig_pack_fin(DRigPack *p) {
-    UC(dmap_fin(NBAGS, /**/ &p->map));
-    UC(comm_bags_fin(PINNED, DEV_ONLY, /**/ p->hipp, p->dipp));
-    UC(comm_bags_fin(PINNED, DEV_ONLY, /**/ p->hss, p->dss));
+    UC(dmap_fin(NBAGS,      &p->map));
+    UC(comm_bags_fin(PINNED, DEV_ONLY,      p->hipp, p->dipp));
+    UC(comm_bags_fin(PINNED, DEV_ONLY,      p->hss, p->dss));
     UC(comm_buffer_fin(p->hbuf));
     EFREE(p);
 }
@@ -1829,34 +1829,34 @@ void drig_unpack_fin(DRigUnpack *u) {
     UC(comm_buffer_fin(u->hbuf));
     EFREE(u);
 }
-static void build_map(int3 L, int n, const Rigid *ss, /**/ DMap m) {
-    UC(dmap_reini(NBAGS, /**/ m));
-    KL(drig_dev::build_map, (k_cnf(n)), (L, n, ss, /**/ m));
-    KL(dmap_scan<NBAGS>, (1, 32), (/**/ m));
+static void build_map(int3 L, int n, const Rigid *ss,      DMap m) {
+    UC(dmap_reini(NBAGS,      m));
+    KL(drig_dev::build_map, (k_cnf(n)), (L, n, ss,      m));
+    KL(dmap_scan<NBAGS>, (1, 32), (     m));
 }
 
-void drig_build_map(int ns, const Rigid *ss, /**/ DRigPack *p) {
-    UC(build_map(p->L, ns, ss, /**/ p->map));
+void drig_build_map(int ns, const Rigid *ss,      DRigPack *p) {
+    UC(build_map(p->L, ns, ss,      p->map));
 }
-static void drig_pack_pp(const DMap m, int ns, int nv, const Particle *ipp, /**/ dBags *bags) {
+static void drig_pack_pp(const DMap m, int ns, int nv, const Particle *ipp,      dBags *bags) {
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(*bags, &wrap);
 
-    dcommon_pack_pp_packets(ns, nv, ipp, m, /**/ wrap);
+    dcommon_pack_pp_packets(ns, nv, ipp, m,      wrap);
 }
 
-static void pack_ss(const DMap m, int n, const Rigid *ss, /**/ dBags *bags) {
+static void pack_ss(const DMap m, int n, const Rigid *ss,      dBags *bags) {
 
     Sarray<Rigid*, 27> wrap;
     bag2Sarray(*bags, &wrap);
 
-    KL((drig_dev::pack_ss), (k_cnf(n)), (ss, m, /**/ wrap));
+    KL((drig_dev::pack_ss), (k_cnf(n)), (ss, m,      wrap));
 }
 
 
-void drig_pack(int ns, int nv, const Rigid *ss, const Particle *ipp, /**/ DRigPack *p) {
-    UC(drig_pack_pp(p->map, ns, nv, ipp, /**/ p->dipp));
-    UC(pack_ss(p->map, ns, ss, /**/ p->dss));
+void drig_pack(int ns, int nv, const Rigid *ss, const Particle *ipp,      DRigPack *p) {
+    UC(drig_pack_pp(p->map, ns, nv, ipp,      p->dipp));
+    UC(pack_ss(p->map, ns, ss,      p->dss));
 }
 
 void drig_download(DRigPack *p) {
@@ -1880,7 +1880,7 @@ void drig_wait_recv(DRigComm *c, DRigUnpack *u) {
 void drig_wait_send(DRigComm *c) {
     UC(comm_wait_send(c->comm));
 }
-void drig_unpack_bulk(const DRigPack *p, /**/ RigQuants *q) {
+void drig_unpack_bulk(const DRigPack *p,      RigQuants *q) {
     int ns, nv, n;
     ns = p->hipp->counts[frag_bulk];
     nv = q->nv;
@@ -1904,7 +1904,7 @@ static void shift_ss_one_frag(int3 L, int n, int fid, Rigid *ss) {
     for (int i = 0; i < n; ++i) shift(L, fid, ss[i].com);
 }
 
-void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
+void drig_unpack_halo(const DRigUnpack *u,      RigQuants *q) {
     int ns, nv, n, i, strtp, strts;
     size_t szp, szs;
     nv = q->nv;
@@ -1918,11 +1918,11 @@ void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
         szs = ns * sizeof(Rigid);
 
         if (ns) {
-            /* particles */
+
             CC(d::MemcpyAsync(q->i_pp + strtp, u->hipp->data[i], szp, H2D));
-            dcommon_shift_one_frag(u->L, n, i, /**/ q->i_pp + strtp);
-            /* solid */
-            shift_ss_one_frag(u->L, ns, i, /**/ (Rigid*) u->hss->data[i]);
+            dcommon_shift_one_frag(u->L, n, i,      q->i_pp + strtp);
+
+            shift_ss_one_frag(u->L, ns, i,      (Rigid*) u->hss->data[i]);
             CC(d::MemcpyAsync(q->ss + strts, u->hss->data[i], szs, H2D));
         }
         strtp += n;
@@ -1936,7 +1936,7 @@ void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
 
 
 
-// Grouped editable compilation unit for fluid and RBC distribution.
+
 
 
 #define DEV_CUDA
@@ -1947,33 +1947,33 @@ void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
 #include <mpi.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -1983,29 +1983,29 @@ void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
 #endif
 
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -2013,7 +2013,7 @@ const char* get_filename_ext(const char*);
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -2026,18 +2026,18 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_DISTR_EXCH_KL_COMMON */
+#endif
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2048,7 +2048,7 @@ void check(int rc, const char *file, int line);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2074,15 +2074,15 @@ void error_print_stack();
 #ifndef UDX_DISTR_EXCH_DEVICE_API_COMMON
 #define UDX_DISTR_EXCH_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_DISTR_EXCH_DEVICE_API_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_TYPE_COMMON
 #define UDX_DISTR_EXCH_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_DISTR_EXCH_TYPE_COMMON */
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#endif
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -2091,35 +2091,35 @@ void error_print_stack();
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #define UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #include "fragment.cuh"
-#endif /* UDX_DISTR_EXCH_FRAG_DEV_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_FRAG_IMP_COMMON
 #define UDX_DISTR_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
@@ -2128,23 +2128,23 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
-#endif /* UDX_DISTR_EXCH_FRAG_IMP_COMMON */
+}
+#endif
 
 #ifndef UDX_DISTR_PARTLIST_TYPE_COMMON
 #define UDX_DISTR_PARTLIST_TYPE_COMMON
@@ -2153,14 +2153,14 @@ enum {
     DEAD  = 1
 };
 
-/* structure of particle                           */
-/* optional "deathlist" for particles to be killed */
+
+
 
 struct PartList {
-    const Particle *pp;   /* particles array          */
-    const int *deathlist; /* what pp is dead or alive */
+    const Particle *pp;
+    const int *deathlist;
 };
-#endif /* UDX_DISTR_PARTLIST_TYPE_COMMON */
+#endif
 static __device__ bool is_dead(int i, const PartList lp) {
     if (lp.deathlist)
         return lp.deathlist[i] == DEAD;
@@ -2169,9 +2169,9 @@ static __device__ bool is_dead(int i, const PartList lp) {
 
 struct Scan;
 
-void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan*); // <1>
-void scan_ini(int size, /**/ Scan**);                                       // <2>
-void scan_fin(Scan*);                                                       // <3>
+void scan_apply(const int *input, int size,      int *output,       Scan*);
+void scan_ini(int size,      Scan**);
+void scan_fin(Scan*);
 #ifndef UDX_DISTR_EXCH_SHFL_COMMON
 #define UDX_DISTR_EXCH_SHFL_COMMON
 #define _I_ static __device__
@@ -2191,15 +2191,15 @@ _I_ T shfl(T val, unsigned int width) {
 }
 
 #undef _I_
-#endif /* UDX_DISTR_EXCH_SHFL_COMMON */
+#endif
 
 struct Clist;
 struct ClistMap;
 
-void clist_ini(int LX, int LY, int LZ, /**/ Clist **c);
-void clist_fin(/**/ Clist *c);
+void clist_ini(int LX, int LY, int LZ,      Clist **c);
+void clist_fin(     Clist *c);
 
-void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
+void clist_ini_map(int maxp, int nA, const Clist *c,      ClistMap **m);
 void clist_fin_map(ClistMap *m);
 
 const int* clists_get_ss(const Clist *c);
@@ -2209,40 +2209,40 @@ int        clists_get_n(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
 
 void clist_ini_counts(Clist *c);
-void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m);
+void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-/* special for fluid distribution */
-void clist_subindex_local(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_subindex_remote(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
 
-void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout, /**/ Particle *ppout);
-void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout, /**/ int *iiout);
+void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
-/* quick cell build for single array */
-void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
+void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
+void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
+
+
+void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 #ifndef UDX_DISTR_FLU_QUANTS_COMMON
 #define UDX_DISTR_FLU_QUANTS_COMMON
 struct FluQuants {
-    Particle *pp, *pp0;    /* particles on device  */
-    int       n;           /* particle number      */
-    Clist     *cells;      /* cell lists           */
-    ClistMap *mcells;      /* cell lists map       */
-    Particle *pp_hst;      /* particles on host    */
+    Particle *pp, *pp0;
+    int       n;
+    Clist     *cells;
+    ClistMap *mcells;
+    Particle *pp_hst;
 
-    /* optional data */
+
 
     bool ids, colors;
 
-    int *ii, *ii0;  /* global ids on device */
-    int *ii_hst;    /* global ids on host   */
+    int *ii, *ii0;
+    int *ii_hst;
 
-    int *cc, *cc0;  /* colors on device */
-    int *cc_hst;    /* colors on host   */
+    int *cc, *cc0;
+    int *cc_hst;
 
-    int maxp; /* maximum particle number */
+    int maxp;
 };
-#endif /* UDX_DISTR_FLU_QUANTS_COMMON */
+#endif
 
 struct Coords;
 struct GenColor;
@@ -2250,56 +2250,56 @@ struct GenColor;
 void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
 void flu_fin(FluQuants *q);
 
-void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q); // <1>
-void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
+void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q);
+void flu_gen_ids(MPI_Comm, const int n, FluQuants *q);
 
-void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);     // <1>
-void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q); // <2>
+void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);
+void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q);
 
-void flu_txt_dump(const Coords*, const FluQuants *q); // <1>
+void flu_txt_dump(const Coords*, const FluQuants *q);
 
-/* build cells only from one array of particles fully contained in the domain */
-/* warning: this will delete particles which are outside                      */
-void flu_build_cells(/**/ FluQuants *q); // <2>
+
+
+void flu_build_cells(     FluQuants *q);
 
 #ifndef UDX_DISTR_EXCH_COMM_COMMON
 #define UDX_DISTR_EXCH_COMM_COMMON
 typedef unsigned char data_t;
 
 enum {
-    NFRAGS = 26, /* number of fragments for one halo */
-    BULK   = 26, /* bulk id                          */
-    NBAGS  = 27, /* fragments + bulk                 */
+    NFRAGS = 26,
+    BULK   = 26,
+    NBAGS  = 27,
 };
 
-/* Allocation mod for bags */
+
 enum AllocMod {
-    HST_ONLY,   /* only host bags allocated                 */
-    DEV_ONLY,   /* only device bags allocated               */
-    PINNED,     /* both host and device pinned              */
-    PINNED_HST, /* host pinned; no device memory            */
-    PINNED_DEV, /* host pinned; device global memory on gpu */
-    NONE        /* no allocation                            */
+    HST_ONLY,
+    DEV_ONLY,
+    PINNED,
+    PINNED_HST,
+    PINNED_DEV,
+    NONE
 };
 
 struct dBags {
-    data_t *data[NBAGS]; /* data on the device         */
+    data_t *data[NBAGS];
 };
 
 struct hBags {
-    data_t *data[NBAGS]; /* data on the host                    */
-    int         *counts; /* size of the data                    */
-    int capacity[NBAGS]; /* capacity of each frag (elem number) */
-    size_t bsize;        /* size of one datum in bytes          */
+    data_t *data[NBAGS];
+    int         *counts;
+    int capacity[NBAGS];
+    size_t bsize;
 };
 
 struct Comm;
 struct CommBuffer;
 
-void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-void comm_ini(MPI_Comm cart, /**/ Comm **c);
-void comm_fin(/**/ Comm *c);
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS],      hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod,      hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart,      Comm **c);
+void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
@@ -2307,22 +2307,22 @@ void comm_buffer_fin(CommBuffer*);
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-void comm_post_recv(hBags *b, Comm *c);           // <1>
-void comm_post_send(const hBags *b, Comm *c);     // <2>
+void comm_post_recv(hBags *b, Comm *c);
+void comm_post_send(const hBags *b, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
-void comm_wait_send(Comm *c);                     // <4>
+void comm_wait_recv(Comm *c,      hBags *b);
+void comm_wait_send(Comm *c);
 
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_recv(Comm *c,      CommBuffer *cb);
 void comm_wait_send(Comm *c);
 
-int    comm_get_number_capacity(int i, const hBags *b); // <1>
-size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+int    comm_get_number_capacity(int i, const hBags *b);
+size_t comm_get_byte_capacity(int i, const hBags *b);
 
-#endif /* UDX_DISTR_EXCH_COMM_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_COMM_UTILS_COMMON
 #define UDX_DISTR_EXCH_COMM_UTILS_COMMON
 template <typename BAGT, typename T, int N>
@@ -2331,59 +2331,59 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
     for (int i = 0; i < N; ++i)
         buf->d[i] = (T*) bags.data[i];
 }
-#endif /* UDX_DISTR_EXCH_COMM_UTILS_COMMON */
+#endif
 
 #ifndef UDX_DISTR_EXCH_DMAP_TYPE_COMMON
 #define UDX_DISTR_EXCH_DMAP_TYPE_COMMON
-/* [D]istr Map */
-struct DMap {
-    int *counts;  /* number of entities leaving in each fragment */
-    int *starts;  /* cumulative sum of the above                 */
-    int *ids[27]; /* indices of leaving objects                  */
 
-    int *hcounts; /* counts on host (pinned) */
+struct DMap {
+    int *counts;
+    int *starts;
+    int *ids[27];
+
+    int *hcounts;
 };
-#endif /* UDX_DISTR_EXCH_DMAP_TYPE_COMMON */
+#endif
 struct DFluPack;
 struct DFluComm;
 struct DFluUnpack;
 struct DFluStatus;
 
 void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **p);
-void dflu_comm_ini(MPI_Comm comm, /**/ DFluComm **c);
+void dflu_comm_ini(MPI_Comm comm,      DFluComm **c);
 void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack **u);
 
 void dflu_pack_fin(DFluPack *p);
 void dflu_comm_fin(DFluComm *c);
 void dflu_unpack_fin(DFluUnpack *u);
 
-/* map */
+
 void dflu_build_map(int n, const PartList lp, DFluPack *p);
 
-/* pack */
-void dflu_pack(const FluQuants *q, /**/ DFluPack *p);
-void dflu_download(DFluPack *p, /**/ DFluStatus *s);
 
-/* communication */
+void dflu_pack(const FluQuants *q,      DFluPack *p);
+void dflu_download(DFluPack *p,      DFluStatus *s);
+
+
 void dflu_post_recv(DFluComm *c, DFluUnpack *u);
 void dflu_post_send(DFluPack *p, DFluComm   *c);
 void dflu_wait_recv(DFluComm *c, DFluUnpack *u);
 void dflu_wait_send(DFluComm *c);
 
-/* unpack */
-void dflu_unpack(/**/ DFluUnpack *u);
+
+void dflu_unpack(     DFluUnpack *u);
 
 
-/* cell lists */
-void dflu_bulk(PartList lp, /**/ FluQuants *q);
-void dflu_halo(const DFluUnpack *u, /**/ FluQuants *q);
-void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuants *q);
+
+void dflu_bulk(PartList lp,      FluQuants *q);
+void dflu_halo(const DFluUnpack *u,      FluQuants *q);
+void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u,      FluQuants *q);
 
 #ifndef UDX_DISTR_EXCH_DMAP_DEV_COMMON
 #define UDX_DISTR_EXCH_DMAP_DEV_COMMON
-/* exclusive scan */
+
 template <int NCOUNTS>
-static __global__ void dmap_scan(/**/ DMap m)              // <1>
+static __global__ void dmap_scan(     DMap m)
 {
     int tid, val, cnt;
     tid = threadIdx.x;
@@ -2394,7 +2394,7 @@ static __global__ void dmap_scan(/**/ DMap m)              // <1>
     if (tid <= NCOUNTS) m.starts[tid] = val - cnt;
 }
 
-static __device__ int dmap_get_fid(int3 L, const float r[3])       // <2>
+static __device__ int dmap_get_fid(int3 L, const float r[3])
 {
     enum {X, Y, Z};
     int x, y, z;
@@ -2404,42 +2404,42 @@ static __device__ int dmap_get_fid(int3 L, const float r[3])       // <2>
     return frag_dev::d2i(x, y, z);
 }
 
-static __device__ void dmap_add(int pid, int fid, DMap m)  // <3>
+static __device__ void dmap_add(int pid, int fid, DMap m)
 {
     int entry;
     entry = atomicAdd(m.counts + fid, 1);
     m.ids[fid][entry] = pid;
 }
-#endif /* UDX_DISTR_EXCH_DMAP_DEV_COMMON */
-void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m);
-void dmap_fin(int nfrags, /**/ DMap *m);
-void dmap_reini(int nfrags, /**/ DMap m);
-void dmap_download_counts(int nfrags, /**/ DMap *m);
-void dmap_ini_host(int nfrags, const int capacity[], /**/ DMap *m);
-void dmap_fin_host(int nfrags, /**/ DMap *m);
-void dmap_reini_host(int nfrags, /**/ DMap m);
-void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h);
+#endif
+void dmap_ini(int nfrags, const int capacity[],      DMap *m);
+void dmap_fin(int nfrags,      DMap *m);
+void dmap_reini(int nfrags,      DMap m);
+void dmap_download_counts(int nfrags,      DMap *m);
+void dmap_ini_host(int nfrags, const int capacity[],      DMap *m);
+void dmap_fin_host(int nfrags,      DMap *m);
+void dmap_reini_host(int nfrags,      DMap m);
+void dmap_D2H(int nfrags, const DMap *d,      DMap *h);
 struct Particle;
 struct int3;
 
-void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m, /**/ Sarray<Particle*, 27> buf); // <1>
-void dcommon_shift_one_frag(int3 L, int n, const int fid, /**/ Particle *pp); // <2>
-void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Particle *pp); // <3>
+void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m,      Sarray<Particle*, 27> buf);
+void dcommon_shift_one_frag(int3 L, int n, const int fid,      Particle *pp);
+void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts,      Particle *pp);
 
 struct DFluStatus;
 struct Config;
 
-/* ini */
+
 void dflu_status_ini(DFluStatus **s);
 void dflu_status_fin(DFluStatus  *s);
 
-/* get */
+
 int  dflu_status_nullp(DFluStatus *s);
 int  dflu_status_success(DFluStatus *s);
 void dflu_status_log(DFluStatus *s);
 
-/* set */
-void dflu_status_exceed(int frag, int counter, int capacity, /**/ DFluStatus *s);
+
+void dflu_status_exceed(int frag, int counter, int capacity,      DFluStatus *s);
 
 
 typedef Sarray <float2*, 26> float2p26;
@@ -2454,8 +2454,8 @@ struct DFluPack {
     dBags dbags[DFLU_MAX_NBAGS], *dpp, *dii, *dcc;
     hBags hbags[DFLU_MAX_NBAGS], *hpp, *hii, *hcc;
     int nbags;
-    int nhalo; /* number of sent particles */
-    int3 L; /* subdomain size */
+    int nhalo;
+    int3 L;
     CommBuffer *hbuf;
 };
 
@@ -2468,13 +2468,13 @@ struct DFluUnpack {
     int nbags;
     Particle *ppre;
     int *iire, *ccre;
-    int nhalo; /* number of received particles */
-    int3 L; /* subdomain size */
+    int nhalo;
+    int3 L;
     CommBuffer *hbuf;
 };
 
 namespace dflu_dev {
-__global__ void build_map(int3 L, const PartList lp, const int n, /**/ DMap m) {
+__global__ void build_map(int3 L, const PartList lp, const int n,      DMap m) {
     int pid, fid;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= n) return;
@@ -2485,13 +2485,13 @@ __global__ void build_map(int3 L, const PartList lp, const int n, /**/ DMap m) {
     fid = dmap_get_fid(L, p.r);
 
     if (fid != frag_bulk)
-        dmap_add(pid, fid, /**/ m);
+        dmap_add(pid, fid,      m);
 }
 
 template <typename T, int STRIDE>
-__global__ void pack(const T *data, DMap m, /**/ Sarray<T*, 26> buf) {
+__global__ void pack(const T *data, DMap m,      Sarray<T*, 26> buf) {
     int gid, slot;
-    int fid; /* [f]ragment [id] */
+    int fid;
     int offset, pid, c, d, s;
 
     gid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -2517,7 +2517,7 @@ static int estimate_max_flux(int3 L, int fid, int maxd) {
     return e;
 }
 
-static void get_capacity(int3 L, int maxd, /**/ int capacity[NBAGS]) {
+static void get_capacity(int3 L, int maxd,      int capacity[NBAGS]) {
     for (int i = 0; i < NFRAGS; ++i)
         capacity[i] = estimate_max_flux(L, i, maxd);
     capacity[frag_bulk] = 0;
@@ -2532,9 +2532,9 @@ void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **pac
 
     p->L = L;
 
-    get_capacity(L, maxdensity, /**/ capacity);
+    get_capacity(L, maxdensity,      capacity);
 
-    UC(dmap_ini(NFRAGS, capacity, /**/ &p->map));
+    UC(dmap_ini(NFRAGS, capacity,      &p->map));
 
     p->hii = p->hcc = NULL;
     p->dii = p->dcc = NULL;
@@ -2542,35 +2542,35 @@ void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **pac
     i = 0;
     p->hpp = &p->hbags[i];
     p->dpp = &p->dbags[i++];
-    UC(comm_bags_ini(PINNED, NONE, sizeof(Particle), capacity, /**/ p->hpp, p->dpp));
+    UC(comm_bags_ini(PINNED, NONE, sizeof(Particle), capacity,      p->hpp, p->dpp));
 
     if (ids) {
         p->hii = &p->hbags[i];
         p->dii = &p->dbags[i++];
-        UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ p->hii, p->dii));
+        UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity,      p->hii, p->dii));
     }
 
     if (colors) {
         p->hcc = &p->hbags[i];
         p->dcc = &p->dbags[i++];
-        UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ p->hcc, p->dcc));
+        UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity,      p->hcc, p->dcc));
     }
 
     p->nbags = i;
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
 }
 
-void dflu_comm_ini(MPI_Comm cart, /**/ DFluComm **com) {
+void dflu_comm_ini(MPI_Comm cart,      DFluComm **com) {
     DFluComm *c;
     EMALLOC(1, com);
     c = *com;
-    UC(comm_ini(cart, /**/ &c->comm));
+    UC(comm_ini(cart,      &c->comm));
 }
 
 static int nhalocells(int3 L) {
-    return 8 +                  /* corners */
-        4 * (L.x + L.y + L.z) + /* edges   */
-        2 * L.x * L.y +         /* faces   */
+    return 8 +
+        4 * (L.x + L.y + L.z) +
+        2 * L.x * L.y +
         2 * L.x * L.z +
         2 * L.y * L.z;
 }
@@ -2585,22 +2585,22 @@ void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack *
     u->L = L;
     maxparts = (int) (nhalocells(L) * maxdensity) + 1;
 
-    get_capacity(L, maxdensity, /**/ capacity);
+    get_capacity(L, maxdensity,      capacity);
 
     u->hii = u->hcc = NULL;
 
     i = 0;
     u->hpp = &u->hbags[i++];
-    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ u->hpp, NULL));
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity,      u->hpp, NULL));
 
     if (ids) {
         u->hii = &u->hbags[i++];
-        UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ u->hii, NULL));
+        UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity,      u->hii, NULL));
     }
 
     if (colors) {
         u->hcc = &u->hbags[i++];
-        UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ u->hcc, NULL));
+        UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity,      u->hcc, NULL));
     }
     u->nbags = i;
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
@@ -2611,11 +2611,11 @@ void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack *
     if (colors) Dalloc(&u->ccre, maxparts);
 }
 void dflu_pack_fin(DFluPack *p) {
-    UC(dmap_fin(NFRAGS, /**/ &p->map));
-    UC(comm_bags_fin(PINNED, NONE, /**/ p->hpp, p->dpp));
+    UC(dmap_fin(NFRAGS,      &p->map));
+    UC(comm_bags_fin(PINNED, NONE,      p->hpp, p->dpp));
 
-    if (p->hii) UC(comm_bags_fin(PINNED, NONE, /**/ p->hii, p->dii));
-    if (p->hcc) UC(comm_bags_fin(PINNED, NONE, /**/ p->hcc, p->dcc));
+    if (p->hii) UC(comm_bags_fin(PINNED, NONE,      p->hii, p->dii));
+    if (p->hcc) UC(comm_bags_fin(PINNED, NONE,      p->hcc, p->dcc));
 
     UC(comm_buffer_fin(p->hbuf));
     EFREE(p);
@@ -2641,10 +2641,10 @@ void dflu_unpack_fin(DFluUnpack *u) {
     EFREE(u);
 }
 static void build_map(int3 L, int n, const PartList lp, DMap m) {
-    UC(dmap_reini(NFRAGS, /**/ m));
-    KL(dflu_dev::build_map, (k_cnf(n)), (L, lp, n, /**/ m));
-    UC(dmap_download_counts(NFRAGS, /**/ &m)); /* async */
-    KL(dmap_scan<NFRAGS>, (1, 32), (/**/ m));
+    UC(dmap_reini(NFRAGS,      m));
+    KL(dflu_dev::build_map, (k_cnf(n)), (L, lp, n,      m));
+    UC(dmap_download_counts(NFRAGS,      &m));
+    KL(dmap_scan<NFRAGS>, (1, 32), (     m));
 }
 
 void dflu_build_map(int n, const PartList lp, DFluPack *p) {
@@ -2657,36 +2657,36 @@ static int reduce(int n, const int d[]) {
     return s;
 }
 
-static void pack_pp(const DMap m, const Particle *pp, /**/ dBags *bags) {
+static void pack_pp(const DMap m, const Particle *pp,      dBags *bags) {
     int n;
     const int S = sizeof(Particle) / sizeof(float2);
     float2p26 wrap;
     bag2Sarray(*bags, &wrap);
     n = reduce(NFRAGS, m.hcounts);
 
-    KL((dflu_dev::pack<float2, S>), (k_cnf(S*n)), ((const float2*)pp, m, /**/ wrap));
+    KL((dflu_dev::pack<float2, S>), (k_cnf(S*n)), ((const float2*)pp, m,      wrap));
 }
 
-static void pack_ii(const DMap m, const int *ii, /**/ dBags *bags) {
+static void pack_ii(const DMap m, const int *ii,      dBags *bags) {
     int n;
     const int S = 1;
     intp26 wrap;
     bag2Sarray(*bags, &wrap);
     n = reduce(NFRAGS, m.hcounts);
 
-    KL((dflu_dev::pack<int, S>), (k_cnf(S*n)), (ii, m, /**/ wrap));
+    KL((dflu_dev::pack<int, S>), (k_cnf(S*n)), (ii, m,      wrap));
 }
 
-void dflu_pack(const FluQuants *q, /**/ DFluPack *p) {
-    UC(pack_pp(p->map, q->pp, /**/ p->dpp));
-    if (p->dii) UC(pack_ii(p->map, q->ii, /**/ p->dii));
-    if (p->dcc) UC(pack_ii(p->map, q->cc, /**/ p->dcc));
+void dflu_pack(const FluQuants *q,      DFluPack *p) {
+    UC(pack_pp(p->map, q->pp,      p->dpp));
+    if (p->dii) UC(pack_ii(p->map, q->ii,      p->dii));
+    if (p->dcc) UC(pack_ii(p->map, q->cc,      p->dcc));
 }
 
 struct ExceedData { int cap, cnt, fid; };
 enum   {OK, FAIL};
 
-static int check_counts(int nfrags, const int *counts, const hBags *hpp, /**/ ExceedData *e) {
+static int check_counts(int nfrags, const int *counts, const hBags *hpp,      ExceedData *e) {
     int fid, cnt, cap;
     for (fid = 0; fid < nfrags; ++fid) {
         cnt = counts[fid];
@@ -2713,25 +2713,25 @@ static void download_pp_and_counts(DFluPack *p) {
     int *cnt;
     sz = NFRAGS * sizeof(int);
     cnt = p->map.hcounts;
-    dSync(); /* wait for pack kernels */
+    dSync();
     memcpy(p->hpp->counts, cnt, sz);
     if (p->hii) memcpy(p->hii->counts, cnt, sz);
     if (p->hcc) memcpy(p->hcc->counts, cnt, sz);
     p->nhalo = reduce(NFRAGS, cnt);
 }
 
-void dflu_download(DFluPack *p, /**/ DFluStatus *s) {
+void dflu_download(DFluPack *p,      DFluStatus *s) {
     ExceedData e;
     int r;
     int *cnt;
     cnt = p->map.hcounts;
-    r = check_counts(NFRAGS, cnt, p->hpp, /**/ &e);
+    r = check_counts(NFRAGS, cnt, p->hpp,      &e);
     if (r == OK) {
         UC(download_pp_and_counts(p));
     }
     else {
         if   (dflu_status_nullp(s)) UC(fail_exceed(&e));
-        else UC(dflu_status_exceed(e.fid, e.cnt, e.cap, /**/ s));
+        else UC(dflu_status_exceed(e.fid, e.cnt, e.cap,      s));
     }
 }
 void dflu_post_recv(DFluComm *c, DFluUnpack *u) {
@@ -2760,7 +2760,7 @@ static int scan_hst(const int n, const int *counts, int27 *starts) {
 }
 
 template <typename T>
-static void unpack(const hBags *bags, int27 starts, /**/ T *buf) {
+static void unpack(const hBags *bags, int27 starts,      T *buf) {
     int c, s, i;
     size_t sz, bs = bags->bsize;
 
@@ -2775,58 +2775,58 @@ static void unpack(const hBags *bags, int27 starts, /**/ T *buf) {
     }
 }
 
-static int unpack_pp(int3 L, const hBags *bags, /**/ Particle *pp) {
+static int unpack_pp(int3 L, const hBags *bags,      Particle *pp) {
     int nhalo;
     int27 starts;
 
     nhalo = scan_hst(NFRAGS, bags->counts, &starts);
-    unpack(bags, starts, /**/ pp);
+    unpack(bags, starts,      pp);
 
-    dcommon_shift_halo(L, nhalo, starts, /**/ pp);
+    dcommon_shift_halo(L, nhalo, starts,      pp);
 
     return nhalo;
 }
 
-static int unpack_ii(const hBags *bags, /**/ int *ii) {
+static int unpack_ii(const hBags *bags,      int *ii) {
     int nhalo;
     int27 starts;
 
     nhalo = scan_hst(NFRAGS, bags->counts, &starts);
-    unpack(bags, starts, /**/ ii);
+    unpack(bags, starts,      ii);
 
     return nhalo;
 }
 
-static void unpack_pp(/**/ DFluUnpack *u) {
-    u->nhalo = unpack_pp(u->L, u->hpp, /**/ u->ppre);
+static void unpack_pp(     DFluUnpack *u) {
+    u->nhalo = unpack_pp(u->L, u->hpp,      u->ppre);
 }
 
-static void unpack_ii(/**/ DFluUnpack *u) {
-    if (u->hii) unpack_ii(u->hii, /**/ u->iire);
+static void unpack_ii(     DFluUnpack *u) {
+    if (u->hii) unpack_ii(u->hii,      u->iire);
 }
 
-static void unpack_cc(/**/ DFluUnpack *u) {
-    if (u->hcc) unpack_ii(u->hcc, /**/ u->ccre);
+static void unpack_cc(     DFluUnpack *u) {
+    if (u->hcc) unpack_ii(u->hcc,      u->ccre);
 }
 
-void dflu_unpack(/**/ DFluUnpack *u) {
-    unpack_pp(/**/ u);
-    unpack_ii(/**/ u);
-    unpack_cc(/**/ u);
+void dflu_unpack(     DFluUnpack *u) {
+    unpack_pp(     u);
+    unpack_ii(     u);
+    unpack_cc(     u);
 }
-void dflu_bulk(PartList lp, /**/ FluQuants *q) {
+void dflu_bulk(PartList lp,      FluQuants *q) {
     UC(clist_ini_counts(q->cells));
-    UC(clist_subindex_local(q->n, lp, /**/ q->cells, q->mcells));
+    UC(clist_subindex_local(q->n, lp,      q->cells, q->mcells));
 }
 
-void dflu_halo(const DFluUnpack *u, /**/ FluQuants *q) {
+void dflu_halo(const DFluUnpack *u,      FluQuants *q) {
     PartList lp;
     lp.pp = u->ppre;
     lp.deathlist = NULL;
-    UC(clist_subindex_remote(u->nhalo, lp, /**/ q->cells, q->mcells));
+    UC(clist_subindex_remote(u->nhalo, lp,      q->cells, q->mcells));
 }
 
-void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuants *q) {
+void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u,      FluQuants *q) {
     int n, nold, nhalo, nbulk;
     Particle *pp, *pp0;
     nold = q->n;
@@ -2836,20 +2836,20 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuan
     pp = q->pp; pp0 = q->pp0;
 
     const int nn[] = {nold, nhalo};
-    UC(clist_build_map(nn, /**/ q->cells, q->mcells));
+    UC(clist_build_map(nn,      q->cells, q->mcells));
 
-    UC(clist_gather_pp(pp, u->ppre, q->mcells, n, /**/ pp0));
+    UC(clist_gather_pp(pp, u->ppre, q->mcells, n,      pp0));
 
     int *ii, *ii0, *cc, *cc0;
     ii = q->ii; ii0 = q->ii0;
     cc = q->cc; cc0 = q->cc0;
 
-    if (p->hii) UC(clist_gather_ii(ii, u->iire, q->mcells, n, /**/ ii0));
-    if (p->hcc) UC(clist_gather_ii(cc, u->ccre, q->mcells, n, /**/ cc0));
+    if (p->hii) UC(clist_gather_ii(ii, u->iire, q->mcells, n,      ii0));
+    if (p->hcc) UC(clist_gather_ii(cc, u->ccre, q->mcells, n,      cc0));
 
     q->n = n;
 
-    /* swap pointers */
+
 
     q->pp = pp0;
     q->pp0 = pp;
@@ -2872,33 +2872,33 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuan
 #include <mpi.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -2908,15 +2908,15 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuan
 #endif
 
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-/* function and variable type [q]ualifiers */
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -2942,8 +2942,8 @@ void msg_print(const char *fmt, ...); // <2>
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -2969,7 +2969,7 @@ void msg_print(const char *fmt, ...); // <2>
 #ifndef UDX_DISTR_EXCH_DEVICE_API_COMMON
 #define UDX_DISTR_EXCH_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_DISTR_EXCH_DEVICE_API_COMMON */
+#endif
 #if   defined(DEV_CUDA)
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
@@ -3016,26 +3016,26 @@ static int   warpSize = 1;
 #else
   #error DEV_* is undefined
 #endif
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -3043,7 +3043,7 @@ const char* get_filename_ext(const char*);
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -3056,18 +3056,18 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_DISTR_EXCH_KL_COMMON */
+#endif
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -3078,7 +3078,7 @@ void check(int rc, const char *file, int line);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -3101,10 +3101,10 @@ void error_abort();
 
 void error_print_stack();
 
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -3113,58 +3113,58 @@ void error_print_stack();
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_DISTR_EXCH_TYPE_COMMON
 #define UDX_DISTR_EXCH_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_DISTR_EXCH_TYPE_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_DEF_COMMON
 #define UDX_DISTR_EXCH_DEF_COMMON
 #include "constants.cuh"
-#endif /* UDX_DISTR_EXCH_DEF_COMMON */
+#endif
 
 struct AreaVolume;
 struct Particle;
 
 struct RbcQuants {
-    int n, nc;               /* number of particles, cells                */
-    int nt, nv;              /* number of triangles and vertices per mesh */
-    int md;                  /* maximum valence of the mesh               */
-    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
-    bool ids;                /* global ids active ?                       */
-    int *ii;                 /* global ids on host                        */
-    AreaVolume *area_volume; /* to compute area and volume */
+    int n, nc;
+    int nt, nv;
+    int md;
+    Particle *pp, *pp_hst;
+    bool ids;
+    int *ii;
+    AreaVolume *area_volume;
 };
 
 
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #define UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #include "fragment.cuh"
-#endif /* UDX_DISTR_EXCH_FRAG_DEV_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_FRAG_IMP_COMMON
 #define UDX_DISTR_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
@@ -3173,61 +3173,61 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
-#endif /* UDX_DISTR_EXCH_FRAG_IMP_COMMON */
+}
+#endif
 #ifndef UDX_DISTR_EXCH_COMM_COMMON
 #define UDX_DISTR_EXCH_COMM_COMMON
 typedef unsigned char data_t;
 
 enum {
-    NFRAGS = 26, /* number of fragments for one halo */
-    BULK   = 26, /* bulk id                          */
-    NBAGS  = 27, /* fragments + bulk                 */
+    NFRAGS = 26,
+    BULK   = 26,
+    NBAGS  = 27,
 };
 
-/* Allocation mod for bags */
+
 enum AllocMod {
-    HST_ONLY,   /* only host bags allocated                 */
-    DEV_ONLY,   /* only device bags allocated               */
-    PINNED,     /* both host and device pinned              */
-    PINNED_HST, /* host pinned; no device memory            */
-    PINNED_DEV, /* host pinned; device global memory on gpu */
-    NONE        /* no allocation                            */
+    HST_ONLY,
+    DEV_ONLY,
+    PINNED,
+    PINNED_HST,
+    PINNED_DEV,
+    NONE
 };
 
 struct dBags {
-    data_t *data[NBAGS]; /* data on the device         */
+    data_t *data[NBAGS];
 };
 
 struct hBags {
-    data_t *data[NBAGS]; /* data on the host                    */
-    int         *counts; /* size of the data                    */
-    int capacity[NBAGS]; /* capacity of each frag (elem number) */
-    size_t bsize;        /* size of one datum in bytes          */
+    data_t *data[NBAGS];
+    int         *counts;
+    int capacity[NBAGS];
+    size_t bsize;
 };
 
 struct Comm;
 struct CommBuffer;
 
-void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-void comm_ini(MPI_Comm cart, /**/ Comm **c);
-void comm_fin(/**/ Comm *c);
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS],      hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod,      hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart,      Comm **c);
+void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
@@ -3235,22 +3235,22 @@ void comm_buffer_fin(CommBuffer*);
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-void comm_post_recv(hBags *b, Comm *c);           // <1>
-void comm_post_send(const hBags *b, Comm *c);     // <2>
+void comm_post_recv(hBags *b, Comm *c);
+void comm_post_send(const hBags *b, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
-void comm_wait_send(Comm *c);                     // <4>
+void comm_wait_recv(Comm *c,      hBags *b);
+void comm_wait_send(Comm *c);
 
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_recv(Comm *c,      CommBuffer *cb);
 void comm_wait_send(Comm *c);
 
-int    comm_get_number_capacity(int i, const hBags *b); // <1>
-size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+int    comm_get_number_capacity(int i, const hBags *b);
+size_t comm_get_byte_capacity(int i, const hBags *b);
 
-#endif /* UDX_DISTR_EXCH_COMM_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_COMM_UTILS_COMMON
 #define UDX_DISTR_EXCH_COMM_UTILS_COMMON
 template <typename BAGT, typename T, int N>
@@ -3259,7 +3259,7 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
     for (int i = 0; i < N; ++i)
         buf->d[i] = (T*) bags.data[i];
 }
-#endif /* UDX_DISTR_EXCH_COMM_UTILS_COMMON */
+#endif
 
 #ifndef UDX_DISTR_EXCH_SHFL_COMMON
 #define UDX_DISTR_EXCH_SHFL_COMMON
@@ -3280,27 +3280,27 @@ _I_ T shfl(T val, unsigned int width) {
 }
 
 #undef _I_
-#endif /* UDX_DISTR_EXCH_SHFL_COMMON */
+#endif
 struct Particle;
 struct float3;
-void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi);
+void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
 
 #ifndef UDX_DISTR_EXCH_DMAP_TYPE_COMMON
 #define UDX_DISTR_EXCH_DMAP_TYPE_COMMON
-/* [D]istr Map */
-struct DMap {
-    int *counts;  /* number of entities leaving in each fragment */
-    int *starts;  /* cumulative sum of the above                 */
-    int *ids[27]; /* indices of leaving objects                  */
 
-    int *hcounts; /* counts on host (pinned) */
+struct DMap {
+    int *counts;
+    int *starts;
+    int *ids[27];
+
+    int *hcounts;
 };
-#endif /* UDX_DISTR_EXCH_DMAP_TYPE_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_DMAP_DEV_COMMON
 #define UDX_DISTR_EXCH_DMAP_DEV_COMMON
-/* exclusive scan */
+
 template <int NCOUNTS>
-static __global__ void dmap_scan(/**/ DMap m)              // <1>
+static __global__ void dmap_scan(     DMap m)
 {
     int tid, val, cnt;
     tid = threadIdx.x;
@@ -3311,7 +3311,7 @@ static __global__ void dmap_scan(/**/ DMap m)              // <1>
     if (tid <= NCOUNTS) m.starts[tid] = val - cnt;
 }
 
-static __device__ int dmap_get_fid(int3 L, const float r[3])       // <2>
+static __device__ int dmap_get_fid(int3 L, const float r[3])
 {
     enum {X, Y, Z};
     int x, y, z;
@@ -3321,27 +3321,27 @@ static __device__ int dmap_get_fid(int3 L, const float r[3])       // <2>
     return frag_dev::d2i(x, y, z);
 }
 
-static __device__ void dmap_add(int pid, int fid, DMap m)  // <3>
+static __device__ void dmap_add(int pid, int fid, DMap m)
 {
     int entry;
     entry = atomicAdd(m.counts + fid, 1);
     m.ids[fid][entry] = pid;
 }
-#endif /* UDX_DISTR_EXCH_DMAP_DEV_COMMON */
-void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m);
-void dmap_fin(int nfrags, /**/ DMap *m);
-void dmap_reini(int nfrags, /**/ DMap m);
-void dmap_download_counts(int nfrags, /**/ DMap *m);
-void dmap_ini_host(int nfrags, const int capacity[], /**/ DMap *m);
-void dmap_fin_host(int nfrags, /**/ DMap *m);
-void dmap_reini_host(int nfrags, /**/ DMap m);
-void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h);
+#endif
+void dmap_ini(int nfrags, const int capacity[],      DMap *m);
+void dmap_fin(int nfrags,      DMap *m);
+void dmap_reini(int nfrags,      DMap m);
+void dmap_download_counts(int nfrags,      DMap *m);
+void dmap_ini_host(int nfrags, const int capacity[],      DMap *m);
+void dmap_fin_host(int nfrags,      DMap *m);
+void dmap_reini_host(int nfrags,      DMap m);
+void dmap_D2H(int nfrags, const DMap *d,      DMap *h);
 struct Particle;
 struct int3;
 
-void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m, /**/ Sarray<Particle*, 27> buf); // <1>
-void dcommon_shift_one_frag(int3 L, int n, const int fid, /**/ Particle *pp); // <2>
-void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Particle *pp); // <3>
+void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m,      Sarray<Particle*, 27> buf);
+void dcommon_shift_one_frag(int3 L, int n, const int fid,      Particle *pp);
+void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts,      Particle *pp);
 
 
 struct DRbcPack;
@@ -3349,7 +3349,7 @@ struct DRbcComm;
 struct DRbcUnpack;
 
 void drbc_pack_ini(bool ids, int3 L, int maxc, int nv, DRbcPack **p);
-void drbc_comm_ini(MPI_Comm comm, /**/ DRbcComm **c);
+void drbc_comm_ini(MPI_Comm comm,      DRbcComm **c);
 void drbc_unpack_ini(bool ids, int3 L, int maxc, int nv, DRbcUnpack **u);
 
 void drbc_pack_fin(DRbcPack *p);
@@ -3357,7 +3357,7 @@ void drbc_comm_fin(DRbcComm *c);
 void drbc_unpack_fin(DRbcUnpack *u);
 
 void drbc_build_map(int nc, int nv, const Particle *pp, DRbcPack *p);
-void drbc_pack(const RbcQuants *q, /**/ DRbcPack *p);
+void drbc_pack(const RbcQuants *q,      DRbcPack *p);
 void drbc_download(DRbcPack *p);
 
 void drbc_post_recv(DRbcComm *c, DRbcUnpack *u);
@@ -3365,12 +3365,12 @@ void drbc_post_send(DRbcPack *p, DRbcComm *c);
 void drbc_wait_recv(DRbcComm *c, DRbcUnpack *u);
 void drbc_wait_send(DRbcComm *c);
 
-void drbc_unpack_bulk(const DRbcPack *p, /**/ RbcQuants *q);
-void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q);
+void drbc_unpack_bulk(const DRbcPack *p,      RbcQuants *q);
+void drbc_unpack_halo(const DRbcUnpack *u,      RbcQuants *q);
 
 namespace drbc_dev {
 
-__global__ void build_map(int3 L, int n, const float3 *minext, const float3 *maxext, /**/ DMap m) {
+__global__ void build_map(int3 L, int n, const float3 *minext, const float3 *maxext,      DMap m) {
     enum {X, Y, Z};
     int i, fid;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -3386,7 +3386,7 @@ __global__ void build_map(int3 L, int n, const float3 *minext, const float3 *max
     r[Z] = 0.5f * (mine.z + maxe.z);
 
     fid = dmap_get_fid(L, r);
-    dmap_add(i, fid, /**/ m);
+    dmap_add(i, fid,      m);
 }
 
 }
@@ -3402,9 +3402,9 @@ struct DRbcPack {
     hBags hbags[MAX_NHBAGS], *hpp, *hii;
     int nbags;
     CommBuffer *hbuf;
-    DMap hmap; /* host map for ids */
+    DMap hmap;
 
-    int3 L; /* subdomain size */
+    int3 L;
 };
 
 struct DRbcComm {
@@ -3416,10 +3416,10 @@ struct DRbcUnpack {
     int nbags;
     CommBuffer *hbuf;
 
-    int3 L; /* subdomain size */
+    int3 L;
 };
-static void get_num_capacity(int maxnc, /**/ int numc[NBAGS]) {
-    // TODO save memory here?
+static void get_num_capacity(int maxnc,      int numc[NBAGS]) {
+
     for (int i = 0; i < NBAGS; ++i)
         numc[i] = maxnc;
 }
@@ -3432,15 +3432,15 @@ void drbc_pack_ini(bool ids, int3 L, int maxnc, int nv, DRbcPack **pack) {
 
     p->L= L;
 
-    get_num_capacity(maxnc, /**/ numc);
+    get_num_capacity(maxnc,      numc);
 
-    UC(dmap_ini(NBAGS, numc, /**/ &p->map));
+    UC(dmap_ini(NBAGS, numc,      &p->map));
 
     i = 0;
     p->hpp = &p->hbags[i];
     p->dpp = &p->dbags[i++];
-    /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
-    UC(comm_bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ p->hpp, p->dpp));
+
+    UC(comm_bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc,      p->hpp, p->dpp));
 
     Dalloc(&p->minext, maxnc);
     Dalloc(&p->maxext, maxnc);
@@ -3448,18 +3448,18 @@ void drbc_pack_ini(bool ids, int3 L, int maxnc, int nv, DRbcPack **pack) {
     p->hii = NULL;
     if (ids) {
         p->hii = &p->hbags[i++];
-        UC(dmap_ini_host(NBAGS, numc, /**/ &p->hmap));
-        UC(comm_bags_ini(HST_ONLY, HST_ONLY, sizeof(int), numc, /**/ p->hii, NULL));
+        UC(dmap_ini_host(NBAGS, numc,      &p->hmap));
+        UC(comm_bags_ini(HST_ONLY, HST_ONLY, sizeof(int), numc,      p->hii, NULL));
     }
     p->nbags = i;
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
 }
 
-void drbc_comm_ini(MPI_Comm cart, /**/ DRbcComm **com) {
+void drbc_comm_ini(MPI_Comm cart,      DRbcComm **com) {
     DRbcComm *c;
     EMALLOC(1, com);
     c = *com;
-    UC(comm_ini(cart, /**/ &c->comm));
+    UC(comm_ini(cart,      &c->comm));
 }
 
 void drbc_unpack_ini(bool ids, int3 L, int maxnc, int nv, DRbcUnpack **unpack) {
@@ -3470,30 +3470,30 @@ void drbc_unpack_ini(bool ids, int3 L, int maxnc, int nv, DRbcUnpack **unpack) {
 
     u->L = L;
 
-    get_num_capacity(maxnc, /**/ numc);
+    get_num_capacity(maxnc,      numc);
 
     i = 0;
     u->hpp = &u->hbags[i++];
-    /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
-    UC(comm_bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ u->hpp, NULL));
+
+    UC(comm_bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc,      u->hpp, NULL));
 
     u->hii = NULL;
     if (ids) {
         u->hii = &u->hbags[i++];
-        UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), numc, /**/ u->hii, NULL));
+        UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), numc,      u->hii, NULL));
     }
     u->nbags = i;
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
 void drbc_pack_fin(DRbcPack *p) {
-    UC(dmap_fin(NBAGS, /**/ &p->map));
-    UC(comm_bags_fin(PINNED, DEV_ONLY, /**/ p->hpp, p->dpp));
+    UC(dmap_fin(NBAGS,      &p->map));
+    UC(comm_bags_fin(PINNED, DEV_ONLY,      p->hpp, p->dpp));
     Dfree(p->minext);
     Dfree(p->maxext);
 
     if (p->hii) {
-        UC(dmap_fin_host(NBAGS, /**/ &p->hmap));
-        UC(comm_bags_fin(HST_ONLY, HST_ONLY, /**/ p->hii, NULL));
+        UC(dmap_fin_host(NBAGS,      &p->hmap));
+        UC(comm_bags_fin(HST_ONLY, HST_ONLY,      p->hii, NULL));
     }
     UC(comm_buffer_fin(p->hbuf));
     EFREE(p);
@@ -3505,30 +3505,30 @@ void drbc_comm_fin(DRbcComm *c) {
 }
 
 void drbc_unpack_fin(DRbcUnpack *u) {
-    UC(comm_bags_fin(HST_ONLY, NONE, /**/ u->hpp, NULL));
+    UC(comm_bags_fin(HST_ONLY, NONE,      u->hpp, NULL));
     if (u->hii)
-        UC(comm_bags_fin(HST_ONLY, NONE, /**/ u->hii, NULL));
+        UC(comm_bags_fin(HST_ONLY, NONE,      u->hii, NULL));
     UC(comm_buffer_fin(u->hbuf));
     EFREE(u);
 }
-static void build_map(int3 L, int n, const float3 *minext, const float3 *maxext, /**/ DMap m) {
-    UC(dmap_reini(NBAGS, /**/ m));
-    KL(drbc_dev::build_map, (k_cnf(n)), (L, n, minext, maxext, /**/ m));
-    KL(dmap_scan<NBAGS>, (1, 32), (/**/ m));
+static void build_map(int3 L, int n, const float3 *minext, const float3 *maxext,      DMap m) {
+    UC(dmap_reini(NBAGS,      m));
+    KL(drbc_dev::build_map, (k_cnf(n)), (L, n, minext, maxext,      m));
+    KL(dmap_scan<NBAGS>, (1, 32), (     m));
 }
 
 void drbc_build_map(int nc, int nv, const Particle *pp, DRbcPack *p) {
-    minmax(pp, nv, nc, /**/ p->minext, p->maxext);
-    build_map(p->L, nc, p->minext, p->maxext, /**/  p->map);
+    minmax(pp, nv, nc,      p->minext, p->maxext);
+    build_map(p->L, nc, p->minext, p->maxext,       p->map);
 }
-static void drbc_pack_pp(const DMap m, int nc, int nv, const Particle *pp, /**/ dBags *bags) {
+static void drbc_pack_pp(const DMap m, int nc, int nv, const Particle *pp,      dBags *bags) {
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(*bags, &wrap);
-    UC(dcommon_pack_pp_packets(nc, nv, pp, m, /**/ wrap));
+    UC(dcommon_pack_pp_packets(nc, nv, pp, m,      wrap));
 }
 
-/* all data (including map) on host */
-static void pack_ii(const DMap m, int, const int *ii, /**/ hBags *bags) {
+
+static void pack_ii(const DMap m, int, const int *ii,      hBags *bags) {
     Sarray<int*, NBAGS> wrap;
     bag2Sarray(*bags, &wrap);
 
@@ -3542,12 +3542,12 @@ static void pack_ii(const DMap m, int, const int *ii, /**/ hBags *bags) {
     }
 }
 
-void drbc_pack(const RbcQuants *q, /**/ DRbcPack *p) {
-    UC(drbc_pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp));
+void drbc_pack(const RbcQuants *q,      DRbcPack *p) {
+    UC(drbc_pack_pp(p->map, q->nc, q->nv, q->pp,      p->dpp));
     if (p->hii) {
-        UC(dmap_D2H(NBAGS, &p->map, /**/ &p->hmap));
+        UC(dmap_D2H(NBAGS, &p->map,      &p->hmap));
         dSync();
-        UC(pack_ii(p->hmap, q->nc, q->ii, /**/ p->hii));
+        UC(pack_ii(p->hmap, q->nc, q->ii,      p->hii));
     }
 }
 
@@ -3574,7 +3574,7 @@ void drbc_wait_recv(DRbcComm *c, DRbcUnpack *u) {
 void drbc_wait_send(DRbcComm *c) {
     UC(comm_wait_send(c->comm));
 }
-static int unpack_bulk_pp(const DRbcPack *p, /**/ Particle *pp) {
+static int unpack_bulk_pp(const DRbcPack *p,      Particle *pp) {
     int nc = p->hpp->counts[frag_bulk];
     void *src = p->dpp->data[frag_bulk];
     size_t sz = nc * p->hpp->bsize;
@@ -3584,27 +3584,27 @@ static int unpack_bulk_pp(const DRbcPack *p, /**/ Particle *pp) {
     return nc;
 }
 
-static void unpack_bulk_ii(const DRbcPack *p, /**/ int *ii) {
+static void unpack_bulk_ii(const DRbcPack *p,      int *ii) {
     int nc = p->hii->counts[frag_bulk];
     void *src = p->hii->data[frag_bulk];
     memcpy(ii, src, nc * sizeof(int));
 }
 
-void drbc_unpack_bulk(const DRbcPack *p, /**/ RbcQuants *q) {
+void drbc_unpack_bulk(const DRbcPack *p,      RbcQuants *q) {
     int nc, nv, n;
     nv = q->nv;
 
-    nc = unpack_bulk_pp(p, /**/ q->pp);
+    nc = unpack_bulk_pp(p,      q->pp);
     n = nc * nv;
 
     if (p->hii)
-        unpack_bulk_ii(p, /**/ q->ii);
+        unpack_bulk_ii(p,      q->ii);
 
     q->nc = nc;
     q->n = n;
 }
 
-static int unpack_halo_pp(int3 L, int nc0, int nv, const hBags *hpp, /**/ Particle *pp) {
+static int unpack_halo_pp(int3 L, int nc0, int nv, const hBags *hpp,      Particle *pp) {
     void *src;
     Particle *dst;
     int i, s, c, n;
@@ -3621,14 +3621,14 @@ static int unpack_halo_pp(int3 L, int nc0, int nv, const hBags *hpp, /**/ Partic
             n = c * nv;
             sz = c * bsz;
             CC(d::MemcpyAsync(dst, src, sz, H2D));
-            dcommon_shift_one_frag(L, n, i, /**/ dst);
+            dcommon_shift_one_frag(L, n, i,      dst);
         }
         s += c;
     }
     return s;
 }
 
-static void unpack_halo_ii(int nc0, const hBags *hii, /**/ int *ii) {
+static void unpack_halo_ii(int nc0, const hBags *hii,      int *ii) {
     void *src;
     int i, s, c;
 
@@ -3641,16 +3641,16 @@ static void unpack_halo_ii(int nc0, const hBags *hii, /**/ int *ii) {
     }
 }
 
-void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
+void drbc_unpack_halo(const DRbcUnpack *u,      RbcQuants *q) {
     int nc0, nc, nv;
 
     nc0 = q->nc;
     nv  = q->nv;
 
-    nc = unpack_halo_pp(u->L, nc0, nv, u->hpp, /**/ q->pp);
+    nc = unpack_halo_pp(u->L, nc0, nv, u->hpp,      q->pp);
 
     if (u->hii)
-        unpack_halo_ii(nc0, u->hii, /**/ q->ii);
+        unpack_halo_ii(nc0, u->hii,      q->ii);
 
     q->n = nc * nv;
     q->nc = nc;
@@ -3661,40 +3661,40 @@ void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
 
 
 
-// Grouped editable compilation unit for fluid exchange and halo forces.
+
 
 
 
 #include <mpi.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -3704,16 +3704,16 @@ void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
 #endif
 
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #ifndef UDX_DISTR_EXCH_TYPE_COMMON
 #define UDX_DISTR_EXCH_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_DISTR_EXCH_TYPE_COMMON */
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#endif
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -3722,35 +3722,35 @@ void msg_print(const char *fmt, ...); // <2>
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #define UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #include "fragment.cuh"
-#endif /* UDX_DISTR_EXCH_FRAG_DEV_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_FRAG_IMP_COMMON
 #define UDX_DISTR_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
@@ -3759,35 +3759,35 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
-#endif /* UDX_DISTR_EXCH_FRAG_IMP_COMMON */
+}
+#endif
 
 #ifndef UDX_DISTR_EXCH_DEVICE_API_COMMON
 #define UDX_DISTR_EXCH_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_DISTR_EXCH_DEVICE_API_COMMON */
+#endif
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -3798,7 +3798,7 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -3820,26 +3820,26 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -3847,7 +3847,7 @@ const char* get_filename_ext(const char*);
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -3860,50 +3860,50 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_DISTR_EXCH_KL_COMMON */
+#endif
 
 #ifndef UDX_DISTR_EXCH_COMM_COMMON
 #define UDX_DISTR_EXCH_COMM_COMMON
 typedef unsigned char data_t;
 
 enum {
-    NFRAGS = 26, /* number of fragments for one halo */
-    BULK   = 26, /* bulk id                          */
-    NBAGS  = 27, /* fragments + bulk                 */
+    NFRAGS = 26,
+    BULK   = 26,
+    NBAGS  = 27,
 };
 
-/* Allocation mod for bags */
+
 enum AllocMod {
-    HST_ONLY,   /* only host bags allocated                 */
-    DEV_ONLY,   /* only device bags allocated               */
-    PINNED,     /* both host and device pinned              */
-    PINNED_HST, /* host pinned; no device memory            */
-    PINNED_DEV, /* host pinned; device global memory on gpu */
-    NONE        /* no allocation                            */
+    HST_ONLY,
+    DEV_ONLY,
+    PINNED,
+    PINNED_HST,
+    PINNED_DEV,
+    NONE
 };
 
 struct dBags {
-    data_t *data[NBAGS]; /* data on the device         */
+    data_t *data[NBAGS];
 };
 
 struct hBags {
-    data_t *data[NBAGS]; /* data on the host                    */
-    int         *counts; /* size of the data                    */
-    int capacity[NBAGS]; /* capacity of each frag (elem number) */
-    size_t bsize;        /* size of one datum in bytes          */
+    data_t *data[NBAGS];
+    int         *counts;
+    int capacity[NBAGS];
+    size_t bsize;
 };
 
 struct Comm;
 struct CommBuffer;
 
-void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-void comm_ini(MPI_Comm cart, /**/ Comm **c);
-void comm_fin(/**/ Comm *c);
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS],      hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod,      hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart,      Comm **c);
+void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
@@ -3911,22 +3911,22 @@ void comm_buffer_fin(CommBuffer*);
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-void comm_post_recv(hBags *b, Comm *c);           // <1>
-void comm_post_send(const hBags *b, Comm *c);     // <2>
+void comm_post_recv(hBags *b, Comm *c);
+void comm_post_send(const hBags *b, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
-void comm_wait_send(Comm *c);                     // <4>
+void comm_wait_recv(Comm *c,      hBags *b);
+void comm_wait_send(Comm *c);
 
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
-void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_recv(Comm *c,      CommBuffer *cb);
 void comm_wait_send(Comm *c);
 
-int    comm_get_number_capacity(int i, const hBags *b); // <1>
-size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+int    comm_get_number_capacity(int i, const hBags *b);
+size_t comm_get_byte_capacity(int i, const hBags *b);
 
-#endif /* UDX_DISTR_EXCH_COMM_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_COMM_UTILS_COMMON
 #define UDX_DISTR_EXCH_COMM_UTILS_COMMON
 template <typename BAGT, typename T, int N>
@@ -3935,7 +3935,7 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
     for (int i = 0; i < N; ++i)
         buf->d[i] = (T*) bags.data[i];
 }
-#endif /* UDX_DISTR_EXCH_COMM_UTILS_COMMON */
+#endif
 
 #ifndef UDX_FLU_PARRAY_COMMON
 #define UDX_FLU_PARRAY_COMMON
@@ -3955,24 +3955,24 @@ void parray_push_cc(const int *cc, PaArray *a);
 
 bool parray_is_colored(const PaArray *a);
 
-void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
-void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
-#endif /* UDX_FLU_PARRAY_COMMON */
+void parray_get_view(const PaArray *a, PaArray_v *v);
+void parray_get_view(const PaArray *a, PaCArray_v *v);
+#endif
 #ifndef UDX_FLU_TYPE_COMMON
 #define UDX_FLU_TYPE_COMMON
-/* helpers to communicate between halo interactions and exchanger */
+
 
 namespace flu {
 
 enum { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
-struct LFrag { /* "local" fragment */
+struct LFrag {
     PaArray parray;
-    const int *ii; /* index */
+    const int *ii;
     int n;
 };
 
-struct RFrag { /* "remote" fragment */
+struct RFrag {
     PaArray parray;
     const int *start;
     int dx, dy, dz, xcells, ycells, zcells;
@@ -3988,8 +3988,8 @@ typedef Sarray<LFrag,   26> LFrag26;
 typedef Sarray<RFrag,   26> RFrag26;
 typedef Sarray<RndFrag, 26> RndFrag26;
 
-} // flu
-#endif /* UDX_FLU_TYPE_COMMON */
+}
+#endif
 #ifndef UDX_DISTR_EXCH_SHFL_COMMON
 #define UDX_DISTR_EXCH_SHFL_COMMON
 #define _I_ static __device__
@@ -4009,7 +4009,7 @@ _I_ T shfl(T val, unsigned int width) {
 }
 
 #undef _I_
-#endif /* UDX_DISTR_EXCH_SHFL_COMMON */
+#endif
 
 struct EFluPack;
 struct EFluComm;
@@ -4017,17 +4017,17 @@ struct EFluUnpack;
 struct PaArray;
 
 void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **p);
-void eflu_comm_ini(MPI_Comm comm, /**/ EFluComm **c);
+void eflu_comm_ini(MPI_Comm comm,      EFluComm **c);
 void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **u);
 
 void eflu_pack_fin(EFluPack *p);
 void eflu_comm_fin(EFluComm *c);
 void eflu_unpack_fin(EFluUnpack *u);
 
-void eflu_compute_map(const int *start, const int *count, /**/ EFluPack *p);
-void eflu_download_cell_starts(/**/ EFluPack *p);
+void eflu_compute_map(const int *start, const int *count,      EFluPack *p);
+void eflu_download_cell_starts(     EFluPack *p);
 
-void eflu_pack(const PaArray *parray, /**/ EFluPack *p);
+void eflu_pack(const PaArray *parray,      EFluPack *p);
 void eflu_download_data(EFluPack *p);
 
 void eflu_post_recv(EFluComm *c, EFluUnpack *u);
@@ -4040,13 +4040,13 @@ void eflu_unpack(EFluUnpack *u);
 using flu::LFrag26;
 using flu::RFrag26;
 
-void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags);
-void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags);
+void eflu_get_local_frags(const EFluPack *p,      LFrag26 *lfrags);
+void eflu_get_remote_frags(const EFluUnpack *u,      RFrag26 *rfrags);
 
 
 namespace eflu_dev {
-/* return origin and extents of the cells of fragment i */
-static __device__ void get_frag_box(int3 L0, int i, /**/ int org[3], int ext[3]) {
+
+static __device__ void get_frag_box(int3 L0, int i,      int org[3], int ext[3]) {
     int d[3];
     int c, L[3] = {L0.x, L0.y, L0.z};
     frag_dev::i2d3(i, d);
@@ -4056,7 +4056,7 @@ static __device__ void get_frag_box(int3 L0, int i, /**/ int org[3], int ext[3])
     }
 }
 
-/* convert cellid from frag coordinates to bulk coordinates */
+
 static __device__ int frag2bulk(int3 L, int hci, const int org[3], const int ext[3]) {
     enum {X, Y, Z};
     int c;
@@ -4066,21 +4066,21 @@ static __device__ int frag2bulk(int3 L, int hci, const int org[3], const int ext
     return src[X] + L.x * (src[Y] + L.y * src[Z]);
 }
 
-/* collect cell informations from bulk cells to frag cells */
+
 __global__ void count_cells(int3 L, const int27 cellpackstarts, const int *start, const int *count,
-                            /**/ intp26 fragss, intp26 fragcc) {
+                                 intp26 fragss, intp26 fragcc) {
     enum {X, Y, Z};
-    int gid, fid; /* fragment id */
-    int nhc; /* number of halo cells */
-    int cid, hci; /* bulk and halo cell ids */
-    int org[3], ext[3]; /* fragment origin and extend */
+    int gid, fid;
+    int nhc;
+    int cid, hci;
+    int org[3], ext[3];
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
 
     fid = frag_dev::frag_get_fid(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[fid];
 
-    get_frag_box(L, fid, /**/ org, ext);
+    get_frag_box(L, fid,      org, ext);
     nhc = ext[X] * ext[Y] * ext[Z];
 
     if (hci < nhc) {
@@ -4093,9 +4093,9 @@ __global__ void count_cells(int3 L, const int27 cellpackstarts, const int *start
     }
 }
 
-/* convert cell starts from bulk coordinates to fragment coordinates */
+
 template <int NWARPS>
-__global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum) {
+__global__ void scan(const int26 fragn, const intp26 fragcc,      intp26 fragcum) {
     __shared__ int shdata[32];
 
     int tid, laneid, warpid, fid;
@@ -4143,17 +4143,17 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
         if (sourceid < n) start[sourceid] = myscan - mycount;
     }
 }
-/* copy particles from bulk array pp to a single fragment to be exchanged */
+
 __global__ void collect_particles(int fid, int nc, const Particle *pp, const int *bss,
                                   const int *bcc, const int *fss, int cap,
-                                  /**/ int *fii, Particle *fpp, int *fnn) {
+                                       int *fii, Particle *fpp, int *fnn) {
     int cid, tid, src, dst, nsrc, nfloat2s;
     int i, lpid, dpid, spid, c;
 
-    /* 16 workers (warpSize/2) per cell  */
-    /* requirement: 32 threads per block */
-    /* cid: work group id = cell id      */
-    /* tid: worker id within the group   */
+
+
+
+
 
 
     cid = threadIdx.x / (warpSize / 2) + 2 * blockIdx.x;
@@ -4184,17 +4184,17 @@ __global__ void collect_particles(int fid, int nc, const Particle *pp, const int
     if (cid + 1 == nc) fnn[fid] = dst;
 }
 
-/* copy colors from bulk array ii to a single fragment to be exchanged */
+
 __global__ void collect_colors(int fid, int nc, const int *ii,
                                const int *bss, const int *bcc, const int *fss,
-                               int cap, /**/ int *fii) {
+                               int cap,      int *fii) {
     int cid, tid, src, dst, nsrc;
     int lpid, dpid, spid;
 
-    /* 16 workers (warpSize/2) per cell  */
-    /* requirement: 32 threads per block */
-    /* cid: work group id = cell id      */
-    /* tid: worker id within the group   */
+
+
+
+
 
     cid = threadIdx.x / (warpSize / 2) + 2 * blockIdx.x;
     tid = threadIdx.x % (warpSize / 2);
@@ -4212,18 +4212,18 @@ __global__ void collect_colors(int fid, int nc, const int *ii,
     }
 }
 
-} // dev
+}
 
-/*
-  pp: exchanged particles
-  cc: colors of the above
 
-  bcc: (bulk counts): cell counts
-  bss: (bulk starts): cell starts in bulk coordinates
-  fss: (fragment starts): cell starts in fragment coordinates
 
-  bii: indices of the particles in bulk coordinates
-*/
+
+
+
+
+
+
+
+
 
 struct EFluPack {
     enum {
@@ -4240,7 +4240,7 @@ struct EFluPack {
     int nbags;
     CommBuffer *hbuf;
 
-    int3 L; /* subdomain size */
+    int3 L;
 };
 
 struct EFluComm {
@@ -4258,7 +4258,7 @@ struct EFluUnpack {
     int nbags;
     CommBuffer *hbuf;
 
-    int3 L; /* subdomain size */
+    int3 L;
 };
 void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     int i, nbags, nc, cap[NBAGS], ncs[NBAGS];
@@ -4268,7 +4268,7 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     p = *pack;
 
     p->L = L;
-    frag_hst::estimates(L, NFRAGS, maxd, /**/ cap);
+    frag_hst::estimates(L, NFRAGS, maxd,      cap);
     cap[BULK] = 0;
     memcpy(p->cap.d, cap, NFRAGS * sizeof(int));
 
@@ -4285,17 +4285,17 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     nbags = 0;
     p->hpp = &p->hbags[nbags];
     p->dpp = &p->dbags[nbags++];
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ p->hpp, p->dpp));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap,      p->hpp, p->dpp));
 
     p->hcc = NULL; p->dcc = NULL;
     if (colors) {
         p->hcc = &p->hbags[nbags];
         p->dcc = &p->dbags[nbags++];
-        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ p->hcc, p->dcc));
+        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap,      p->hcc, p->dcc));
     }
 
     p->hfss = &p->hbags[nbags++];
-    UC(comm_bags_ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ p->hfss, NULL));
+    UC(comm_bags_ini(PINNED_HST, NONE, sizeof(int), ncs,      p->hfss, NULL));
     p->nbags = nbags;
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
 
@@ -4304,11 +4304,11 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     Dalloc(&p->counts_dev, NFRAGS);
 }
 
-void eflu_comm_ini(MPI_Comm cart, /**/ EFluComm **com) {
+void eflu_comm_ini(MPI_Comm cart,      EFluComm **com) {
     EFluComm *c;
     EMALLOC(1, com);
     c = *com;
-    UC(comm_ini(cart, /**/ &c->comm));
+    UC(comm_ini(cart,      &c->comm));
 }
 
 void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
@@ -4319,7 +4319,7 @@ void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
     u = *unpack;
 
     u->L = L;
-    frag_hst::estimates(L, NFRAGS, maxd, /**/ cap);
+    frag_hst::estimates(L, NFRAGS, maxd,      cap);
     cap[BULK] = 0;
 
     for (i = 0; i < NFRAGS; ++i)
@@ -4330,18 +4330,18 @@ void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
 
     u->hpp = &u->hbags[nbags];
     u->dpp = &u->dbags[nbags++];
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ u->hpp, u->dpp));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap,      u->hpp, u->dpp));
 
     u->hcc = NULL; u->dcc = NULL;
     if (colors) {
         u->hcc = &u->hbags[nbags];
         u->dcc = &u->dbags[nbags++];
-        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ u->hcc, u->dcc));
+        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap,      u->hcc, u->dcc));
     }
 
     u->hfss = &u->hbags[nbags];
     u->dfss = &u->dbags[nbags++];
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ u->hfss, u->dfss));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int), ncs,      u->hfss, u->dfss));
 
     u->nbags = nbags;
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
@@ -4355,11 +4355,11 @@ void eflu_pack_fin(EFluPack *p) {
         Dfree(p->bii.d[i]);
     }
 
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ p->hpp, p->dpp));
+    UC(comm_bags_fin(PINNED_DEV, NONE,      p->hpp, p->dpp));
     if (p->hcc)
-        UC(comm_bags_fin(PINNED_DEV, NONE, /**/ p->hcc, p->dcc));
+        UC(comm_bags_fin(PINNED_DEV, NONE,      p->hcc, p->dcc));
 
-    UC(comm_bags_fin(PINNED_HST, NONE, /**/ p->hfss, NULL));
+    UC(comm_bags_fin(PINNED_HST, NONE,      p->hfss, NULL));
     UC(comm_buffer_fin(p->hbuf));
 
     Dfree(p->counts_dev);
@@ -4367,16 +4367,16 @@ void eflu_pack_fin(EFluPack *p) {
 }
 
 void eflu_comm_fin(EFluComm *c) {
-    UC(comm_fin(/**/ c->comm));
+    UC(comm_fin(     c->comm));
     EFREE(c);
 }
 
 void eflu_unpack_fin(EFluUnpack *u) {
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hpp, u->dpp));
+    UC(comm_bags_fin(PINNED_DEV, NONE,      u->hpp, u->dpp));
     if (u->hcc)
-        UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hcc, u->dcc));
+        UC(comm_bags_fin(PINNED_DEV, NONE,      u->hcc, u->dcc));
 
-    UC(comm_bags_fin(PINNED_HST, NONE, /**/ u->hfss, u->dfss));
+    UC(comm_bags_fin(PINNED_HST, NONE,      u->hfss, u->dfss));
     UC(comm_buffer_fin(u->hbuf));
     EFREE(u);
 }
@@ -4390,22 +4390,22 @@ static int get_cell_num(int3 L, int *cc) {
     return nc;
 }
 
-static void scan(int n, int *cc, /**/ int *ss) {
+static void scan(int n, int *cc,      int *ss) {
     ss[0] = 0;
     for (int i = 0; i < n; ++i) ss[i+1] = ss[i] + cc[i];
 }
-void eflu_compute_map(const int *start, const int *count, /**/ EFluPack *p) {
+void eflu_compute_map(const int *start, const int *count,      EFluPack *p) {
     int nc;
     int26 cc;
     int27 ss;
-    nc = get_cell_num(p->L, /**/ cc.d);
-    scan(NFRAGS, cc.d, /**/ ss.d);
-    KL(eflu_dev::count_cells, (k_cnf(nc)), (p->L, ss, start, count, /**/ p->bss, p->bcc));
-    KL(eflu_dev::scan<32>, (26, 32 * 32), (cc, p->bcc, /**/ p->fss));
+    nc = get_cell_num(p->L,      cc.d);
+    scan(NFRAGS, cc.d,      ss.d);
+    KL(eflu_dev::count_cells, (k_cnf(nc)), (p->L, ss, start, count,      p->bss, p->bcc));
+    KL(eflu_dev::scan<32>, (26, 32 * 32), (cc, p->bcc,      p->fss));
 }
 
 
-static void download_cell_starts(int3 L, intp26 src, /**/ intp26 dst) {
+static void download_cell_starts(int3 L, intp26 src,      intp26 dst) {
     int i, nc;
     size_t sz;
 
@@ -4416,15 +4416,15 @@ static void download_cell_starts(int3 L, intp26 src, /**/ intp26 dst) {
     }
 }
 
-void eflu_download_cell_starts(/**/ EFluPack *p) {
+void eflu_download_cell_starts(     EFluPack *p) {
     intp26 fss_hst;
-    bag2Sarray(*p->hfss, /**/ &fss_hst);
-    download_cell_starts(p->L, p->fss, /**/ fss_hst);
-    /* size of the messages is fixed throughout the whole simulation */
-    /* sizes are frag_ncell(fid) + 1 */
+    bag2Sarray(*p->hfss,      &fss_hst);
+    download_cell_starts(p->L, p->fss,      fss_hst);
+
+
 }
 
-void eflu_pack(const PaArray *parray, /**/ EFluPack *p) {
+void eflu_pack(const PaArray *parray,      EFluPack *p) {
     int nc, i, cap;
     int26 cc;
     Pap26 fpp;
@@ -4433,10 +4433,10 @@ void eflu_pack(const PaArray *parray, /**/ EFluPack *p) {
 
     CC(d::MemsetAsync(p->counts_dev, 0, NFRAGS * sizeof(int)));
 
-    get_cell_num(p->L, /**/ cc.d);
+    get_cell_num(p->L,      cc.d);
 
-    bag2Sarray(*p->dpp, /**/ &fpp);
-    if (parray->colors) bag2Sarray(*p->dcc, /**/ &fcc);
+    bag2Sarray(*p->dpp,      &fpp);
+    if (parray->colors) bag2Sarray(*p->dcc,      &fcc);
 
     for (i = 0; i < 26; ++i) {
         nc = cc.d[i];
@@ -4447,16 +4447,16 @@ void eflu_pack(const PaArray *parray, /**/ EFluPack *p) {
 
         KL( eflu_dev::collect_particles,
             ((nc+1) / 2, 32),
-            (i, nc, (const Particle*) parray->pp, bss, bcc, fss, cap, /**/ p->bii.d[i], fpp.d[i], p->counts_dev));
+            (i, nc, (const Particle*) parray->pp, bss, bcc, fss, cap,      p->bii.d[i], fpp.d[i], p->counts_dev));
 
         if (parray->colors)
             KL( eflu_dev::collect_colors,
                 ((nc+1) / 2, 32),
-                (i, nc, parray->cc, bss, bcc, fss, cap, /**/ fcc.d[i]));
+                (i, nc, parray->cc, bss, bcc, fss, cap,      fcc.d[i]));
     }
 }
 
-static void copy(int, const int counts[], const dBags *d, /**/ hBags *h) {
+static void copy(int, const int counts[], const dBags *d,      hBags *h) {
     int i, c;
     size_t sz;
 
@@ -4473,17 +4473,17 @@ void eflu_download_data(EFluPack *p) {
     size_t sz = sizeof(counts);
 
     CC(d::MemcpyAsync(counts, p->counts_dev, sz, D2H));
-    dSync(); /* wait for counts memcpy */
+    dSync();
 
-    copy(NFRAGS, counts, p->dpp, /**/ p->hpp);
+    copy(NFRAGS, counts, p->dpp,      p->hpp);
     if (p->hcc)
-        copy(NFRAGS, counts, p->dcc, /**/ p->hcc);
+        copy(NFRAGS, counts, p->dcc,      p->hcc);
 
     memcpy(p->hpp->counts, counts, sz);
     if (p->hcc)
         memcpy(p->hcc->counts, counts, sz);
 
-    dSync(); /* wait for copy */
+    dSync();
 }
 void eflu_post_recv(EFluComm *c, EFluUnpack *u) {
     UC(comm_post_recv(u->hbuf, c->comm));
@@ -4503,7 +4503,7 @@ void eflu_wait_send(EFluComm *c) {
     UC(comm_wait_send(c->comm));
 }
 
-static void upload_data(int n, const hBags *h, /**/ dBags *d) {
+static void upload_data(int n, const hBags *h,      dBags *d) {
     int i, c;
     size_t sz;
     for (i = 0; i < n; ++i) {
@@ -4514,14 +4514,14 @@ static void upload_data(int n, const hBags *h, /**/ dBags *d) {
     }
 }
 
-/* upload recved data on the device */
+
 void eflu_unpack(EFluUnpack *u) {
-    upload_data(NFRAGS, u->hfss, /**/ u->dfss);
-    upload_data(NFRAGS, u->hpp, /**/ u->dpp);
+    upload_data(NFRAGS, u->hfss,      u->dfss);
+    upload_data(NFRAGS, u->hpp,      u->dpp);
     if (u->hcc)
-        upload_data(NFRAGS, u->hcc, /**/ u->dcc);
+        upload_data(NFRAGS, u->hcc,      u->dcc);
 }
-void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags) {
+void eflu_get_local_frags(const EFluPack *p,      LFrag26 *lfrags) {
     PaArray parraya;
 
     for (int i = 0; i < 26; ++i) {
@@ -4537,7 +4537,7 @@ void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags) {
     }
 }
 
-void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
+void eflu_get_remote_frags(const EFluUnpack *u,      RFrag26 *rfrags) {
     int i, dx, dy, dz, xcells, ycells, zcells;
     int3 L;
     PaArray parrayb;
@@ -4572,7 +4572,7 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
 
 
 
-// Grouped editable compilation unit for fluid state and halo forces.
+
 
 
 
@@ -4581,33 +4581,33 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
 #include <vector_types.h>
 #include <mpi.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -4617,25 +4617,25 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
 #endif
 
 
-void os_mkdir(const char* path); // <1>
-long os_time();                  // <2>
-void os_srand(long int seedval); // <3>
-double os_drand();               // <4>
-void os_sleep(unsigned int seconds); // <5>
-void os_malloc_stats();              // TODO
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void os_mkdir(const char* path);
+long os_time();
+void os_srand(long int seedval);
+double os_drand();
+void os_sleep(unsigned int seconds);
+void os_malloc_stats();
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #ifndef UDX_DISTR_EXCH_DEF_COMMON
 #define UDX_DISTR_EXCH_DEF_COMMON
 #ifndef UDX_FLU_HALO_DEF_COMMON
 #define UDX_FLU_HALO_DEF_COMMON
 #include "constants.cuh"
-#endif /* UDX_DISTR_EXCH_DEF_COMMON */
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#endif
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -4644,29 +4644,29 @@ void msg_print(const char *fmt, ...); // <2>
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_DISTR_EXCH_TYPE_COMMON
@@ -4674,7 +4674,7 @@ void msg_print(const char *fmt, ...); // <2>
 #ifndef UDX_FLU_HALO_TYPE_COMMON
 #define UDX_FLU_HALO_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_DISTR_EXCH_TYPE_COMMON */
+#endif
 #endif
 
 #ifndef UDX_DISTR_EXCH_DEVICE_API_COMMON
@@ -4682,7 +4682,7 @@ void msg_print(const char *fmt, ...); // <2>
 #ifndef UDX_FLU_HALO_DEVICE_API_COMMON
 #define UDX_FLU_HALO_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_DISTR_EXCH_DEVICE_API_COMMON */
+#endif
 #endif
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -4726,7 +4726,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -4740,7 +4740,7 @@ int status2errcode(MPI_Status *status);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -4751,7 +4751,7 @@ int status2errcode(MPI_Status *status);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -4773,34 +4773,34 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -4808,7 +4808,7 @@ void check(int code, const char *file, int line);
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -4821,7 +4821,7 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 
 struct Coords;
 struct Coords_v;
@@ -4837,24 +4837,24 @@ int zdomain(const Coords *c);
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
-void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
+void local2center(const Coords *c, float3 rl,      float3 *rc);
 
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
+void center2local(const Coords *c, float3 rc,      float3 *rl);
 
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
-void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
+void local2global(const Coords *c, float3 rl,      float3 *rg);
 
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
-void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
+void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-/* edges of the sub-domain in global coordinates */
+
 
 int xlo(const Coords*);
 int ylo(const Coords*);
@@ -4869,13 +4869,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-/* rank predicates */
+
 bool is_end(const Coords *c, int dir);
 
-/* a string unique for a rank */
-void coord_stamp(const Coords *c, /**/ char *s);
 
-/* number of subdomains */
+void coord_stamp(const Coords *c,      char *s);
+
+
 int coords_size(const Coords *c);
 
 #ifndef UDX_DISTR_PARTLIST_TYPE_COMMON
@@ -4885,26 +4885,26 @@ enum {
     DEAD  = 1
 };
 
-/* structure of particle                           */
-/* optional "deathlist" for particles to be killed */
+
+
 
 struct PartList {
-    const Particle *pp;   /* particles array          */
-    const int *deathlist; /* what pp is dead or alive */
+    const Particle *pp;
+    const int *deathlist;
 };
-#endif /* UDX_DISTR_PARTLIST_TYPE_COMMON */
+#endif
 struct Scan;
 
-void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan*); // <1>
-void scan_ini(int size, /**/ Scan**);                                       // <2>
-void scan_fin(Scan*);                                                       // <3>
+void scan_apply(const int *input, int size,      int *output,       Scan*);
+void scan_ini(int size,      Scan**);
+void scan_fin(Scan*);
 struct Clist;
 struct ClistMap;
 
-void clist_ini(int LX, int LY, int LZ, /**/ Clist **c);
-void clist_fin(/**/ Clist *c);
+void clist_ini(int LX, int LY, int LZ,      Clist **c);
+void clist_fin(     Clist *c);
 
-void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
+void clist_ini_map(int maxp, int nA, const Clist *c,      ClistMap **m);
 void clist_fin_map(ClistMap *m);
 
 const int* clists_get_ss(const Clist *c);
@@ -4914,18 +4914,18 @@ int        clists_get_n(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
 
 void clist_ini_counts(Clist *c);
-void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m);
+void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-/* special for fluid distribution */
-void clist_subindex_local(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
-void clist_subindex_remote(int n, const PartList lp, /**/ Clist *c, ClistMap *m);
 
-void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout, /**/ Particle *ppout);
-void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout, /**/ int *iiout);
+void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
+void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
-/* quick cell build for single array */
-void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
+void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
+void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
+
+
+void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 
 struct Coords;
 struct Particle;
@@ -4938,10 +4938,10 @@ enum {RESTART_BEGIN=RESTART_FINAL};
 typedef void (*StreamWriter)(const void*, FILE*);
 typedef void (*StreamReader)(FILE*, void*);
 
-void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
-void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
-void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
-void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp);
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter);
 
 void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
 void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
@@ -4955,13 +4955,13 @@ struct Config;
 void inter_color_ini(GenColor**);
 void inter_color_fin(GenColor*);
 
-void inter_color_set_drop(float R, GenColor*); // <1>
-void inter_color_set_uniform(GenColor*); // <2>
+void inter_color_set_drop(float R, GenColor*);
+void inter_color_set_uniform(GenColor*);
 
 void inter_color_set_conf(const Config*, GenColor*);
 
-void inter_color_apply_hst(const Coords*, const GenColor*, int n, const Particle *pp, /**/ int *cc);
-void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle *pp, /**/ int *cc);
+void inter_color_apply_hst(const Coords*, const GenColor*, int n, const Particle *pp,      int *cc);
+void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle *pp,      int *cc);
 
 
 struct Particle;
@@ -4983,25 +4983,25 @@ const Force*    txt_read_get_ff(const TxtRead *);
 #ifndef UDX_DISTR_FLU_QUANTS_COMMON
 #define UDX_DISTR_FLU_QUANTS_COMMON
 struct FluQuants {
-    Particle *pp, *pp0;    /* particles on device  */
-    int       n;           /* particle number      */
-    Clist     *cells;      /* cell lists           */
-    ClistMap *mcells;      /* cell lists map       */
-    Particle *pp_hst;      /* particles on host    */
+    Particle *pp, *pp0;
+    int       n;
+    Clist     *cells;
+    ClistMap *mcells;
+    Particle *pp_hst;
 
-    /* optional data */
+
 
     bool ids, colors;
 
-    int *ii, *ii0;  /* global ids on device */
-    int *ii_hst;    /* global ids on host   */
+    int *ii, *ii0;
+    int *ii_hst;
 
-    int *cc, *cc0;  /* colors on device */
-    int *cc_hst;    /* colors on host   */
+    int *cc, *cc0;
+    int *cc_hst;
 
-    int maxp; /* maximum particle number */
+    int maxp;
 };
-#endif /* UDX_DISTR_FLU_QUANTS_COMMON */
+#endif
 
 struct Coords;
 struct GenColor;
@@ -5009,17 +5009,17 @@ struct GenColor;
 void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
 void flu_fin(FluQuants *q);
 
-void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q); // <1>
-void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
+void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q);
+void flu_gen_ids(MPI_Comm, const int n, FluQuants *q);
 
-void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);     // <1>
-void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q); // <2>
+void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);
+void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q);
 
-void flu_txt_dump(const Coords*, const FluQuants *q); // <1>
+void flu_txt_dump(const Coords*, const FluQuants *q);
 
-/* build cells only from one array of particles fully contained in the domain */
-/* warning: this will delete particles which are outside                      */
-void flu_build_cells(/**/ FluQuants *q); // <2>
+
+
+void flu_build_cells(     FluQuants *q);
 
 static void ini_ii(int maxp, int **ii, int **ii0, int **ii_hst) {
     Dalloc(ii, maxp);
@@ -5032,8 +5032,8 @@ void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q) {
     q->maxp = maxp;
     Dalloc(&q->pp, maxp);
     Dalloc(&q->pp0, maxp);
-    UC(clist_ini(L.x, L.y, L.z, /**/ &q->cells));
-    UC(clist_ini_map(maxp, 2, q->cells, /**/ &q->mcells));
+    UC(clist_ini(L.x, L.y, L.z,      &q->cells));
+    UC(clist_ini_map(maxp, 2, q->cells,      &q->mcells));
 
     EMALLOC(maxp, &q->pp_hst);
 
@@ -5063,17 +5063,17 @@ static void assert_np(int n, int m) {
     if (n > m) ERR("too many particles: n = %d < m = %d", n, m);
 }
 
-static int gen0(int3 L, int numdensity, int maxp, Particle *pp) { /* generate particle positions and velocities */
+static int gen0(int3 L, int numdensity, int maxp, Particle *pp) {
     enum {X, Y, Z};
     UC(assert_np(L.x * L.y * L.z * numdensity, maxp));
     os_srand(123456);
     int iz, iy, ix, l, nd = numdensity;
-    int n = 0; /* particle index */
+    int n = 0;
     float x, y, z, dr = 0.99;
     for (iz = 0; iz < L.z; iz++)
     for (iy = 0; iy < L.y; iy++)
     for (ix = 0; ix < L.x; ix++) {
-        /* edge of a cell */
+
         int xlo = -0.5*L.x + ix, ylo = -0.5*L.y + iy, zlo = -0.5*L.z + iz;
         for (l = 0; l < nd; l++) {
             Particle p;
@@ -5087,15 +5087,15 @@ static int gen0(int3 L, int numdensity, int maxp, Particle *pp) { /* generate pa
     return n;
 }
 
-static int genColor(int3 L, int numdensity, int maxp, const Coords *coords, const GenColor *gc, /*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_hst) {
+static int genColor(int3 L, int numdensity, int maxp, const Coords *coords, const GenColor *gc,       Particle *pp, int *color,       Particle *pp_hst, int *color_hst) {
     int n = gen0(L, numdensity, maxp, pp_hst);
-    inter_color_apply_hst(coords, gc, n, pp_hst, /**/ color_hst);
+    inter_color_apply_hst(coords, gc, n, pp_hst,      color_hst);
     cH2D(color, color_hst, n);
     cH2D(   pp,    pp_hst, n);
     return n;
 }
 
-static int genGrey(int3 L, int numdensity, int maxp, /*o*/ Particle *dev, /*w*/ Particle *hst) {
+static int genGrey(int3 L, int numdensity, int maxp,       Particle *dev,       Particle *hst) {
     int n = gen0(L, numdensity, maxp, hst);
     cH2D(dev, hst, n);
     return n;
@@ -5104,9 +5104,9 @@ static int genGrey(int3 L, int numdensity, int maxp, /*o*/ Particle *dev, /*w*/ 
 void flu_gen_quants(const Coords *coords, int numdensity, const GenColor *gc, FluQuants *q) {
     int3 L = subdomain(coords);
     if (q->colors)
-        q->n = genColor(L, numdensity, q->maxp, coords, gc, q->pp, q->cc, /*w*/ q->pp_hst, q->cc_hst);
+        q->n = genColor(L, numdensity, q->maxp, coords, gc, q->pp, q->cc,       q->pp_hst, q->cc_hst);
     else
-        q->n = genGrey(L, numdensity, q->maxp, q->pp, /*w*/ q->pp_hst);
+        q->n = genGrey(L, numdensity, q->maxp, q->pp,       q->pp_hst);
 }
 
 static void ii_gen0(MPI_Comm comm, const long n, int *ii) {
@@ -5128,14 +5128,14 @@ void flu_gen_ids(MPI_Comm comm, const int n, FluQuants *q) {
 #define COL CODE ".cc"
 #define IDS CODE ".ii"
 
-static int strt_pp(MPI_Comm comm, const char *base, const int id, Particle *dev, /*w*/ Particle *hst) {
+static int strt_pp(MPI_Comm comm, const char *base, const int id, Particle *dev,       Particle *hst) {
     int n;
     restart_read_pp(comm, base, PP, id, &n, hst);
     if (n) cH2D(dev, hst, n);
     return n;
 }
 
-static int strt_ii(MPI_Comm comm, const char *base, const char *code, const int id, int *dev, /*w*/ int *hst) {
+static int strt_ii(MPI_Comm comm, const char *base, const char *code, const int id, int *dev,       int *hst) {
     int n;
     restart_read_ii(comm, base, code, id, &n, hst);
     if (n) cH2D(dev, hst, n);
@@ -5143,9 +5143,9 @@ static int strt_ii(MPI_Comm comm, const char *base, const char *code, const int 
 }
 
 void flu_strt_quants(MPI_Comm comm, const char *base, const int id, FluQuants *q) {
-    q->n =         strt_pp(comm, base,     id, /**/ q->pp, /* w */ q->pp_hst);
-    if (q->ids)    strt_ii(comm, base, IDS, id, /**/ q->ii, /* w */ q->ii_hst);
-    if (q->colors) strt_ii(comm, base, COL, id, /**/ q->cc, /* w */ q->cc_hst);
+    q->n =         strt_pp(comm, base,     id,      q->pp,         q->pp_hst);
+    if (q->ids)    strt_ii(comm, base, IDS, id,      q->ii,         q->ii_hst);
+    if (q->colors) strt_ii(comm, base, COL, id,      q->cc,         q->cc_hst);
 }
 
 static void strt_dump_pp(MPI_Comm comm, const char *base, const int id, const int n, const Particle *dev, Particle *hst) {
@@ -5159,9 +5159,9 @@ static void strt_dump_ii(MPI_Comm comm, const char *base, const char *code, cons
 }
 
 void flu_strt_dump(MPI_Comm comm, const char *base, const int id, const FluQuants *q) {
-    strt_dump_pp(comm, base, id, q->n, q->pp, /* w */ q->pp_hst);
-    if (q->ids)    strt_dump_ii(comm, base, IDS, id, q->n, q->ii, /* w */ q->ii_hst);
-    if (q->colors) strt_dump_ii(comm, base, COL, id, q->n, q->cc, /* w */ q->cc_hst);
+    strt_dump_pp(comm, base, id, q->n, q->pp,         q->pp_hst);
+    if (q->ids)    strt_dump_ii(comm, base, IDS, id, q->n, q->ii,         q->ii_hst);
+    if (q->colors) strt_dump_ii(comm, base, COL, id, q->n, q->cc,         q->cc_hst);
 }
 
 #undef CODE
@@ -5180,10 +5180,10 @@ static void local2global_p(const Coords *c, long n, Particle *pp) {
     }
 }
 
-static void gen_name(const Coords *c, /**/ char *name) {
+static void gen_name(const Coords *c,      char *name) {
     int r;
     char stamp[FILENAME_MAX];
-    coord_stamp(c, /**/ stamp);
+    coord_stamp(c,      stamp);
     r = sprintf(name, "%s.txt", stamp);
     if (r < 0) ERR("sprintf failed");
 }
@@ -5194,13 +5194,13 @@ void flu_txt_dump(const Coords *c, const FluQuants *q) {
     char name[FILENAME_MAX];
     n = q->n; dev = q->pp; hst = q->pp_hst;
     if (n) cD2H(hst, dev, n);
-    local2global_p(c, n, /**/ hst);
-    UC(gen_name(c, /**/ name));
+    local2global_p(c, n,      hst);
+    UC(gen_name(c,      name));
     UC(txt_write_pp(n, hst, name));
 }
-void flu_build_cells(/**/ FluQuants *q) {
-    UC(clist_build(q->n, q->n, q->pp, /**/ q->pp0, q->cells, q->mcells));
-    // swap
+void flu_build_cells(     FluQuants *q) {
+    UC(clist_build(q->n, q->n, q->pp,      q->pp0, q->cells, q->mcells));
+
     Particle *tmp = q->pp;
     q->pp = q->pp0; q->pp0 = tmp;
 }
@@ -5212,33 +5212,33 @@ void flu_build_cells(/**/ FluQuants *q) {
 #include <stdio.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -5294,13 +5294,13 @@ static int   warpSize = 1;
 #else
   #error DEV_* is undefined
 #endif
-/* function and variable type [q]ualifiers */
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -5326,8 +5326,8 @@ static int   warpSize = 1;
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -5355,13 +5355,13 @@ static int   warpSize = 1;
 #ifndef UDX_FLU_HALO_DEVICE_API_COMMON
 #define UDX_FLU_HALO_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_DISTR_EXCH_DEVICE_API_COMMON */
+#endif
 #endif
 
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #define UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #include "fragment.cuh"
-#endif /* UDX_DISTR_EXCH_FRAG_DEV_COMMON */
+#endif
 #ifndef UDX_DISTR_EXCH_FRAG_IMP_COMMON
 #define UDX_DISTR_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
@@ -5370,35 +5370,35 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
-#endif /* UDX_DISTR_EXCH_FRAG_IMP_COMMON */
+}
+#endif
 
 #ifndef UDX_DISTR_EXCH_DEF_COMMON
 #define UDX_DISTR_EXCH_DEF_COMMON
 #ifndef UDX_FLU_HALO_DEF_COMMON
 #define UDX_FLU_HALO_DEF_COMMON
 #include "constants.cuh"
-#endif /* UDX_DISTR_EXCH_DEF_COMMON */
 #endif
-/* [c]uda [c]heck macros */
+#endif
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -5406,7 +5406,7 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -5419,14 +5419,14 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -5437,7 +5437,7 @@ void check(int rc, const char *file, int line);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -5465,12 +5465,12 @@ void error_print_stack();
 #ifndef UDX_FLU_HALO_TYPE_COMMON
 #define UDX_FLU_HALO_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_DISTR_EXCH_TYPE_COMMON */
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#endif
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -5479,52 +5479,52 @@ void error_print_stack();
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -5536,14 +5536,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -5551,19 +5551,19 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* maximum of pairwise dpd parameters */
+
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
@@ -5578,7 +5578,7 @@ struct PairDPDC {
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
 
-/* mirrored */
+
 struct PairDPDCM {
     int ncolors;
     float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
@@ -5596,7 +5596,7 @@ struct PairAdhesion {
 struct PairPa {
     float x, y, z;
     float vx, vy, vz;
-    /* optional fields */
+
     int color;
 };
 
@@ -5606,7 +5606,7 @@ struct PairFo {
 
 struct PairSFo {
     float x, y, z;
-    /* stress */
+
     float sxx, syy, szz, sxy, sxz, syz;
 };
 #define _S_ static __device__
@@ -5620,8 +5620,8 @@ _S_ float cap(float x, float lo, float hi) {
 
 static const float EPS = 1e-6;
 enum {NORM_OK, NORM_BIG, NORM_SMALL};
-_S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
-    /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
+_S_ int norm(       float3 *pos,      float *pr, float *pinvr) {
+
     float x, y, z, invr, r, r2;
     x = pos->x; y = pos->y; z = pos->z;
 
@@ -5661,13 +5661,13 @@ _S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
     return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
 }
 
-_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+_S_ void magn2fo(float f0, float3 er, float3 dr,      PairFo *f) {
     f->x = f0 * er.x;
     f->y = f0 * er.y;
     f->z = f0 * er.z;
 }
 
-_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+_S_ void magn2fo(float f0, float3 er, float3 dr,      PairSFo *f) {
     f->x = f0 * er.x;
     f->y = f0 * er.y;
     f->z = f0 * er.z;
@@ -5691,11 +5691,11 @@ _S_ void make_zero(PairSFo *f) {
 }
 
 template <typename Param, typename Fo>
-_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd,      Fo *f)
 {
     float r, invr, ev, f0;
     float3 dr, er, dv;
-    int vnstat; /* vector normalization status */
+    int vnstat;
 
     dr.x = a.x - b.x;
     dr.y = a.y - b.y;
@@ -5707,7 +5707,7 @@ _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
 
     er = dr;
 
-    vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
+    vnstat = norm(       &er,       &r, &invr);
     if (vnstat == NORM_BIG) {
         make_zero(f);
         return;
@@ -5716,7 +5716,7 @@ _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
     ev = dot<float>(&er, &dv);
 
     f0 = force_magn(p, rnd, ev, r, invr);
-    magn2fo(f0, er, dr, /**/ f);
+    magn2fo(f0, er, dr,      f);
 }
 
 _S_ int colors2pid(int ca, int cb) {
@@ -5727,7 +5727,7 @@ _S_ int colors2pid(int ca, int cb) {
 }
 
 template <typename Fo>
-_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
     int pid;
     pid = colors2pid(a.color, b.color);
@@ -5735,30 +5735,30 @@ _I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *
     p.g = pc->g[pid];
     p.s = pc->s[pid];
     p.spow = pc->spow;
-    pair_force(&p, a, b, rnd, /**/ f);
+    pair_force(&p, a, b, rnd,      f);
 }
 
-/* mirrored: parameters from particle "a" only */
+
 template <typename Fo>
-_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
     int pid = a.color;
     p.a = pc->a[pid];
     p.g = pc->g[pid];
     p.s = pc->s[pid];
     p.spow = pc->spow;
-    pair_force(&p, a, b, rnd, /**/ f);
+    pair_force(&p, a, b, rnd,      f);
 }
 
 
-_I_ void pair_add(const PairFo *b, /**/ PairFo *a)
+_I_ void pair_add(const PairFo *b,      PairFo *a)
 {
     a->x += b->x;
     a->y += b->y;
     a->z += b->z;
 }
 
-_I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
+_I_ void pair_add(const PairSFo *b,      PairSFo *a)
 {
     a->x += b->x;
     a->y += b->y;
@@ -5786,8 +5786,8 @@ struct PairAdhesion;
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
 
-void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
-void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p);
+void pair_set_lj(float sigma, float eps, PairParams *p);
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
@@ -5803,48 +5803,48 @@ void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_DISTR_EXCH_KL_COMMON */
+#endif
 
 namespace rnd {
-/* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
-   mean = 0, variance = 1 */
 
-// passes of logistic map
+
+
+
 static __const__ int N = 18;
-// spacing coefficints for low discrepancy numbers
+
 static __const__ float gold   = 0.6180339887498948482;
 static __const__ float silver = 0.4142135623730950488;
 static __const__ float bronze = 0.00008877875787352212838853023;
 static __const__ float tin    = 0.00004602357186447026756768986;
 static __const__ float sqrt2 = 1.41421356237309514547;
 
-/************************* Trunk generator ***********************
- * Make one global random number per each timestep
- * cite G. Marsaglia
- * passes BigCrush
- *****************************************************************/
 
-/************************* Branch generator **********************
- * Make one random number per pair of particles per timestep
- * Based on the Logistic map on interval [-1,1]
- * each branch no weaker than trunk
- * zero dependency between branches
- *****************************************************************/
 
-// floating point version of LCG
+
+
+
+
+
+
+
+
+
+
+
+
 __inline__ __device__ float rem( float r ) {
     return r - floorf( r );
 }
 
-// FMA wrapper for the convenience of switching rouding modes
+
 __inline__ __device__ float FMA( float x, float y, float z ) {
     return __fmaf_rz( x, y, z );
 }
 
-// logistic rounds
-// <3> : 4 FMA + 1 MUL
-// <2> : 2 FMA + 1 MUL
-// <1> : 1 FMA + 1 MUL
+
+
+
+
 
 template<int N> __inline__ __device__ float __logistic_core( float x )
 {
@@ -5863,18 +5863,18 @@ template<> __inline__ __device__ float __logistic_core<0>( float x ) {
 
 inline __device__ float mean0var1ii( float seed, int u, int v )
 {
-    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
+    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin );
     float l = __logistic_core<N>( seed - p );
     return l * sqrt2;
 }
 
 inline __device__ float mean0var1uu( float seed, uint u, uint v )
 {
-    // 7 FLOPS
-    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin ); // safe for large u or v
-    // 45+1 FLOPS
+
+    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin );
+
     float l = __logistic_core<N>( seed - p );
-    // 1 FLOP
+
     return l * sqrt2;
 }
 
@@ -5886,7 +5886,7 @@ struct PaArray_v {
 
 struct PaCArray_v {
     const float *pp;
-    const int *cc;   /* colors */
+    const int *cc;
 };
 #ifndef UDX_FLU_PARRAY_COMMON
 #define UDX_FLU_PARRAY_COMMON
@@ -5906,14 +5906,14 @@ void parray_push_cc(const int *cc, PaArray *a);
 
 bool parray_is_colored(const PaArray *a);
 
-void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
-void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
-#endif /* UDX_FLU_PARRAY_COMMON */
+void parray_get_view(const PaArray *a, PaArray_v *v);
+void parray_get_view(const PaArray *a, PaCArray_v *v);
+#endif
 #define _S_ static __device__
 #define _I_ static __device__
 
 template<typename PA>
-_S_ void parray_get_pp(PA a, int i, /**/ PairPa *p) {
+_S_ void parray_get_pp(PA a, int i,      PairPa *p) {
     const float2 *pp = (const float2 *) a.pp;
     float2 s0, s1, s2;
     s0 = __ldg(pp + 3*i + 0);
@@ -5929,14 +5929,14 @@ _S_ void parray_get_pp(PA a, int i, /**/ PairPa *p) {
     p->vz = s2.y;
 }
 
-_I_ void parray_get(PaArray_v a, int i, /**/ PairPa *p) // <1>
+_I_ void parray_get(PaArray_v a, int i,      PairPa *p)
 {
-    parray_get_pp(a, i, /**/ p);
+    parray_get_pp(a, i,      p);
 }
 
-_I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
+_I_ void parray_get(PaCArray_v a, int i,      PairPa *p)
 {
-    parray_get_pp(a, i, /**/ p);
+    parray_get_pp(a, i,      p);
     p->color = a.cc[i];
 }
 
@@ -5954,7 +5954,7 @@ struct FoSArray_v {
 struct FoArray {
     bool stress;
     float *ff;
-    float *ss; /* stress */
+    float *ss;
 };
 
 struct FoArray_v;
@@ -5969,13 +5969,13 @@ void farray_clear(FoArray *);
 
 bool farray_has_stress(const FoArray *a);
 
-void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
-void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+void farray_get_view(const FoArray *a, FoArray_v *v);
+void farray_get_view(const FoArray *a, FoSArray_v *v);
 #define _I_ static __device__
 #define _S_ static __device__
 
 template <int S, typename Fo, typename FA>
-_S_ void farray_add_force(const Fo *f, int i, /**/ FA a) {
+_S_ void farray_add_force(const Fo *f, int i,      FA a) {
     enum {X, Y, Z};
     float *af = a.ff + 3*i;
     af[X] += S * f->x;
@@ -5983,7 +5983,7 @@ _S_ void farray_add_force(const Fo *f, int i, /**/ FA a) {
     af[Z] += S * f->z;
 }
 
-_S_ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+_S_ void farray_add_stress(const PairSFo *f, int i,      FoSArray_v a) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     float *s = a.ss + 6*i;
     s[XX] += f->sxx;
@@ -5995,21 +5995,21 @@ _S_ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
 }
 
 template <int S>
-_I_ void farray_add(const PairFo *f, int i, /**/ FoArray_v a) // <1>
+_I_ void farray_add(const PairFo *f, int i,      FoArray_v a)
 {
-    farray_add_force<S>(f, i, /**/ a);
+    farray_add_force<S>(f, i,      a);
 }
 
 template <int S>
-_I_ void farray_add(const PairSFo *f, int i, /**/ FoSArray_v a) // <2>
+_I_ void farray_add(const PairSFo *f, int i,      FoSArray_v a)
 {
-    farray_add_force<S>(f, i, /**/ a);
-    farray_add_stress(f, i, /**/ a);
+    farray_add_force<S>(f, i,      a);
+    farray_add_stress(f, i,      a);
 }
 
 
 template <int S, typename Fo, typename FA>
-_S_ void farray_atomic_add_force(const Fo *f, int i, /**/ FA a) {
+_S_ void farray_atomic_add_force(const Fo *f, int i,      FA a) {
     enum {X, Y, Z};
     float *af = a.ff + 3*i;
     atomicAdd(&af[X], S * f->x);
@@ -6017,7 +6017,7 @@ _S_ void farray_atomic_add_force(const Fo *f, int i, /**/ FA a) {
     atomicAdd(&af[Z], S * f->z);
 }
 
-_S_ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+_S_ void farray_atomic_add_stress(const PairSFo *f, int i,      FoSArray_v a) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     float *s = a.ss + 6*i;
     atomicAdd(&s[XX], f->sxx);
@@ -6029,16 +6029,16 @@ _S_ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
 }
 
 template <int S>
-_I_ void farray_atomic_add(const PairFo *f, int i, /**/ FoArray_v a)
+_I_ void farray_atomic_add(const PairFo *f, int i,      FoArray_v a)
 {
-    farray_atomic_add_force<S>(f, i, /**/ a);
+    farray_atomic_add_force<S>(f, i,      a);
 }
 
 template <int S>
-_I_ void farray_atomic_add(const PairSFo *f, int i, /**/ FoSArray_v a)
+_I_ void farray_atomic_add(const PairSFo *f, int i,      FoSArray_v a)
 {
-    farray_atomic_add_force<S>(f, i, /**/ a);
-    farray_atomic_add_stress(f, i, /**/ a);
+    farray_atomic_add_force<S>(f, i,      a);
+    farray_atomic_add_stress(f, i,      a);
 }
 
 
@@ -6063,19 +6063,19 @@ _I_ PairSFo farray_fo0(FoSArray_v)
 
 #ifndef UDX_FLU_TYPE_COMMON
 #define UDX_FLU_TYPE_COMMON
-/* helpers to communicate between halo interactions and exchanger */
+
 
 namespace flu {
 
 enum { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
-struct LFrag { /* "local" fragment */
+struct LFrag {
     PaArray parray;
-    const int *ii; /* index */
+    const int *ii;
     int n;
 };
 
-struct RFrag { /* "remote" fragment */
+struct RFrag {
     PaArray parray;
     const int *start;
     int dx, dy, dz, xcells, ycells, zcells;
@@ -6091,24 +6091,24 @@ typedef Sarray<LFrag,   26> LFrag26;
 typedef Sarray<RFrag,   26> RFrag26;
 typedef Sarray<RndFrag, 26> RndFrag26;
 
-} // flu
-#endif /* UDX_FLU_TYPE_COMMON */
+}
+#endif
 
 struct PairParams;
 struct int3;
 struct FoArray;
 
-void fhalo_apply(const PairParams*, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray);
+void fhalo_apply(const PairParams*, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd,      const FoArray *farray);
 
 template<typename Parray>
-struct LFrag_v { /* "local" fragment */
+struct LFrag_v {
     Parray parray;
-    const int *ii; /* index */
+    const int *ii;
     int n;
 };
 
 template<typename Parray>
-struct RFrag_v { /* "remote" fragment */
+struct RFrag_v {
     Parray parray;
     const int *start;
     int dx, dy, dz, xcells, ycells, zcells;
@@ -6123,7 +6123,7 @@ using RFrag_v26 = Sarray<RFrag_v<Parray>, 26>;
 namespace fhalo_dev {
 template <typename Parray>
 static __device__ void assert_frag(int3 L, int i, const RFrag_v<Parray> frag) {
-    int xs, ys, zs; /* sizes */
+    int xs, ys, zs;
     int dx, dy, dz;
     xs = frag.xcells; ys = frag.ycells; zs = frag.zcells;
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
@@ -6133,7 +6133,7 @@ static __device__ void assert_frag(int3 L, int i, const RFrag_v<Parray> frag) {
 
 template <typename Parray>
 static __device__ void assert_rc(int3 L, const RFrag_v<Parray> frag, int i, int row, int col, int jump) {
-    /* i: base cell id */
+
     int fid, nmax;
     int dx, dy, dz;
     int j;
@@ -6153,15 +6153,15 @@ static __device__ void assert_rc(int3 L, const RFrag_v<Parray> frag, int i, int 
         i += jump;
     }
 }
-struct Map { /* helps to find remote particle */
+struct Map {
     int  org0, org1, org2;
     int cnt0, cnt1, cnt2;
 };
 
-/* true if `i' bigger than the number of remote particles */
+
 static __device__ int endp(const Map m, int i) { return i >= m.cnt2; }
 static __device__ int m2id(const Map m, int i) {
-    /* return remote particle id */
+
     int m1, m2;
     int id;
     m1 = (int)(i >= m.cnt0);
@@ -6192,7 +6192,7 @@ static __device__ Map r2map0(const int *start, int i, int row, int col, int jump
 }
 
 
-static __device__ int facep(int dx, int dy, int dz) { /* face? */
+static __device__ int facep(int dx, int dy, int dz) {
     int x, y, z;
     x =  dx  && !dy && !dz;
     y =  !dx &&  dy && !dz;
@@ -6202,7 +6202,7 @@ static __device__ int facep(int dx, int dy, int dz) { /* face? */
 static __device__ void xyz2rc_face(int dx, int dy, int dz,
                                    int xc, int yc, int zc,
                                    int xs, int ys, int zs,
-                                   /**/ int *prow, int *pcol, int *pjump) {
+                                        int *prow, int *pcol, int *pjump) {
     int row, col, jump;
     if (!facep(dx, dy, dz)) {
         printf("xyz: %d %d %d\n", dx, dy, dz);
@@ -6216,7 +6216,7 @@ static __device__ void xyz2rc_face(int dx, int dy, int dz,
         row   = zs;
         col   = xs;
         jump = xc;
-    } else { /* (dz) */
+    } else {
         row   = ys;
         col   = xs;
         jump = xc;
@@ -6225,13 +6225,13 @@ static __device__ void xyz2rc_face(int dx, int dy, int dz,
 }
 
 static __device__ void xyz2rc(int type,
-                              int dx, int dy, int dz, /* fragment information */
+                              int dx, int dy, int dz,
                               int xc, int yc, int zc,
-                              int xs, int ys, int zs, /* size */
-                              /**/ int *prow, int *pcol, int *pjump) {
+                              int xs, int ys, int zs,
+                                   int *prow, int *pcol, int *pjump) {
     int row, col, jump;
     if      (type == flu::FACE)
-        xyz2rc_face(dx, dy, dz, xc, yc, zc, xs, ys, zs, /**/ &row, &col, &jump);
+        xyz2rc_face(dx, dy, dz, xc, yc, zc, xs, ys, zs,      &row, &col, &jump);
     else if (type == flu::EDGE) {
         row = jump = 1;
         col = max(xs, max(ys, zs));
@@ -6246,7 +6246,7 @@ static __device__ void xyz2rc(int type,
     *prow = row; *pcol = col; *pjump = jump;
 }
 
-static __device__  void r2size(float r, int nc, int S, /**/ int *pl, int *ps) {
+static __device__  void r2size(float r, int nc, int S,      int *pl, int *ps) {
     int i, s, l;
     i = (int)(r + S/2);
     l = max(0,  i - 1);
@@ -6256,10 +6256,10 @@ static __device__  void r2size(float r, int nc, int S, /**/ int *pl, int *ps) {
 
 template <typename Parray>
 static __device__ Map r2map(int3 L, const RFrag_v<Parray> frag, float x, float y, float z) {
-    /* coordinate [r] to map */
-    int id; /* base id */
-    int xl, yl, zl; /* low */
-    int xs, ys, zs; /* size */
+
+    int id;
+    int xl, yl, zl;
+    int xs, ys, zs;
     int dx, dy, dz;
     int xc, yc, zc;
     int row, col, jump;
@@ -6268,11 +6268,11 @@ static __device__ Map r2map(int3 L, const RFrag_v<Parray> frag, float x, float y
     xc = frag.xcells; yc = frag.ycells; zc = frag.zcells;
 
     id = 0; xs = 1; ys = 1; zs = 1;
-    if (dz == 0) {r2size(z, zc, L.z, /**/ &zl, &zs); id += zl;}
+    if (dz == 0) {r2size(z, zc, L.z,      &zl, &zs); id += zl;}
     id *= yc;
-    if (dy == 0) {r2size(y, yc, L.y, /**/ &yl, &ys); id += yl;}
+    if (dy == 0) {r2size(y, yc, L.y,      &yl, &ys); id += yl;}
     id *= xc;
-    if (dx == 0) {r2size(x, xc, L.x, /**/ &xl, &xs); id += xl;}
+    if (dx == 0) {r2size(x, xc, L.x,      &xl, &xs); id += xl;}
 
     xyz2rc(frag.type,
            dx, dy, dz,
@@ -6297,43 +6297,43 @@ static __device__ float random(int aid, int bid, float seed, int mask) {
 
 template<typename Par, typename Parray, typename PFo>
 static __device__ void force0(Par params, const flu::RndFrag rnd, const RFrag_v<Parray> bfrag, const Map m, const PairPa a, int aid,
-                              /**/ PFo *fa) {
+                                   PFo *fa) {
     PairPa b;
     PFo f;
     int i;
-    int bid; /* id of b */
+    int bid;
     float rndval;
 
     for (i = 0; !endp(m, i); i ++ ) {
         bid = m2id(m, i);
-        parray_get(bfrag.parray, bid, /**/ &b);
+        parray_get(bfrag.parray, bid,      &b);
         rndval = random(aid, bid, rnd.seed, rnd.mask);
-        pair_force(&params, a, b, rndval, /**/ &f);
-        pair_add(&f, /**/ fa);
+        pair_force(&params, a, b, rndval,      &f);
+        pair_add(&f,      fa);
     }
 }
 
 template<typename Par, typename Parray, typename Farray>
 static __device__ void force1(Par params, const flu::RndFrag rnd, const RFrag_v<Parray> frag, const Map m, const PairPa p, int id, Fo<Farray> f) {
     auto fa = farray_fo0(f.farray);
-    force0(params, rnd, frag, m, p, id, /**/ &fa);
+    force0(params, rnd, frag, m, p, id,      &fa);
     farray_atomic_add<1>(&fa, f.i, f.farray);
 }
 
 template<typename Par, typename Parray, typename Farray>
-static __device__ void force2(Par params, int3 L, const RFrag_v<Parray> frag, const flu::RndFrag rnd, PairPa p, int id, /**/ Fo<Farray> f) {
+static __device__ void force2(Par params, int3 L, const RFrag_v<Parray> frag, const flu::RndFrag rnd, PairPa p, int id,      Fo<Farray> f) {
     Map m;
     m = r2map(L, frag, p.x, p.y, p.z);
     p.x -= frag.dx * L.x;
     p.y -= frag.dy * L.y;
     p.z -= frag.dz * L.z;
 
-    force1(params, rnd, frag, m, p, id, /**/ f);
+    force1(params, rnd, frag, m, p, id,      f);
 }
 
 template <typename Farray>
 static __device__ Fo<Farray> i2f(const int *ii, Farray farray, int i) {
-    /* local id and index to force */
+
     Fo<Farray> f;
     f.i = ii[i];
     f.farray = farray;
@@ -6347,7 +6347,7 @@ static __device__ Fo<Farray> Lfrag2f(const LFrag_v<Parray> frag, Farray farray, 
 
 template <typename Par, typename Parray, typename Farray>
 static __device__ void force3(Par params, int3 L, const LFrag_v<Parray> afrag, const RFrag_v<Parray> bfrag, const flu::RndFrag rnd, int i,
-                              /**/ Farray farray) {
+                                   Farray farray) {
     PairPa p;
     Fo<Farray> f;
     parray_get(afrag.parray, i, &p);
@@ -6357,17 +6357,17 @@ static __device__ void force3(Par params, int3 L, const LFrag_v<Parray> afrag, c
 
 template <typename Par, typename Parray, typename Farray>
 __global__ void apply(int fid, Par params, int3 L, const LFrag_v<Parray> lfrag, const RFrag_v<Parray> rfrag, const flu::RndFrag rnd,
-                      /**/ Farray farray) {
-    int i; /* particle id */
+                           Farray farray) {
+    int i;
 
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= lfrag.n) return;
 
-    force3(params, L, lfrag, rfrag, rnd, i, /**/ farray);
+    force3(params, L, lfrag, rfrag, rnd, i,      farray);
 }
 }
 enum {
-    PADDING = 16 /* warpsize / 2 */
+    PADDING = 16
 };
 
 template <typename Parray>
@@ -6415,30 +6415,30 @@ static bool is_colored(const flu::RFrag26 f) {
 }
 
 template <typename Par, typename Parray, typename Farray>
-static void interactions(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ Farray farray) {
+static void interactions(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd,      Farray farray) {
     int n, i;
     for (i = 0; i < 26; ++i) {
         n = lfrags.d[i].n;
-        KL(fhalo_dev::apply, (k_cnf(n)), (i, params, L, lfrags.d[i], rfrags.d[i], rrnd.d[i], /**/ farray));
+        KL(fhalo_dev::apply, (k_cnf(n)), (i, params, L, lfrags.d[i], rfrags.d[i], rrnd.d[i],      farray));
     }
 }
 
 template <typename Par, typename Parray>
-static void apply(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray) {
+static void apply(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd,      const FoArray *farray) {
 
     if (farray_has_stress(farray)) {
         FoSArray_v farray_v;
         farray_get_view(farray, &farray_v);
-        interactions(params, L, lfrags, rfrags, rrnd, /**/ farray_v);
+        interactions(params, L, lfrags, rfrags, rrnd,      farray_v);
     }
     else {
         FoArray_v farray_v;
         farray_get_view(farray, &farray_v);
-        interactions(params, L, lfrags, rfrags, rrnd, /**/ farray_v);
+        interactions(params, L, lfrags, rfrags, rrnd,      farray_v);
     }
 }
 
-static void apply_grey(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray) {
+static void apply_grey(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd,      const FoArray *farray) {
     PairDPD pv;
     LFrag_v26<PaArray_v> lfragsv;
     RFrag_v26<PaArray_v> rfragsv;
@@ -6447,10 +6447,10 @@ static void apply_grey(const PairParams *params, int3 L, const flu::LFrag26 lfra
     get_view_lfrag(lfrags, &lfragsv);
     get_view_rfrag(rfrags, &rfragsv);
 
-    apply(pv, L, lfragsv, rfragsv, rrnd, /**/ farray);
+    apply(pv, L, lfragsv, rfragsv, rrnd,      farray);
 }
 
-static void apply_color(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray) {
+static void apply_color(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd,      const FoArray *farray) {
     PairDPDC pv;
     LFrag_v26<PaCArray_v> lfragsv;
     RFrag_v26<PaCArray_v> rfragsv;
@@ -6459,12 +6459,12 @@ static void apply_color(const PairParams *params, int3 L, const flu::LFrag26 lfr
     get_view_lfrag(lfrags, &lfragsv);
     get_view_rfrag(rfrags, &rfragsv);
 
-    apply(pv, L, lfragsv, rfragsv, rrnd, /**/ farray);
+    apply(pv, L, lfragsv, rfragsv, rrnd,      farray);
 }
 
-void fhalo_apply(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray) {
+void fhalo_apply(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd,      const FoArray *farray) {
     if (is_colored(rfrags))
-        apply_color(params, L, lfrags, rfrags, rrnd, /**/ farray);
+        apply_color(params, L, lfrags, rfrags, rrnd,      farray);
     else
-        apply_grey(params, L, lfrags, rfrags, rrnd, /**/ farray);
+        apply_grey(params, L, lfrags, rfrags, rrnd,      farray);
 }
