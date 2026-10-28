@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #include "config.cuh"
 
 #include <stdlib.h>
@@ -397,12 +398,9 @@ struct FoWrap {
     Force *ff;
 };
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost

@@ -1,3 +1,4 @@
+#include "macros.cuh"
 
 
 
@@ -28,12 +29,9 @@
 #include "types.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -254,12 +252,9 @@ void check(int rc, const char *file, int line);
 #endif
 
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -641,12 +636,9 @@ int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
 
 
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -873,12 +865,9 @@ void dmap_D2H(int nfrags, const DMap *d,      DMap *h) {
 
 
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -1247,12 +1236,9 @@ void error_abort();
 
 void error_print_stack();
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -1882,12 +1868,9 @@ void error_print_stack();
 #include "types.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -2871,12 +2854,9 @@ void error_abort();
 void error_print_stack();
 
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -3447,12 +3427,9 @@ void msg_print(const char *fmt, ...);
 #include "types.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -4336,12 +4313,9 @@ void msg_print(const char *fmt, ...);
 #endif
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -5138,12 +5112,9 @@ void error_print_stack();
 #endif
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost

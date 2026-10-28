@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -26,8 +27,6 @@ void error_signal(const char *file, int line, const char *fmt, ...);
 #define EFREE(pdata) UC(efree(pdata))
 #define D2H d::MemcpyDeviceToHost
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define ceiln(m, n) (((m) + (n) - 1)/(n))
-#define k_cnf(n) ceiln((n), 128), 128
 
 enum { DBG_POS, DBG_POS_SOFT, DBG_VEL, DBG_FORCES, DBG_COLORS, DBG_CLIST, DBG_NKIND_ };
 struct Config; struct Coords; struct Dbg;

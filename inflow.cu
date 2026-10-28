@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -196,12 +197,9 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow
 #endif
 
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 
 

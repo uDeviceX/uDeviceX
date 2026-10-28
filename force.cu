@@ -1,3 +1,4 @@
+#include "macros.cuh"
 
 
 
@@ -27,12 +28,9 @@
 #ifndef UDX_FORCE_DEVICE_COMMON
 #define UDX_FORCE_DEVICE_COMMON
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -1097,12 +1095,9 @@ float rnd_get(RNDunif *r);
 #include "types.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -1526,12 +1521,9 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h,      co
 #ifndef UDX_FORCE_DEVICE_COMMON
 #define UDX_FORCE_DEVICE_COMMON
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -2172,12 +2164,9 @@ void msg_print(const char *fmt, ...);
 #include "device.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -2746,12 +2735,9 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 #include "types.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -3917,12 +3903,9 @@ struct FoWrap {
     Force *ff;
 };
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -5494,12 +5477,9 @@ struct FoWrap {
     Force *ff;
 };
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -7034,12 +7014,9 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 #include "types.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost

@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -27,8 +28,6 @@ bool same_str(const char *, const char *);
 #define Dfree(D) CC(d::Free(D))
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
-#define ceiln(m, n) (((m) + (n) - 1)/(n))
-#define k_cnf(n) ceiln((n), 128), 128
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -155,12 +154,9 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 #endif
 
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 
 
@@ -714,12 +710,9 @@ void coord_stamp(const Coords *c,      char *s);
 int coords_size(const Coords *c);
 
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 
 

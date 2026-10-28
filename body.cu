@@ -1,3 +1,4 @@
+#include "macros.cuh"
 
 
 
@@ -24,12 +25,9 @@
 #endif
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -1040,12 +1038,9 @@ int coords_size(const Coords *c);
 #include "device.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -1664,12 +1659,9 @@ void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
 #endif
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -2183,12 +2175,9 @@ void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,
 #endif
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -3157,12 +3146,9 @@ void rbc_shape_total_volume(RbcShape *q,      float *pe) {
 #endif
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -3588,12 +3574,9 @@ void check(int rc, const char *file, int line);
 
 
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -3841,12 +3824,9 @@ void adj_get_anti(const Adj *adj,      int *anti) {
 #endif
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost

@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #define DEV_CUDA
 #define KL_RELEASE
 #include "device.cuh"
@@ -10,8 +11,6 @@ namespace cc { void check(int, const char*, int); }
 #define CC(ans) do { cc::check((ans), __FILE__, __LINE__); } while (0)
 #define Dalloc(D, n) CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 #define Dfree(D) CC(d::Free(D))
-#define ceiln(m, n) (((m) + (n) - 1) / (n))
-#define k_cnf(n) ceiln((n), 128), 128
 
 struct Coords;
 struct Coords_v { int xc, yc, zc, xd, yd, zd, Lx, Ly, Lz; };

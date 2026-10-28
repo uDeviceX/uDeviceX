@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -30,9 +31,6 @@ void error_signal(const char *file, int line, const char *fmt, ...);
 #define DzeroA(P,n) CC(d::MemsetAsync((P),0,(n)*sizeof(*(P))))
 #define aD2H(H,D,n) CC(d::MemcpyAsync((H),(D),(n)*sizeof((H)[0]),D2H))
 #define cH2D(D,H,n) CC(d::Memcpy((D),(H),(n)*sizeof((D)[0]),H2D))
-#define ceiln(m,n) (((m)+(n)-1)/(n))
-#define k_cnf(n) ceiln((n),128),128
-#define dSync() CC(d::DeviceSynchronize())
 struct GridSampler;
 struct GridSampleData;
 void grid_sampler_reset(GridSampler *);

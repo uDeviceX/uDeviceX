@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -6,8 +7,6 @@
 #include "device.cuh"
 #include "launch.cuh"
 
-#define ceiln(m, n) (((m) + (n) - 1)/(n))
-#define k_cnf(n) ceiln((n), 128), 128
 
 __global__ void convert_pp2rr_current_kernel(long n, const Particle *pp, Positioncp *rr) {
     enum {X, Y, Z};

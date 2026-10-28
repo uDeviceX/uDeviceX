@@ -1,3 +1,4 @@
+#include "macros.cuh"
 
 
 
@@ -36,12 +37,9 @@ void msg_print(const char *fmt, ...);
 #include "types.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -1105,12 +1103,9 @@ void msg_print(const char *fmt, ...);
 #include "types.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -2872,12 +2867,9 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
 #include "device.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -3647,12 +3639,9 @@ static int   warpSize = 1;
 #include "types.cuh"
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost
@@ -5881,12 +5870,9 @@ void error_abort();
 
 void error_print_stack();
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 #define D2D d::MemcpyDeviceToDevice
 #define D2H d::MemcpyDeviceToHost

@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -176,12 +177,9 @@ void vcont_set_conf(const Config *cfg,      PidVCont *c) {
 #define UDX_CONTROL_TYPE_COMMON
 #endif
 
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 
-#define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(d::DeviceSynchronize())
 
 namespace scheme_move_dev {
 static __device__ void update0(float dt, float m, const float *f, float *r, float *v) {

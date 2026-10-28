@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -30,8 +31,6 @@ void error_signal(const char *file, int line, const char *fmt, ...);
 #define EFREE(pdata) UC(efree(pdata))
 #define Dalloc(D, n) CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 #define Dfree(D) CC(d::Free(D))
-#define ceiln(m, n) (((m) + (n) - 1)/(n))
-#define k_cnf(n) ceiln((n), 128), 128
 
 #define _I_ static __device__
 
