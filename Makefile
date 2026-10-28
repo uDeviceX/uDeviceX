@@ -24,6 +24,7 @@ OBJECTS = \
  random.o \
  timestep.o \
  timeline.o \
+ restrain.o \
  transform.o \
  coords.o \
  comm.o \
