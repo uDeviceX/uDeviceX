@@ -1,6 +1,7 @@
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
+
 #include <stdio.h>
 #include <mpi.h>
 #include <vector_types.h>
@@ -181,6 +182,45 @@ void vcont_set_conf(const Config *cfg,      PidVCont *c) {
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
+
+namespace scheme_move_dev {
+static __device__ void update0(float dt, float m, const float *f, float *r, float *v) {
+    enum {X, Y, Z};
+    v[X] += f[X]/m*dt;
+    v[Y] += f[Y]/m*dt;
+    v[Z] += f[Z]/m*dt;
+
+    r[X] += v[X]*dt;
+    r[Y] += v[Y]*dt;
+    r[Z] += v[Z]*dt;
+}
+
+__global__ void update(float dt, float mass, Particle *pp, const Force *ff, int n) {
+    float *r, *v;
+    const float *f;
+    int pid = threadIdx.x + blockDim.x * blockIdx.x;
+    if (pid >= n) return;
+
+    r = pp[pid].r;
+    v = pp[pid].v;
+    f = ff[pid].f;
+    update0(dt, mass, f, r, v);
+}
+
+__global__ void clear_vel(int n, Particle *pp) {
+    int pid = threadIdx.x + blockDim.x * blockIdx.x;
+    if (pid >= n) return;
+    for (int c = 0; c < 3; ++c) pp[pid].v[c] = 0;
+}
+}
+
+void scheme_move_apply(float dt, float mass, int n, const Force *ff, Particle *pp) {
+    KL(scheme_move_dev::update, (k_cnf(n)), (dt, mass, pp, ff, n));
+}
+
+void scheme_move_clear_vel(int n, Particle *pp) {
+    KL(scheme_move_dev::clear_vel, (k_cnf(n)), (n, pp));
+}
 
 
 
