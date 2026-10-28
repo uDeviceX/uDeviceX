@@ -29,6 +29,7 @@ OBJECTS = \
  error.o \
  message.o \
  edge.o \
+ stats.o \
  memory.o \
  runtime.o \
  halo.o \
