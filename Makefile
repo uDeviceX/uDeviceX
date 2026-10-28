@@ -23,6 +23,7 @@ OBJECTS = \
  linalg.o \
  random.o \
  transform.o \
+ coords.o \
  memory.o \
  runtime.o \
  halo.o \
