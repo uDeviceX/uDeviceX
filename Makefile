@@ -15,6 +15,7 @@ OBJECTS = \
  os.o \
  tri.o \
  scalar.o \
+ vector.o \
  memory.o \
  runtime.o \
  halo.o \
