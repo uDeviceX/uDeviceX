@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -14,11 +15,6 @@ void error_report();
 void error_abort();
 void msg_print(const char *fmt, ...);
 
-#define ERR(fmt, ...) do { \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report(); \
-        error_abort(); \
-    } while (0)
 
 static __device__ float sumsq(Force f) {
     enum {X, Y, Z};

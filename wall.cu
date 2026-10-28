@@ -110,22 +110,8 @@ size_t comm_get_byte_capacity(int i, const hBags *b);
 #include "types.cuh"
 #endif
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -267,22 +253,8 @@ void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn,        Partic
 #endif
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -1807,22 +1779,8 @@ void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *p
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -2653,22 +2611,8 @@ static int   warpSize = 1;
 #else
   #error DEV_* is undefined
 #endif
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -3473,22 +3417,8 @@ void check(int rc, const char *file, int line);
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -3894,22 +3824,8 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -4005,22 +3921,8 @@ void array3d_copy(size_t x, size_t y, size_t z, float *D,      Array3d *q) {
 
 
 #include <stdio.h>
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -4251,22 +4153,8 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3],      Tform *t)
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -4632,22 +4520,8 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -4765,22 +4639,8 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -4936,22 +4796,8 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -5269,22 +5115,8 @@ void check(int rc, const char *file, int line);
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 

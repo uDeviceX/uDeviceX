@@ -81,22 +81,8 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -315,22 +301,8 @@ int coords_size(const Coords *c);
 #define UDX_SIM_SCHEME_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -721,22 +693,8 @@ void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Pa
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -941,22 +899,8 @@ void conf_write_exe(const Config *cfg, FILE *stream);
 void conf_write_history(const Config *cfg, FILE *stream);
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -1396,22 +1340,8 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -1577,22 +1507,8 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -1998,22 +1914,8 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -4387,22 +4289,8 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -4972,22 +4860,8 @@ void conf_set_string(const char *desc, const char *a, Config *cfg);
 
 void conf_write_exe(const Config *cfg, FILE *stream);
 void conf_write_history(const Config *cfg, FILE *stream);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -5314,22 +5188,8 @@ long opt_estimate_maxp(const Opt *o) {
 #include "constants.cuh"
 #endif
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -5933,22 +5793,8 @@ void os_srand(long int seedval);
 double os_drand();
 void os_sleep(unsigned int seconds);
 void os_malloc_stats();
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -6215,22 +6061,8 @@ void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int i
 #include <stdio.h>
 #include <vector_types.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -6363,22 +6195,8 @@ const int* mesh_tt(Mesh *q) { return q->tt; }
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -6981,22 +6799,8 @@ void os_sleep(unsigned int seconds);
 void os_malloc_stats();
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -7333,22 +7137,8 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -7475,21 +7265,7 @@ int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                           \
-    } while (0)
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -7598,22 +7374,8 @@ void raw_write(int3 N, MPI_Comm cart, const char *path, int ncomp,
 #include <stdio.h>
 #include <vector_types.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -7783,22 +7545,8 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -8001,22 +7749,8 @@ void os_srand(long int seedval);
 double os_drand();
 void os_sleep(unsigned int seconds);
 void os_malloc_stats();
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -8128,22 +7862,8 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -8393,22 +8113,8 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 #include "diagnostic.cuh"
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -8551,22 +8257,8 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 #include "diagnostic.cuh"
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -8764,22 +8456,8 @@ void os_srand(long int seedval);
 double os_drand();
 void os_sleep(unsigned int seconds);
 void os_malloc_stats();
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -9134,22 +8812,8 @@ void mesh_write_vectors(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vecto
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -9459,22 +9123,8 @@ int status2errcode(MPI_Status *status);
 #endif
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -9733,22 +9383,8 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
 
 #include <stdio.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -9834,22 +9470,8 @@ int e_valid(Edg *q, int i, int j) {
 #include <string.h>
 #include <vector_types.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 

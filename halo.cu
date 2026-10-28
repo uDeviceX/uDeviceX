@@ -447,22 +447,8 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -621,22 +607,8 @@ void check(int rc, const char *file, int line);
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -822,22 +794,8 @@ void check(int rc, const char *file, int line);
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -1076,22 +1034,8 @@ void check(int rc, const char *file, int line);
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -1667,22 +1611,8 @@ void check(int rc, const char *file, int line);
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -2629,22 +2559,8 @@ void check(int rc, const char *file, int line);
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -3260,22 +3176,8 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 #define UDX_DISTR_EXCH_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -4145,22 +4047,8 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 
@@ -4787,22 +4675,8 @@ void check(int rc, const char *file, int line);
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
 
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
 
 
 

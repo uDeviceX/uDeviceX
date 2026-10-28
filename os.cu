@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -14,21 +15,7 @@ bool error_get();
 void error_report();
 void error_abort();
 
-#define ERR(fmt, ...) do { \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report(); \
-        error_abort(); \
-    } while (0)
 
-#define UC(F) do { \
-        error_stack_push(__FILE__, __LINE__); \
-        F; \
-        if (error_get()) { \
-            error_report(); \
-            error_abort(); \
-        } \
-        error_stack_pop(); \
-    } while (0)
 
 #include <stdio.h>
 #include <stdlib.h>

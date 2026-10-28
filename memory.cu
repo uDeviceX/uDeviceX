@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #include "config.cuh"
 #include "device.cuh"
 
@@ -11,7 +12,6 @@ void msg_print(const char *fmt, ...);
 void error_signal(const char *file, int line, const char *fmt, ...);
 void error_report();
 void error_abort();
-#define ERR(fmt, ...) do { error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); error_report(); error_abort(); } while (0)
 
 static double Bytes2MBytes(size_t sz) {
     return (double) sz / (double) (1 << 20);
@@ -92,21 +92,7 @@ void error_report();
 void error_abort();
 bool error_get();
 
-#define ERR(fmt, ...) do { \
-    error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-    error_report(); \
-    error_abort(); \
-} while (0)
 
-#define UC(F) do { \
-    error_stack_push(__FILE__, __LINE__); \
-    F; \
-    if (error_get()) { \
-        error_report(); \
-        error_abort(); \
-    } \
-    error_stack_pop(); \
-} while (0)
 
 namespace d {
 static const char *emsg0;

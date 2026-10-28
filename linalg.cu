@@ -1,11 +1,8 @@
+#include "macros.cuh"
 void error_signal(const char *file, int line, const char *fmt, ...);
 void error_report();
 void error_abort();
 
-#define ERR(fmt, ...) do { \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report(); error_abort(); \
-    } while (0)
 
 void linal_inv3x3(const float *m,      float *r) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
