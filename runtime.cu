@@ -1021,12 +1021,7 @@ void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
 
 
 
-#define MC(ans)                                                         \
-    do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
-namespace mpicheck {
-void check(int code, const char *file, int line);
-}
 
 
 #ifndef UDX_CONTROL_COORDS_COMMON
@@ -1379,12 +1374,7 @@ void efgets(char *s, int size, FILE*);
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-#define MC(ans)                                                         \
-    do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
-namespace mpicheck {
-void check(int code, const char *file, int line);
-}
 
 
 #if   defined(CC_SYNC)
@@ -1848,12 +1838,7 @@ void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 
 
-#define MC(ans)                                                         \
-    do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
-namespace mpicheck {
-void check(int code, const char *file, int line);
-}
 namespace m {
 void ini(int *argc, char ***argv);
 void get_dims(int *argc, char ***argv, int dims[3]);
@@ -11992,12 +11977,7 @@ void check(int rc, const char *file, int line);
 #include "launch.cuh"
 #endif
 
-#define MC(ans)                                                         \
-    do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
-namespace mpicheck {
-void check(int code, const char *file, int line);
-}
 
 #ifndef UDX_CONTROL_MATH_COMMON
 #define UDX_CONTROL_MATH_COMMON
@@ -15716,12 +15696,7 @@ const char* get_filename_ext(const char *filename) {
 
 
 
-#define MC(ans)                                                         \
-    do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
-namespace mpicheck {
-void check(int code, const char *file, int line);
-}
 
 namespace mpicheck {
 void check(int code, const char *file, int line) {
