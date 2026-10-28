@@ -11020,7 +11020,6 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-#include "launch.cuh"
 #endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
@@ -11789,7 +11788,6 @@ void vcont_set_conf(const Config *cfg,      PidVCont *c) {
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-#include "launch.cuh"
 #endif
 
 
@@ -12608,7 +12606,6 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-#include "launch.cuh"
 #endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
@@ -13043,7 +13040,6 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-#include "launch.cuh"
 #endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
@@ -14218,7 +14214,6 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-#include "launch.cuh"
 #endif
 
 
@@ -16321,7 +16316,6 @@ void vectors_get(const Vectors *q, int i,      float r[3]) {
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-#include "launch.cuh"
 #endif
 
 struct Particle;
@@ -16710,7 +16704,6 @@ _I_ float3 warpReduceSum(float3 val)
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-#include "launch.cuh"
 #endif
 
 #ifndef UDX_CONTROL_PARTICLE_DEV_COMMON
@@ -17116,7 +17109,6 @@ void key_list_log(KeyList *q) {
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-#include "launch.cuh"
 #endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
@@ -17683,7 +17675,6 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 
 #ifndef UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
-#include "launch.cuh"
 #endif
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
@@ -18277,7 +18268,6 @@ void scan_fin(Scan*);
 
 #ifndef UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
-#include "launch.cuh"
 #endif
 
 #ifndef UDX_CLIST_PARTLIST_COMMON
@@ -18922,7 +18912,6 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
 #ifndef UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
-#include "launch.cuh"
 #endif
 #ifndef UDX_DBG_CLIST_TYPE_COMMON
 #define UDX_DBG_CLIST_TYPE_COMMON
