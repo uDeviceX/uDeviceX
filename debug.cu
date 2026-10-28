@@ -31,6 +31,7 @@ void error_signal(const char *file, int line, const char *fmt, ...);
 
 enum { DBG_POS, DBG_POS_SOFT, DBG_VEL, DBG_FORCES, DBG_COLORS, DBG_CLIST, DBG_NKIND_ };
 struct Config; struct Coords; struct Dbg;
+void conf_lookup_bool(const Config *, const char *, int *);
 int3 subdomain(const Coords *);
 void coord_stamp(const Coords *, char *);
 void txt_write_pp(long, const Particle *, const char *);
@@ -345,6 +346,12 @@ static void set(int kind, int val, Dbg *dbg) {
     dbg->state[kind] = val;
 }
 
+static void set_conf(const Config *cfg, const char *desc, int kind, Dbg *dbg) {
+    int enabled = 0;
+    UC(conf_lookup_bool(cfg, desc, &enabled));
+    set(kind, enabled, dbg);
+}
+
 void dbg_enable(int kind, Dbg *dbg) {
     UC(set(kind, 1, dbg));
 }
@@ -355,6 +362,21 @@ void dbg_disable(int kind, Dbg *dbg) {
 
 void dbg_set_verbose(bool active, Dbg *dbg) {dbg->verbose = active;}
 void dbg_set_dump(bool active, Dbg *dbg) {dbg->dump = active;}
+
+void dbg_set_conf(const Config *cfg, Dbg *dbg) {
+    set_conf(cfg, "dbg.pos",      DBG_POS,      dbg);
+    set_conf(cfg, "dbg.pos_soft", DBG_POS_SOFT, dbg);
+    set_conf(cfg, "dbg.vel",      DBG_VEL,      dbg);
+    set_conf(cfg, "dbg.forces",   DBG_FORCES,   dbg);
+    set_conf(cfg, "dbg.colors",   DBG_COLORS,   dbg);
+    set_conf(cfg, "dbg.clist",    DBG_CLIST,    dbg);
+
+    int v;
+    UC(conf_lookup_bool(cfg, "dbg.verbose", &v));
+    dbg_set_verbose(v, dbg);
+    UC(conf_lookup_bool(cfg, "dbg.dump", &v));
+    dbg_set_dump(v, dbg);
+}
 
 static int check(const Dbg *dbg, int kind) {return dbg->state[kind];}
 
