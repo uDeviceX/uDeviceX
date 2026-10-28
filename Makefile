@@ -11,6 +11,7 @@ MPI_LIBS = -lopen-rte -lopen-pal
 
 OBJECTS = \
  config.o \
+ mpi.o \
  memory.o \
  runtime.o \
  halo.o \
