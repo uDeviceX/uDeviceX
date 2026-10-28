@@ -19,8 +19,6 @@ void error_signal(const char *file, int line, const char *fmt, ...);
 #define CC(ans) do { cc::check((ans), __FILE__, __LINE__); } while (0)
 #define ERR(fmt, ...) do { error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); error_report(); error_abort(); } while (0)
 #define UC(F) do { error_stack_push(__FILE__, __LINE__); F; if (error_get()) { error_report(); error_abort(); } error_stack_pop(); } while (0)
-#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
-#define EFREE(pdata) UC(efree(pdata))
 void msg_print(const char *fmt, ...);
 bool same_str(const char *, const char *);
 struct Coords;

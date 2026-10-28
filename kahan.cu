@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #include <stddef.h>
 
 void emalloc(size_t, void**);
@@ -14,8 +15,6 @@ void error_abort();
         if (error_get()) { error_report(); error_abort(); } \
         error_stack_pop(); \
     } while (0)
-#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
-#define EFREE(pdata) UC(efree(pdata))
 
 struct KahanSum {
     double c, y, sum;

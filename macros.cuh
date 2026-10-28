@@ -44,3 +44,9 @@
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n) * sizeof(*(P))))
 #define DzeroA(P, n) DsetA(P, 0, n)
 #endif
+
+#ifndef EMALLOC
+#define EMALLOC(n, ppdata) UC(emalloc((n) * sizeof(**(ppdata)), (void **)(ppdata)))
+#define EFREE(pdata) UC(efree(pdata))
+#define EMEMCPY(n, src, dest) ememcpy((void *)(dest), (const void *)(src), (n) * sizeof(*(dest)))
+#endif

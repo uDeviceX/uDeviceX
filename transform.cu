@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #include <stdio.h>
 
 struct Tform_v { float o[3], s[3]; };
@@ -22,8 +23,6 @@ void msg_print(const char *fmt, ...);
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report(); error_abort(); \
     } while (0)
-#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
-#define EFREE(pdata) UC(efree(pdata))
 
 struct Tform   { float o[3], s[3]; };
 void tform_ini(Tform **pq) { EMALLOC(1, pq); }

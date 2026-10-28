@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #include <limits>
 #include <stdint.h>
 
@@ -15,8 +16,6 @@ void error_abort();
         if (error_get()) { error_report(); error_abort(); } \
         error_stack_pop(); \
     } while (0)
-#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
-#define EFREE(pdata) UC(efree(pdata))
 
 typedef uint32_t integer;
 struct RNDunif { integer x, y, z, c; };

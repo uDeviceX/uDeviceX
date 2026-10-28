@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #include <stdio.h>
 #include <string.h>
 
@@ -22,8 +23,6 @@ void msg_print(const char *fmt, ...);
         if (error_get()) { error_report(); error_abort(); } \
         error_stack_pop(); \
     } while (0)
-#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
-#define EFREE(pdata) UC(efree(pdata))
 
 enum {MAX_NK = 100};
 enum {STAMP_GOOD = 42};

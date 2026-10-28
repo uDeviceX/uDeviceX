@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #include <stdio.h>
 
 struct Vectors;
@@ -22,8 +23,6 @@ void error_signal(const char *file, int line, const char *fmt, ...);
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report(); error_abort(); \
     } while (0)
-#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
-#define EFREE(pdata) UC(efree(pdata))
 
 enum {MAGIC = 123};
 

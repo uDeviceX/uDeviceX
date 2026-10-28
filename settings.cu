@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #include "config.cuh"
 #include "types.cuh"
 #include <stdio.h>
@@ -15,8 +16,6 @@ void error_abort();
 void error_signal(const char *, int, const char *, ...);
 #define ERR(fmt, ...) do { error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); error_report(); error_abort(); } while (0)
 #define UC(F) do { error_stack_push(__FILE__, __LINE__); F; if (error_get()) { error_report(); error_abort(); } error_stack_pop(); } while (0)
-#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
-#define EFREE(pdata) UC(efree(pdata))
 
 enum { EXE, ARG, OPT, DEF, NCFG };
 struct Config { config_t c[NCFG]; config_t *r; };

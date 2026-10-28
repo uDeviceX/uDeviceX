@@ -29,8 +29,6 @@ void error_signal(const char *file, int line, const char *fmt, ...);
         if (error_get()) { error_report(); error_abort(); } \
         error_stack_pop(); \
     } while (0)
-#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
-#define EFREE(pdata) UC(efree(pdata))
 
 enum { ALIVE = 0, DEAD = 1 };
 struct PartList { const Particle *pp; const int *deathlist; };
