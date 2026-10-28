@@ -37,6 +37,7 @@ OBJECTS = \
  contactutil.o \
  clist.o \
  contact.o \
+ debug.o \
  memory.o \
  runtime.o \
  halo.o \
