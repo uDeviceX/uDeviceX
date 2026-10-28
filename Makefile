@@ -18,6 +18,7 @@ OBJECTS = \
  vector.o \
  kahan.o \
  cuda.o \
+ mpicheck.o \
  memory.o \
  runtime.o \
  halo.o \
