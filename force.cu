@@ -110,14 +110,6 @@ static int   warpSize = 1;
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1025,14 +1017,6 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1582,14 +1566,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1952,14 +1928,6 @@ void area_volume_host(AreaVolume *q,      float **pav) {
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2123,14 +2091,6 @@ void msg_print(const char *fmt, ...);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2310,14 +2270,6 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2479,14 +2431,6 @@ void bending_none_ini(const MeshRead*,      Bending **pq) {
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2851,14 +2795,6 @@ END
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4057,14 +3993,6 @@ const int4  *mesh_read_get_dih(MeshRead*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5435,14 +5363,6 @@ const int4  *mesh_read_get_dih(MeshRead*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -6052,14 +5972,6 @@ void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q,      Forc
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -6276,14 +6188,6 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -6478,14 +6382,6 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();

@@ -102,14 +102,6 @@ void check(int rc, const char *file, int line);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1169,14 +1161,6 @@ void check(int rc, const char *file, int line);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1919,14 +1903,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2153,14 +2129,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2330,14 +2298,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2492,14 +2452,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2656,14 +2608,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2872,14 +2816,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2981,14 +2917,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3199,14 +3127,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3385,14 +3305,6 @@ void mesh_scatter_fin(MeshScatter *q) {
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3834,14 +3746,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3969,14 +3873,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4371,14 +4267,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4606,14 +4494,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4770,14 +4650,6 @@ void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, do
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4955,14 +4827,6 @@ END
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5159,14 +5023,6 @@ END
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5469,14 +5325,6 @@ void msg_print(const char *fmt, ...);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5713,14 +5561,6 @@ const char* get_filename_ext(const char*);
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -6933,14 +6773,6 @@ void farray_get_view(const FoArray *a, FoSArray_v *v) {
     } while (0)
 
 
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();

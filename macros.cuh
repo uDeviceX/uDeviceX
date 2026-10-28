@@ -50,3 +50,14 @@
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void *)(dest), (const void *)(src), (n) * sizeof(*(dest)))
 #endif
+
+#ifndef BPC
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+#endif
