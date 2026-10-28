@@ -13,6 +13,7 @@ OBJECTS = \
  config.o \
  mpi.o \
  os.o \
+ tri.o \
  memory.o \
  runtime.o \
  halo.o \
