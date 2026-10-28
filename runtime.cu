@@ -8453,6 +8453,8 @@ void cnt_fin(Contact *c);
 void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw,      Contact *c);
 void cnt_bulk(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw);
 void cnt_halo(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw, Pap26 all_pp, Fop26 all_ff, const int *all_counts);
+int get_id_inter(int a, int b);
+int contact_scan(int n, const int cc[], int ss[]);
 
 template <typename Par>
 static __device__ void cnt_pair(Par params, PairPa a, PairPa b, float rnd,
@@ -8711,14 +8713,6 @@ struct Contact {
     RNDunif *rgen;
     int3 L;
 };
-static int get_id_inter(int a, int b) {
-    int i, j;
-    i = a > b ? a : b;
-    j = a > b ? b : a;
-    return j + i*(i+1)/2;
-
-}
-
 void cnt_bulk(const Contact *c, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw) {
     int i, j, self, id_prm;
     float rnd;
@@ -8757,14 +8751,6 @@ void cnt_bulk(const Contact *c, int nw, const PairParams **prms, PaWrap *pw, FoW
     }
 }
 
-static int scan(int n, const int cc[], int ss[]) {
-    int i, s;
-    ss[0] = 0;
-    for (i = s = 0; i < n; ++i)
-        ss[i + 1] = (s += cc[i]);
-    return ss[n];
-}
-
 static void halo_one_type(int idh, const Contact *c, int nw, const PairParams **prms,
                           PaWrap *pw, FoWrap *fw,
                           Pap26 PP, Fop26 FF, const int *counts) {
@@ -8777,7 +8763,7 @@ static void halo_one_type(int idh, const Contact *c, int nw, const PairParams **
     PaWrap pwi;
     FoWrap fwi;
 
-    n = scan(26, counts, starts.d);
+    n = contact_scan(26, counts, starts.d);
 
     for (i = 0; i < nw; ++i) {
         pwi = pw[i];

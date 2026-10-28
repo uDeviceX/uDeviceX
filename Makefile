@@ -34,6 +34,7 @@ OBJECTS = \
  minmax.o \
  keylist.o \
  scan.o \
+ contactutil.o \
  memory.o \
  runtime.o \
  halo.o \
