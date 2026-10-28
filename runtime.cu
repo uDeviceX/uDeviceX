@@ -11044,7 +11044,6 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-#include "types.cuh"
 #endif
 
 
@@ -11761,7 +11760,6 @@ void vcont_set_conf(const Config *cfg,      PidVCont *c) {
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-#include "types.cuh"
 #endif
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -12634,7 +12632,6 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-#include "types.cuh"
 #endif
 
 #ifndef UDX_CONTROL_COORDS_COMMON
@@ -13195,7 +13192,6 @@ int coords_size(const Coords *c);
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-#include "types.cuh"
 #endif
 
 
@@ -14238,7 +14234,6 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-#include "types.cuh"
 #endif
 #ifndef UDX_GRID_INTER_DEF_COMMON
 #define UDX_GRID_INTER_DEF_COMMON
@@ -14883,7 +14878,6 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-#include "types.cuh"
 #endif
 
 #ifndef UDX_CONTROL_D_API_COMMON
@@ -16059,7 +16053,6 @@ double scalars_get(const Scalars *q, int i) {
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-#include "types.cuh"
 #endif
 struct Coords;
 struct Coords_v;
@@ -16309,7 +16302,6 @@ void vectors_get(const Vectors *q, int i,      float r[3]) {
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-#include "types.cuh"
 #endif
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -16415,7 +16407,6 @@ void convert_pp2f4_pos(int n, const float *pp,      float4 *zpp) {
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-#include "types.cuh"
 #endif
 
 #ifndef UDX_CONTROL_D_API_COMMON
@@ -16646,7 +16637,6 @@ static int   warpSize = 1;
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-#include "types.cuh"
 #endif
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -17661,7 +17651,6 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 
 #ifndef UDX_DBG_CLIST_TYPE_COMMON
 #define UDX_DBG_CLIST_TYPE_COMMON
-#include "types.cuh"
 #endif
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -18253,7 +18242,6 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
 #endif
 #ifndef UDX_DBG_CLIST_TYPE_COMMON
 #define UDX_DBG_CLIST_TYPE_COMMON
-#include "types.cuh"
 #endif
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -18938,7 +18926,6 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 #endif
 #ifndef UDX_DBG_CLIST_TYPE_COMMON
 #define UDX_DBG_CLIST_TYPE_COMMON
-#include "types.cuh"
 #endif
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
