@@ -127,6 +127,20 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
     EFREE(cc_hst);
 }
 
+struct Config;
+void conf_lookup_string(const Config *, const char *, const char **);
+void conf_lookup_float(const Config *, const char *, float *);
+void inter_color_set_conf(const Config *cfg, GenColor *gc) {
+    const char *kind;
+    UC(conf_lookup_string(cfg, "iccolor.kind", &kind));
+    if (same_str(kind, "uniform")) inter_color_set_uniform(gc);
+    else if (same_str(kind, "drop")) {
+        float R;
+        UC(conf_lookup_float(cfg, "iccolor.R", &R));
+        inter_color_set_drop(R, gc);
+    } else if (!same_str(kind, "none")) ERR("unrecognised kind <%s>", kind);
+}
+
 
 
 
