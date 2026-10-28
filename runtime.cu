@@ -1377,25 +1377,7 @@ const char* get_filename_ext(const char*);
 
 
 
-#if   defined(CC_SYNC)
 
-#define CC(ans)                                             \
-    do {                                                    \
-        d::DeviceSynchronize();                             \
-        cc::check((ans), __FILE__, __LINE__);               \
-        d::DeviceSynchronize();                             \
-    } while (0)
-#elif defined(CC_RELEASE)
-
-#define CC(ans)                                             \
-    do { cc::check((ans), __FILE__, __LINE__);} while (0)
-#else
-  #error CC_* is undefined
-#endif
-
-namespace cc {
-void check(int rc, const char *file, int line);
-}
 
 
 
@@ -11103,25 +11085,7 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow
 
 
 
-#if   defined(CC_SYNC)
 
-#define CC(ans)                                             \
-    do {                                                    \
-        d::DeviceSynchronize();                             \
-        cc::check((ans), __FILE__, __LINE__);               \
-        d::DeviceSynchronize();                             \
-    } while (0)
-#elif defined(CC_RELEASE)
-
-#define CC(ans)                                             \
-    do { cc::check((ans), __FILE__, __LINE__);} while (0)
-#else
-  #error CC_* is undefined
-#endif
-
-namespace cc {
-void check(int rc, const char *file, int line);
-}
 
 
 
@@ -11949,25 +11913,7 @@ void msg_print(const char *fmt, ...);
 #endif
 
 
-#if   defined(CC_SYNC)
 
-#define CC(ans)                                             \
-    do {                                                    \
-        d::DeviceSynchronize();                             \
-        cc::check((ans), __FILE__, __LINE__);               \
-        d::DeviceSynchronize();                             \
-    } while (0)
-#elif defined(CC_RELEASE)
-
-#define CC(ans)                                             \
-    do { cc::check((ans), __FILE__, __LINE__);} while (0)
-#else
-  #error CC_* is undefined
-#endif
-
-namespace cc {
-void check(int rc, const char *file, int line);
-}
 
 
 
@@ -12797,25 +12743,7 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 
 
 
-#if   defined(CC_SYNC)
 
-#define CC(ans)                                             \
-    do {                                                    \
-        d::DeviceSynchronize();                             \
-        cc::check((ans), __FILE__, __LINE__);               \
-        d::DeviceSynchronize();                             \
-    } while (0)
-#elif defined(CC_RELEASE)
-
-#define CC(ans)                                             \
-    do { cc::check((ans), __FILE__, __LINE__);} while (0)
-#else
-  #error CC_* is undefined
-#endif
-
-namespace cc {
-void check(int rc, const char *file, int line);
-}
 
 
 
@@ -13284,25 +13212,7 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
 
 
 
-#if   defined(CC_SYNC)
 
-#define CC(ans)                                             \
-    do {                                                    \
-        d::DeviceSynchronize();                             \
-        cc::check((ans), __FILE__, __LINE__);               \
-        d::DeviceSynchronize();                             \
-    } while (0)
-#elif defined(CC_RELEASE)
-
-#define CC(ans)                                             \
-    do { cc::check((ans), __FILE__, __LINE__);} while (0)
-#else
-  #error CC_* is undefined
-#endif
-
-namespace cc {
-void check(int rc, const char *file, int line);
-}
 
 
 
@@ -14521,25 +14431,7 @@ const char* get_filename_ext(const char*);
 #endif
 
 
-#if   defined(CC_SYNC)
 
-#define CC(ans)                                             \
-    do {                                                    \
-        d::DeviceSynchronize();                             \
-        cc::check((ans), __FILE__, __LINE__);               \
-        d::DeviceSynchronize();                             \
-    } while (0)
-#elif defined(CC_RELEASE)
-
-#define CC(ans)                                             \
-    do { cc::check((ans), __FILE__, __LINE__);} while (0)
-#else
-  #error CC_* is undefined
-#endif
-
-namespace cc {
-void check(int rc, const char *file, int line);
-}
 
 
 
@@ -15263,25 +15155,7 @@ void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 
 
-#if   defined(CC_SYNC)
 
-#define CC(ans)                                             \
-    do {                                                    \
-        d::DeviceSynchronize();                             \
-        cc::check((ans), __FILE__, __LINE__);               \
-        d::DeviceSynchronize();                             \
-    } while (0)
-#elif defined(CC_RELEASE)
-
-#define CC(ans)                                             \
-    do { cc::check((ans), __FILE__, __LINE__);} while (0)
-#else
-  #error CC_* is undefined
-#endif
-
-namespace cc {
-void check(int rc, const char *file, int line);
-}
 
 
 
@@ -17671,25 +17545,7 @@ const char* get_filename_ext(const char*);
 
 
 
-#if   defined(CC_SYNC)
 
-#define CC(ans)                                             \
-    do {                                                    \
-        d::DeviceSynchronize();                             \
-        cc::check((ans), __FILE__, __LINE__);               \
-        d::DeviceSynchronize();                             \
-    } while (0)
-#elif defined(CC_RELEASE)
-
-#define CC(ans)                                             \
-    do { cc::check((ans), __FILE__, __LINE__);} while (0)
-#else
-  #error CC_* is undefined
-#endif
-
-namespace cc {
-void check(int rc, const char *file, int line);
-}
 
 
 
@@ -18289,25 +18145,7 @@ const char* get_filename_ext(const char*);
 
 
 
-#if   defined(CC_SYNC)
 
-#define CC(ans)                                             \
-    do {                                                    \
-        d::DeviceSynchronize();                             \
-        cc::check((ans), __FILE__, __LINE__);               \
-        d::DeviceSynchronize();                             \
-    } while (0)
-#elif defined(CC_RELEASE)
-
-#define CC(ans)                                             \
-    do { cc::check((ans), __FILE__, __LINE__);} while (0)
-#else
-  #error CC_* is undefined
-#endif
-
-namespace cc {
-void check(int rc, const char *file, int line);
-}
 
 
 
@@ -18939,25 +18777,7 @@ void scan_fin(Scan*);
 #endif
 
 
-#if   defined(CC_SYNC)
 
-#define CC(ans)                                             \
-    do {                                                    \
-        d::DeviceSynchronize();                             \
-        cc::check((ans), __FILE__, __LINE__);               \
-        d::DeviceSynchronize();                             \
-    } while (0)
-#elif defined(CC_RELEASE)
-
-#define CC(ans)                                             \
-    do { cc::check((ans), __FILE__, __LINE__);} while (0)
-#else
-  #error CC_* is undefined
-#endif
-
-namespace cc {
-void check(int rc, const char *file, int line);
-}
 
 
 
@@ -19588,25 +19408,7 @@ void msg_print(const char *fmt, ...);
 #endif
 
 
-#if   defined(CC_SYNC)
 
-#define CC(ans)                                             \
-    do {                                                    \
-        d::DeviceSynchronize();                             \
-        cc::check((ans), __FILE__, __LINE__);               \
-        d::DeviceSynchronize();                             \
-    } while (0)
-#elif defined(CC_RELEASE)
-
-#define CC(ans)                                             \
-    do { cc::check((ans), __FILE__, __LINE__);} while (0)
-#else
-  #error CC_* is undefined
-#endif
-
-namespace cc {
-void check(int rc, const char *file, int line);
-}
 
 
 
