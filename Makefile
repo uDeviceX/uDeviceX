@@ -22,6 +22,7 @@ OBJECTS = \
  text.o \
  linalg.o \
  random.o \
+ timestep.o \
  timeline.o \
  transform.o \
  coords.o \
