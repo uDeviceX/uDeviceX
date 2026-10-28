@@ -22,6 +22,7 @@ OBJECTS = \
  text.o \
  linalg.o \
  random.o \
+ transform.o \
  memory.o \
  runtime.o \
  halo.o \
