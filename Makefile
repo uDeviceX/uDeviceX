@@ -25,6 +25,7 @@ OBJECTS = \
  timestep.o \
  timeline.o \
  restrain.o \
+ iopoint.o \
  transform.o \
  coords.o \
  comm.o \
