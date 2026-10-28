@@ -17,6 +17,7 @@ OBJECTS = \
  scalar.o \
  vector.o \
  kahan.o \
+ cuda.o \
  memory.o \
  runtime.o \
  halo.o \
