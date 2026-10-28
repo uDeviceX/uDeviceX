@@ -26,6 +26,7 @@ OBJECTS = \
  coords.o \
  comm.o \
  color.o \
+ error.o \
  memory.o \
  runtime.o \
  halo.o \
