@@ -415,12 +415,6 @@ void coords_fin(Coords *c);
 void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c);
 
 
-void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
-    int3 L;
-    UC(conf_lookup_int3(cfg, "glb/L", &L));
-    UC(coords_ini(cart, L.x, L.y, L.z, c));
-}
-
 
 
 #include <vector_types.h>

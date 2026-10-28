@@ -224,3 +224,11 @@ void coord_stamp(const Coords *c,      char *s) {
 int coords_size(const Coords *c) {
     return c->xd * c->yd * c->zd;
 }
+
+struct Config;
+void conf_lookup_int3(const Config *, const char *, int3 *);
+void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
+    int3 L;
+    UC(conf_lookup_int3(cfg, "glb/L", &L));
+    UC(coords_ini(cart, L.x, L.y, L.z, c));
+}
