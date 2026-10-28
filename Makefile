@@ -28,6 +28,7 @@ OBJECTS = \
  color.o \
  error.o \
  message.o \
+ edge.o \
  memory.o \
  runtime.o \
  halo.o \
