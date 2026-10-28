@@ -46,7 +46,6 @@ OBJECTS = \
  bop.o \
  gridsampler.o \
  memory.o \
- runtime.o \
  halo.o \
  mesh.o \
  force.o \
