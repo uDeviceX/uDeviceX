@@ -39,6 +39,7 @@ OBJECTS = \
  contact.o \
  debug.o \
  colorhost.o \
+ gridsampler.o \
  memory.o \
  runtime.o \
  halo.o \
