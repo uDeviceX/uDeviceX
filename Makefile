@@ -39,6 +39,7 @@ OBJECTS = \
  contact.o \
  debug.o \
  colorhost.o \
+ inflow.o \
  control.o \
  filter.o \
  bop.o \
