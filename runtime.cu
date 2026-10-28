@@ -664,7 +664,6 @@ void check(int rc, const char *file, int line);
 #endif
 #ifndef UDX_D_MPI_COLOR_D_API
 #define UDX_D_MPI_COLOR_D_API
-#include "device.cuh"
 #endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
@@ -1340,7 +1339,6 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
 #ifndef UDX_D_MPI_COLOR_D_API
 #define UDX_D_MPI_COLOR_D_API
-#include "device.cuh"
 #endif
 
 typedef unsigned char data_t;
@@ -11026,7 +11024,6 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow
 #endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-#include "device.cuh"
 #endif
 
 
@@ -11784,7 +11781,6 @@ void vcont_set_conf(const Config *cfg,      PidVCont *c) {
 
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-#include "device.cuh"
 #endif
 
 
@@ -12618,7 +12614,6 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 #endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-#include "device.cuh"
 #endif
 
 
@@ -13055,7 +13050,6 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
 #endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-#include "device.cuh"
 #endif
 
 #ifndef UDX_CONTROL_MATH_COMMON
@@ -14240,7 +14234,6 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
 
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-#include "device.cuh"
 #endif
 
 #ifndef UDX_CONTROL_TYPE_COMMON
@@ -14895,7 +14888,6 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-#include "device.cuh"
 #endif
 
 
@@ -15081,7 +15073,6 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
 
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-#include "device.cuh"
 #endif
 
 namespace cc {
@@ -16429,7 +16420,6 @@ void convert_pp2f4_pos(int n, const float *pp,      float4 *zpp) {
 
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-#include "device.cuh"
 #endif
 
 struct Force;
@@ -16652,7 +16642,6 @@ static int   warpSize = 1;
 #endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-#include "device.cuh"
 #endif
 
 #ifndef UDX_CONTROL_TYPE_COMMON
@@ -17143,7 +17132,6 @@ void key_list_log(KeyList *q) {
 #define UDX_CONTROL_D_API_COMMON
 #ifndef UDX_ALGO_DEVICE_API_COMMON
 #define UDX_ALGO_DEVICE_API_COMMON
-#include "device.cuh"
 #endif
 #endif
 
@@ -17713,7 +17701,6 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 #endif
 #ifndef UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_D_API_COMMON
-#include "device.cuh"
 #endif
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
@@ -18292,7 +18279,6 @@ void scan_fin(Scan*);
 
 #ifndef UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_D_API_COMMON
-#include "device.cuh"
 #endif
 
 
@@ -18655,7 +18641,6 @@ void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, 
 
 #ifndef UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_D_API_COMMON
-#include "device.cuh"
 #endif
 
 
