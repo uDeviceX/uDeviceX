@@ -1301,35 +1301,14 @@ int coords_size(const Coords *c) {
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 
 #ifndef UDX_SHARED_FRAG_COMMON
 #define UDX_SHARED_FRAG_COMMON
@@ -11107,35 +11086,14 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
@@ -11878,35 +11836,14 @@ void msg_print(const char *fmt, ...);
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 #include "device.cuh"
@@ -12765,35 +12702,14 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
@@ -13359,35 +13275,14 @@ int coords_size(const Coords *c);
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
@@ -14458,35 +14353,14 @@ const char* get_filename_ext(const char*);
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 
 void grid_write(int3 subGrid, int3 subDomain, MPI_Comm, const char *path, int ncmp, const float **data, const char **names);
 
@@ -15110,35 +14984,14 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
@@ -16638,35 +16491,14 @@ void vectors_get(const Vectors *q, int i,      float r[3]) {
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #include "launch.cuh"
@@ -17005,35 +16837,14 @@ static int   warpSize = 1;
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 #ifndef UDX_CONTROL_SHFL_COMMON
 #define UDX_CONTROL_SHFL_COMMON
 #define _I_ static __device__
@@ -17499,35 +17310,14 @@ void key_list_log(KeyList *q) {
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
@@ -18098,35 +17888,14 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 
 void emalloc(size_t,      void**);
 void efree(void*);
@@ -18736,35 +18505,14 @@ const char* get_filename_ext(const char*);
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 struct Scan;
 
 void scan_apply(const int *input, int size,      int *output,       Scan*);
@@ -19456,35 +19204,14 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
 #define dSync() CC(d::DeviceSynchronize())
 
-#define D2D d::MemcpyDeviceToDevice
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault
-
-#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
-#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
-#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
-#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
-#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 
-#define Dfree(D)      CC(d::Free(D))
-#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 
-#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
-#define Dzero(P, n)   Dset(P, 0, n)
 
 
-#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
-#define DzeroA(P, n)   DsetA(P, 0, n)
+
+
 #include "fragment.cuh"
 
 struct Dbg;
