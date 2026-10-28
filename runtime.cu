@@ -633,8 +633,6 @@ int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 
 
 
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 
 
 #if   defined(CC_SYNC)
@@ -929,20 +927,10 @@ void tracers_fin() {
 
 #include <vector_types.h>
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 struct Config;
 struct float3;
@@ -1336,22 +1324,10 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 }
 #endif
 
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 
 
@@ -1795,8 +1771,6 @@ size_t comm_get_byte_capacity(int i, const hBags *b) {
 
 
 
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 
 
 
@@ -1926,22 +1900,10 @@ int main(int argc, char **argv) {
 #include <vector_types.h>
 
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 
 struct Config;
 struct float3;
@@ -10969,20 +10931,10 @@ void conf_write_exe(const Config *cfg, FILE *stream);
 void conf_write_history(const Config *cfg, FILE *stream);
 #ifndef UDX_CONTROL_UTILS_COMMON
 #define UDX_CONTROL_UTILS_COMMON
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 #endif
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
@@ -11689,20 +11641,10 @@ void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Infl
 
 #ifndef UDX_CONTROL_UTILS_COMMON
 #define UDX_CONTROL_UTILS_COMMON
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 #endif
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
@@ -11815,8 +11757,6 @@ void vcont_set_conf(const Config *cfg,      PidVCont *c) {
 
 
 
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
@@ -12564,20 +12504,10 @@ void vcont_strt_read(const char *base, int id, PidVCont *c) {
 #include <stdio.h>
 
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 struct Config;
 struct float3;
 struct int3;
@@ -13005,20 +12935,10 @@ void den_map_fin(DContMap *m) {
 #include <vector_types.h>
 
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 struct Config;
 struct float3;
 struct int3;
@@ -14305,20 +14225,10 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
 
 
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
@@ -14863,20 +14773,10 @@ void grid_sampler_data_push(long n, const Particle *pp, const int *cc, const flo
 #include <stdio.h>
 
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 struct Config;
 struct float3;
 struct int3;
@@ -15004,8 +14904,6 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 
 
 
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 
 
 
@@ -15213,8 +15111,6 @@ void check(int rc, const char *file, int line) {
 #include <stdarg.h>
 #include <assert.h>
 
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 
 
 
@@ -15329,20 +15225,10 @@ void os_malloc_stats();
 
 
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 static double Bytes2MBytes(size_t sz) {
     return (double) sz / (double) (1 << 20);
@@ -15650,20 +15536,10 @@ void linal_inv3x3(const float *m,      float *r) {
 #include <stdint.h>
 
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 struct RNDunif;
 void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
@@ -15843,22 +15719,10 @@ END
 
 
 
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 
 struct Tform_v { float o[3], s[3]; };
@@ -16052,20 +15916,10 @@ void tform_to_view(const Tform *t, Tform_v *v) {
 
 #include <stdio.h>
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 
 struct Particle;
@@ -16213,20 +16067,10 @@ double scalars_get(const Scalars *q, int i) {
 
 #include <stdio.h>
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
@@ -16591,8 +16435,6 @@ void convert_pp2f4_pos(int n, const float *pp,      float4 *zpp) {
 #include "types.cuh"
 #endif
 
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 #include "device.cuh"
@@ -16716,8 +16558,6 @@ int edg_valid(int md, int i, int x, const int *hx) {
 #define UDX_GRID_INTER_DEF_COMMON
 #include "constants.cuh"
 #endif
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 
 
 #if   defined(DEV_CUDA)
@@ -17035,20 +16875,10 @@ void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi) {
 
 #include <stdio.h>
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 
 struct KahanSum;
@@ -17112,22 +16942,10 @@ double kahan_sum_compensation(const KahanSum *q) { return q->c; }
 #include <string.h>
 
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 int string_nword(const char *s);
 
 struct KeyList;
@@ -17318,20 +17136,10 @@ void key_list_log(KeyList *q) {
 
 
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 
 
@@ -17897,20 +17705,10 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 
 
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 
 
@@ -17925,8 +17723,6 @@ const char* get_filename_ext(const char*);
 #endif
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 #endif
 #ifndef UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_D_API_COMMON
@@ -18471,23 +18267,11 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
 
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 #endif
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 #ifndef UDX_DBG_CLIST_DEF_COMMON
 #define UDX_DBG_CLIST_DEF_COMMON
@@ -18990,20 +18774,10 @@ static int   warpSize = 1;
 #endif
 
 
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
 
 
 
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b);
-const char* get_filename_ext(const char*);
 
 struct RNDunif;
 void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
@@ -19151,8 +18925,6 @@ _HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
 #endif
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
-void msg_ini(int rank);
-void msg_print(const char *fmt, ...);
 #endif
 
 
