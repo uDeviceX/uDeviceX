@@ -29,8 +29,6 @@ void error_signal(const char *file, int line, const char *fmt, ...);
     } while (0)
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
-#define Dalloc(D, n) CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
-#define Dfree(D) CC(d::Free(D))
 
 #define _I_ static __device__
 

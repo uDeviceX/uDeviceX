@@ -25,8 +25,6 @@ void error_signal(const char *file, int line, const char *fmt, ...);
 #define UC(F) do { error_stack_push(__FILE__, __LINE__); F; if (error_get()) { error_report(); error_abort(); } error_stack_pop(); } while (0)
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
-#define D2H d::MemcpyDeviceToHost
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 
 enum { DBG_POS, DBG_POS_SOFT, DBG_VEL, DBG_FORCES, DBG_COLORS, DBG_CLIST, DBG_NKIND_ };
 struct Config; struct Coords; struct Dbg;

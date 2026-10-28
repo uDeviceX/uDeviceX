@@ -9,8 +9,6 @@
 
 namespace cc { void check(int, const char*, int); }
 #define CC(ans) do { cc::check((ans), __FILE__, __LINE__); } while (0)
-#define Dalloc(D, n) CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
-#define Dfree(D) CC(d::Free(D))
 
 struct Coords;
 struct Coords_v { int xc, yc, zc, xd, yd, zd, Lx, Ly, Lz; };

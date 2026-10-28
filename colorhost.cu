@@ -1,3 +1,4 @@
+#include "macros.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -20,10 +21,6 @@ void error_signal(const char *file, int line, const char *fmt, ...);
 #define UC(F) do { error_stack_push(__FILE__, __LINE__); F; if (error_get()) { error_report(); error_abort(); } error_stack_pop(); } while (0)
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define cD2H(H,D,n) CC(d::Memcpy((H),(D),(n)*sizeof((H)[0]),D2H))
-#define cH2D(D,H,n) CC(d::Memcpy((D),(H),(n)*sizeof((H)[0]),H2D))
 void msg_print(const char *fmt, ...);
 bool same_str(const char *, const char *);
 struct Coords;

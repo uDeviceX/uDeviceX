@@ -38,8 +38,6 @@ bool same_str(const char *, const char *);
 #define UC(F) do { error_stack_push(__FILE__, __LINE__); F; if (error_get()) { error_report(); error_abort(); } error_stack_pop(); } while (0)
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
-#define Dalloc(D, n) CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
-#define Dfree(D) CC(d::Free(D))
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE

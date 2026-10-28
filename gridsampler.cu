@@ -24,13 +24,6 @@ void error_signal(const char *file, int line, const char *fmt, ...);
 #define UC(F) do { error_stack_push(__FILE__, __LINE__); F; if (error_get()) { error_report(); error_abort(); } error_stack_pop(); } while (0)
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
-#define D2H d::MemcpyDeviceToHost
-#define H2D d::MemcpyHostToDevice
-#define Dalloc(D,n) CC(d::Malloc((void**)(D),(n)*sizeof(**(D))))
-#define Dfree(D) CC(d::Free(D))
-#define DzeroA(P,n) CC(d::MemsetAsync((P),0,(n)*sizeof(*(P))))
-#define aD2H(H,D,n) CC(d::MemcpyAsync((H),(D),(n)*sizeof((H)[0]),D2H))
-#define cH2D(D,H,n) CC(d::Memcpy((D),(H),(n)*sizeof((D)[0]),H2D))
 struct GridSampler;
 struct GridSampleData;
 void grid_sampler_reset(GridSampler *);
