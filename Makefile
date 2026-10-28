@@ -19,6 +19,7 @@ OBJECTS = \
  kahan.o \
  cuda.o \
  mpicheck.o \
+ text.o \
  memory.o \
  runtime.o \
  halo.o \
