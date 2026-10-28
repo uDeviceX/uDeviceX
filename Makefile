@@ -36,6 +36,7 @@ OBJECTS = \
  scan.o \
  contactutil.o \
  clist.o \
+ contact.o \
  memory.o \
  runtime.o \
  halo.o \
