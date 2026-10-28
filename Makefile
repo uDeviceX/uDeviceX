@@ -31,6 +31,7 @@ OBJECTS = \
  edge.o \
  stats.o \
  convert.o \
+ minmax.o \
  memory.o \
  runtime.o \
  halo.o \
