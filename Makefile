@@ -32,6 +32,7 @@ OBJECTS = \
  stats.o \
  convert.o \
  minmax.o \
+ keylist.o \
  memory.o \
  runtime.o \
  halo.o \
