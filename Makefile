@@ -20,6 +20,7 @@ OBJECTS = \
  cuda.o \
  mpicheck.o \
  text.o \
+ linalg.o \
  memory.o \
  runtime.o \
  halo.o \
