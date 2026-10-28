@@ -30,6 +30,7 @@ OBJECTS = \
  message.o \
  edge.o \
  stats.o \
+ convert.o \
  memory.o \
  runtime.o \
  halo.o \
