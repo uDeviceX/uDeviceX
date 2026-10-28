@@ -27,6 +27,7 @@ OBJECTS = \
  restrain.o \
  iopoint.o \
  txtio.o \
+ diagpart.o \
  transform.o \
  coords.o \
  comm.o \
