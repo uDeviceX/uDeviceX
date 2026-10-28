@@ -38,6 +38,7 @@ OBJECTS = \
  clist.o \
  contact.o \
  debug.o \
+ colorhost.o \
  memory.o \
  runtime.o \
  halo.o \
