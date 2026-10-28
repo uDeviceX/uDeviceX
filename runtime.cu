@@ -14853,7 +14853,6 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 
 #ifndef UDX_GRID_INTER_DEF_COMMON
 #define UDX_GRID_INTER_DEF_COMMON
-#include "constants.cuh"
 #endif
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -16521,7 +16520,6 @@ int edg_valid(int md, int i, int x, const int *hx) {
 
 #ifndef UDX_GRID_INTER_DEF_COMMON
 #define UDX_GRID_INTER_DEF_COMMON
-#include "constants.cuh"
 #endif
 
 
@@ -17638,7 +17636,6 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 
 #ifndef UDX_DBG_CLIST_DEF_COMMON
 #define UDX_DBG_CLIST_DEF_COMMON
-#include "constants.cuh"
 #endif
 
 #ifndef UDX_DBG_CLIST_TYPE_COMMON
@@ -18229,7 +18226,6 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
 
 #ifndef UDX_DBG_CLIST_DEF_COMMON
 #define UDX_DBG_CLIST_DEF_COMMON
-#include "constants.cuh"
 #endif
 #ifndef UDX_DBG_CLIST_TYPE_COMMON
 #define UDX_DBG_CLIST_TYPE_COMMON
@@ -18871,7 +18867,6 @@ _HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
 
 #ifndef UDX_DBG_CLIST_DEF_COMMON
 #define UDX_DBG_CLIST_DEF_COMMON
-#include "constants.cuh"
 #endif
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
