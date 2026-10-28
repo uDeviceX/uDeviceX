@@ -10,6 +10,7 @@ NVCCFLAGS = -std=c++11 $(OPT) -use_fast_math -restrict
 MPI_LIBS = -lopen-rte -lopen-pal
 
 OBJECTS = \
+ config.o \
  runtime.o \
  halo.o \
  mesh.o \
