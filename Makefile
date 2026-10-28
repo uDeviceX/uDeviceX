@@ -21,6 +21,7 @@ OBJECTS = \
  mpicheck.o \
  text.o \
  linalg.o \
+ random.o \
  memory.o \
  runtime.o \
  halo.o \
