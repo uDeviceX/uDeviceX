@@ -28,6 +28,7 @@ OBJECTS = \
  iopoint.o \
  txtio.o \
  diagpart.o \
+ restart.o \
  transform.o \
  coords.o \
  comm.o \
