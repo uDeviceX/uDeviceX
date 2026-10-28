@@ -1,32 +1,9 @@
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include "config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
-
-
-
 
 void emalloc(size_t,      void**);
 void efree(void*);
@@ -50,7 +27,6 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -60,7 +36,6 @@ const char* get_filename_ext(const char*);
         }                                       \
         error_stack_pop();                      \
     } while (0)
-
 
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
@@ -91,17 +66,9 @@ void msg_print(const char *fmt, ...);
 #include "device.cuh"
 #endif
 
-
-
-
 #include <stdlib.h>
 #include <string.h>
 #include <mpi.h>
-
-
-
-
-
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -152,7 +119,6 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -160,26 +126,11 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 
-
-
 #include <mpi.h>
-
-
-
-
-
-
-
-
 
 #include <stdio.h>
 #include <curand_kernel.h>
 #include <assert.h>
-
-
-
-
-
 
 #if   defined(CC_SYNC)
 
@@ -201,9 +152,6 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #include "launch.cuh"
@@ -215,9 +163,7 @@ void check(int rc, const char *file, int line);
 #define UDX_CONTROL_D_API_COMMON
 #endif
 
-
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
-
 
 #define k_cnf(n) ceiln((n), 128), 128
 
@@ -241,14 +187,11 @@ void check(int rc, const char *file, int line);
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
-
 
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
@@ -301,8 +244,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -316,12 +257,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -340,20 +278,10 @@ void tracers_ini(const int n);
 
 void tracers_fin();
 
-
-
-
-
-
 #include <stdio.h>
 #include <mpi.h>
 
 #include <vector_types.h>
-
-
-
-
-
 
 struct Config;
 struct float3;
@@ -414,20 +342,8 @@ void coords_fin(Coords *c);
 
 void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c);
 
-
-
-
 #include <vector_types.h>
 #include <mpi.h>
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
@@ -468,8 +384,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -483,12 +397,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 struct Coords {
@@ -498,37 +409,15 @@ struct Coords {
 };
 #endif
 
-
-
-
-
-
-
-
-
-
 #include <assert.h>
 #include <string.h>
 #include <mpi.h>
 
-
-
-
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
-
 
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_SHARED_FRAG_COMMON
 #define UDX_SHARED_FRAG_COMMON
@@ -556,20 +445,6 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 }
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef UDX_D_MPI_COLOR_D_API
 #define UDX_D_MPI_COLOR_D_API
 #endif
@@ -581,7 +456,6 @@ enum {
     BULK   = 26,
     NBAGS  = 27,
 };
-
 
 enum AllocMod {
     HST_ONLY,
@@ -613,7 +487,6 @@ void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
-
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
@@ -632,7 +505,6 @@ void comm_wait_send(Comm *c);
 int    comm_get_number_capacity(int i, const hBags *b);
 size_t comm_get_byte_capacity(int i, const hBags *b);
 
-
 struct Comm {
     MPI_Request sreq[NBAGS];
     MPI_Request rreq[NBAGS];
@@ -646,20 +518,8 @@ struct CommBuffer {
     size_t sz[NBAGS], cap[NBAGS];
 };
 
-
-
-
-
-
-
 #include <mpi.h>
 #include <stdio.h>
-
-
-
-
-
-
 
 namespace m {
 void ini(int *argc, char ***argv);
@@ -772,25 +632,11 @@ int main(int argc, char **argv) {
     msg_print("end");
 }
 
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <vector_types.h>
-
-
-
-
-
-
 
 struct Config;
 struct float3;
@@ -870,95 +716,12 @@ struct CBuf {
     char c[MAX_LEVEL][FILENAME_MAX];
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <mpi.h>
 #include <stdio.h>
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 #endif
-
-
-
-
-
-
-
 
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
@@ -974,19 +737,9 @@ struct CBuf {
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
-
-
-
-
-
-
-
-
-
 
 void grid_write(int3 subGrid, int3 subDomain, MPI_Comm, const char *path, int ncmp, const float **data, const char **names);
 
@@ -1002,7 +755,6 @@ void grid_sampler_data_reset(GridSampleData *);
 void grid_sampler_data_push(long n, const Particle *pp, const int *cc,
                             const float *ss, GridSampleData *);
 
-
 void grid_sampler_ini(bool colors, bool stress, int3 L, int3 N, GridSampler**);
 void grid_sampler_fin(GridSampler*);
 
@@ -1010,16 +762,7 @@ void grid_sampler_reset(GridSampler*);
 void grid_sampler_add(const GridSampleData*, GridSampler*);
 void grid_sampler_dump(MPI_Comm, const char *dir, long id, GridSampler*);
 
-
-
-
-
 #include <stdio.h>
-
-
-
-
-
 
 struct Config;
 struct float3;
@@ -1088,13 +831,7 @@ void inter_color_set_conf(const Config*, GenColor*);
 void inter_color_apply_hst(const Coords*, const GenColor*, int n, const Particle *pp,      int *cc);
 void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle *pp,      int *cc);
 
-
-
-
 #include <stdio.h>
-
-
-
 
 #ifndef UDX_GRID_INTER_DEF_COMMON
 #define UDX_GRID_INTER_DEF_COMMON
@@ -1102,18 +839,9 @@ void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
-
-
-
-
-
-
-
-
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
@@ -1122,16 +850,6 @@ void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 #endif
-
-
-
-
-
-
-
-
-
-
 
 struct Coords;
 struct Coords_v;
@@ -1164,8 +882,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -1179,26 +895,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
-
 
 void coord_stamp(const Coords *c,      char *s);
 
-
 int coords_size(const Coords *c);
 
-
-
-
-
-
-
 #include <stdio.h>
-
-
-
-
 
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
@@ -1208,21 +911,11 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
-
-
-
-
-
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1236,100 +929,30 @@ double os_drand();
 void os_sleep(unsigned int seconds);
 void os_malloc_stats();
 
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <mpi.h>
-
-
-
-
-
-
-
-
-
-
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 
-
-
-
-
-
-
-
-
 #include <ctype.h>
-
-
 
 int string_nword(const char *s);
 
-
-
-
-
-
-
-
-
-
-
-
 void linal_inv3x3(const float m0[6],      float minv0[6]);
-
-
-
-
-
-
 
 #include <limits>
 #include <stdio.h>
 #include <stdint.h>
-
-
-
-
-
-
 
 struct RNDunif;
 void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
 void rnd_fin(RNDunif *r);
 float rnd_get(RNDunif *r);
 
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
-
-
-
-
-
-
-
-
-
 
 struct Tform_v { float o[3], s[3]; };
 struct Tform;
@@ -1346,7 +969,6 @@ void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
                      Tform*);
 
-
 void tform_convert(const Tform*, const float a0[3],      float a1[3]);
 
 void tform_to_view(const Tform*,      Tform_v*);
@@ -1354,34 +976,7 @@ void tform_to_view(const Tform*,      Tform_v*);
 void tform_log(Tform*);
 void tform_dump(Tform*, FILE*);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#define DEV_CUDA
-#define CC_RELEASE
-#define KL_RELEASE
-
 #include <stdio.h>
-
-
-
-
-
-
 
 struct Particle;
 struct Vectors;
@@ -1412,19 +1007,11 @@ void scalars_fin(Scalars*);
 double scalars_get(const Scalars*, int i);
 enum {MAGIC = 123};
 
-
-
-
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 
 #include <stdio.h>
-
-
-
-
-
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
@@ -1460,8 +1047,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -1475,12 +1060,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 struct Tform;
@@ -1496,7 +1078,6 @@ void tform_from_grid(const float a0[3], const float b0[3], const int n[3],      
 void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
                      Tform*);
-
 
 void tform_convert(const Tform*, const float a0[3],      float a1[3]);
 
@@ -1519,18 +1100,9 @@ void vectors_zero_ini(int n,      Vectors**);
 void vectors_fin(Vectors*);
 void vectors_get(const Vectors*, int i,      float r[3]);
 
-
-
-
-
-
-
-
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-
-
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
@@ -1538,18 +1110,9 @@ void vectors_get(const Vectors*, int i,      float r[3]);
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
-
-
-
-
-
-
-
-
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
@@ -1566,27 +1129,10 @@ void convert_pp2f4_pos(int n, const float *pp,      float4 *zpp);
 struct Force;
 float force_stat_max(int n, const Force*);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void edg_ini(int md, int nv,                     int *hx);
 void edg_set(int md, int i, int j, int val,      int *hx,       int *hy);
 int  edg_get(int md, int i, int j,         const int *hx, const int *hy);
 int  edg_valid(int md, int i, int j,         const int *hx);
-
-
-
 
 #define DEV_CUDA
 #define CC_RELEASE
@@ -1594,13 +1140,9 @@ int  edg_valid(int md, int i, int j,         const int *hx);
 
 #include <stdio.h>
 
-
-
-
 #ifndef UDX_GRID_INTER_DEF_COMMON
 #define UDX_GRID_INTER_DEF_COMMON
 #endif
-
 
 #if   defined(DEV_CUDA)
 
@@ -1712,72 +1254,9 @@ static int   warpSize = 1;
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
-
-
-
-
-
-
-
-
-
-#ifndef UDX_CONTROL_SHFL_COMMON
-#define UDX_CONTROL_SHFL_COMMON
-#define _I_ static __device__
-
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up_sync(0xFFFFFFFF, val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl_sync(0xFFFFFFFF, val, width);
-}
-
-#undef _I_
-#define _S_ static __device__
-#define _I_ static __device__
-
-template <typename T>
-_I_ T warpReduceSum(T v)
-{
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
-        v += shfl_down(v, offset);
-    return v;
-}
-
-_I_ float2 warpReduceSum(float2 val)
-{
-    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
-        val.x += shfl_down(val.x, offset);
-        val.y += shfl_down(val.y, offset);
-    }
-    return val;
-}
-
-_I_ float3 warpReduceSum(float3 val)
-{
-    for (int offset = warpSize/2; offset > 0; offset /= 2) {
-        val.x += shfl_down(val.x, offset);
-        val.y += shfl_down(val.y, offset);
-        val.z += shfl_down(val.z, offset);
-    }
-    return val;
-}
-
-#undef _S_
-#undef _I_
-
-#endif
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
@@ -1785,44 +1264,17 @@ _I_ float3 warpReduceSum(float3 val)
 
 #ifndef UDX_CONTROL_PARTICLE_DEV_COMMON
 #define UDX_CONTROL_PARTICLE_DEV_COMMON
-static __device__ float3 fetch_pos(int i, const Particle *pp) {
-    enum {X, Y, Z};
-    float3 r;
-    r.x = pp[i].r[X]; r.y = pp[i].r[Y]; r.z = pp[i].r[Z];
-    return r;
-}
-
-static __device__ float3 fetch_vel(int i, const Particle *pp) {
-    enum {X, Y, Z};
-    float3 v;
-    v.x = pp[i].v[X]; v.y = pp[i].v[Y]; v.z = pp[i].v[Z];
-    return v;
-}
 #endif
 
 struct Particle;
 struct float3;
 void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
 
-
-
-
-
-
-
-
-
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 
 #include <stdio.h>
-
-
-
-
-
-
 
 struct KahanSum;
 
@@ -1833,34 +1285,12 @@ void kahan_sum_add(KahanSum*, double input);
 double kahan_sum_get(const KahanSum*);
 double kahan_sum_compensation(const KahanSum*);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 
 #include <stdio.h>
 #include <string.h>
-
-
-
-
-
 
 int string_nword(const char *s);
 
@@ -1889,35 +1319,11 @@ void key_list_log(KeyList*);
 
 #include <stdio.h>
 
-
-
-
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
-
 
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
@@ -1929,9 +1335,7 @@ void key_list_log(KeyList*);
 #endif
 #endif
 
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -1959,8 +1363,6 @@ void key_list_log(KeyList*);
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -2037,23 +1439,12 @@ void scan_apply(const int *input, int size,      int *output,       Scan*);
 void scan_ini(int size,      Scan**);
 void scan_fin(Scan*);
 
-
 #define UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_DEF_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_TYPE_COMMON
 
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
-
 
 struct Config;
 struct float3;
@@ -2166,8 +1557,6 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
     dbg_set_dump(v, dbg);
 }
 
-
-
 #include <stdio.h>
 #include <assert.h>
 
@@ -2181,31 +1570,9 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
@@ -2255,8 +1622,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -2270,12 +1635,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 struct Particle;
@@ -2294,26 +1656,12 @@ int txt_read_get_n(const TxtRead *);
 const Particle* txt_read_get_pp(const TxtRead *);
 const Force*    txt_read_get_ff(const TxtRead *);
 
-
-
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
-
-
-
-
 
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
 #endif
-
-
-
-
 
 #ifndef UDX_DBG_CLIST_DEF_COMMON
 #define UDX_DBG_CLIST_DEF_COMMON
@@ -2324,18 +1672,9 @@ const Force*    txt_read_get_ff(const TxtRead *);
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
-
-
-
-
-
-
-
-
 
 struct Scan;
 
@@ -2346,12 +1685,6 @@ void scan_fin(Scan*);
 #ifndef UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_D_API_COMMON
 #endif
-
-
-
-
-
-
 
 #ifndef UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
@@ -2364,39 +1697,13 @@ enum {
     DEAD  = 1
 };
 
-
-
-
 struct PartList {
     const Particle *pp;
     const int *deathlist;
 };
 #endif
-static __device__ bool is_dead(int i, const PartList lp) {
-    if (lp.deathlist)
-        return lp.deathlist[i] == DEAD;
-    return false;
-}
-
-static __device__ bool is_alive(int i, const PartList lp) {
-    return !is_dead(i, lp);
-}
-
 #ifndef UDX_CONTROL_PARTICLE_DEV_COMMON
 #define UDX_CONTROL_PARTICLE_DEV_COMMON
-static __device__ float3 fetch_pos(int i, const Particle *pp) {
-    enum {X, Y, Z};
-    float3 r;
-    r.x = pp[i].r[X]; r.y = pp[i].r[Y]; r.z = pp[i].r[Z];
-    return r;
-}
-
-static __device__ float3 fetch_vel(int i, const Particle *pp) {
-    enum {X, Y, Z};
-    float3 v;
-    v.x = pp[i].v[X]; v.y = pp[i].v[Y]; v.z = pp[i].v[Z];
-    return v;
-}
 #endif
 
 struct Clist;
@@ -2418,32 +1725,22 @@ void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-
 void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
 void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
 void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
 
-
 void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
-
-
-
-
 
 #include <assert.h>
 #include <stdio.h>
-
-
 
 #ifndef UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_D_API_COMMON
 #endif
 
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -2471,8 +1768,6 @@ void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, 
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -2543,20 +1838,11 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-
-
-
-
-
-
 struct RNDunif;
 void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
 void rnd_fin(RNDunif *r);
 float rnd_get(RNDunif *r);
 namespace rnd {
-
-
-
 
 static __const__ int N = 18;
 
@@ -2566,33 +1852,13 @@ static __const__ float bronze = 0.00008877875787352212838853023;
 static __const__ float tin    = 0.00004602357186447026756768986;
 static __const__ float sqrt2 = 1.41421356237309514547;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 __inline__ __device__ float rem( float r ) {
     return r - floorf( r );
 }
 
-
 __inline__ __device__ float FMA( float x, float y, float z ) {
     return __fmaf_rz( x, y, z );
 }
-
-
-
-
-
 
 template<int N> __inline__ __device__ float __logistic_core( float x )
 {
@@ -2630,7 +1896,6 @@ inline __device__ float mean0var1uu( float seed, uint u, uint v )
 #ifndef UDX_CONTROL_MATH_COMMON
 #define UDX_CONTROL_MATH_COMMON
 
-
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
@@ -2650,80 +1915,6 @@ _HD_ void add(const T1 *a,        T2 *b) {
 template <typename T1, typename T2, typename T3>
 _HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
-    c->y = a->y - b->y;
-    c->z = a->z - b->z;
-}
-
-template <typename T1, typename T2, typename T3>
-_HD_ T1 dot(const T2 *a, const T3 *b) {
-    return a->x * b->x + a->y * b->y + a->z * b->z;
-}
-
-template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
-    c->x = a->y * b->z - a->z * b->y;
-    c->y = a->z * b->x - a->x * b->z;
-    c->z = a->x * b->y - a->y * b->x;
-}
-
-template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
-    b->x = a->x * x;
-    b->y = a->y * x;
-    b->z = a->z * x;
-}
-
-
-template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
-    c->x = a->x + x * b->x;
-    c->y = a->y + x * b->y;
-    c->z = a->z + x * b->z;
-}
-
-template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
-    y->x += a * x->x;
-    y->y += a * x->y;
-    y->z += a * x->z;
-}
-#endif
-
-#ifndef UDX_DBG_CLIST_DEF_COMMON
-#define UDX_DBG_CLIST_DEF_COMMON
-#endif
-#ifndef UDX_DBG_CLIST_MSG_COMMON
-#define UDX_DBG_CLIST_MSG_COMMON
-#endif
-
-
-
-
-
-
-
-
-#ifndef UDX_SHARED_FRAG_COMMON
-#define UDX_SHARED_FRAG_COMMON
-enum {frag_bulk = 26};
-
-struct int3;
-
-namespace frag_hst {
-
-int i2dx(int i);
-int i2dy(int i);
-int i2dz(int i);
-void i2d3(int i,      int d[3]);
-
-int d2i(int x, int y, int z);
-int d32i(const int d[3]);
-
-int ncell(int3 L, int i);
-
-int antid2i(int x, int y, int z);
-int anti(int i);
-
 void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
 }
@@ -2738,18 +1929,9 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
-
-
-
-
-
-
-
-
 
 #include "fragment.cuh"
 
