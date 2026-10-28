@@ -945,45 +945,7 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 struct Config;
 struct float3;
 struct int3;
@@ -1058,45 +1020,7 @@ void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 
 #define MC(ans)                                                         \
@@ -1490,45 +1414,7 @@ void check(int rc, const char *file, int line);
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 #ifndef UDX_D_MPI_COLOR_D_API
 #define UDX_D_MPI_COLOR_D_API
 #include "device.cuh"
@@ -1964,45 +1850,7 @@ size_t comm_get_byte_capacity(int i, const hBags *b) {
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -2135,45 +1983,7 @@ int main(int argc, char **argv) {
 
 #include <vector_types.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
@@ -11238,45 +11048,7 @@ const char* get_filename_ext(const char*);
 #endif
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 #endif
 
 struct Inflow;
@@ -11349,45 +11121,7 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow
 
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 #endif
 
 
@@ -12075,45 +11809,7 @@ const char* get_filename_ext(const char*);
 #endif
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 #endif
 struct Config;
 struct float3;
@@ -12227,45 +11923,7 @@ void msg_print(const char *fmt, ...);
 
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 #endif
 
 
@@ -13052,45 +12710,7 @@ void vcont_strt_read(const char *base, int id, PidVCont *c) {
 
 #include <stdio.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
@@ -13205,45 +12825,7 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 
 
@@ -13610,45 +13192,7 @@ void den_map_fin(DContMap *m) {
 #include <stdio.h>
 #include <vector_types.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
@@ -13770,45 +13314,7 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 
 
@@ -15027,45 +14533,7 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
@@ -15664,45 +15132,7 @@ void grid_sampler_data_push(long n, const Particle *pp, const int *cc, const flo
 
 #include <stdio.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
@@ -15865,45 +15295,7 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 #include "device.cuh"
 #endif
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
@@ -16103,45 +15495,7 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 #include "device.cuh"
@@ -16172,45 +15526,7 @@ void check(int rc, const char *file, int line) {
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 
 static int         err_line;
@@ -16322,45 +15638,7 @@ double os_drand();
 void os_sleep(unsigned int seconds);
 void os_malloc_stats();
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 void emalloc(size_t,      void**);
 void efree(void*);
@@ -16456,45 +15734,7 @@ const char* get_filename_ext(const char *filename) {
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -16594,45 +15834,7 @@ void msg_print(const char *fmt, ...) {
 #include <malloc.h>
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 
 
@@ -16689,45 +15891,7 @@ void os_malloc_stats() { malloc_stats(); }
 
 #include <ctype.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 int string_nword(const char *s);
 
@@ -16761,45 +15925,7 @@ int string_nword(const char *s) {
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void linal_inv3x3(const float m0[6],      float minv0[6]);
 
 
@@ -16841,45 +15967,7 @@ void linal_inv3x3(const float *m,      float *r) {
 #include <stdio.h>
 #include <stdint.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
@@ -17093,45 +16181,7 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 struct Tform_v { float o[3], s[3]; };
 struct Tform;
@@ -17340,45 +16390,7 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 struct Particle;
 struct Vectors;
@@ -17541,45 +16553,7 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
@@ -17963,45 +16937,7 @@ void convert_pp2f4_pos(int n, const float *pp,      float4 *zpp) {
 #define UDX_CONTROL_TYPE_COMMON
 #include "types.cuh"
 #endif
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 #ifndef UDX_CONTROL_D_API_COMMON
@@ -18064,45 +17000,7 @@ float force_stat_max(int n, const Force *dev) {
 #include <stdlib.h>
 #include <stdio.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void edg_ini(int md, int nv,                     int *hx);
 void edg_set(int md, int i, int j, int val,      int *hx,       int *hy);
 int  edg_get(int md, int i, int j,         const int *hx, const int *hy);
@@ -18111,45 +17009,7 @@ int  edg_valid(int md, int i, int j,         const int *hx);
 #include <stdlib.h>
 #include <stdio.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void edg_ini(int md, int nv,      int *hx) {
     int n, i;
     n = md * nv;
@@ -18559,45 +17419,7 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 struct KahanSum;
 
@@ -18659,45 +17481,7 @@ double kahan_sum_compensation(const KahanSum *q) { return q->c; }
 #include <stdio.h>
 #include <string.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
@@ -18943,45 +17727,7 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 
 #if   defined(CC_SYNC)
@@ -19421,45 +18167,7 @@ void scan_apply(const int* input, int size,      int* output,       Scan*) {
 
 #include <stdio.h>
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 struct Config;
 struct float3;
 struct int3;
@@ -19639,45 +18347,7 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 
 
 #if   defined(CC_SYNC)
@@ -20252,45 +18922,7 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
 
 
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
 void msg_ini(int rank);
@@ -20852,45 +19484,7 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-#define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
-        error_report();                                         \
-        error_abort();                                          \
-    } while (0)
 
-
-#define UC(F) do {                              \
-        error_stack_push(__FILE__, __LINE__);   \
-        F;                                      \
-        if (error_get()) {                      \
-            error_report();                     \
-            error_abort();                      \
-        }                                       \
-        error_stack_pop();                      \
-    } while (0)
-
-
-#define BPC(ans) do {                           \
-        BopStatus s = (ans);                    \
-        if (!bop_success(s)) {                  \
-            ERR(":%s:%d: %s\n%s\n",             \
-                __FILE__, __LINE__,             \
-                bop_report_error_desc(s),       \
-                bop_report_error_mesg());       \
-        }} while (0)
-
-void error_stack_push(const char *file, int line);
-void error_stack_pop();
-
-void error_signal(const char *file, int line, const char *fmt, ...);
-void error_signal_cuda(const char *file, int line, const char *msg);
-void error_signal_mpi(const char *file, int line, const char *msg);
-
-bool error_get();
-void error_report();
-void error_abort();
-
-void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
