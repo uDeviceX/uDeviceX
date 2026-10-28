@@ -14,6 +14,7 @@ OBJECTS = \
  mpi.o \
  os.o \
  tri.o \
+ scalar.o \
  memory.o \
  runtime.o \
  halo.o \
