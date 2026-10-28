@@ -25,6 +25,7 @@ OBJECTS = \
  transform.o \
  coords.o \
  comm.o \
+ color.o \
  memory.o \
  runtime.o \
  halo.o \
