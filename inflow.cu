@@ -89,17 +89,6 @@ void conf_set_string(const char *desc, const char *a, Config *cfg);
 
 void conf_write_exe(const Config *cfg, FILE *stream);
 void conf_write_history(const Config *cfg, FILE *stream);
-#ifndef UDX_CONTROL_UTILS_COMMON
-#define UDX_CONTROL_UTILS_COMMON
-
-
-
-
-#endif
-#ifndef UDX_CONTROL_ERROR_COMMON
-#define UDX_CONTROL_ERROR_COMMON
-
-#endif
 
 struct Inflow;
 struct Config;
@@ -169,24 +158,6 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow
 
 
 
-#ifndef UDX_CONTROL_ERROR_COMMON
-#define UDX_CONTROL_ERROR_COMMON
-
-#endif
-
-
-
-
-
-
-
-
-#ifndef UDX_CONTROL_KL_COMMON
-#define UDX_CONTROL_KL_COMMON
-#endif
-#ifndef UDX_CONTROL_D_API_COMMON
-#define UDX_CONTROL_D_API_COMMON
-#endif
 
 
 
@@ -201,9 +172,14 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow
 
 
 
-#ifndef UDX_CONTROL_TYPE_COMMON
-#define UDX_CONTROL_TYPE_COMMON
-#endif
+
+
+
+
+
+
+
+
 
 
 struct Coords;
