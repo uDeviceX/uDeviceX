@@ -44,6 +44,7 @@ OBJECTS = \
 	rig.o \
 	grid.o \
 	diagmesh.o \
+	wallobj.o \
  transform.o \
  coords.o \
  comm.o \
