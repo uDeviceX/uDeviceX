@@ -2697,36 +2697,7 @@ void tex2sdf_ini(const Coords*, const int T[3], const int N[3], const int M[3], 
 void out2sdf_ini(const Coords*, const int N[3],      Tform*);
 void sub2tex_ini(const Coords*, const int T[3], const int M[3],      Tform*);
 
-#define _I_ static __device__
-
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up_sync(0xFFFFFFFF, val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl_sync(0xFFFFFFFF, val, width);
-}
-
-#undef _I_
-#define _S_ static __device__
-#define _I_ static __device__
-
-template <typename T>
-_I_ T warpReduceSum(T v)
-{
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
-        v += shfl_down(v, offset);
-    return v;
-}
-
-#undef _S_
-#undef _I_
+#include "warp.cuh"
 
 
 #ifndef UDX_WALL_SDF_TYPE_COMMON

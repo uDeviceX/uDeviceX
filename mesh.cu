@@ -105,23 +105,7 @@ void error_print_stack();
 struct Particle;
 struct float3;
 void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
-#define _I_ static __device__
-
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up_sync(0xFFFFFFFF, val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl_sync(0xFFFFFFFF, val, width);
-}
-
-#undef _I_
+#include "warp.cuh"
 
 #ifndef UDX_EXCH_FRAG_IMP_COMMON
 #define UDX_EXCH_FRAG_IMP_COMMON
