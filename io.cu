@@ -5797,57 +5797,6 @@ int write_reduce(MPI_Comm, int,      int*);
 
 struct Coords;
 struct float3;
-void io_com_dump(MPI_Comm, const Coords*, const char *name, long id, int n, const int *ii, const float3 *rr);
-
-enum {MAX_CHAR_PER_LINE = 128};
-
-#define BASE DUMP_BASE "/diag/com"
-
-static int swrite(const Coords *coords, int n, const int *ii, const float3 *rr,      char *s) {
-    int i, id, c, start;
-    float3 r, v, rg;
-    for (i = start = 0; i < n; ++i) {
-        id = ii[i];
-        r  = rr[i];
-        local2global(coords, r,      &rg);
-        c = sprintf(s + start, "%d %g %g %g %g %g %g\n", id, rg.x, rg.y, rg.z, v.x, v.y, v.z);
-        if (c >= MAX_CHAR_PER_LINE)
-            ERR("buffer too small : %d / %d", c, MAX_CHAR_PER_LINE);
-        start += c;
-    }
-    return start;
-}
-
-static void io_com_write_mpi(MPI_Comm comm, const char *fname, long n, const char *data) {
-    WriteFile *f;
-    UC(write_file_open(comm, fname, &f));
-    UC(write_all(comm, data, n, f));
-    UC(write_file_close(f));
-}
-
-static void io_com_gen_fname(const char *name, long id, char *fname) {
-    sprintf(fname, BASE "/%s.%04ld.txt", name, id);
-}
-
-void io_com_dump(MPI_Comm comm, const Coords *coords, const char *name, long id, int n, const int *ii, const float3 *rr) {
-    char fname[FILENAME_MAX] = {0}, *data;
-    long nchar = 0;
-
-    EMALLOC(MAX_CHAR_PER_LINE * n, &data);
-
-    if (m::is_master(comm))
-        UC(os_mkdir(BASE));
-    MC(m::Barrier(comm));
-
-    io_com_gen_fname(name, id, fname);
-
-    UC(nchar = swrite(coords, n, ii, rr,      data));
-    io_com_write_mpi(comm, fname, nchar, data);
-
-    EFREE(data);
-}
-
-#undef BASE
 #endif
 
 

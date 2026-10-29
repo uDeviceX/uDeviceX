@@ -40,6 +40,7 @@ OBJECTS = \
 	writefile.o \
 	iobop.o \
 	edgwrap.o \
+	com.o \
  transform.o \
  coords.o \
  comm.o \
