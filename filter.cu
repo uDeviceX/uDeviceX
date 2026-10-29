@@ -225,40 +225,7 @@ void coord_stamp(const Coords *c,      char *s);
 
 int coords_size(const Coords *c);
 
-#ifndef UDX_CONTROL_SHFL_COMMON
-#define UDX_CONTROL_SHFL_COMMON
-#define _I_ static __device__
-
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up_sync(0xFFFFFFFF, val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl_sync(0xFFFFFFFF, val, width);
-}
-
-#undef _I_
-#define _S_ static __device__
-#define _I_ static __device__
-
-template <typename T>
-_I_ T warpReduceSum(T v)
-{
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
-        v += shfl_down(v, offset);
-    return v;
-}
-
-#undef _S_
-#undef _I_
-
-#endif
+#include "warp.cuh"
 
 
 
