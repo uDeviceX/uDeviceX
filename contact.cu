@@ -155,26 +155,11 @@ _S_ float magn_lj(float s, float e, float invr) {
     return f;
 }
 
-_S_ float magn_adhesion(float k1, float k2, float r, float ev) {
-    float spring, visc;
-    spring = - k1 * r;
-    visc   = - k2 * ev;
-    return spring + visc;
-}
-
-_S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
-    return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
-}
-
 _S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
     float f;
     f  = magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
     f += magn_lj(p->ljs, p->lje, invr);
     return f;
-}
-
-_S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
-    return magn_adhesion(p->k1, p->k2, r, ev);
 }
 
 _S_ void magn2fo(float f0, float3 er, float3 dr,      PairFo *f) {
@@ -183,27 +168,8 @@ _S_ void magn2fo(float f0, float3 er, float3 dr,      PairFo *f) {
     f->z = f0 * er.z;
 }
 
-_S_ void magn2fo(float f0, float3 er, float3 dr,      PairSFo *f) {
-    f->x = f0 * er.x;
-    f->y = f0 * er.y;
-    f->z = f0 * er.z;
-
-    f->sxx = 0.5f * f->x * dr.x;
-    f->sxy = 0.5f * f->x * dr.y;
-    f->sxz = 0.5f * f->x * dr.z;
-    f->syy = 0.5f * f->y * dr.y;
-    f->syz = 0.5f * f->y * dr.z;
-    f->szz = 0.5f * f->z * dr.z;
-}
-
 _S_ void make_zero(PairFo *f) {
     f->x = f->y = f->z = 0;
-}
-
-_S_ void make_zero(PairSFo *f) {
-    f->x = f->y = f->z = 0;
-    f->sxx = f->sxy = f->sxz = 0;
-    f->syy = f->syz = f->szz = 0;
 }
 
 template <typename Param, typename Fo>
@@ -233,59 +199,6 @@ _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd,      Fo *f)
 
     f0 = force_magn(p, rnd, ev, r, invr);
     magn2fo(f0, er, dr,      f);
-}
-
-_S_ int colors2pid(int ca, int cb) {
-    int c0, c1;
-    c0 = ca < cb ? ca : cb;
-    c1 = ca < cb ? cb : ca;
-    return c1 * (c1+1) / 2 + c0;
-}
-
-template <typename Fo>
-_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
-    PairDPD p;
-    int pid;
-    pid = colors2pid(a.color, b.color);
-    p.a = pc->a[pid];
-    p.g = pc->g[pid];
-    p.s = pc->s[pid];
-    p.spow = pc->spow;
-    pair_force(&p, a, b, rnd,      f);
-}
-
-
-template <typename Fo>
-_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
-    PairDPD p;
-    int pid = a.color;
-    p.a = pc->a[pid];
-    p.g = pc->g[pid];
-    p.s = pc->s[pid];
-    p.spow = pc->spow;
-    pair_force(&p, a, b, rnd,      f);
-}
-
-
-_I_ void pair_add(const PairFo *b,      PairFo *a)
-{
-    a->x += b->x;
-    a->y += b->y;
-    a->z += b->z;
-}
-
-_I_ void pair_add(const PairSFo *b,      PairSFo *a)
-{
-    a->x += b->x;
-    a->y += b->y;
-    a->z += b->z;
-
-    a->sxx += b->sxx;
-    a->sxy += b->sxy;
-    a->sxz += b->sxz;
-    a->syy += b->syy;
-    a->syz += b->syz;
-    a->szz += b->szz;
 }
 
 #undef _S_
@@ -365,13 +278,6 @@ void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, 
 #define _I_ static __device__
 
 enum { CLIST_NMAX = (256*256*256) };
-
-_I_ uint clist_encode_id(int s, int pid)
-{
-
-    assert(pid < CLIST_NMAX);
-    return CLIST_NMAX * s + pid;
-}
 
 _I_ void contact_decode_id(uint c,      int *s, int *pid)
 {
