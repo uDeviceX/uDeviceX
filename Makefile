@@ -35,6 +35,7 @@ OBJECTS = \
 	bforce.o \
 	vtk.o \
 	fragmenthost.o \
+	meshwrite.o \
  transform.o \
  coords.o \
  comm.o \
