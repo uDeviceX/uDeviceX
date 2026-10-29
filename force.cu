@@ -1,21 +1,9 @@
 #include "macros.cuh"
 
-
-
-
-
-
-
-
-
-
 #include "config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
-
-
-
 
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
@@ -25,18 +13,6 @@
 #define UDX_FORCE_DEF_COMMON
 #include "constants.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
@@ -89,10 +65,6 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -114,7 +86,6 @@ void error_print_stack();
 #ifndef UDX_FORCE_CC_COMMON
 #define UDX_FORCE_CC_COMMON
 
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -135,9 +106,6 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #endif
 #include "texo.cuh"
 
@@ -146,25 +114,6 @@ void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
 void rnd_fin(RNDunif *r);
 float rnd_get(RNDunif *r);
 #include "randomdev.cuh"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #include "vecmath.cuh"
 #define UDX_FORCE_MATH_COMMON
@@ -176,7 +125,6 @@ enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
 
-
 struct PairDPD {
     float a, g, s, spow;
 };
@@ -185,7 +133,6 @@ struct PairDPDC {
     int ncolors;
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
-
 
 struct PairDPDCM {
     int ncolors;
@@ -343,7 +290,6 @@ _I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd,      Fo *
     pair_force(&p, a, b, rnd,      f);
 }
 
-
 template <typename Fo>
 _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
@@ -354,7 +300,6 @@ _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo 
     p.spow = pc->spow;
     pair_force(&p, a, b, rnd,      f);
 }
-
 
 _I_ void pair_add(const PairFo *b,      PairFo *a)
 {
@@ -450,7 +395,6 @@ _I_ void farray_atomic_add(const PairSFo *f, int i,      FoSArray_v a)
     farray_atomic_add_stress(f, i,      a);
 }
 
-
 _I_ PairFo farray_fo0(FoArray_v)
 {
     PairFo f;
@@ -524,8 +468,6 @@ struct TBPaCArray_v {
 #define _S_ static __device__
 #define _I_ static __device__
 
-
-
 template <typename Parray>
 _S_ void fbulk_bpa_fetch_p(Parray a, int i, PairPa *p) {
     float4 r, v;
@@ -535,9 +477,6 @@ _S_ void fbulk_bpa_fetch_p(Parray a, int i, PairPa *p) {
     p->x  = r.x;  p->y  = r.y;  p->z  = r.z;
     p->vx = v.x;  p->vy = v.y;  p->vz = v.z;
 }
-
-
-
 
 template <typename Parray>
 _S_ void fbulk_tbpa_fetch_p(Parray a, int i, PairPa *p) {
@@ -616,7 +555,6 @@ _S_ void fbulk_one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 c
     if (!fbulk_valid_c(cb.z, L.z)) return;
     if (!fbulk_valid_c(cb.y, L.y)) return;
 
-
     enddx = (dz == 0 && dy == 0) ? 0 : 1;
 
     startx =     max(    0, ca.x - 1    );
@@ -629,7 +567,6 @@ _S_ void fbulk_one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 c
 
     fbulk_loop_pp(params, ia, pa, parray, bs, be, seed,      fa, farray);
 }
-
 
 template <typename Par, typename Parray, typename Farray>
 __global__ void fbulk_apply_kernel(Par params, int3 L, int n, Parray parray, const int *start, float seed,      Farray farray) {
@@ -659,7 +596,6 @@ __global__ void fbulk_apply_kernel(Par params, int3 L, int n, Parray parray, con
 }
 
 #undef _S_
-
 
 void flocal_push_pp(const float4 *pp, BPaArray *a) {
     a->pp = pp;
@@ -745,23 +681,11 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
         apply_grey(params, L, n, parray, start, rnd,      farray);
 }
 
-
-
-
-
 #include <mpi.h>
 #include <assert.h>
 #include <vector_types.h>
 
 #include <cuda_fp16.h>
-
-
-
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -779,7 +703,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -794,23 +717,10 @@ void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
 void rnd_fin(RNDunif *r);
 float rnd_get(RNDunif *r);
 
-
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_FORCE_PARRAY_COMMON
 #define UDX_FORCE_PARRAY_COMMON
@@ -845,7 +755,6 @@ void parray_get_view(const PaArray *a, PaCArray_v *v);
 #ifndef UDX_FORCE_CC_COMMON
 #define UDX_FORCE_CC_COMMON
 
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -865,9 +774,6 @@ void parray_get_view(const PaArray *a, PaCArray_v *v);
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
 
 #endif
 
@@ -922,7 +828,6 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -961,8 +866,6 @@ struct float4;
 void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr);
 void convert_pp2rr_previous(long n, const Particle *pp, Positioncp *rr);
 void convert_pp2f4_pos(int n, const float *pp,      float4 *zpp);
-
-
 
 namespace flu {
 
@@ -1037,9 +940,6 @@ void fluforces_halo_fin(     FluForcesHalo *h);
 
 void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags,      FluForcesHalo *h);
 void fluforces_halo_apply(const PairParams*, const FluForcesHalo *h,      const FoArray *farray);
-
-
-
 
 struct FluForcesBulk {
     float4  *zipped_pp;
@@ -1161,7 +1061,6 @@ void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, 
     UC(flocal_apply(par, b->L, n, a, start, b->rnd,      farray));
 }
 
-
 void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags,      FluForcesHalo *h) {
     h->lfrags = lfrags;
     h->rfrags = rfrags;
@@ -1178,47 +1077,17 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h,      co
     fhalo_apply(par, h->L, h->lfrags, h->rfrags, h->rndfrags, farray);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
-
-
-
 
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
 #include "types.cuh"
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -1228,10 +1097,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1299,9 +1164,7 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -1330,8 +1193,6 @@ static int   warpSize = 1;
   #define __forceinline__
 #endif
 
-
-
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -1357,7 +1218,6 @@ static int   warpSize = 1;
 #ifndef UDX_FORCE_CC_COMMON
 #define UDX_FORCE_CC_COMMON
 
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -1378,9 +1238,6 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #endif
 #ifndef UDX_FORCE_KL_COMMON
 #define UDX_FORCE_KL_COMMON
@@ -1390,14 +1247,6 @@ void check(int rc, const char *file, int line);
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
-
-
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1415,7 +1264,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -1425,17 +1273,10 @@ void efgets(char *s, int size, FILE*);
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-
-
-
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
 #include <curand.h>
-
-
-
 
 void os_mkdir(const char* path);
 long os_time();
@@ -1450,24 +1291,6 @@ void msg_print(const char *fmt, ...);
 #include "device.cuh"
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -1484,7 +1307,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -1493,7 +1315,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
 
 #if   defined(CC_SYNC)
 
@@ -1515,14 +1336,9 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
 #include <stddef.h>
-
 
 #define CONTAINER_OF(ptr, type, member) \
     ((type*)((char*)(ptr) - offsetof(type, member)))
@@ -1531,11 +1347,6 @@ void check(int rc, const char *file, int line);
 #define UDX_FORCE_DEF_COMMON
 #include "constants.cuh"
 #endif
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1554,7 +1365,6 @@ void msg_print(const char *fmt, ...);
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -1638,7 +1448,6 @@ void bending_kantor_ini(const MeshRead *cell,      Bending **pq) {
     *pq = &q->bending;
 }
 
-
 struct BendingJuelicher {
     Bending bending;
     Juelicher *juelicher;
@@ -1672,17 +1481,8 @@ void bending_none_ini(const MeshRead*,      Bending **pq) {
     *pq = &q->bending;
 }
 
-
-
-
-
 #include <stdio.h>
 #include <string.h>
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1815,13 +1615,8 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
     }
 }
 
-
-
 #include <stdio.h>
 #include <assert.h>
-
-
-
 
 #ifndef UDX_FORCE_DEF_COMMON
 #define UDX_FORCE_DEF_COMMON
@@ -1831,18 +1626,6 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 #define UDX_FORCE_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
   #define _I_ static __device__
   #define _S_ static __device__
@@ -1958,13 +1741,6 @@ END
 #undef BEGIN
 #undef END
 
-
-
-
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -1983,7 +1759,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -1993,10 +1768,7 @@ void efgets(char *s, int size, FILE*);
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -2024,8 +1796,6 @@ const char* get_filename_ext(const char*);
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -2100,7 +1870,6 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -2120,9 +1889,6 @@ static int   warpSize = 1;
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
 
 #ifndef UDX_FORCE_KL_COMMON
 #define UDX_FORCE_KL_COMMON
@@ -2170,8 +1936,6 @@ struct RbcShape;
 struct MeshRead;
 struct Adj;
 
-
-
 void rbc_shape_ini(const Adj*, const float *rr,      RbcShape**);
 void rbc_shape_fin(     RbcShape*);
 
@@ -2218,7 +1982,6 @@ struct RbcQuants {
     int *ii;
     AreaVolume *area_volume;
 };
-
 
 struct AdjMap {
     int i0, i1, i2, i3, i4;
@@ -2279,7 +2042,6 @@ void area_volume_fin(AreaVolume*);
 
 void area_volume_compute(AreaVolume*, int nm, const Particle*,      float **av);
 void area_volume_host(AreaVolume*,      float **av);
-
 
 enum {
     RBC_SFUL,
@@ -2748,11 +2510,6 @@ void rbc_force_stat(float *pArea, float *pVolume) {
     *pArea = 1.0; *pVolume = 1.0;
 }
 
-
-
-
-
-
 struct HeRead;
 struct He;
 int he_read_int4_ini(int, int, const int4 *, HeRead **);
@@ -2765,21 +2522,10 @@ int he_flp(He *, int);
 int he_ver(He *, int);
 int he_hdg_edg(He *, int);
 
-
 #define UDX_RBC_BENDING_COMMON
-
-
-
-
-
 
 #include <stdio.h>
 #include <assert.h>
-
-
-
-
-
 
 struct RbcParams;
 struct Juelicher;
@@ -2800,7 +2546,6 @@ struct Juelicher {
 
     int ne;
 };
-
 
 #ifndef UDX_RBC_KANTOR0_COMMON
 #define UDX_RBC_KANTOR0_COMMON
@@ -2846,7 +2591,6 @@ _S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
     PRINT("%g %g %g\n", c.x, c.y, c.z);
     PRINT("%g %g %g\n", d.x, d.y, d.z);
 }
-
 
 template <int update>
 _S_ double3 dih0(double phi, double kb,
@@ -3423,36 +3167,6 @@ void juelicher_fin(Juelicher *q) {
     EFREE(q);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 static void sum(int nv, int nc, const float *from,      float *to) {
     dim3 thrd(128, 1);
     dim3 blck(ceiln(nv, thrd.x), nc);
@@ -3463,7 +3177,6 @@ static void sum(int nv, int nc, const float *from,      float *to) {
 void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants,      Force *ff) {
     int nc, ne, nt, nv;
 
-
     int4 *tri, *dih;
     float *area, *lentheta, *theta;
     float *lentheta_tot, *area_tot, *curva_mean_area_tot;
@@ -3471,8 +3184,6 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants,   
     const Particle *pp;
     float pi, kb, H0, kad;
     pi = 3.141592653589793;
-
-
 
     H0 = -1.0/2.0;
     kb = 1.0;
@@ -3493,8 +3204,6 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants,   
     if (!d::is_device_pointer(pp))
         ERR("`q->pp` is not a device pointer");
     if (quants->nc <= 0) return;
-
-
 
     Dzero(area, nv*nc);
     KL(juelicher_compute_area_kernel, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri,      area));
@@ -3527,27 +3236,10 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants,   
     KL(juelicher_accumulate_kernel, (k_cnf(nv*nc)),
        (nv*nc, f, fad,      ff));
 
-
-
-
-
-
-
-
-
 }
-
-
-
-
 
 #include <stdio.h>
 #include <assert.h>
-
-
-
-
-
 
 struct RbcParams;
 struct Kantor;
@@ -3563,7 +3255,6 @@ struct Kantor {
     Adj   *adj;
     Adj_v *adj_v;
 };
-
 
 #ifndef UDX_RBC_KANTOR0_COMMON
 #define UDX_RBC_KANTOR0_COMMON
@@ -3609,7 +3300,6 @@ _S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
     PRINT("%g %g %g\n", c.x, c.y, c.z);
     PRINT("%g %g %g\n", d.x, d.y, d.z);
 }
-
 
 template <int update>
 _S_ double3 dih0(double phi, double kb,
@@ -3795,24 +3485,9 @@ void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q,      Forc
        (parv, md, nv, nc, q->pp, *t->adj_v,      (float*)ff));
 }
 
-
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3888,7 +3563,6 @@ enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
 
-
 struct PairDPD {
     float a, g, s, spow;
 };
@@ -3897,7 +3571,6 @@ struct PairDPDC {
     int ncolors;
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
-
 
 struct PairDPDCM {
     int ncolors;
@@ -4003,18 +3676,9 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
     }
 }
 
-
-
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-
-
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4032,7 +3696,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -4041,10 +3704,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 struct PairParams {
     bool dpd;
@@ -4057,7 +3716,6 @@ struct PairParams {
     bool lj;
     float ljs;
     float lje;
-
 
     bool adhesion;
     float k1;
@@ -4180,21 +3838,8 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
     v->k2 = p->k2;
 }
 
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
-
-
-
-
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4213,9 +3858,7 @@ void error_print_stack();
 #include "device.cuh"
 #endif
 
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -4243,8 +3886,6 @@ void error_print_stack();
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -4320,25 +3961,6 @@ void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
 void rnd_fin(RNDunif *r);
 float rnd_get(RNDunif *r);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef UDX_FORCE_DEF_COMMON
 #define UDX_FORCE_DEF_COMMON
 #include "constants.cuh"
@@ -4349,7 +3971,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -4358,8 +3979,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
 
 #if   defined(CC_SYNC)
 
@@ -4380,10 +3999,6 @@ const char* get_filename_ext(const char*);
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -4427,18 +4042,6 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 #include "types.cuh"
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
 struct Dbg;
 
 struct Config;
@@ -4481,7 +4084,6 @@ enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
 
-
 struct PairDPD {
     float a, g, s, spow;
 };
@@ -4490,7 +4092,6 @@ struct PairDPDC {
     int ncolors;
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
-
 
 struct PairDPDCM {
     int ncolors;
@@ -4682,7 +4283,6 @@ _I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd,      Fo *
     pair_force(&p, a, b, rnd,      f);
 }
 
-
 template <typename Fo>
 _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
@@ -4693,7 +4293,6 @@ _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo 
     p.spow = pc->spow;
     pair_force(&p, a, b, rnd,      f);
 }
-
 
 _I_ void pair_add(const PairFo *b,      PairFo *a)
 {
@@ -4808,8 +4407,6 @@ _I_ void parray_get(PaCArray_v a, int i,      PairPa *p)
 #undef _S_
 #undef _I_
 
-
-
 struct RNDunif;
 struct Fsi;
 struct int3;
@@ -4820,7 +4417,6 @@ void fsi_fin(Fsi *fsi);
 void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts,      Fsi *fsi);
 void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw);
 void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all_ff, const int *all_counts);
-
 
 typedef PairPa Pa;
 struct FsiFo { float *x, *y, *z; };
@@ -4855,7 +4451,6 @@ struct FsiMap {
     int  org0, org1, org2;
     uint cnt0, cnt1, cnt2;
 };
-
 
 static __device__ int fsi_endp(const FsiMap m, uint i) { return i >= m.cnt2; }
 
@@ -5013,7 +4608,6 @@ static __device__ int fsi_p2map(int3 L, const int *start, int zplane, int n, con
 
     return fsi_r2map(L, start, zplane, n, p.x, p.y, p.z, m);
 }
-
 
 template <typename Par, typename Parray>
 static __device__ void fsi_bulk0(Par params, const Pa a, Parray parray, int lid, const FsiMap m, float seed,
