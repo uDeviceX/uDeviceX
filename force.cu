@@ -113,18 +113,7 @@ void error_print_stack();
 #define UDX_FORCE_KL_COMMON
 #include "launch.cuh"
 #endif
-
-template <typename T>
-static __device__ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-static __device__ T warpReduceSum(T val) {
-    for (int offset = warpSize >> 1; offset > 0; offset >>= 1)
-        val += shfl_down(val, offset);
-    return val;
-}
+#include "warp.cuh"
 
 #ifndef UDX_FORCE_CC_COMMON
 #define UDX_FORCE_CC_COMMON
