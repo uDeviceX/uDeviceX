@@ -42,6 +42,7 @@ OBJECTS = \
 	edgwrap.o \
 	com.o \
 	rig.o \
+	grid.o \
  transform.o \
  coords.o \
  comm.o \
