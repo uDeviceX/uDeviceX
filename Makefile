@@ -29,6 +29,7 @@ OBJECTS = \
  txtio.o \
  diagpart.o \
  restart.o \
+ meshio.o \
  transform.o \
  coords.o \
  comm.o \
