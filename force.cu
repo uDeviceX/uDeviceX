@@ -113,6 +113,19 @@ void error_print_stack();
 #define UDX_FORCE_KL_COMMON
 #include "launch.cuh"
 #endif
+
+template <typename T>
+static __device__ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+static __device__ T warpReduceSum(T val) {
+    for (int offset = warpSize >> 1; offset > 0; offset >>= 1)
+        val += shfl_down(val, offset);
+    return val;
+}
+
 #ifndef UDX_FORCE_CC_COMMON
 #define UDX_FORCE_CC_COMMON
 
@@ -1610,177 +1623,6 @@ void check(int rc, const char *file, int line);
 #define UDX_FORCE_KL_COMMON
 #include "launch.cuh"
 #endif
-#define _I_ static __device__
-
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up_sync(0xFFFFFFFF, val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl_sync(0xFFFFFFFF, val, width);
-}
-
-#undef _I_
-#define _S_ static __device__
-#define _I_ static __device__
-
-template <typename T>
-_I_ T warpReduceSum(T v)
-{
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
-        v += shfl_down(v, offset);
-    return v;
-}
-
-_I_ float2 warpReduceSum(float2 val)
-{
-    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
-        val.x += shfl_down(val.x, offset);
-        val.y += shfl_down(val.y, offset);
-    }
-    return val;
-}
-
-#undef _S_
-#undef _I_
-
-
-struct AreaVolume;
-struct Particle;
-struct int4;
-
-void area_volume_ini(int nv, int nt, const int4 *tt, int max_cell, AreaVolume**);
-void area_volume_fin(AreaVolume*);
-
-void area_volume_compute(AreaVolume*, int nm, const Particle*,      float **av);
-void area_volume_host(AreaVolume*,      float **av);
-
-static __device__ float3 rbc_force_av_pp2r(const Particle *pp, const int id) {
-    enum {X, Y, Z};
-    float3 r;
-    r.x = pp[id].r[X];
-    r.y = pp[id].r[Y];
-    r.z = pp[id].r[Z];
-    return r;
-}
-
-static __device__ float rbc_force_av_area(const float3 r0, const float3 r1, const float3 r2) {
-    float3 x1, x2, n;
-    diff(&r1, &r0,      &x1);
-    diff(&r2, &r0,      &x2);
-    cross(&x1, &x2,      &n);
-    return 0.5f * sqrtf(dot<float>(&n, &n));
-}
-
-static __device__ float rbc_force_av_volume(const float3 r0, const float3 r1, const float3 r2) {
-    return
-        0.1666666667f *
-        ((r0.x*r1.y-r0.y*r1.x)*r2.z +
-         (r0.z*r1.x-r0.x*r1.z)*r2.y +
-         (r0.y*r1.z-r0.z*r1.y)*r2.x);
-}
-
-__global__ void rbc_force_av_kernel(int nt, int nv, const Particle *pp, const int4 *tri, float *totA_V) {
-    float2 a_v = make_float2(0.0f, 0.0f);
-    int i, cid = blockIdx.y;
-    float3 r0, r1, r2;
-    int4 ids;
-
-    for (i = blockIdx.x * blockDim.x + threadIdx.x; i < nt; i += blockDim.x * gridDim.x) {
-        ids = tri[i];
-        r0 = rbc_force_av_pp2r(pp, ids.x + cid * nv);
-        r1 = rbc_force_av_pp2r(pp, ids.y + cid * nv);
-        r2 = rbc_force_av_pp2r(pp, ids.z + cid * nv);
-
-        a_v.x += rbc_force_av_area  (r0, r1, r2);
-        a_v.y += rbc_force_av_volume(r0, r1, r2);
-    }
-    a_v = warpReduceSum(a_v);
-    if ((threadIdx.x & (warpSize - 1)) == 0) {
-        atomicAdd(&totA_V[2 * cid + 0], a_v.x);
-        atomicAdd(&totA_V[2 * cid + 1], a_v.y);
-    }
-}
-struct AreaVolume {
-    int nt, nv;
-    int max_cell;
-    int4 *tri;
-    float *av;
-    float *av_hst;
-    int nc;
-    int Computed;
-};
-static void assert_tri(int nt, int nv, const int4 *tri) {
-    int *rank;
-    int f0, f1, f2, i;
-    int4 f;
-    EMALLOC(nv, &rank);
-    for (i = 0; i < nv; i++) rank[i] = 0;
-    for (i = 0; i < nt; i++) {
-        f = tri[i];
-        f0 = f.x; f1 = f.y; f2 = f.z;
-        if (f0 < 0 || f0 >= nv || f1 < 0 || f1 >= nv || f2 < 0 || f2 >= nv)
-            ERR("wrong triangle: %d = [%d %d %d] (v = %d, t = %d)", i, f0, f1, f2, nv, nt);
-        rank[f0]++; rank[f1]++; rank[f2]++;
-    }
-    for (i = 0; i < nv; i++)
-        if (rank[i] == 0) ERR("isolated vertex: %d (v = %d, t = %d)", i, nv, nt);
-    EFREE(rank);
-}
-
-void area_volume_ini(int nv, int nt, const int4 *hst, int max_cell,      AreaVolume **pq) {
-    AreaVolume *q;
-    EMALLOC(1, &q);
-    q->nt = nt; q->nv = nv; q->max_cell = max_cell; q->Computed = 0;
-    Dalloc(&q->tri, nt);
-    Dalloc(&q->av , 2*max_cell);
-    EMALLOC(2*max_cell, &q->av_hst);
-    UC(assert_tri(nt, nv, hst));
-    cH2D(q->tri, hst, nt);
-    *pq = q;
-}
-
-void area_volume_fin(AreaVolume *q) {
-    Dfree(q->tri);
-    Dfree(q->av);
-    EFREE(q->av_hst);
-    EFREE(q);
-}
-
-static void compute(int nv, int nt, int nc, const Particle *pp, const int4 *tri,      float *av) {
-    dim3 avThreads(256, 1);
-    dim3 avBlocks(1, nc);
-    Dzero(av, 2*nc);
-    KL(rbc_force_av_kernel, (avBlocks, avThreads), (nt, nv, pp, tri, av));
-}
-
-void area_volume_compute(AreaVolume *q, int nc, const Particle *pp,      float **pav) {
-    if (nc > q->max_cell) ERR("nc=%d > max_cell=%d", nc, q->max_cell);
-    if (!d::is_device_pointer(pp)) ERR("`pp`  is not a device pointer");
-    UC(compute(q->nv, q->nt, nc, pp, q->tri, q->av));
-    q->Computed = 1; q->nc = nc;
-    *pav = q->av;
-}
-
-void area_volume_host(AreaVolume *q,      float **pav) {
-    if (!q->Computed) ERR("call `area_volume_host` before `area_volume_compute`");
-    cD2H(q->av_hst, q->av, 2*q->nc);
-    *pav = q->av_hst;
-}
-
-
-
-
-
-
-
-
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>

@@ -73,6 +73,7 @@ OBJECTS = \
  halo.o \
  mesh.o \
  force.o \
+ areavol.o \
  io.o \
  body.o \
  main.o \
