@@ -4821,11 +4821,6 @@ struct PairSFo {
 #define _S_ static __device__
 #define _I_ static __device__
 
-_S_ float cap(float x, float lo, float hi) {
-    if      (x > hi) return hi;
-    else if (x < lo) return lo;
-    else             return x;
-}
 
 static const float EPS = 1e-6;
 enum {NORM_OK, NORM_BIG, NORM_SMALL};
