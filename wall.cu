@@ -991,11 +991,6 @@ struct PairDPDCM {
     float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
 };
 
-struct PairDPDLJ {
-    float a, g, s, spow;
-    float ljs, lje;
-};
-
 struct PairAdhesion {
     float k1, k2;
 };
@@ -1018,12 +1013,6 @@ struct PairSFo {
 };
 #define _S_ static __device__
 #define _I_ static __device__
-
-_S_ float cap(float x, float lo, float hi) {
-    if      (x > hi) return hi;
-    else if (x < lo) return lo;
-    else             return x;
-}
 
 static const float EPS = 1e-6;
 enum {NORM_OK, NORM_BIG, NORM_SMALL};
@@ -1064,16 +1053,6 @@ _S_ float magn_dpd(float a, float g, float s, float kpow,
     return f0;
 }
 
-_S_ float magn_lj(float s, float e, float invr) {
-    float t2, t4, t6, f;
-    t2 = s * s * invr * invr;
-    t4 = t2 * t2;
-    t6 = t4 * t2;
-    f = e * 24 * invr * t6 * (2 * t6 - 1);
-    f = cap(f, 0, 1e4);
-    return f;
-}
-
 _S_ float magn_adhesion(float k1, float k2, float r, float ev) {
     float spring, visc;
     spring = - k1 * r;
@@ -1083,13 +1062,6 @@ _S_ float magn_adhesion(float k1, float k2, float r, float ev) {
 
 _S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
     return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
-}
-
-_S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
-    float f;
-    f  = magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
-    f += magn_lj(p->ljs, p->lje, invr);
-    return f;
 }
 
 _S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
@@ -1215,7 +1187,6 @@ struct Config;
 struct PairDPD;
 struct PairDPDC;
 struct PairDPDCM;
-struct PairDPDLJ;
 struct PairAdhesion;
 
 void pair_ini(PairParams **);
@@ -1232,7 +1203,6 @@ void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p);
 void pair_get_view_dpd(const PairParams*, PairDPD*);
 void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
 void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*);
-void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 
 struct PaArray_v {
