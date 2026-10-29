@@ -33,6 +33,8 @@ OBJECTS = \
 	halfedge.o \
 	util.o \
 	bforce.o \
+	vtk.o \
+	fragmenthost.o \
  transform.o \
  coords.o \
  comm.o \
