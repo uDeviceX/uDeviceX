@@ -5457,8 +5457,6 @@ enum BBState {
     BB_NSTATES
 };
 
-static const char *bbstatenames[] = {bbstates(make_str)};
-
 #undef bbstates
 #undef make_enum
 #undef make_str
