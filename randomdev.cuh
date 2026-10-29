@@ -1,5 +1,6 @@
 #ifndef UDX_RANDOM_DEVICE_COMMON_CUH
 #define UDX_RANDOM_DEVICE_COMMON_CUH
+#define UDX_FORCE_RND_COMMON
 
 namespace rnd {
 static __const__ int N = 18;
