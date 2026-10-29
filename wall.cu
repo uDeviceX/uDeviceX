@@ -472,18 +472,7 @@ struct RNDunif;
 void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
 void rnd_fin(RNDunif *r);
 float rnd_get(RNDunif *r);
-namespace rnd {
-
-
-
-
-static __const__ int N = 18;
-
-static __const__ float gold   = 0.6180339887498948482;
-static __const__ float silver = 0.4142135623730950488;
-static __const__ float bronze = 0.00008877875787352212838853023;
-static __const__ float tin    = 0.00004602357186447026756768986;
-static __const__ float sqrt2 = 1.41421356237309514547;
+#include "randomdev.cuh"
 
 
 
@@ -499,53 +488,11 @@ static __const__ float sqrt2 = 1.41421356237309514547;
 
 
 
-__inline__ __device__ float rem( float r ) {
-    return r - floorf( r );
-}
-
-
-__inline__ __device__ float FMA( float x, float y, float z ) {
-    return __fmaf_rz( x, y, z );
-}
 
 
 
 
 
-
-template<int N> __inline__ __device__ float __logistic_core( float x )
-{
-    float x2 = x * x;
-    float r = FMA( FMA( 8.0, x2, -8.0 ), x2, 1.0 );
-    return __logistic_core < N - 2 > ( r );
-}
-
-template<> __inline__ __device__ float __logistic_core<1>( float x ) {
-    return FMA( 2.0 * x, x, -1.0 );
-}
-
-template<> __inline__ __device__ float __logistic_core<0>( float x ) {
-    return x;
-}
-
-inline __device__ float mean0var1ii( float seed, int u, int v )
-{
-    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin );
-    float l = __logistic_core<N>( seed - p );
-    return l * sqrt2;
-}
-
-inline __device__ float mean0var1uu( float seed, uint u, uint v )
-{
-
-    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin );
-
-    float l = __logistic_core<N>( seed - p );
-
-    return l * sqrt2;
-}
-
-}
 #ifndef UDX_WALL_MATH_COMMON
 #define UDX_WALL_MATH_COMMON
 
