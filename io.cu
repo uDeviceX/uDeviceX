@@ -1,17 +1,5 @@
 #include "macros.cuh"
 
-
-
-
-
-
-
-
-
-
-
-
-
 #include "config.cuh"
 
 #include <stdlib.h>
@@ -72,7 +60,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -81,10 +68,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -123,26 +106,10 @@ void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Pa
 
 #include <stdio.h>
 
-
-
 #ifndef UDX_SIM_OBJECTS_TYPE_COMMON
 #define UDX_SIM_OBJECTS_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 struct Coords;
 struct Coords_v;
@@ -175,8 +142,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -190,12 +155,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -203,10 +165,6 @@ int coords_size(const Coords *c);
 #define UDX_SIM_SCHEME_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -226,7 +184,6 @@ void error_print_stack();
 #endif
 #ifndef UDX_SCHEME_CC_COMMON
 #define UDX_SCHEME_CC_COMMON
-
 
 #if   defined(CC_SYNC)
 
@@ -248,23 +205,7 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #include <mpi.h>
 #include <stdio.h>
@@ -272,10 +213,6 @@ void check(int rc, const char *file, int line);
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -292,7 +229,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -327,16 +263,8 @@ void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *
 void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
 void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
 
-
-
-
-
-
 #include <mpi.h>
 #include <math.h>
-
-
-
 
 struct Config;
 struct float3;
@@ -391,10 +319,6 @@ void conf_write_history(const Config *cfg, FILE *stream);
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -410,7 +334,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -429,7 +352,6 @@ void check(int code, const char *file, int line);
 }
 
 struct Force;
-
 
 float force_stat_max(int n, const Force*);
 namespace m {
@@ -474,7 +396,6 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -493,7 +414,6 @@ void time_step_accel_fin(TimeStepAccel*);
 void time_step_accel_push(TimeStepAccel*, float m, int n, Force*);
 void time_step_accel_reset(TimeStepAccel*);
 
-
 void time_step_ini(const Config*,      TimeStep**);
 void time_step_fin(TimeStep*);
 
@@ -501,29 +421,15 @@ float time_step_dt(TimeStep*, MPI_Comm, TimeStepAccel*);
 float time_step_dt0(TimeStep*);
 void time_step_log(TimeStep*);
 
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
-
-
-
 
 #ifndef UDX_SIM_SCHEME_DEVICE_API_COMMON
 #define UDX_SIM_SCHEME_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
 
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -551,8 +457,6 @@ void time_step_log(TimeStep*);
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -632,7 +536,6 @@ void msg_print(const char *fmt, ...);
 #ifndef UDX_SCHEME_CC_COMMON
 #define UDX_SCHEME_CC_COMMON
 
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -653,9 +556,6 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #endif
 
 #ifndef UDX_SCHEME_KL_COMMON
@@ -666,19 +566,6 @@ void check(int rc, const char *file, int line);
 #define UDX_SIM_OBJECTS_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 struct Force;
 struct Particle;
@@ -693,7 +580,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -702,10 +588,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -794,25 +676,10 @@ void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it,      Restrain 
 #include <mpi.h>
 #include <stdio.h>
 
-
-
-
 #ifndef UDX_SIM_OBJECTS_TYPE_COMMON
 #define UDX_SIM_OBJECTS_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_SIM_OBJECTS_DEF_COMMON
 #define UDX_SIM_OBJECTS_DEF_COMMON
@@ -861,18 +728,12 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -891,7 +752,6 @@ void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 #ifndef UDX_SCHEME_CC_COMMON
 #define UDX_SCHEME_CC_COMMON
-
 
 #if   defined(CC_SYNC)
 
@@ -913,9 +773,6 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #endif
 
 #define MC(ans)                                                         \
@@ -925,26 +782,10 @@ namespace mpicheck {
 void check(int code, const char *file, int line);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <mpi.h>
 #include <stdlib.h>
 #include <string.h>
 #include <vector_types.h>
-
-
 
 #ifndef UDX_SIM_OBJECTS_TYPE_COMMON
 #define UDX_SIM_OBJECTS_TYPE_COMMON
@@ -954,19 +795,6 @@ void check(int code, const char *file, int line);
 #define UDX_SIM_OBJECTS_DEF_COMMON
 #include "constants.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_SIM_SCHEME_DEVICE_API_COMMON
 #define UDX_SIM_SCHEME_DEVICE_API_COMMON
@@ -1014,18 +842,12 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1046,7 +868,6 @@ double os_drand();
 void os_sleep(unsigned int seconds);
 void os_malloc_stats();
 
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -1066,10 +887,6 @@ void os_malloc_stats();
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -1117,7 +934,6 @@ void msg_print(const char *fmt, ...);
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -1174,8 +990,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -1189,12 +1003,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -1295,9 +1106,6 @@ enum {
     DEAD  = 1
 };
 
-
-
-
 struct PartList {
     const Particle *pp;
     const int *deathlist;
@@ -1330,13 +1138,11 @@ void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-
 void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
 void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
 void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
-
 
 void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 
@@ -1571,7 +1377,6 @@ struct RigQuants {
     Rigid    *ss_hst, *ss;
     float   *rr0_hst, *rr0;
 
-
     int nt, nv;
     int4 *dtt;
     float *dvv;
@@ -1619,7 +1424,6 @@ void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const fl
 void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0,      Particle *pp);
 void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,      Particle *pp);
 
-
 #ifndef UDX_SIM_WALLS_COMMON
 #define UDX_SIM_WALLS_COMMON
 struct PairParams;
@@ -1640,7 +1444,6 @@ struct WallQuants {
 
 struct WallTicket;
 struct WallRepulsePrm;
-
 
 void wall_ini_quants(int3 L, WallQuants*);
 void wall_ini_ticket(int3 L, WallTicket**);
@@ -1704,7 +1507,6 @@ void time_step_accel_fin(TimeStepAccel*);
 void time_step_accel_push(TimeStepAccel*, float m, int n, Force*);
 void time_step_accel_reset(TimeStepAccel*);
 
-
 void time_step_ini(const Config*,      TimeStep**);
 void time_step_fin(TimeStep*);
 
@@ -1719,7 +1521,6 @@ enum {
     BULK   = 26,
     NBAGS  = 27,
 };
-
 
 enum AllocMod {
     HST_ONLY,
@@ -1750,7 +1551,6 @@ void comm_ini(MPI_Comm cart,      Comm **c);
 void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
@@ -1823,8 +1623,6 @@ struct EMeshPackM;
 struct EMeshCommM;
 struct EMeshUnpackM;
 
-
-
 void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **p);
 void emesh_comm_ini(MPI_Comm comm,      EMeshComm **c);
 void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **u);
@@ -1848,8 +1646,6 @@ void emesh_unpack_pp(int nv, const EMeshUnpack *u,      int *nmhalo, Particle *p
 void emesh_unpack_rrcp(int nv, const EMeshUnpack *u,      int *nmhalo, Positioncp *rr);
 
 void emesh_get_num_frag_mesh(const EMeshUnpack *u,      int cc[NFRAGS]);
-
-
 
 void emesh_packm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshPackM **p);
 void emesh_commm_ini(MPI_Comm comm,      EMeshCommM **c);
@@ -1935,7 +1731,6 @@ struct OptFlu {
     bool colors, ids, ss, push;
 };
 
-
 struct OptObj {
     bool push, bounce;
     int shifttype;
@@ -1945,13 +1740,11 @@ struct OptObj {
     char name[FILENAME_MAX];
 };
 
-
 struct OptMbr : OptObj {
     bool ids, stretch, dump_com;
     int substeps;
     char stretch_file[FILENAME_MAX];
 };
-
 
 struct OptRig : OptObj {
     bool empty_pp;
@@ -1960,7 +1753,6 @@ struct OptRig : OptObj {
 struct OptWall {
     bool active;
 };
-
 
 struct OptParams {
     int3 L;
@@ -2057,13 +1849,11 @@ void objects_check_size(const Objects*);
 void objects_check_vel(const Objects*, const Dbg*, float dt);
 void objects_check_forces(const Objects*, const Dbg*, float dt);
 
-
 struct MbrDistr {
     DRbcPack *p;
     DRbcComm *c;
     DRbcUnpack *u;
 };
-
 
 struct RigDistr {
     DRigPack *p;
@@ -2071,13 +1861,11 @@ struct RigDistr {
     DRigUnpack *u;
 };
 
-
 struct MeshExch {
     EMeshPack *p;
     EMeshComm *c;
     EMeshUnpack *u;
 };
-
 
 struct MeshMomExch {
     EMeshPackM *p;
@@ -2085,19 +1873,16 @@ struct MeshMomExch {
     EMeshUnpackM *u;
 };
 
-
 struct Colorer {
     Particle *pp_mesh;
     float3 *lo, *hi;
 };
-
 
 struct BounceBackData {
     Positioncp *rr_cp;
     MeshMomExch *e;
     Momentum *mm;
 };
-
 
 struct Obj {
     char name[FILENAME_MAX];
@@ -2113,7 +1898,6 @@ struct Obj {
     WallRepulsePrm *wall_rep_prm;
 };
 
-
 struct Mbr : Obj {
     RbcQuants q;
     MbrDistr d;
@@ -2128,7 +1912,6 @@ struct Mbr : Obj {
     bool active_bounce;
     Colorer  *colorer;
 };
-
 
 struct Rig : Obj {
     RigQuants q;
@@ -2401,7 +2184,6 @@ static void ini_cnt_params(const Config *cfg, int nmbr, int nrig, Mbr **mm, Rig 
         id_obja = get_name_id(sobja, n, names);
         id_objb = get_name_id(sobjb, n, names);
 
-
         id_inter = get_id_inter(id_obja, id_objb);
 
         read_params(cfg, pair_ns, &prms[id_inter]);
@@ -2623,7 +2405,6 @@ void objects_clear_forces(Objects *obj) {
     for (i = 0; i < obj->nmbr; ++i) UC(clear_mbr_forces(obj->mbr[i]));
     for (i = 0; i < obj->nrig; ++i) UC(clear_rig_forces(obj->rig[i]));
 }
-
 
 static void internal_forces_mbr(float dt, const OptMbr *opt, Mbr *m) {
     UC(rbc_force_apply(m->force, m->params, dt, &m->q,      m->ff_fast));
@@ -2954,7 +2735,6 @@ static int mesh_recv_unpack_mbr(Mbr *m) {
     UC(emesh_wait_send(e->c));
     UC(emesh_wait_recv(e->c, e->u));
 
-
     UC(emesh_unpack_rrcp(q->nv, e->u,      &nmhalo, m->bbdata->rr_cp + q->n));
     return nmhalo;
 }
@@ -2965,7 +2745,6 @@ static int mesh_recv_unpack_rig(Rig *r) {
     int nmhalo;
     UC(emesh_wait_send(e->c));
     UC(emesh_wait_recv(e->c, e->u));
-
 
     UC(emesh_unpack_rrcp(q->nv, e->u,      &nmhalo, r->bbdata->rr_cp + q->ns * q->nv));
     return nmhalo;
@@ -2984,7 +2763,6 @@ static void clear_momentum_rig(int nmhalo, Rig *r) {
     long ntri = r->q.nt * (r->q.ns + nmhalo);
     UC(clear_momentum(ntri, r->bbdata->mm));
 }
-
 
 static void find_and_select_collisions_rig(float dt, long nflu, const Clist *cflu, const Particle *flu_pp, const Particle *flu_pp0, int nm, Rig *r, MeshBB *bb) {
     MeshInfo mi = mesh_info_rig(r);
@@ -3085,7 +2863,6 @@ static void collect_mom_rig(Rig *r) {
 
     UC(mesh_bounce_collect_rig_momentum(q->ns, mi, q->i_pp, bb->mm,      q->ss));
 }
-
 
 static void bounce_mbr(float dt, float flu_mass, const Clist *flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, MeshBB *bb, Mbr *m) {
     int nmhalo;
@@ -3365,15 +3142,9 @@ void objects_gen_freeze(PFarray *flu, Objects *o) {
     o->active = true;
 }
 
-
-
-
-
 #include <stdio.h>
 #include <mpi.h>
 #include <vector_types.h>
-
-
 
 #ifndef UDX_SIM_OBJECTS_TYPE_COMMON
 #define UDX_SIM_OBJECTS_TYPE_COMMON
@@ -3388,7 +3159,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -3397,10 +3167,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3414,7 +3180,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-
 
 #if   defined(CC_SYNC)
 
@@ -3435,10 +3200,6 @@ void error_print_stack();
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -3488,7 +3249,6 @@ int Waitall(int count, MPI_Request array_of_requests[], MPI_Status *array_of_sta
 int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
-
 
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
@@ -3643,7 +3403,6 @@ void  eobj_get_all_counts(int nw, EObjUnpack *u, int *all_counts);
 Pap26 eobj_upload_shift(EObjUnpack *u);
 Fop26 eobj_reini_ff(const EObjUnpack *u, EObjPackF *pf);
 
-
 void eobj_packf_ini(int3 L, int maxd, int maxpsolid, EObjPackF **p);
 void eobj_commf_ini(MPI_Comm cart,      EObjCommF **c);
 void eobj_unpackf_ini(int3 L, int maxd, int maxpsolid, EObjUnpackF **u);
@@ -3668,7 +3427,6 @@ struct OptFlu {
     bool colors, ids, ss, push;
 };
 
-
 struct OptObj {
     bool push, bounce;
     int shifttype;
@@ -3678,13 +3436,11 @@ struct OptObj {
     char name[FILENAME_MAX];
 };
 
-
 struct OptMbr : OptObj {
     bool ids, stretch, dump_com;
     int substeps;
     char stretch_file[FILENAME_MAX];
 };
-
 
 struct OptRig : OptObj {
     bool empty_pp;
@@ -3693,7 +3449,6 @@ struct OptRig : OptObj {
 struct OptWall {
     bool active;
 };
-
 
 struct OptParams {
     int3 L;
@@ -3741,12 +3496,6 @@ void obj_inter_ini(const Config*, const Opt*, MPI_Comm, float dt, int maxp,     
 void obj_inter_fin(ObjInter*);
 
 void obj_inter_forces(ObjInter*, const PairParams **fsi_prms, const PairParams **cnt_prms, PFarray *flu, const int *flu_start, PFarrays *obj);
-
-
-
-
-
-
 
 #include <mpi.h>
 #include <stdio.h>
@@ -3809,10 +3558,6 @@ void conf_set_string(const char *desc, const char *a, Config *cfg);
 void conf_write_exe(const Config *cfg, FILE *stream);
 void conf_write_history(const Config *cfg, FILE *stream);
 
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -3828,7 +3573,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -3869,7 +3613,6 @@ struct OptFlu {
     bool colors, ids, ss, push;
 };
 
-
 struct OptObj {
     bool push, bounce;
     int shifttype;
@@ -3879,13 +3622,11 @@ struct OptObj {
     char name[FILENAME_MAX];
 };
 
-
 struct OptMbr : OptObj {
     bool ids, stretch, dump_com;
     int substeps;
     char stretch_file[FILENAME_MAX];
 };
-
 
 struct OptRig : OptObj {
     bool empty_pp;
@@ -3894,7 +3635,6 @@ struct OptRig : OptObj {
 struct OptWall {
     bool active;
 };
-
 
 struct OptParams {
     int3 L;
@@ -3931,12 +3671,6 @@ void opt_check(const Opt*);
 long opt_estimate_maxp(const Opt*);
 #endif
 
-
-
-
-
-
-
 #include <stdio.h>
 #include <mpi.h>
 #include <vector_types.h>
@@ -3949,11 +3683,6 @@ long opt_estimate_maxp(const Opt*);
 #define UDX_SIM_OBJECTS_DEF_COMMON
 #include "constants.cuh"
 #endif
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3970,7 +3699,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -4031,7 +3759,6 @@ int Waitall(int count, MPI_Request array_of_requests[], MPI_Status *array_of_sta
 int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
-
 
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
@@ -4184,7 +3911,6 @@ struct WallQuants {
 struct WallTicket;
 struct WallRepulsePrm;
 
-
 void wall_ini_quants(int3 L, WallQuants*);
 void wall_ini_ticket(int3 L, WallTicket**);
 
@@ -4217,7 +3943,6 @@ struct OptFlu {
     bool colors, ids, ss, push;
 };
 
-
 struct OptObj {
     bool push, bounce;
     int shifttype;
@@ -4227,13 +3952,11 @@ struct OptObj {
     char name[FILENAME_MAX];
 };
 
-
 struct OptMbr : OptObj {
     bool ids, stretch, dump_com;
     int substeps;
     char stretch_file[FILENAME_MAX];
 };
-
 
 struct OptRig : OptObj {
     bool empty_pp;
@@ -4242,7 +3965,6 @@ struct OptRig : OptObj {
 struct OptWall {
     bool active;
 };
-
 
 struct OptParams {
     int3 L;
@@ -4307,34 +4029,9 @@ void wall_update_vel(float t, Wall *);
 void wall_get_sdf_ptr(const Wall*, const Sdf**);
 double wall_compute_volume(const Wall*, MPI_Comm, int3 L);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <mpi.h>
 #include <string.h>
 #include <vector_types.h>
-
-
-
-
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -4390,7 +4087,6 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -4413,10 +4109,6 @@ double os_drand();
 void os_sleep(unsigned int seconds);
 void os_malloc_stats();
 
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -4432,7 +4124,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -4473,8 +4164,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -4488,30 +4177,14 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
-
 
 void coord_stamp(const Coords *c,      char *s);
 
-
 int coords_size(const Coords *c);
-
-
-
-
-
-
-
-
 
 #include <stdio.h>
 #include <vector_types.h>
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4528,7 +4201,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -4556,19 +4228,10 @@ const int4  *mesh_read_get_tri(const MeshRead*);
 const float *mesh_read_get_vert(const MeshRead*);
 const int4  *mesh_read_get_dih(MeshRead*);
 
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 #include <mpi.h>
-
-
-
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4585,7 +4248,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -4646,7 +4308,6 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -4656,21 +4317,9 @@ int status2errcode(MPI_Status *status);
 
 #undef PATTERN
 
-
-
-
-
-
-
-
-
 #include <string.h>
 #include <ctype.h>
 #include <mpi.h>
-
-
-
-
 
 void os_mkdir(const char* path);
 long os_time();
@@ -4680,10 +4329,6 @@ void os_sleep(unsigned int seconds);
 void os_malloc_stats();
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4701,7 +4346,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -4711,7 +4355,6 @@ void efgets(char *s, int size, FILE*);
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 int string_nword(const char *s);
-
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -4761,22 +4404,12 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-
-
-
-
-
-
-
-
-
 
 #include <mpi.h>
 #include <stdint.h>
@@ -4798,8 +4431,6 @@ int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
 
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 void error_signal(const char *file, int line, const char *fmt, ...);
@@ -4807,17 +4438,9 @@ bool error_get();
 void error_report();
 void error_abort();
 
-
-
-
-
-
 #include <mpi.h>
 #include <stdio.h>
 #include <vector_types.h>
-
-
-
 
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -4861,17 +4484,12 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4896,29 +4514,12 @@ void check(int code, const char *file, int line);
 void xmf_write(int3 domainSize, int3 gridSize, const char *path, int ncomp, const char **names);
 void raw_write(int3 N, MPI_Comm, const char *path, int ncomp, const float **data, const char **names);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef UDX_IO_COM_COMMON
 #define UDX_IO_COM_COMMON
 
 #include <stdio.h>
 #include <vector_types.h>
 #include <mpi.h>
-
-
-
 
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -4961,7 +4562,6 @@ int Waitall(int count, MPI_Request array_of_requests[], MPI_Status *array_of_sta
 int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
-
 
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
@@ -5008,8 +4608,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -5023,19 +4621,15 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -5051,10 +4645,6 @@ void os_srand(long int seedval);
 double os_drand();
 void os_sleep(unsigned int seconds);
 void os_malloc_stats();
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5084,10 +4674,6 @@ struct Coords;
 struct float3;
 #endif
 
-
-
-
-
 #include <stdio.h>
 
 #ifndef UDX_SIM_OBJECTS_TYPE_COMMON
@@ -5104,7 +4690,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -5113,10 +4698,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5147,21 +4728,10 @@ int txt_read_get_n(const TxtRead *);
 const Particle* txt_read_get_pp(const TxtRead *);
 const Force*    txt_read_get_ff(const TxtRead *);
 
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <string.h>
 #include <vector_types.h>
 #include <mpi.h>
-
-
-
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
@@ -5207,7 +4777,6 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -5215,10 +4784,6 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 #include "diagnostic.cuh"
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5235,7 +4800,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -5261,17 +4825,9 @@ const int4  *mesh_read_get_tri(const MeshRead*);
 const float *mesh_read_get_vert(const MeshRead*);
 const int4  *mesh_read_get_dih(MeshRead*);
 
-
-
-
-
-
 #include <stdio.h>
 #include <string.h>
 #include <mpi.h>
-
-
-
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
@@ -5317,7 +4873,6 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -5325,10 +4880,6 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 #include "diagnostic.cuh"
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5345,7 +4896,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -5376,9 +4926,6 @@ enum {STAMP_GOOD = 123456};
 #include <string.h>
 #include <vector_types.h>
 
-
-
-
 struct Coords;
 struct Coords_v;
 struct float3;
@@ -5410,8 +4957,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -5425,12 +4970,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -5440,10 +4982,6 @@ void os_srand(long int seedval);
 double os_drand();
 void os_sleep(unsigned int seconds);
 void os_malloc_stats();
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5460,7 +4998,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -5522,20 +5059,12 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-
-
-
-
-
-
-
 
 #include <stdio.h>
 #include <string.h>
@@ -5548,13 +5077,6 @@ int status2errcode(MPI_Status *status);
 #include "types.cuh"
 #endif
 #endif
-
-
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5571,7 +5093,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -5618,8 +5139,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -5633,12 +5152,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 namespace m {
@@ -5683,7 +5199,6 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -5705,18 +5220,9 @@ int write_reduce(MPI_Comm, int,      int*);
 struct Coords;
 struct Rigid;
 
-
-
-
-
-
 #include <stdio.h>
 #include <string.h>
 #include <mpi.h>
-
-
-
-
 
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -5760,7 +5266,6 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -5782,10 +5287,6 @@ int status2errcode(MPI_Status *status);
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -5801,7 +5302,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -5842,8 +5342,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -5857,12 +5355,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -5889,35 +5384,6 @@ void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *
 void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
 void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
 void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #include <stdlib.h>
 #include <stdio.h>
