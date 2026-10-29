@@ -1,14 +1,5 @@
 #include "macros.cuh"
 
-
-
-
-
-
-
-
-
-
 #include "config.cuh"
 
 #include <stdio.h>
@@ -16,8 +7,6 @@
 #include <mpi.h>
 
 #include <vector_types.h>
-
-
 
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
@@ -54,7 +43,6 @@ enum {
     NBAGS  = 27,
 };
 
-
 enum AllocMod {
     HST_ONLY,
     DEV_ONLY,
@@ -85,7 +73,6 @@ void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
-
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
@@ -104,16 +91,10 @@ void comm_wait_send(Comm *c);
 int    comm_get_number_capacity(int i, const hBags *b);
 size_t comm_get_byte_capacity(int i, const hBags *b);
 
-
 #ifndef UDX_WALL_TYPE_COMMON
 #define UDX_WALL_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -215,7 +196,6 @@ static void unpack(const hBags *b,        int *n, Particle *pp) {
     *n = k;
 }
 
-
 void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn,        Particle *pp, int *n) {
     hBags send, recv;
     Comm *com;
@@ -237,15 +217,8 @@ void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn,        Partic
     UC(comm_fin(com));
 }
 
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
-
-
-
 
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
@@ -253,10 +226,6 @@ void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn,        Partic
 #endif
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -276,9 +245,7 @@ void error_print_stack();
 #include "device.cuh"
 #endif
 
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -306,8 +273,6 @@ void error_print_stack();
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -378,8 +343,6 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -400,26 +363,10 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
-
 #ifndef UDX_WALL_TYPE_COMMON
 #define UDX_WALL_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_WALL_TEXO_COMMON
 #define UDX_WALL_TEXO_COMMON
@@ -474,25 +421,6 @@ void rnd_fin(RNDunif *r);
 float rnd_get(RNDunif *r);
 #include "randomdev.cuh"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include "vecmath.cuh"
 
 #ifndef UDX_WALL_COORDS_TYPE_COMMON
@@ -505,7 +433,6 @@ struct Coords_v {
 #endif
 #ifndef UDX_WALL_COORDS_DEV_COMMON
 #define UDX_WALL_COORDS_DEV_COMMON
-
 
 static __device__ float xl2xc(const Coords_v c, float xl) {
     return xl - 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
@@ -524,9 +451,6 @@ static __device__ void local2center(const Coords_v c, float3 rl,      float3 *rc
     rc->y = yl2yc(c, rl.y);
     rc->z = zl2zc(c, rl.z);
 }
-
-
-
 
 #endif
 struct Coords;
@@ -560,8 +484,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -575,19 +497,14 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
 #ifndef UDX_WALL_WVEL_TYPE_COMMON
 #define UDX_WALL_WVEL_TYPE_COMMON
-
-
 
 struct WvelCste_v {
     float3 u;
@@ -857,11 +774,9 @@ _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)
 #undef _I_
 #endif
 
-
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
-
 
 struct PairDPD {
     float a, g, s, spow;
@@ -871,7 +786,6 @@ struct PairDPDC {
     int ncolors;
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
-
 
 struct PairDPDCM {
     int ncolors;
@@ -1032,7 +946,6 @@ _I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd,      Fo *
     pair_force(&p, a, b, rnd,      f);
 }
 
-
 template <typename Fo>
 _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
@@ -1043,7 +956,6 @@ _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo 
     p.spow = pc->spow;
     pair_force(&p, a, b, rnd,      f);
 }
-
 
 _I_ void pair_add(const PairFo *b,      PairFo *a)
 {
@@ -1216,7 +1128,6 @@ _I_ void farray_add(const PairSFo *f, int i,      FoSArray_v a)
     farray_add_stress(f, i,      a);
 }
 
-
 template <int S, typename Fo, typename FA>
 _S_ void farray_atomic_add_force(const Fo *f, int i,      FA a) {
     enum {X, Y, Z};
@@ -1250,7 +1161,6 @@ _I_ void farray_atomic_add(const PairSFo *f, int i,      FoSArray_v a)
     farray_atomic_add_stress(f, i,      a);
 }
 
-
 _I_ PairFo farray_fo0(FoArray_v)
 {
     PairFo f;
@@ -1279,7 +1189,6 @@ struct PaArray;
 struct FoArray;
 struct WvelStep;
 struct RNDunif;
-
 
 #ifndef UDX_WALL_FORCE_TYPE_COMMON
 #define UDX_WALL_FORCE_TYPE_COMMON
@@ -1540,23 +1449,15 @@ void wall_force_adhesion_apply(const PairParams *params, const WvelStep *wv, con
     UC(wvel_dispatch(pv, wv, c, pav, n, rnd, wa,      farray));
 }
 
-
 void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *pa, const FoArray *fo) {
     KL(wall_repulse_kernel,
        (k_cnf(n)),
        (wr, n, (const Particle*) pa->pp, sdf_v, (Force*) fo->ff));
 }
 
-
-
-
-
-
 #include <mpi.h>
 #include <stdio.h>
 #include <assert.h>
-
-
 
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
@@ -1564,11 +1465,6 @@ void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *p
 #endif
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1586,7 +1482,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -1600,9 +1495,7 @@ const char* get_filename_ext(const char*);
 #include "device.cuh"
 #endif
 
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -1630,8 +1523,6 @@ const char* get_filename_ext(const char*);
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -1702,8 +1593,6 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -1724,26 +1613,10 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
-
 #ifndef UDX_WALL_TYPE_COMMON
 #define UDX_WALL_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_WALL_KL_COMMON
 #define UDX_WALL_KL_COMMON
@@ -1857,8 +1730,6 @@ struct Coords_v {
 #ifndef UDX_WALL_WVEL_TYPE_COMMON
 #define UDX_WALL_WVEL_TYPE_COMMON
 
-
-
 struct WvelCste_v {
     float3 u;
 };
@@ -1918,9 +1789,6 @@ enum {
     DEAD  = 1
 };
 
-
-
-
 struct PartList {
     const Particle *pp;
     const int *deathlist;
@@ -1949,13 +1817,11 @@ void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-
 void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
 void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
 void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
-
 
 void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 
@@ -1988,7 +1854,6 @@ struct PaArray;
 struct FoArray;
 struct WvelStep;
 struct RNDunif;
-
 
 #ifndef UDX_WALL_FORCE_TYPE_COMMON
 #define UDX_WALL_FORCE_TYPE_COMMON
@@ -2031,7 +1896,6 @@ struct WallQuants {
 
 struct WallTicket;
 struct WallRepulsePrm;
-
 
 void wall_ini_quants(int3 L, WallQuants*);
 void wall_ini_ticket(int3 L, WallTicket**);
@@ -2273,28 +2137,11 @@ void wall_repulse_prm_fin(WallRepulsePrm *wr) {
     EFREE(wr);
 }
 
-
-
-
-
-
-
-
-
-
-
-
 #include <mpi.h>
 
 #include <curand.h>
 
-
-
-
-
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -2322,8 +2169,6 @@ void wall_repulse_prm_fin(WallRepulsePrm *wr) {
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -2398,10 +2243,6 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -2420,7 +2261,6 @@ void error_print_stack();
 #endif
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-
 
 #if   defined(CC_SYNC)
 
@@ -2441,10 +2281,6 @@ void msg_print(const char *fmt, ...);
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -2499,7 +2335,6 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -2512,22 +2347,9 @@ int status2errcode(MPI_Status *status);
 #include "types.cuh"
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -2569,8 +2391,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -2584,12 +2404,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -2664,7 +2481,6 @@ void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
                      Tform*);
 
-
 void tform_convert(const Tform*, const float a0[3],      float a1[3]);
 
 void tform_to_view(const Tform*,      Tform_v*);
@@ -2692,13 +2508,11 @@ static __device__ void tform_spacing_dev(const Tform_v *t,      float s[3]) {
 struct Tform;
 struct Coords;
 
-
 void tex2sdf_ini(const Coords*, const int T[3], const int N[3], const int M[3],      Tform*);
 void out2sdf_ini(const Coords*, const int N[3],      Tform*);
 void sub2tex_ini(const Coords*, const int T[3], const int M[3],      Tform*);
 
 #include "warp.cuh"
-
 
 #ifndef UDX_WALL_SDF_TYPE_COMMON
 #define UDX_WALL_SDF_TYPE_COMMON
@@ -2953,7 +2767,6 @@ static void split_wall_solvent(const int *keys,        int *s_n, Particle *s_pp,
     *w_n = iw;
 }
 
-
 void sdf_bulk_wall(const Sdf *sdf,        int* s_n, Particle *s_pp,       int *w_n, Particle *w_pp) {
     int n = *s_n, *labels;
     Particle *s_pp_hst;
@@ -2969,7 +2782,6 @@ void sdf_bulk_wall(const Sdf *sdf,        int* s_n, Particle *s_pp,       int *w
     EFREE(s_pp_hst);
     EFREE(labels);
 }
-
 
 static bool bulkp(int *keys, int i) { return keys[i] == LABEL_BULK; }
 
@@ -3036,7 +2848,6 @@ void sdf_fin(Sdf *q) {
 void sdf_bounce(float dt, const WvelStep *wv, const Coords *c, const Sdf *sdf, int n,      Particle *pp) {
     UC(bounce_back(dt, wv, c, sdf, n,      pp));
 }
-
 
 void sdf_get_view(const Sdf *q,      Sdf_v *v) {
     tex3d_to_view(q->tex, &v->tex);
@@ -3114,15 +2925,8 @@ double sdf_compute_volume(MPI_Comm comm, int3 L, const Sdf *sdf, long nsamples) 
     return tot;
 }
 
-
-
-
-
 #include <assert.h>
 #include <mpi.h>
-
-
-
 
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
@@ -3130,7 +2934,6 @@ double sdf_compute_volume(MPI_Comm comm, int3 L, const Sdf *sdf, long nsamples) 
 #endif
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-
 
 #if   defined(CC_SYNC)
 
@@ -3152,14 +2955,6 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
-
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -3176,7 +2971,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -3186,10 +2980,7 @@ void efgets(char *s, int size, FILE*);
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -3217,8 +3008,6 @@ const char* get_filename_ext(const char*);
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -3297,19 +3086,6 @@ static int   warpSize = 1;
 #define UDX_WALL_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_WALL_KL_COMMON
 #define UDX_WALL_KL_COMMON
@@ -3525,24 +3301,7 @@ void wall_label_hst(const Sdf *sdf, int n, const Particle *pp,      int *hst) {
     Dfree(dev);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
-
-
-
 
 #ifndef UDX_WALL_DEVICE_API_COMMON
 #define UDX_WALL_DEVICE_API_COMMON
@@ -3553,7 +3312,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -3562,10 +3320,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3579,7 +3333,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-
 
 #if   defined(CC_SYNC)
 
@@ -3600,9 +3353,6 @@ void error_print_stack();
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
@@ -3654,15 +3404,7 @@ void array3d_copy(size_t x, size_t y, size_t z, float *D,      Array3d *q) {
     CC(cudaMemcpy3D(&copyParams));
 }
 
-
-
-
-
 #include <stdio.h>
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3707,8 +3449,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -3722,12 +3462,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 struct Tform;
@@ -3744,7 +3481,6 @@ void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
                      Tform*);
 
-
 void tform_convert(const Tform*, const float a0[3],      float a1[3]);
 
 void tform_to_view(const Tform*,      Tform_v*);
@@ -3755,11 +3491,9 @@ void tform_dump(Tform*, FILE*);
 struct Tform;
 struct Coords;
 
-
 void tex2sdf_ini(const Coords*, const int T[3], const int N[3], const int M[3],      Tform*);
 void out2sdf_ini(const Coords*, const int N[3],      Tform*);
 void sub2tex_ini(const Coords*, const int T[3], const int M[3],      Tform*);
-
 
 struct TGrid {
     float lo[3], hi[3];
@@ -3775,7 +3509,6 @@ static int goodp(const int n[3]) {
     ch = n[X] < H && n[Y] < H && n[Z] < H;
     return (cl && ch) ? OK : BAD;
 }
-
 
 static void grid2grid(TGrid *from, TGrid *to,      Tform *t) {
     tform_grid2grid(from->lo, from->hi, from->n,
@@ -3818,7 +3551,6 @@ static void out_ini(const Coords *c,      TGrid *t) {
     t->n[Y] = ys(c);
     t->n[Z] = zs(c);
 }
-
 
 void tex2sdf_ini(const Coords *c,
                  const int T[3], const int N[3], const int M[3],
@@ -3863,28 +3595,9 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3],      Tform *t)
     tform_to_grid(lo, hi, T,      t);
 }
 
-
-
-
-
-
-
-
-
-
-
-
 #include <mpi.h>
 #include <math.h>
 #include <vector_types.h>
-
-
-
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3901,7 +3614,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -3945,8 +3657,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -3960,12 +3670,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -3983,7 +3690,6 @@ void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
                      Tform*);
 
-
 void tform_convert(const Tform*, const float a0[3],      float a1[3]);
 
 void tform_to_view(const Tform*,      Tform_v*);
@@ -3993,11 +3699,9 @@ void tform_dump(Tform*, FILE*);
 struct Tform;
 struct Coords;
 
-
 void tex2sdf_ini(const Coords*, const int T[3], const int N[3], const int M[3],      Tform*);
 void out2sdf_ini(const Coords*, const int N[3],      Tform*);
 void sub2tex_ini(const Coords*, const int T[3], const int M[3],      Tform*);
-
 
 struct Coords;
 struct Tform;
@@ -4221,14 +3925,7 @@ void field_dump(const Field *q, const Coords *c, MPI_Comm cart) {
     dump(c, cart, q->N, q->D);
 }
 
-
-
-
-
 #include <stdio.h>
-
-
-
 
 #ifndef UDX_WALL_DEVICE_API_COMMON
 #define UDX_WALL_DEVICE_API_COMMON
@@ -4239,7 +3936,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -4248,10 +3944,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4265,7 +3957,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-
 
 #if   defined(CC_SYNC)
 
@@ -4286,10 +3977,6 @@ void error_print_stack();
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
 
 #ifndef UDX_WALL_SDF_ARRAY3D_TYPE
 #define UDX_WALL_SDF_ARRAY3D_TYPE
@@ -4346,18 +4033,12 @@ void tex3d_copy(const Array3d *a,      Tex3d *t) {
 
 void tex3d_to_view(const Tex3d *t,      Tex3d_v *v) { v->t = t->t; }
 
-
-
-
-
-
 #include <stdio.h>
 #include <vector_types.h>
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -4367,10 +4048,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4515,19 +4192,10 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
     }
 }
 
-
-
 #include <mpi.h>
 #include <math.h>
 #include <vector_types.h>
 #include <assert.h>
-
-
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4576,8 +4244,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -4591,19 +4257,14 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
 #ifndef UDX_WALL_WVEL_TYPE_COMMON
 #define UDX_WALL_WVEL_TYPE_COMMON
-
-
 
 struct WvelCste_v {
     float3 u;
@@ -4621,10 +4282,6 @@ struct WvelHS_v {
 };
 
 #endif
-
-
-
-
 
 struct WvelCste {
     float3 u;
@@ -4659,22 +4316,16 @@ union WvelPar {
     WvelHS hs;
 };
 
-
-
 struct Wvel {
     WvelPar p;
     int type;
 };
-
-
 
 union WvelPar_v {
     WvelCste_v cste;
     WvelShear_v shear;
     WvelHS_v hs;
 };
-
-
 
 struct WvelStep {
     WvelPar_v p;
@@ -4803,22 +4454,12 @@ void wvel_get_view(const WvelStep *w,      WvelHS_v *v) {
     *v = w->p.hs;
 }
 
-
-
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
 #include <mpi.h>
 
-
-
-
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-
 
 #if   defined(CC_SYNC)
 
@@ -4840,14 +4481,6 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
-
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -4861,10 +4494,7 @@ void error_abort();
 
 void error_print_stack();
 
-
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -4892,8 +4522,6 @@ void error_print_stack();
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -4973,19 +4601,6 @@ static int   warpSize = 1;
 #include "types.cuh"
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef UDX_WALL_KL_COMMON
 #define UDX_WALL_KL_COMMON
 #include "launch.cuh"
@@ -5002,7 +4617,6 @@ struct Coords_v {
 #ifndef UDX_WALL_COORDS_DEV_COMMON
 #define UDX_WALL_COORDS_DEV_COMMON
 
-
 static __device__ int xdomain(const Coords_v c) {
     return c.Lx * c.xd;
 }
@@ -5014,8 +4628,6 @@ static __device__ int ydomain(const Coords_v c) {
 static __device__ int zdomain(const Coords_v c) {
     return c.Lz * c.zd;
 }
-
-
 
 static __device__ float xl2xc(const Coords_v c, float xl) {
     return xl - 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
@@ -5035,8 +4647,6 @@ static __device__ void local2center(const Coords_v c, float3 rl,      float3 *rc
     rc->z = zl2zc(c, rl.z);
 }
 
-
-
 static __device__ float xc2xl(const Coords_v c, float xc) {
     return xc + 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
 }
@@ -5055,8 +4665,6 @@ static __device__ void center2local(Coords_v c, float3 rc,      float3 *rl) {
     rl->z = zc2zl(c, rc.z);
 }
 
-
-
 static __device__ float xl2xg(const Coords_v c, float xl) {
     return (c.xc + 0.5f) * c.Lx + xl;
 }
@@ -5074,8 +4682,6 @@ static __device__ void local2global(const Coords_v c, float3 rl,      float3 *rg
     rg->y = yl2yg(c, rl.y);
     rg->z = zl2zg(c, rl.z);
 }
-
-
 
 static __device__ float xg2xl(const Coords_v c, float xg) {
     return xg - (c.xc + 0.5f) * c.Lx;
@@ -5127,8 +4733,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -5142,19 +4746,14 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
 #ifndef UDX_WALL_WVEL_TYPE_COMMON
 #define UDX_WALL_WVEL_TYPE_COMMON
-
-
 
 struct WvelCste_v {
     float3 u;
@@ -5448,7 +5047,6 @@ struct Particle;
 
 void bounce_back(float dt, const WvelStep *wv, const Coords *c, const Sdf *sdf, int n,      Particle *pp);
 
-
 enum {
     MAX_RESCUE = 8,
     MAX_NEWTON = 2
@@ -5514,8 +5112,6 @@ static __device__ void bounce_back_1p(float dt, Wvel_v wv, Coords_v c, Sdf_v *te
         rescue(wv, c, texsdf, currsdf,          r, v);
         return;
     }
-
-
 
     t = 0;
     for (l = 0; l < MAX_NEWTON; ++l) {
