@@ -1,24 +1,6 @@
 #include "macros.cuh"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include "config.cuh"
-
-
-
 
 #ifndef UDX_DISTR_EXCH_DEVICE_API_COMMON
 #define UDX_DISTR_EXCH_DEVICE_API_COMMON
@@ -29,23 +11,10 @@
 #include "types.cuh"
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-
 
 #if   defined(CC_SYNC)
 
@@ -66,9 +35,6 @@
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
 
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #define UDX_DISTR_EXCH_FRAG_DEV_COMMON
@@ -118,7 +84,6 @@ struct int3;
 void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m,      Sarray<Particle*, 27> buf);
 void dcommon_shift_one_frag(int3 L, int n, const int fid,      Particle *pp);
 void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts,      Particle *pp);
-
 
 namespace dcommon_dev {
 
@@ -191,16 +156,7 @@ void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts,      Pa
     KL(dcommon_dev::shift_halo, (k_cnf(nhalo)), (L, starts,      pp));
 }
 
-
-
-
-
 #include <mpi.h>
-
-
-
-
-
 
 #if   defined(CC_SYNC)
 
@@ -222,26 +178,10 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #define UDX_DISTR_EXCH_FRAG_DEV_COMMON
@@ -283,7 +223,6 @@ enum {
     NBAGS  = 27,
 };
 
-
 enum AllocMod {
     HST_ONLY,
     DEV_ONLY,
@@ -313,7 +252,6 @@ void comm_ini(MPI_Comm cart,      Comm **c);
 void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
@@ -364,13 +302,11 @@ __global__ void ecommon_pack_pp(const Particle *pp, PackHelper ph,      Pap26 bu
     for (  ; gid < hi; gid += step) {
         fid = frag_dev::frag_get_fid(ph.starts, gid);
 
-
         frag_i = gid - ph.starts[fid];
 
         pack_p(pp, ph.offsets[fid], ph.indices[fid], ph.cap[fid], frag_i,      buf.d[fid]);
     }
 }
-
 
 static __device__ void fid2shift(int3 L, int id,      int s[3]) {
     enum {X, Y, Z};
@@ -418,16 +354,6 @@ void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid,      Positioncp *
     KL(exch_dev::ecommon_shift_rrcp_one_frag, (k_cnf(n)), (L, n, fid,      rr));
 }
 
-
-
-
-
-
-
-
-
-
-
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -438,7 +364,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -447,10 +372,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -495,18 +416,14 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 struct DFluStatus;
 struct Config;
 
-
 void dflu_status_ini(DFluStatus **s);
 void dflu_status_fin(DFluStatus  *s);
-
 
 int  dflu_status_nullp(DFluStatus *s);
 int  dflu_status_success(DFluStatus *s);
 void dflu_status_log(DFluStatus *s);
 
-
 void dflu_status_exceed(int frag, int counter, int capacity,      DFluStatus *s);
-
 
 enum {SUCCESS, PACK_FAILURE};
 struct DFluStatus {
@@ -558,31 +475,10 @@ void dflu_status_exceed(int fid, int cnt, int cap,      DFluStatus *s) {
 
 int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
 
-
-
-
 #include "device.cuh"
 
 #include <stdlib.h>
 #include <stdio.h>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #if   defined(CC_SYNC)
 
@@ -604,14 +500,6 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
-
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -627,7 +515,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -723,37 +610,16 @@ void dmap_D2H(int nfrags, const DMap *d,      DMap *h) {
     }
 }
 
-
-
-
-
 #include "device.cuh"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-
 
 #if   defined(CC_SYNC)
 
@@ -775,14 +641,6 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
-
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -799,7 +657,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -808,8 +665,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
 
 enum {MAX_FRAGS=26};
 
@@ -958,17 +813,8 @@ void emap_download_all_counts(int nw, int nfrags, EMap map,      int tot_counts[
     EFREE(buf);
 }
 
-
-
-
-
-
-
 #include <mpi.h>
 #include <assert.h>
-
-
-
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
@@ -980,7 +826,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -989,7 +834,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
 
 #if   defined(CC_SYNC)
 
@@ -1011,17 +855,10 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1035,18 +872,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_DISTR_EXCH_TYPE_COMMON
 #define UDX_DISTR_EXCH_TYPE_COMMON
@@ -1096,7 +921,6 @@ enum {
     NBAGS  = 27,
 };
 
-
 enum AllocMod {
     HST_ONLY,
     DEV_ONLY,
@@ -1126,7 +950,6 @@ void comm_ini(MPI_Comm cart,      Comm **c);
 void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
@@ -1162,7 +985,6 @@ struct RigQuants {
     Particle *pp_hst, *pp;
     Rigid    *ss_hst, *ss;
     float   *rr0_hst, *rr0;
-
 
     int nt, nv;
     int4 *dtt;
@@ -1247,7 +1069,6 @@ void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m,      Sa
 void dcommon_shift_one_frag(int3 L, int n, const int fid,      Particle *pp);
 void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts,      Particle *pp);
 
-
 struct DRigPack;
 struct DRigComm;
 struct DRigUnpack;
@@ -1305,10 +1126,6 @@ __global__ void pack_ss(const Rigid *ss, DMap m,      Sarray<Rigid*, 27> buf) {
 
 }
 
-
-
-
-
 enum {
     ID_PP,
     ID_SS,
@@ -1354,7 +1171,6 @@ void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **pack) {
     p->hipp = &p->hbags[ID_PP];  p->hss = &p->hbags[ID_SS];
     p->dipp = &p->dbags[ID_PP];  p->dss = &p->dbags[ID_SS];
 
-
     UC(comm_bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc,      p->hipp, p->dipp));
     UC(comm_bags_ini(PINNED, DEV_ONLY, sizeof(Rigid), numc,      p->hss, p->dss));
 
@@ -1380,7 +1196,6 @@ void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {
     drig_get_num_capacity(maxns,      numc);
 
     u->hipp = &u->hbags[ID_PP];  u->hss = &u->hbags[ID_SS];
-
 
     UC(comm_bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc,      u->hipp, NULL));
 
@@ -1432,7 +1247,6 @@ static void pack_ss(const DMap m, int n, const Rigid *ss,      dBags *bags) {
 
     KL((drig_dev::pack_ss), (k_cnf(n)), (ss, m,      wrap));
 }
-
 
 void drig_pack(int ns, int nv, const Rigid *ss, const Particle *ipp,      DRigPack *p) {
     UC(drig_pack_pp(p->map, ns, nv, ipp,      p->dipp));
@@ -1511,14 +1325,6 @@ void drig_unpack_halo(const DRigUnpack *u,      RigQuants *q) {
     q->ns = strts;
 }
 
-
-
-
-
-
-
-
-
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -1527,16 +1333,12 @@ void drig_unpack_halo(const DRigUnpack *u,      RigQuants *q) {
 #include <mpi.h>
 #include <assert.h>
 
-
-
-
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -1546,7 +1348,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
 
 #if   defined(CC_SYNC)
 
@@ -1568,17 +1369,10 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1601,18 +1395,6 @@ void error_print_stack();
 #define UDX_DISTR_EXCH_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #define UDX_DISTR_EXCH_FRAG_DEV_COMMON
@@ -1651,9 +1433,6 @@ enum {
     DEAD  = 1
 };
 
-
-
-
 struct PartList {
     const Particle *pp;
     const int *deathlist;
@@ -1689,13 +1468,11 @@ void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-
 void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
 void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
 void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
-
 
 void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 #ifndef UDX_DISTR_FLU_QUANTS_COMMON
@@ -1706,8 +1483,6 @@ struct FluQuants {
     Clist     *cells;
     ClistMap *mcells;
     Particle *pp_hst;
-
-
 
     bool ids, colors;
 
@@ -1735,8 +1510,6 @@ void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q)
 
 void flu_txt_dump(const Coords*, const FluQuants *q);
 
-
-
 void flu_build_cells(     FluQuants *q);
 
 #ifndef UDX_DISTR_EXCH_COMM_COMMON
@@ -1748,7 +1521,6 @@ enum {
     BULK   = 26,
     NBAGS  = 27,
 };
-
 
 enum AllocMod {
     HST_ONLY,
@@ -1779,7 +1551,6 @@ void comm_ini(MPI_Comm cart,      Comm **c);
 void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
@@ -1834,23 +1605,17 @@ void dflu_pack_fin(DFluPack *p);
 void dflu_comm_fin(DFluComm *c);
 void dflu_unpack_fin(DFluUnpack *u);
 
-
 void dflu_build_map(int n, const PartList lp, DFluPack *p);
-
 
 void dflu_pack(const FluQuants *q,      DFluPack *p);
 void dflu_download(DFluPack *p,      DFluStatus *s);
-
 
 void dflu_post_recv(DFluComm *c, DFluUnpack *u);
 void dflu_post_send(DFluPack *p, DFluComm   *c);
 void dflu_wait_recv(DFluComm *c, DFluUnpack *u);
 void dflu_wait_send(DFluComm *c);
 
-
 void dflu_unpack(     DFluUnpack *u);
-
-
 
 void dflu_bulk(PartList lp,      FluQuants *q);
 void dflu_halo(const DFluUnpack *u,      FluQuants *q);
@@ -1906,18 +1671,14 @@ void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts,      Pa
 struct DFluStatus;
 struct Config;
 
-
 void dflu_status_ini(DFluStatus **s);
 void dflu_status_fin(DFluStatus  *s);
-
 
 int  dflu_status_nullp(DFluStatus *s);
 int  dflu_status_success(DFluStatus *s);
 void dflu_status_log(DFluStatus *s);
 
-
 void dflu_status_exceed(int frag, int counter, int capacity,      DFluStatus *s);
-
 
 typedef Sarray <float2*, 26> float2p26;
 typedef Sarray <int*, 26> intp26;
@@ -2326,8 +2087,6 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u,      FluQuan
 
     q->n = n;
 
-
-
     q->pp = pp0;
     q->pp0 = pp;
 
@@ -2342,22 +2101,13 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u,      FluQuan
     }
 }
 
-
-
-
-
 #include <mpi.h>
 #include <assert.h>
-
-
-
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -2385,8 +2135,6 @@ void msg_print(const char *fmt, ...);
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -2464,7 +2212,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -2473,7 +2220,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
 
 #if   defined(CC_SYNC)
 
@@ -2495,17 +2241,10 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2519,19 +2258,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_DISTR_EXCH_TYPE_COMMON
 #define UDX_DISTR_EXCH_TYPE_COMMON
@@ -2554,7 +2280,6 @@ struct RbcQuants {
     int *ii;
     AreaVolume *area_volume;
 };
-
 
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #define UDX_DISTR_EXCH_FRAG_DEV_COMMON
@@ -2595,7 +2320,6 @@ enum {
     NBAGS  = 27,
 };
 
-
 enum AllocMod {
     HST_ONLY,
     DEV_ONLY,
@@ -2625,7 +2349,6 @@ void comm_ini(MPI_Comm cart,      Comm **c);
 void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
@@ -2717,7 +2440,6 @@ struct int3;
 void dcommon_pack_pp_packets(int nc, int nv, const Particle *pp, DMap m,      Sarray<Particle*, 27> buf);
 void dcommon_shift_one_frag(int3 L, int n, const int fid,      Particle *pp);
 void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts,      Particle *pp);
-
 
 struct DRbcPack;
 struct DRbcComm;
@@ -2902,7 +2624,6 @@ static void drbc_pack_pp(const DMap m, int nc, int nv, const Particle *pp,      
     UC(dcommon_pack_pp_packets(nc, nv, pp, m,      wrap));
 }
 
-
 static void pack_ii(const DMap m, int, const int *ii,      hBags *bags) {
     Sarray<int*, NBAGS> wrap;
     bag2Sarray(*bags, &wrap);
@@ -3031,20 +2752,8 @@ void drbc_unpack_halo(const DRbcUnpack *u,      RbcQuants *q) {
     q->nc = nc;
 }
 
-
-
-
-
-
-
-
-
-
 #include <mpi.h>
 #include <assert.h>
-
-
-
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
@@ -3052,18 +2761,6 @@ void msg_print(const char *fmt, ...);
 #define UDX_DISTR_EXCH_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #define UDX_DISTR_EXCH_FRAG_DEV_COMMON
@@ -3100,10 +2797,6 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 #include "device.cuh"
 #endif
 
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -3120,7 +2813,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -3129,7 +2821,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
 
 #if   defined(CC_SYNC)
 
@@ -3151,9 +2842,6 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #ifndef UDX_DISTR_EXCH_KL_COMMON
 #define UDX_DISTR_EXCH_KL_COMMON
 #include "launch.cuh"
@@ -3168,7 +2856,6 @@ enum {
     BULK   = 26,
     NBAGS  = 27,
 };
-
 
 enum AllocMod {
     HST_ONLY,
@@ -3199,7 +2886,6 @@ void comm_ini(MPI_Comm cart,      Comm **c);
 void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
@@ -3253,7 +2939,6 @@ void parray_get_view(const PaArray *a, PaCArray_v *v);
 #endif
 #ifndef UDX_FLU_TYPE_COMMON
 #define UDX_FLU_TYPE_COMMON
-
 
 namespace flu {
 
@@ -3315,7 +3000,6 @@ using flu::RFrag26;
 void eflu_get_local_frags(const EFluPack *p,      LFrag26 *lfrags);
 void eflu_get_remote_frags(const EFluUnpack *u,      RFrag26 *rfrags);
 
-
 namespace eflu_dev {
 
 static __device__ void get_frag_box(int3 L0, int i,      int org[3], int ext[3]) {
@@ -3328,7 +3012,6 @@ static __device__ void get_frag_box(int3 L0, int i,      int org[3], int ext[3])
     }
 }
 
-
 static __device__ int frag2bulk(int3 L, int hci, const int org[3], const int ext[3]) {
     enum {X, Y, Z};
     int c;
@@ -3337,7 +3020,6 @@ static __device__ int frag2bulk(int3 L, int hci, const int org[3], const int ext
     for (c = 0; c < 3; ++c) src[c] = org[c] + dst[c];
     return src[X] + L.x * (src[Y] + L.y * src[Z]);
 }
-
 
 __global__ void count_cells(int3 L, const int27 cellpackstarts, const int *start, const int *count,
                                  intp26 fragss, intp26 fragcc) {
@@ -3364,7 +3046,6 @@ __global__ void count_cells(int3 L, const int27 cellpackstarts, const int *start
         fragcc.d[fid][hci] = 0;
     }
 }
-
 
 template <int NWARPS>
 __global__ void scan(const int26 fragn, const intp26 fragcc,      intp26 fragcum) {
@@ -3422,12 +3103,6 @@ __global__ void collect_particles(int fid, int nc, const Particle *pp, const int
     int cid, tid, src, dst, nsrc, nfloat2s;
     int i, lpid, dpid, spid, c;
 
-
-
-
-
-
-
     cid = threadIdx.x / (warpSize / 2) + 2 * blockIdx.x;
     tid = threadIdx.x % (warpSize / 2);
 
@@ -3456,17 +3131,11 @@ __global__ void collect_particles(int fid, int nc, const Particle *pp, const int
     if (cid + 1 == nc) fnn[fid] = dst;
 }
 
-
 __global__ void collect_colors(int fid, int nc, const int *ii,
                                const int *bss, const int *bcc, const int *fss,
                                int cap,      int *fii) {
     int cid, tid, src, dst, nsrc;
     int lpid, dpid, spid;
-
-
-
-
-
 
     cid = threadIdx.x / (warpSize / 2) + 2 * blockIdx.x;
     tid = threadIdx.x % (warpSize / 2);
@@ -3485,17 +3154,6 @@ __global__ void collect_colors(int fid, int nc, const int *ii,
 }
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 struct EFluPack {
     enum {
@@ -3676,7 +3334,6 @@ void eflu_compute_map(const int *start, const int *count,      EFluPack *p) {
     KL(eflu_dev::scan<32>, (26, 32 * 32), (cc, p->bcc,      p->fss));
 }
 
-
 static void download_cell_starts(int3 L, intp26 src,      intp26 dst) {
     int i, nc;
     size_t sz;
@@ -3692,7 +3349,6 @@ void eflu_download_cell_starts(     EFluPack *p) {
     intp26 fss_hst;
     bag2Sarray(*p->hfss,      &fss_hst);
     download_cell_starts(p->L, p->fss,      fss_hst);
-
 
 }
 
@@ -3786,7 +3442,6 @@ static void upload_data(int n, const hBags *h,      dBags *d) {
     }
 }
 
-
 void eflu_unpack(EFluUnpack *u) {
     upload_data(NFRAGS, u->hfss,      u->dfss);
     upload_data(NFRAGS, u->hpp,      u->dpp);
@@ -3841,20 +3496,10 @@ void eflu_get_remote_frags(const EFluUnpack *u,      RFrag26 *rfrags) {
     }
 }
 
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector_types.h>
 #include <mpi.h>
-
-
-
 
 void os_mkdir(const char* path);
 long os_time();
@@ -3871,18 +3516,6 @@ void msg_print(const char *fmt, ...);
 #include "constants.cuh"
 #endif
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_DISTR_EXCH_TYPE_COMMON
 #define UDX_DISTR_EXCH_TYPE_COMMON
@@ -3941,18 +3574,12 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3970,7 +3597,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -3980,14 +3606,12 @@ void efgets(char *s, int size, FILE*);
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-
 
 #if   defined(CC_SYNC)
 
@@ -4008,10 +3632,6 @@ void check(int code, const char *file, int line);
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
 
 struct Coords;
 struct Coords_v;
@@ -4044,8 +3664,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -4059,12 +3677,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -4074,9 +3689,6 @@ enum {
     ALIVE = 0,
     DEAD  = 1
 };
-
-
-
 
 struct PartList {
     const Particle *pp;
@@ -4107,13 +3719,11 @@ void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-
 void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
 void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
 void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
-
 
 void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 
@@ -4153,7 +3763,6 @@ void inter_color_set_conf(const Config*, GenColor*);
 void inter_color_apply_hst(const Coords*, const GenColor*, int n, const Particle *pp,      int *cc);
 void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle *pp,      int *cc);
 
-
 struct Particle;
 struct Force;
 struct TxtRead;
@@ -4178,8 +3787,6 @@ struct FluQuants {
     Clist     *cells;
     ClistMap *mcells;
     Particle *pp_hst;
-
-
 
     bool ids, colors;
 
@@ -4206,8 +3813,6 @@ void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);
 void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q);
 
 void flu_txt_dump(const Coords*, const FluQuants *q);
-
-
 
 void flu_build_cells(     FluQuants *q);
 
@@ -4395,15 +4000,8 @@ void flu_build_cells(     FluQuants *q) {
     q->pp = q->pp0; q->pp0 = tmp;
 }
 
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
-
-
-
 
 #if   defined(DEV_CUDA)
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
@@ -4452,9 +4050,7 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -4482,8 +4078,6 @@ static int   warpSize = 1;
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -4553,7 +4147,6 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 #endif
 #endif
 
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -4573,14 +4166,6 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4603,27 +4188,11 @@ void error_print_stack();
 #endif
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include "vecmath.cuh"
 
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
-
 
 struct PairDPD {
     float a, g, s, spow;
@@ -4633,7 +4202,6 @@ struct PairDPDC {
     int ncolors;
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
-
 
 struct PairDPDCM {
     int ncolors;
@@ -4667,7 +4235,6 @@ struct PairSFo {
 };
 #define _S_ static __device__
 #define _I_ static __device__
-
 
 static const float EPS = 1e-6;
 enum {NORM_OK, NORM_BIG, NORM_SMALL};
@@ -4789,7 +4356,6 @@ _I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd,      Fo *
     pair_force(&p, a, b, rnd,      f);
 }
 
-
 template <typename Fo>
 _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
@@ -4800,7 +4366,6 @@ _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo 
     p.spow = pc->spow;
     pair_force(&p, a, b, rnd,      f);
 }
-
 
 _I_ void pair_add(const PairFo *b,      PairFo *a)
 {
@@ -4856,26 +4421,6 @@ void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 #include "launch.cuh"
 #endif
 #include "randomdev.cuh"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 struct PaArray_v {
     const float *pp;
@@ -5004,7 +4549,6 @@ _I_ void farray_atomic_add(const PairSFo *f, int i,      FoSArray_v a)
     farray_atomic_add_stress(f, i,      a);
 }
 
-
 _I_ PairFo farray_fo0(FoArray_v)
 {
     PairFo f;
@@ -5026,7 +4570,6 @@ _I_ PairSFo farray_fo0(FoSArray_v)
 
 #ifndef UDX_FLU_TYPE_COMMON
 #define UDX_FLU_TYPE_COMMON
-
 
 namespace flu {
 
@@ -5111,7 +4654,6 @@ struct Map {
     int cnt0, cnt1, cnt2;
 };
 
-
 static __device__ int endp(const Map m, int i) { return i >= m.cnt2; }
 static __device__ int m2id(const Map m, int i) {
 
@@ -5143,7 +4685,6 @@ static __device__ Map r2map0(const int *start, int i, int row, int col, int jump
     m.cnt0 = c[0]; m.cnt1 = c[1]; m.cnt2 = c[2];
     return m;
 }
-
 
 static __device__ int facep(int dx, int dy, int dz) {
     int x, y, z;
