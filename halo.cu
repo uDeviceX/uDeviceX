@@ -639,7 +639,6 @@ bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #ifndef UDX_DISTR_EXCH_SHFL_COMMON
 #define UDX_DISTR_EXCH_SHFL_COMMON
-#define UDX_DISTR_EXCH_SHFL_COMMON
 #include "warp.cuh"
 #endif
 
