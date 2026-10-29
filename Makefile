@@ -43,6 +43,7 @@ OBJECTS = \
 	com.o \
 	rig.o \
 	grid.o \
+	diagmesh.o \
  transform.o \
  coords.o \
  comm.o \
