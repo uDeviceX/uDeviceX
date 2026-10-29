@@ -1627,7 +1627,6 @@ void check(int rc, const char *file, int line);
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <curand.h>
 
 
 
@@ -1662,86 +1661,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-namespace rbc_api {
-typedef struct Generator_st *Generator_t;
-}
-namespace rnd_api {
-typedef struct Generator_st *Generator_t;
-int CreateGenerator(Generator_t *g);
-int SetPseudoRandomGeneratorSeed(Generator_t g,  long seed);
-int DestroyGenerator(Generator_t g);
-int GenerateNormal(Generator_t g, float *outputPtr, size_t n);
-}
-
-namespace rnd_api {
-
-#if   defined(DEV_CUDA)
-struct Generator_st { curandGenerator_t g; };
-
-static int CreateGenerator0(curandGenerator_t *g) {
-    return curandCreateGenerator(g, CURAND_RNG_PSEUDO_DEFAULT);
-}
-int CreateGenerator(Generator_t *pg) {
-    int rc;
-    Generator_st *s;
-    EMALLOC(1, &s);
-    rc = CreateGenerator0(&s->g);
-    *pg = s;
-    return rc;
-}
-
-int DestroyGenerator(Generator_t s) {
-    int rc;
-    rc = curandDestroyGenerator(s->g);
-    EFREE(s);
-    return rc;
-}
-
-int SetPseudoRandomGeneratorSeed(Generator_t s,  long seed) {
-    return curandSetPseudoRandomGeneratorSeed(s->g, seed);
-}
-
-int GenerateNormal(Generator_t s, float *outputPtr, size_t n) {
-    float mean, std;
-    mean = 0; std = 1;
-    return curandGenerateNormal(s->g, outputPtr, n, mean, std);
-}
-#elif defined(DEV_CPU)
-
-
-double gaussrand() {
-    static double V1, V2, S;
-    static int phase = 0;
-    double X;
-    if (phase == 0) {
-        do {
-            double U1 = (double)rand() / RAND_MAX;
-            double U2 = (double)rand() / RAND_MAX;
-            V1 = 2 * U1 - 1;
-            V2 = 2 * U2 - 1;
-            S = V1 * V1 + V2 * V2;
-        } while(S >= 1 || S == 0);
-
-        X = V1 * sqrt(-2 * log(S) / S);
-    } else
-        X = V2 * sqrt(-2 * log(S) / S);
-    phase = 1 - phase;
-    return X;
-}
-int CreateGenerator(Generator_t*) { return 0; }
-int DestroyGenerator(Generator_t) { return 0; }
-int SetPseudoRandomGeneratorSeed(Generator_t,  long seed) { srand(seed); return 0; }
-int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
-    size_t i;
-    for (i = 0; i < n; i++) outputPtr[i] = gaussrand();
-    return 0;
-}
-#else
-  #error DEV_* is undefined
-#endif
-
-}
 
 
 

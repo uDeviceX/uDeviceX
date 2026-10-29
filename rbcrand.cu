@@ -5,6 +5,9 @@
 #include "device.cuh"
 
 #include <stddef.h>
+#include <math.h>
+#include <stdlib.h>
+#include <curand.h>
 
 void error_stack_push(const char *, int);
 void error_stack_pop();
@@ -18,15 +21,6 @@ long os_time();
 void msg_print(const char *, ...);
 
 namespace cc { void check(int, const char *, int); }
-namespace rnd_api {
-struct Generator_st;
-typedef Generator_st *Generator_t;
-int CreateGenerator(Generator_t *);
-int SetPseudoRandomGeneratorSeed(Generator_t, long);
-int DestroyGenerator(Generator_t);
-int GenerateNormal(Generator_t, float *, size_t);
-}
-
 #define CC(ans) do { cc::check((ans), __FILE__, __LINE__); } while (0)
 #define CU(x) do { \
     int _curc = (x); \
@@ -34,6 +28,33 @@ int GenerateNormal(Generator_t, float *, size_t);
 } while (0)
 
 enum {SEED_TIME = -1};
+
+namespace rnd_api {
+struct Generator_st { curandGenerator_t g; };
+typedef Generator_st *Generator_t;
+
+int CreateGenerator(Generator_t *out) {
+    Generator_st *s;
+    EMALLOC(1, &s);
+    const int rc = curandCreateGenerator(&s->g, CURAND_RNG_PSEUDO_DEFAULT);
+    *out = s;
+    return rc;
+}
+
+int DestroyGenerator(Generator_t s) {
+    const int rc = curandDestroyGenerator(s->g);
+    EFREE(s);
+    return rc;
+}
+
+int SetPseudoRandomGeneratorSeed(Generator_t s, long seed) {
+    return curandSetPseudoRandomGeneratorSeed(s->g, seed);
+}
+
+int GenerateNormal(Generator_t s, float *out, size_t n) {
+    return curandGenerateNormal(s->g, out, n, 0, 1);
+}
+}
 
 struct RbcRnd {
     float *r;
