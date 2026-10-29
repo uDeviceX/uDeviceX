@@ -2566,14 +2566,6 @@ _I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3],   
     r[Z] = orient2d_xy(a, b, c);
 }
 
-_I_ double shewchuk_area(const double a[3], const double b[3], const double c[3]) {
-    double x, y, z;
-    x = orient2d_yz(a, b, c);
-    y = orient2d_zx(a, b, c);
-    z = orient2d_xy(a, b, c);
-    return sqrt(x*x + y*y + z*z)/2;
-}
-
 _I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
                        double *px, double *py) {
     enum {X, Y, Z};
@@ -3683,14 +3675,6 @@ _I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3],   
     r[X] = orient2d_yz(a, b, c);
     r[Y] = orient2d_zx(a, b, c);
     r[Z] = orient2d_xy(a, b, c);
-}
-
-_I_ double shewchuk_area(const double a[3], const double b[3], const double c[3]) {
-    double x, y, z;
-    x = orient2d_yz(a, b, c);
-    y = orient2d_zx(a, b, c);
-    z = orient2d_xy(a, b, c);
-    return sqrt(x*x + y*y + z*z)/2;
 }
 
 _I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
