@@ -74,6 +74,7 @@ OBJECTS = \
  mesh.o \
  force.o \
  areavol.o \
+ rbcrand.o \
  io.o \
  body.o \
  main.o \
