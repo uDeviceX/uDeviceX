@@ -46,6 +46,7 @@ OBJECTS = \
 	diagmesh.o \
 	wallobj.o \
 	objinter.o \
+	options.o \
  transform.o \
  coords.o \
  comm.o \
