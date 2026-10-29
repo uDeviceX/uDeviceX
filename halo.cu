@@ -1189,26 +1189,6 @@ void rig_strt_quants(MPI_Comm, const MeshRead*, const char *base, const char *na
 void rig_strt_dump_templ(MPI_Comm, const char *base, const char *name, const RigQuants *q);
 void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, const RigQuants *q);
 
-#ifndef UDX_DISTR_EXCH_SHFL_COMMON
-#define UDX_DISTR_EXCH_SHFL_COMMON
-#define _I_ static __device__
-
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up_sync(0xFFFFFFFF, val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl_sync(0xFFFFFFFF, val, width);
-}
-
-#undef _I_
-#endif
 #ifndef UDX_DISTR_EXCH_DMAP_TYPE_COMMON
 #define UDX_DISTR_EXCH_DMAP_TYPE_COMMON
 
@@ -1690,27 +1670,6 @@ struct Scan;
 void scan_apply(const int *input, int size,      int *output,       Scan*);
 void scan_ini(int size,      Scan**);
 void scan_fin(Scan*);
-#ifndef UDX_DISTR_EXCH_SHFL_COMMON
-#define UDX_DISTR_EXCH_SHFL_COMMON
-#define _I_ static __device__
-
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up_sync(0xFFFFFFFF, val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl_sync(0xFFFFFFFF, val, width);
-}
-
-#undef _I_
-#endif
-
 struct Clist;
 struct ClistMap;
 
@@ -2697,26 +2656,6 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
 }
 #endif
 
-#ifndef UDX_DISTR_EXCH_SHFL_COMMON
-#define UDX_DISTR_EXCH_SHFL_COMMON
-#define _I_ static __device__
-
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up_sync(0xFFFFFFFF, val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl_sync(0xFFFFFFFF, val, width);
-}
-
-#undef _I_
-#endif
 struct Particle;
 struct float3;
 void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
@@ -3344,27 +3283,6 @@ typedef Sarray<RndFrag, 26> RndFrag26;
 
 }
 #endif
-#ifndef UDX_DISTR_EXCH_SHFL_COMMON
-#define UDX_DISTR_EXCH_SHFL_COMMON
-#define _I_ static __device__
-
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up_sync(0xFFFFFFFF, val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl_sync(0xFFFFFFFF, val, width);
-}
-
-#undef _I_
-#endif
-
 struct EFluPack;
 struct EFluComm;
 struct EFluUnpack;
