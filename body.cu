@@ -1660,15 +1660,6 @@ _I_ T warpReduceSum(T v)
     return v;
 }
 
-_I_ float2 warpReduceSum(float2 val)
-{
-    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
-        val.x += shfl_down(val.x, offset);
-        val.y += shfl_down(val.y, offset);
-    }
-    return val;
-}
-
 _I_ float3 warpReduceSum(float3 val)
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
