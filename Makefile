@@ -41,6 +41,7 @@ OBJECTS = \
 	iobop.o \
 	edgwrap.o \
 	com.o \
+	rig.o \
  transform.o \
  coords.o \
  comm.o \
