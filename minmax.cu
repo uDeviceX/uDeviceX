@@ -5,14 +5,11 @@
 #include "types.cuh"
 #include "device.cuh"
 #include "launch.cuh"
+#include "warp.cuh"
 
 #define UDX_CONTROL_WARPSIZE_COMMON
 enum { WARPSIZE = 32 };
 enum { BLOCK_SIZE = 128, NWARPS = BLOCK_SIZE / WARPSIZE };
-
-static __device__ float shfl_down(float value, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, value, width);
-}
 
 static const float minmax_minv = -100000000.;
 static const float minmax_maxv =  100000000.;
