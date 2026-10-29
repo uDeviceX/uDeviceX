@@ -25,8 +25,6 @@
 #define UDX_FORCE_DEF_COMMON
 #include "constants.cuh"
 #endif
-#ifndef UDX_FORCE_DEVICE_COMMON
-#define UDX_FORCE_DEVICE_COMMON
 
 
 
@@ -39,8 +37,6 @@
 
 
 
-
-#endif
 
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
@@ -1206,8 +1202,6 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h,      co
 #define UDX_FORCE_TYPE_COMMON
 #include "types.cuh"
 #endif
-#ifndef UDX_FORCE_DEVICE_COMMON
-#define UDX_FORCE_DEVICE_COMMON
 
 
 
@@ -1221,7 +1215,6 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h,      co
 
 
 
-#endif
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);

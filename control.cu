@@ -42,17 +42,6 @@ bool same_str(const char *, const char *);
 #include <mpi.h>
 #include <vector_types.h>
 
-#ifndef UDX_CONTROL_UTILS_COMMON
-#define UDX_CONTROL_UTILS_COMMON
-
-
-
-
-#endif
-#ifndef UDX_CONTROL_ERROR_COMMON
-#define UDX_CONTROL_ERROR_COMMON
-
-#endif
 struct Config;
 struct float3;
 struct int3;
@@ -161,15 +150,6 @@ void vcont_set_conf(const Config *cfg,      PidVCont *c) {
 
 
 
-#ifndef UDX_CONTROL_ERROR_COMMON
-#define UDX_CONTROL_ERROR_COMMON
-
-#endif
-
-
-#ifndef UDX_CONTROL_TYPE_COMMON
-#define UDX_CONTROL_TYPE_COMMON
-#endif
 
 
 
@@ -222,9 +202,6 @@ void scheme_move_clear_vel(int n, Particle *pp) {
 
 
 
-#ifndef UDX_CONTROL_D_API_COMMON
-#define UDX_CONTROL_D_API_COMMON
-#endif
 
 
 
@@ -232,9 +209,6 @@ void scheme_move_clear_vel(int n, Particle *pp) {
 
 
 
-#ifndef UDX_CONTROL_KL_COMMON
-#define UDX_CONTROL_KL_COMMON
-#endif
 
 
 

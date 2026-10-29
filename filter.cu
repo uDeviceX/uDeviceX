@@ -138,12 +138,6 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 
 
 
-#ifndef UDX_CONTROL_KL_COMMON
-#define UDX_CONTROL_KL_COMMON
-#endif
-#ifndef UDX_CONTROL_D_API_COMMON
-#define UDX_CONTROL_D_API_COMMON
-#endif
 
 
 
@@ -157,10 +151,6 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 
 
 
-
-#ifndef UDX_CONTROL_TYPE_COMMON
-#define UDX_CONTROL_TYPE_COMMON
-#endif
 
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
@@ -517,13 +507,6 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
 
 
 
-#ifndef UDX_CONTROL_KL_COMMON
-#define UDX_CONTROL_KL_COMMON
-#endif
-#ifndef UDX_CONTROL_D_API_COMMON
-#define UDX_CONTROL_D_API_COMMON
-#endif
-
 #include "vecmath.cuh"
 
 #ifndef UDX_CONTROL_COORDS_COMMON
@@ -601,10 +584,6 @@ int coords_size(const Coords *c);
 
 
 
-
-#ifndef UDX_CONTROL_TYPE_COMMON
-#define UDX_CONTROL_TYPE_COMMON
-#endif
 
 
 
