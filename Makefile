@@ -45,6 +45,7 @@ OBJECTS = \
 	grid.o \
 	diagmesh.o \
 	wallobj.o \
+	objinter.o \
  transform.o \
  coords.o \
  comm.o \
