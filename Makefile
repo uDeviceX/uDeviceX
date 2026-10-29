@@ -32,6 +32,7 @@ OBJECTS = \
  meshio.o \
 	halfedge.o \
 	util.o \
+	bforce.o \
  transform.o \
  coords.o \
  comm.o \
