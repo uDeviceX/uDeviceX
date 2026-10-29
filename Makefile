@@ -81,8 +81,6 @@ DEPS = $(OBJECTS:.o=.d)
 
 all: $(TARGET)
 
-$(OBJECTS): Makefile
-
 $(TARGET): $(OBJECTS) $(DEVICE)
 	mkdir -p build
 	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(OBJECTS) $(DEVICE) $(MPI_LIBS) -lcudart -lcurand -o $@
