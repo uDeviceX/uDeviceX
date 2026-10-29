@@ -7138,14 +7138,6 @@ static __device__ int fsi_p2map(int3 L, const int *start, int zplane, int n, con
     return fsi_r2map(L, start, zplane, n, p.x, p.y, p.z, m);
 }
 
-static const float fsi_eps = 1e-6;
-static __device__ float fsi_dist(Pa a, Pa b) {
-    float dx, dy, dz;
-    dx = a.x - b.x;
-    dy = a.y - b.y;
-    dz = a.z - b.z;
-    return sqrt(dx*dx + dy*dy + dz*dz);
-}
 
 template <typename Par, typename Parray>
 static __device__ void fsi_bulk0(Par params, const Pa a, Parray parray, int lid, const FsiMap m, float seed,

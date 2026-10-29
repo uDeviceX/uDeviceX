@@ -4081,16 +4081,6 @@ static void out_ini(const Coords *c,      TGrid *t) {
     t->n[Z] = zs(c);
 }
 
-static void sub_ini(const Coords *c,      Tform *t) {
-    enum {X, Y, Z};
-    float a0[3], a1[3], b0[3], b1[3];
-    a0[X] = -xs(c)/2; a0[Y] = -ys(c)/2; a0[Z] = -zs(c)/2;
-    b0[X] =  xs(c)/2; b0[Y] =  ys(c)/2; b0[Z] =  zs(c)/2;
-
-    a1[X] = xlo(c); a1[Y] = ylo(c); a1[Z] = zlo(c);
-    b1[X] = xhi(c); b1[Y] = yhi(c); b1[Z] = zhi(c);
-    UC(tform_vector(a0, a1,    b0, b1,      t));
-}
 
 void tex2sdf_ini(const Coords *c,
                  const int T[3], const int N[3], const int M[3],

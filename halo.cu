@@ -5331,16 +5331,6 @@ template <typename Parray>
 using RFrag_v26 = Sarray<RFrag_v<Parray>, 26>;
 namespace fhalo_dev {
 template <typename Parray>
-static __device__ void assert_frag(int3 L, int i, const RFrag_v<Parray> frag) {
-    int xs, ys, zs;
-    int dx, dy, dz;
-    xs = frag.xcells; ys = frag.ycells; zs = frag.zcells;
-    dx = frag.dx; dy = frag.dy; dz = frag.dz;
-    assert(xs * ys * zs == frag_dev::ncell(L, i));
-    assert(frag_dev::d2i(dx, dy, dz) == i);
-}
-
-template <typename Parray>
 static __device__ void assert_rc(int3 L, const RFrag_v<Parray> frag, int i, int row, int col, int jump) {
 
     int fid, nmax;

@@ -673,10 +673,6 @@ static BopStatus read_mpi(MPI_Comm comm, const char *fname, long n, MPI_Datatype
     return BOP_SUCCESS;
 }
 
-template <typename T>
-static BopStatus read_ascii() {
-    return BOP_SUCCESS;
-}
 
 BopStatus bop_read_values(MPI_Comm comm, const char *dfname, BopData *d) {
     long n = d->n;
