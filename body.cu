@@ -1,21 +1,10 @@
 #include "macros.cuh"
 
-
-
-
-
-
-
-
-
-
 #include "config.cuh"
 
 #include <mpi.h>
 #include <string.h>
 #include <vector_types.h>
-
-
 
 #ifndef UDX_RIG_CORE_TYPE
 #define UDX_RIG_CORE_TYPE
@@ -25,18 +14,6 @@
 #endif
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef UDX_RIG_DEF_COMMON
 #define UDX_RIG_DEF_COMMON
 #ifndef UDX_RBC_RIG_DEF_COMMON
@@ -44,11 +21,6 @@
 #include "constants.cuh"
 #endif
 #endif
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -68,7 +40,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -84,7 +55,6 @@ const char* get_filename_ext(const char*);
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-
 
 #if   defined(CC_SYNC)
 
@@ -105,10 +75,6 @@ void check(int code, const char *file, int line);
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
 
 #ifndef UDX_RIG_DEVICE_API_COMMON
 #define UDX_RIG_DEVICE_API_COMMON
@@ -158,7 +124,6 @@ int Waitall(int count, MPI_Request array_of_requests[], MPI_Status *array_of_sta
 int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
-
 
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
@@ -214,8 +179,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -229,12 +192,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 typedef unsigned char data_t;
@@ -244,7 +204,6 @@ enum {
     BULK   = 26,
     NBAGS  = 27,
 };
-
 
 enum AllocMod {
     HST_ONLY,
@@ -276,7 +235,6 @@ void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
 
-
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
@@ -302,8 +260,6 @@ struct EMeshPackM;
 struct EMeshCommM;
 struct EMeshUnpackM;
 
-
-
 void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **p);
 void emesh_comm_ini(MPI_Comm comm,      EMeshComm **c);
 void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **u);
@@ -327,8 +283,6 @@ void emesh_unpack_pp(int nv, const EMeshUnpack *u,      int *nmhalo, Particle *p
 void emesh_unpack_rrcp(int nv, const EMeshUnpack *u,      int *nmhalo, Positioncp *rr);
 
 void emesh_get_num_frag_mesh(const EMeshUnpack *u,      int cc[NFRAGS]);
-
-
 
 void emesh_packm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshPackM **p);
 void emesh_commm_ini(MPI_Comm comm,      EMeshCommM **c);
@@ -422,7 +376,6 @@ void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const fl
 void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0,      Particle *pp);
 void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,      Particle *pp);
 
-
 #ifndef UDX_RIG_GEN_INFO
 #define UDX_RIG_GEN_INFO
 struct Coords;
@@ -444,7 +397,6 @@ struct FluInfo {
     Particle *pp;
     int *n;
 };
-
 
 struct RigInfo {
     int ns, *nps;
@@ -600,11 +552,9 @@ _S_ void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int
 
     UC(exchange_mesh(maxm, L, cart, nv,          &nmall, pp,      cc));
 
-
     shift = fid2shift(L, frag_bulk);
     if (nm) UC(label_extract_and_shift(shift, pdir, nflu, pp_dev, pp_hst, nt, nv, nm, tt, pp,      nps, rr0,       ll_dev, ll_hst));
     pp += nm * nv;
-
 
     for (i = 0; i < NFRAGS; ++i) {
         nm = cc[i];
@@ -766,8 +716,6 @@ _S_ void compute_properties(const RigPinInfo *pi, int n, const float *rr0, float
 
     spdir = rig_pininfo_get_pdir(pi);
 
-
-
     if (spdir == NOT_PERIODIC) {
         rho = pmass * numdensity;
         nt = mesh_read_get_nt(mesh);
@@ -860,10 +808,6 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi,  
 #undef _I_
 #undef _S_
 
-
-
-
-
 #include <mpi.h>
 #include <stdio.h>
 #include <vector_types.h>
@@ -871,15 +815,11 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi,  
 #include <string.h>
 #include <math.h>
 
-
-
-
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -889,10 +829,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -938,8 +874,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -953,12 +887,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -966,18 +897,6 @@ int coords_size(const Coords *c);
 #define UDX_RIG_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_RIG_DEF_COMMON
 #define UDX_RIG_DEF_COMMON
@@ -987,7 +906,6 @@ int coords_size(const Coords *c);
 #define UDX_RIG_CORE_TYPE
 #include "types.cuh"
 #endif
-
 
 #if   defined(CC_SYNC)
 
@@ -1008,11 +926,6 @@ int coords_size(const Coords *c);
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
-
 
 struct int4;
 struct MeshRead;
@@ -1069,7 +982,6 @@ struct Coords;
 struct Particle;
 struct Matrices;
 
-
 int  mesh_gen_from_file(const Coords*, const float *vv, const char *ic, int nv,      Particle*);
 void mesh_gen_from_matrices(int nv, const float *vv, const Matrices*,      int *pn, Particle*);
 void mesh_shift(const Coords*, int n,      Particle*);
@@ -1079,7 +991,6 @@ struct RigQuants {
     Particle *pp_hst, *pp;
     Rigid    *ss_hst, *ss;
     float   *rr0_hst, *rr0;
-
 
     int nt, nv;
     int4 *dtt;
@@ -1127,7 +1038,6 @@ struct FluInfo {
     Particle *pp;
     int *n;
 };
-
 
 struct RigInfo {
     int ns, *nps;
@@ -1415,18 +1325,8 @@ void rig_strt_dump(MPI_Comm comm, const char *base, const char *name, const int 
 #undef PP
 #undef SS
 
-
-
-
-
-
 #include <stdio.h>
 #include <vector_types.h>
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1517,7 +1417,6 @@ void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const fl
 void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0,      Particle *pp);
 void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,      Particle *pp);
 
-
 void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
     int3 com, axis;
     int pdir;
@@ -1530,12 +1429,8 @@ void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
     UC(rig_pininfo_set_pdir(pdir, pi));
 }
 
-
-
 #include <stdio.h>
 #include <assert.h>
-
-
 
 #ifndef UDX_RIG_CORE_TYPE
 #define UDX_RIG_CORE_TYPE
@@ -1544,19 +1439,6 @@ void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
 #include "types.cuh"
 #endif
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_RIG_DEVICE_API_COMMON
 #define UDX_RIG_DEVICE_API_COMMON
@@ -1572,7 +1454,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -1581,10 +1462,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1598,7 +1475,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-
 
 #if   defined(CC_SYNC)
 
@@ -1620,9 +1496,6 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #ifndef UDX_RBC_RIG_KL_COMMON
 #define UDX_RBC_RIG_KL_COMMON
 #include "launch.cuh"
@@ -1630,8 +1503,6 @@ void check(int rc, const char *file, int line);
 #define UDX_RBC_RIG_SHFL_COMMON
 #define UDX_RBC_RIG_ALGO_DEV_COMMON
 #include "warp.cuh"
-
-
 
 struct RigPinInfo {
     int3 com;
@@ -1773,7 +1644,6 @@ __global__ void rigid_update_om_v_kernel(RigPinInfo pi, float dt, const int ns, 
         if (pi.axis.x) s.om[X] = 0;
         if (pi.axis.y) s.om[Y] = 0;
         if (pi.axis.z) s.om[Z] = 0;
-
 
         s.v[X] += s.fo[X] * sc;
         s.v[Y] += s.fo[Y] * sc;
@@ -1926,26 +1796,12 @@ void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,
     KL(rigid_update_mesh_kernel, (nblck, nthrd ), (dt, ss, nv, vv,      pp));
 }
 
-
-
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
 #include <string.h>
 #include <mpi.h>
-
-
-
 
 #ifndef UDX_RBC_CORE_DEF_COMMON
 #define UDX_RBC_CORE_DEF_COMMON
@@ -1962,19 +1818,6 @@ void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,
 #endif
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 
@@ -1985,10 +1828,6 @@ void msg_print(const char *fmt, ...);
 #include "device.cuh"
 #endif
 #endif
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2006,7 +1845,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -2015,7 +1853,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
 
 #if   defined(CC_SYNC)
 
@@ -2036,11 +1873,6 @@ const char* get_filename_ext(const char*);
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
-
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -2089,7 +1921,6 @@ int Waitall(int count, MPI_Request array_of_requests[], MPI_Status *array_of_sta
 int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
-
 
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
@@ -2174,15 +2005,12 @@ struct Coords;
 struct Particle;
 struct Matrices;
 
-
 int  mesh_gen_from_file(const Coords*, const float *vv, const char *ic, int nv,      Particle*);
 void mesh_gen_from_matrices(int nv, const float *vv, const Matrices*,      int *pn, Particle*);
 void mesh_shift(const Coords*, int n,      Particle*);
 struct RbcShape;
 struct MeshRead;
 struct Adj;
-
-
 
 void rbc_shape_ini(const Adj*, const float *rr,      RbcShape**);
 void rbc_shape_fin(     RbcShape*);
@@ -2211,7 +2039,6 @@ void rbc_gen_mesh(const Coords*, MPI_Comm, const MeshRead*, const char *ic,     
 void rbc_gen_freeze(MPI_Comm,      RbcQuants*);
 void rbc_strt_quants(MPI_Comm, const MeshRead*, const char *base, const char *name, const int id, RbcQuants*);
 void rbc_strt_dump(MPI_Comm, const char *base, const char *name, int id, const RbcQuants *q);
-
 
 static void ini_common(long maxnc, const int4 *tt, RbcQuants *q) {
     int nv, nt;
@@ -2327,25 +2154,7 @@ void rbc_strt_dump(MPI_Comm comm, const char *base, const char *name, int id, co
 #undef PP
 #undef IDS
 
-
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
-
-
-
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2460,15 +2269,12 @@ void rbc_params_set_conf(const Config *c, const char *name, RbcParams *par) {
     rbc_params_set_tot_area_volume(totArea, totVolume,      par);
 }
 
-
-
 #include <stdlib.h>
 #include <stdio.h>
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -2478,10 +2284,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2496,7 +2298,6 @@ void error_abort();
 
 void error_print_stack();
 
-
 struct RbcParams {
     float gammaC;
     float gammaT;
@@ -2510,11 +2311,9 @@ struct RbcParams {
     float kd;
     float kv;
 
-
     float totVolume;
     float totArea;
 };
-
 
 void rbc_params_ini(RbcParams **p) {
     EMALLOC(1, p);
@@ -2574,17 +2373,8 @@ RbcParams_v rbc_params_get_view(const RbcParams *p) {
     return v;
 }
 
-
-
-
-
 #include <stdio.h>
 #include <math.h>
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2601,7 +2391,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -2647,8 +2436,6 @@ void dihedral_xy(const double a[3], const double b[3], const double c[3], const 
 struct RbcShape;
 struct MeshRead;
 struct Adj;
-
-
 
 void rbc_shape_ini(const Adj*, const float *rr,      RbcShape**);
 void rbc_shape_fin(     RbcShape*);
@@ -2789,16 +2576,8 @@ void rbc_shape_total_volume(RbcShape *q,      float *pe) {
     *pe = q->V;
 }
 
-
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
-
-
-
 
 #ifndef UDX_RBC_CORE_DEF_COMMON
 #define UDX_RBC_CORE_DEF_COMMON
@@ -2815,26 +2594,10 @@ void rbc_shape_total_volume(RbcShape *q,      float *pe) {
 #endif
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 
-
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -2862,8 +2625,6 @@ void msg_print(const char *fmt, ...);
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -2941,10 +2702,6 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -2961,7 +2718,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -2970,7 +2726,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
 
 #if   defined(CC_SYNC)
 
@@ -2991,9 +2746,6 @@ const char* get_filename_ext(const char*);
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
 
 #ifndef UDX_RBC_RIG_KL_COMMON
 #define UDX_RBC_RIG_KL_COMMON
@@ -3085,27 +2837,10 @@ void rbc_stretch_apply(int nm, const RbcStretch *f,      Force *ff) {
     if (n) KL(rbc_stretch_apply_kernel, (k_cnf(n)), (n, nv, f->f,      ff));
 }
 
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <vector_types.h>
-
-
-
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3122,7 +2857,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -3147,7 +2881,6 @@ void msg_print(const char *fmt, ...);
 #endif
 #endif
 
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -3167,23 +2900,6 @@ void msg_print(const char *fmt, ...);
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 struct Adj;
 struct Adj_v;
@@ -3216,7 +2932,6 @@ struct Adj_v {
     int *adj1;
     int nv, md;
 };
-
 
 struct Adj {
     int *adj0;
@@ -3376,15 +3091,8 @@ void adj_get_anti(const Adj *adj,      int *anti) {
     EFREE(hx); EFREE(hy);
 }
 
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
-
-
-
 
 #ifndef UDX_RBC_RIG_DEF_COMMON
 #define UDX_RBC_RIG_DEF_COMMON
@@ -3401,28 +3109,10 @@ void adj_get_anti(const Adj *adj,      int *anti) {
 #endif
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include "vecmath.cuh"
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3440,7 +3130,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -3450,10 +3139,7 @@ void efgets(char *s, int size, FILE*);
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -3481,8 +3167,6 @@ const char* get_filename_ext(const char*);
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -3563,7 +3247,6 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -3583,9 +3266,6 @@ static int   warpSize = 1;
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
 
 #ifndef UDX_RBC_RIG_KL_COMMON
 #define UDX_RBC_RIG_KL_COMMON
