@@ -36,6 +36,7 @@ OBJECTS = \
 	vtk.o \
 	fragmenthost.o \
 	meshwrite.o \
+	meshread.o \
  transform.o \
  coords.o \
  comm.o \
