@@ -31,6 +31,7 @@ OBJECTS = \
  restart.o \
  meshio.o \
 	halfedge.o \
+	util.o \
  transform.o \
  coords.o \
  comm.o \
