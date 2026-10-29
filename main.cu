@@ -56,11 +56,6 @@ void conf_set_string(const char *desc, const char *a, Config *cfg);
 void conf_write_exe(const Config *cfg, FILE *stream);
 void conf_write_history(const Config *cfg, FILE *stream);
 
-
-
-
-
-
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
@@ -144,8 +139,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -159,12 +152,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -214,14 +204,12 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-
 
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -243,33 +231,24 @@ enum {
 
     SAFETY_FACTOR_MAXP = 3,
 
-
     MAX_PSOLID_NUM = 12000,
 
-
     MAX_SOLIDS = 100,
-
 
     MAX_MBR_TYPES = 2,
     MAX_RIG_TYPES = 2,
     MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
 
-
     MAX_OBJ_DENSITY = 30,
-
 
     MAX_CELL_NUM = 1500,
 
-
     MAX_TEXO_SIZE = 100000000,
-
 
     HSAFETY_FACTOR = 10,
 
-
     ODSTR_FACTOR = 3,
 };
-
 
 #define RBC_SPRING_CAP (0.99)
 void msg_ini(int rank);
@@ -277,7 +256,6 @@ void msg_print(const char *fmt, ...);
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -287,7 +265,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
 
 #if   defined(CC_SYNC)
 
@@ -308,10 +285,6 @@ const char* get_filename_ext(const char*);
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
-
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -361,30 +334,15 @@ typedef Sarray<Force*,    26> Fop26;
 typedef Sarray<Momentum*, 26> Mop26;
 typedef Sarray<Positioncp*, 26> Pocpp26;
 
-
 struct PaWrap {
     int n;
     const Particle *pp;
 };
 
-
 struct FoWrap {
     int n;
     Force *ff;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 struct PairParams;
 struct Config;
@@ -474,9 +432,6 @@ enum {
     DEAD  = 1
 };
 
-
-
-
 struct PartList {
     const Particle *pp;
     const int *deathlist;
@@ -499,7 +454,6 @@ void grid_sampler_data_fin(GridSampleData  *);
 void grid_sampler_data_reset(GridSampleData *);
 void grid_sampler_data_push(long n, const Particle *pp, const int *cc,
                             const float *ss, GridSampleData *);
-
 
 void grid_sampler_ini(bool colors, bool stress, int3 L, int3 N, GridSampler**);
 void grid_sampler_fin(GridSampler*);
@@ -581,13 +535,11 @@ void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-
 void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
 void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
 void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
-
 
 void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 
@@ -597,8 +549,6 @@ struct FluQuants {
     Clist     *cells;
     ClistMap *mcells;
     Particle *pp_hst;
-
-
 
     bool ids, colors;
 
@@ -625,8 +575,6 @@ void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q)
 
 void flu_txt_dump(const Coords*, const FluQuants *q);
 
-
-
 void flu_build_cells(     FluQuants *q);
 
 typedef unsigned char data_t;
@@ -636,7 +584,6 @@ enum {
     BULK   = 26,
     NBAGS  = 27,
 };
-
 
 enum AllocMod {
     HST_ONLY,
@@ -667,7 +614,6 @@ void comm_ini(MPI_Comm cart,      Comm **c);
 void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
@@ -700,23 +646,17 @@ void dflu_pack_fin(DFluPack *p);
 void dflu_comm_fin(DFluComm *c);
 void dflu_unpack_fin(DFluUnpack *u);
 
-
 void dflu_build_map(int n, const PartList lp, DFluPack *p);
-
 
 void dflu_pack(const FluQuants *q,      DFluPack *p);
 void dflu_download(DFluPack *p,      DFluStatus *s);
-
 
 void dflu_post_recv(DFluComm *c, DFluUnpack *u);
 void dflu_post_send(DFluPack *p, DFluComm   *c);
 void dflu_wait_recv(DFluComm *c, DFluUnpack *u);
 void dflu_wait_send(DFluComm *c);
 
-
 void dflu_unpack(     DFluUnpack *u);
-
-
 
 void dflu_bulk(PartList lp,      FluQuants *q);
 void dflu_halo(const DFluUnpack *u,      FluQuants *q);
@@ -724,20 +664,14 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u,      FluQuan
 struct DFluStatus;
 struct Config;
 
-
 void dflu_status_ini(DFluStatus **s);
 void dflu_status_fin(DFluStatus  *s);
-
 
 int  dflu_status_nullp(DFluStatus *s);
 int  dflu_status_success(DFluStatus *s);
 void dflu_status_log(DFluStatus *s);
 
-
 void dflu_status_exceed(int frag, int counter, int capacity,      DFluStatus *s);
-
-
-
 
 namespace flu {
 
@@ -797,7 +731,6 @@ using flu::RFrag26;
 
 void eflu_get_local_frags(const EFluPack *p,      LFrag26 *lfrags);
 void eflu_get_remote_frags(const EFluUnpack *u,      RFrag26 *rfrags);
-
 
 struct PairParams;
 struct FluForcesBulk;
@@ -970,7 +903,6 @@ void time_step_accel_fin(TimeStepAccel*);
 
 void time_step_accel_push(TimeStepAccel*, float m, int n, Force*);
 void time_step_accel_reset(TimeStepAccel*);
-
 
 void time_step_ini(const Config*,      TimeStep**);
 void time_step_fin(TimeStep*);
@@ -1161,7 +1093,6 @@ struct OptFlu {
     bool colors, ids, ss, push;
 };
 
-
 struct OptObj {
     bool push, bounce;
     int shifttype;
@@ -1171,13 +1102,11 @@ struct OptObj {
     char name[FILENAME_MAX];
 };
 
-
 struct OptMbr : OptObj {
     bool ids, stretch, dump_com;
     int substeps;
     char stretch_file[FILENAME_MAX];
 };
-
 
 struct OptRig : OptObj {
     bool empty_pp;
@@ -1186,7 +1115,6 @@ struct OptRig : OptObj {
 struct OptWall {
     bool active;
 };
-
 
 struct OptParams {
     int3 L;
@@ -1261,7 +1189,6 @@ void sim_strt(Sim*);
 #define _I_ static
 #define _S_ static
 
-
 struct FluDistr {
     DFluPack *p;
     DFluComm *c;
@@ -1269,19 +1196,16 @@ struct FluDistr {
     DFluStatus *s;
 };
 
-
 struct FluExch {
     EFluPack *p;
     EFluComm *c;
     EFluUnpack *u;
 };
 
-
 struct Recolorer {
     bool flux_active;
     int flux_dir;
 };
-
 
 struct Tracers {
     bool active;
@@ -1290,7 +1214,6 @@ struct Tracers {
     float iniP;
     float delP;
 };
-
 
 struct Flu {
     FluQuants q;
@@ -1311,15 +1234,12 @@ struct Flu {
     float mass;
 };
 
-
 struct Vcon {
     PidVCont *vcont;
     int log_freq;
     int adjust_freq;
     int sample_freq;
 };
-
-
 
 struct Time {
     TimeLine *t;
@@ -1353,7 +1273,6 @@ struct Sim {
 
     BForce *bforce;
 
-
     Time time;
     Coords *coords;
     ObjInter *objinter;
@@ -1364,19 +1283,16 @@ struct Sim {
     Dbg *dbg;
     MPI_Comm cart;
 
-
     Outflow *outflow;
     Inflow *inflow;
     DCont    *denoutflow;
     DContMap *mapoutflow;
-
 
     bool equilibrating;
     bool active_mbr_bb;
 
     Opt opt;
     Dump dump;
-
 
     GenColor *gen_color;
 };
@@ -1454,7 +1370,6 @@ _I_ float utils_get_dt(Sim *s, TimeLine *time) {
         UC(time_step_accel_reset(s->time.accel));
         UC(push_accel(s,      s->time.accel));
         dt = time_step_dt(s->time.step, s->cart, s->time.accel);
-
 
         if (time_line_cross(time, opt->dump.freq_diag))
             time_step_log(s->time.step);
@@ -1612,7 +1527,6 @@ _I_ void forces(float dt, TimeLine *time, const BForce *bforce, Sim *s) {
 
     UC(forces_dpd(fluss, flu));
     if (active_walls(s)) UC(forces_wall(fluss, s));
-
 
     UC(forces_objects(s));
 
@@ -1878,7 +1792,6 @@ _S_ void fin_inflow(Inflow *i) {
     UC(inflow_fin(     i));
 }
 
-
 _S_ void fin_flu(const Opt *opt, Flu *f) {
     UC(flu_fin(&f->q));
     UC(fluforces_bulk_fin(     f->bulk));
@@ -2090,7 +2003,6 @@ _I_ void dump(TimeLine *time, Sim *s) {
         dump_strt(s);
 }
 
-
 _S_ bool valid_step(long id, const int freq) {
     return (freq != 0) && (id % freq == 0);
 }
@@ -2115,8 +2027,6 @@ _I_ void log_vcont(long id, const Vcon *c) {
         vcont_log(c->vcont);
 }
 
-
-
 _I_ void recolor_flux(const Coords *c, const Recolorer *opt, Flu *f) {
     int3 L = subdomain(c);
     if (opt->flux_active)
@@ -2131,7 +2041,6 @@ _I_ void recolor_tracers(const Coords *c, const Tracers *opt, const int it, Flu 
         UC(decolor_tracers(c, BLUE_COLOR, opt->R, opt->delP, f->q.n, f->q.pp,      f->q.cc));
     }
 }
-
 
 _I_ void apply_inflow(float kBT, int numdensity, float dt, Inflow *i, Flu *f) {
     if (f->q.colors)
@@ -2268,8 +2177,6 @@ _I_ void update_params(float dt, Sim *s) {
     UC(objects_update_dpd_prms(dt, kBT, s->obj));
 }
 
-
-
 _S_ void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
     unsigned int time;
     time = 10;
@@ -2391,7 +2298,6 @@ _S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
     }
 }
 
-
 _I_ void run(float ts, float te, Sim *s) {
     float dt;
 
@@ -2471,7 +2377,6 @@ void sim_gen(Sim *s) {
     tstart = s->time.eq;
     pre_run(s);
     run(tstart, s->time.end, s);
-
 
     if (opt->dump.strt) dump_strt_final(s);
 }
