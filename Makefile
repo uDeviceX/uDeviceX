@@ -30,6 +30,7 @@ OBJECTS = \
  diagpart.o \
  restart.o \
  meshio.o \
+	halfedge.o \
  transform.o \
  coords.o \
  comm.o \
