@@ -37,6 +37,7 @@ OBJECTS = \
 	fragmenthost.o \
 	meshwrite.o \
 	meshread.o \
+	writefile.o \
  transform.o \
  coords.o \
  comm.o \
