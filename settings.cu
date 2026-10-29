@@ -119,11 +119,9 @@ void conf_read(int argc, char **argv,      Config *cfg) {
     char *home, defname[1024] = {0}, optname[1024], definclude[1024] = {0};
     home = getenv("HOME");
 
-
     strcpy(definclude, home);
     strcat(definclude, "/.udx/");
     set_include_dir(definclude, cfg);
-
 
     strcpy(defname, home);
     strcat(defname, "/.udx/default.cfg");
@@ -332,7 +330,6 @@ static void set_vstring(const char *name, int nelem, const char *ss[], config_t 
             ERR("could not set element %d/%d of <%s>", i, nelem, desc[n-1]);
     }
 }
-
 
 void conf_set_int(const char *desc, int a, Config *cfg) {
     UC(set_int(desc, a, &cfg->c[EXE]));
@@ -552,7 +549,6 @@ void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, co
     UC(treat_status(status, desc, "array of string"));
 }
 
-
 static void get_desc(const char *ns, const char *d, char *desc) {
     sprintf(desc, "%s.%s", ns, d);
 }
@@ -610,8 +606,6 @@ void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int 
     get_desc(ns, d, desc);
     UC(conf_lookup_vstring(c, desc, maxn, n, ss));
 }
-
-
 
 bool conf_opt_int(const Config *c, const char *desc, int *a) {
     return OK == lookup_int(c, desc, a);
