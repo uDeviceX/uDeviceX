@@ -38,6 +38,7 @@ OBJECTS = \
 	meshwrite.o \
 	meshread.o \
 	writefile.o \
+	iobop.o \
  transform.o \
  coords.o \
  comm.o \
