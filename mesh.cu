@@ -1,23 +1,13 @@
 #include "macros.cuh"
 
-
-
-
-
-
-
 #include "config.cuh"
 
 #include <mpi.h>
 #include <assert.h>
 
-
-
-
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -34,18 +24,6 @@ void msg_print(const char *fmt, ...);
 #include "types.cuh"
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef UDX_EXCH_FRAG_DEV_COMMON
 #define UDX_EXCH_FRAG_DEV_COMMON
 #include "fragment.cuh"
@@ -55,7 +33,6 @@ void msg_print(const char *fmt, ...);
 #define UDX_EXCH_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
-
 
 #if   defined(CC_SYNC)
 
@@ -77,17 +54,10 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #ifndef UDX_EXCH_KL_COMMON
 #define UDX_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -142,7 +112,6 @@ enum {
     NBAGS  = 27,
 };
 
-
 enum AllocMod {
     HST_ONLY,
     DEV_ONLY,
@@ -172,7 +141,6 @@ void comm_ini(MPI_Comm cart,      Comm **c);
 void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
@@ -206,7 +174,6 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
 #ifndef UDX_EXCH_MAP_TYPE_COMMON
 #define UDX_EXCH_MAP_TYPE_COMMON
 
-
 enum {MAX_FRAGS=26};
 
 struct EMap {
@@ -235,8 +202,6 @@ struct EMeshPackM;
 struct EMeshCommM;
 struct EMeshUnpackM;
 
-
-
 void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **p);
 void emesh_comm_ini(MPI_Comm comm,      EMeshComm **c);
 void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **u);
@@ -261,8 +226,6 @@ void emesh_unpack_rrcp(int nv, const EMeshUnpack *u,      int *nmhalo, Positionc
 
 void emesh_get_num_frag_mesh(const EMeshUnpack *u,      int cc[NFRAGS]);
 
-
-
 void emesh_packm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshPackM **p);
 void emesh_commm_ini(MPI_Comm comm,      EMeshCommM **c);
 void emesh_unpackm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshUnpackM **u);
@@ -286,7 +249,6 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u,      Mo
 #define UDX_EXCH_MAP_DEV_COMMON
 #define _I_ static __device__
 #define _S_ static __device__
-
 
 enum { MAX_DSTS = 7 };
 
@@ -407,8 +369,6 @@ struct EMeshUnpack {
     int3 L;
 };
 
-
-
 struct MMap {
     int *cc, *ss, *subids;
 };
@@ -439,7 +399,6 @@ struct EMeshUnpackM {
 };
 
 typedef Sarray<MMap, 26> MMap26;
-
 
 __global__ void emesh_build_map_kernel(int3 L0, int n, const float3 *minext, const float3 *maxext,      EMap map) {
     int i, fid, fids[MAX_DSTS], ndsts, j;
@@ -478,7 +437,6 @@ __global__ void emesh_pack_mesh_kernel(int nv, const T *pp, EMap map,      Sarra
         vid = gid % nv;
         fid = frag_dev::frag_get_fid(map.starts, mid);
 
-
         frag_mid = mid - map.starts[fid];
 
         if (frag_mid < map.cap[fid])
@@ -486,10 +444,7 @@ __global__ void emesh_pack_mesh_kernel(int nv, const T *pp, EMap map,      Sarra
     }
 }
 
-
-
 enum {EMESH_SKIP=-1};
-
 
 static __device__ bool emesh_nz(float a) {return fabs(a) > 1e-6f;}
 
@@ -516,14 +471,12 @@ __global__ void emesh_subindex_compress_kernel(int nt, int nm, const Momentum *m
     subids[i] = subid;
 }
 
-
 static __device__ int emesh_warp_scan(int val) {
     int tid;
     tid = threadIdx.x % warpSize;
     for (int L = 1; L < 32; L <<= 1) val += (tid >= L) * shfl_up(val, L) ;
     return val;
 }
-
 
 template<int NWARP>
 __global__ void emesh_block_scan_kernel(int n, const int *cc,      int *ss) {
@@ -629,7 +582,6 @@ __global__ void emesh_unpack_mom_kernel(int nt, int27 fragstarts, intp26 hii, Mo
     emesh_unpack_mom_frag(nt, i, hii.d[fid], hmm.d[fid], map.ids[fid],      mm);
 }
 
-
 static void get_capacity(int nfrags, int max_mesh_num,      int cap[]) {
     for (int i = 0; i < nfrags; ++i)
         cap[i] = max_mesh_num;
@@ -685,9 +637,6 @@ void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **unpack) {
     u->nbags = i;
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
-
-
-
 
 static void get_mcap(int nfrags, int nt, const int *cap,      int *mcap) {
     for (int i = 0; i < nfrags; ++i)
@@ -770,8 +719,6 @@ void emesh_unpack_fin(EMeshUnpack *u) {
     UC(comm_buffer_fin(u->hbuf));
     EFREE(u);
 }
-
-
 
 static void fin_map(     MMap *map) {
     Dfree(map->cc);
@@ -902,9 +849,6 @@ void emesh_wait_send(EMeshComm *c) {
     UC(comm_wait_send(c->pp));
 }
 
-
-
-
 void emesh_post_recv(EMeshCommM *c, EMeshUnpackM *u) {
     UC(comm_post_recv(u->hbuf, c->comm));
 }
@@ -966,7 +910,6 @@ void emesh_get_num_frag_mesh(const EMeshUnpack *u,      int cc[NFRAGS]) {
     memcpy(cc, u->hpp->counts, NFRAGS * sizeof(int));
 }
 
-
 static void upload_bags(const hBags *h, dBags *d) {
     int i, c;
     data_t *src, *dst;
@@ -1008,20 +951,12 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u,      Mo
     KL(emesh_unpack_mom_kernel, (k_cnf(n)), (nt, fragstarts, wrapii, wrapmm, p->map,      mm));
 }
 
-
-
-
-
 #include <mpi.h>
 #include <assert.h>
-
-
-
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -1037,18 +972,6 @@ void msg_print(const char *fmt, ...);
 #define UDX_EXCH_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_EXCH_FRAG_DEV_COMMON
 #define UDX_EXCH_FRAG_DEV_COMMON
@@ -1085,7 +1008,6 @@ void estimates(int3 L, int nfrags, float maxd,      int *cap);
 #include "device.cuh"
 #endif
 
-
 #if   defined(CC_SYNC)
 
 #define CC(ans)                                             \
@@ -1106,17 +1028,10 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 #ifndef UDX_EXCH_KL_COMMON
 #define UDX_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1140,7 +1055,6 @@ enum {
     BULK   = 26,
     NBAGS  = 27,
 };
-
 
 enum AllocMod {
     HST_ONLY,
@@ -1171,7 +1085,6 @@ void comm_ini(MPI_Comm cart,      Comm **c);
 void comm_fin(     Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
@@ -1204,7 +1117,6 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
 
 #ifndef UDX_EXCH_MAP_TYPE_COMMON
 #define UDX_EXCH_MAP_TYPE_COMMON
-
 
 enum {MAX_FRAGS=26};
 
@@ -1257,7 +1169,6 @@ void  eobj_get_all_counts(int nw, EObjUnpack *u, int *all_counts);
 Pap26 eobj_upload_shift(EObjUnpack *u);
 Fop26 eobj_reini_ff(const EObjUnpack *u, EObjPackF *pf);
 
-
 void eobj_packf_ini(int3 L, int maxd, int maxpsolid, EObjPackF **p);
 void eobj_commf_ini(MPI_Comm cart,      EObjCommF **c);
 void eobj_unpackf_ini(int3 L, int maxd, int maxpsolid, EObjUnpackF **u);
@@ -1279,7 +1190,6 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw,      FoWrap *ww);
 #define UDX_EXCH_MAP_DEV_COMMON
 #define _I_ static __device__
 #define _S_ static __device__
-
 
 enum { MAX_DSTS = 7 };
 
@@ -1372,7 +1282,6 @@ void ecommon_shift_pp_one_frag(int3 L, int n, const int fid,      Particle *pp);
 void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid,      Positioncp *rr);
 #endif
 
-
 __global__ void eobj_build_map_kernel(int3 L, int soluteid, int n, const Particle *pp,      EMap map) {
     int pid, fid, fids[MAX_DSTS], ndsts, j;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
@@ -1409,17 +1318,11 @@ __global__ void eobj_unpack_ff_kernel(Fop26 hff, PackHelper ph,      Force *ff) 
     for (  ; gid < hi; gid += step) {
         fid = frag_dev::frag_get_fid(ph.starts, gid);
 
-
         frag_i = gid - ph.starts[fid];
 
         eobj_unpack_f(hff.d[fid], ph.offsets[fid], ph.indices[fid], frag_i,      ff);
     }
 }
-
-
-
-
-
 
 enum {
     ID_PP, ID_CC,
@@ -1465,7 +1368,6 @@ struct EObjUnpackF {
 static void estimates(int3 L, int nfrags, int maxd, int maxpsolid, int *cap) {
     int i, e, kind;
     frag_hst::estimates(L, nfrags, maxd,      cap);
-
 
     const float safety = 2.;
     float factor[3] = {safety / 2, safety / 4, safety / 8};
@@ -1801,29 +1703,6 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw,      FoWrap *ww) 
     unpack_ff(NFRAGS, wrap, p->map, nw,      ww);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <math.h>
 #include <vector_types.h>
@@ -1831,7 +1710,6 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw,      FoWrap *ww) 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -1841,10 +1719,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -1961,11 +1835,6 @@ void mesh_angle_apply(MeshAngle *q, int m, Vectors *p,      double *angle0) {
     }
 }
 
-
-
-
-
-
 #include <vector_types.h>
 
 #ifndef UDX_EXCH_TYPE_COMMON
@@ -2026,24 +1895,12 @@ void mesh_get_bboxes_dev(const Particle *pp, const int nps, const int ns,      f
     minmax(pp, nps, ns,      minbb, maxbb);
 }
 
-
-
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <vector_types.h>
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -2053,10 +1910,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2187,18 +2040,12 @@ void mesh_area_apply(MeshArea *q, int m, Vectors *p, double *area0) {
     }
 }
 
-
-
-
-
-
 #include <stdio.h>
 #include <vector_types.h>
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -2208,10 +2055,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2322,15 +2165,6 @@ void mesh_tri_area_apply(MeshTriArea *q, int m, Vectors *p, double *area0) {
     }
 }
 
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <math.h>
 #include <vector_types.h>
@@ -2338,7 +2172,6 @@ void mesh_tri_area_apply(MeshTriArea *q, int m, Vectors *p, double *area0) {
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -2348,10 +2181,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2470,17 +2299,12 @@ void mesh_edg_len_fin(MeshEdgLen *q) {
     EFREE(q);
 }
 
-
-
-
-
 #include <stdio.h>
 #include <vector_types.h>
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -2490,10 +2314,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2610,43 +2430,13 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <vector_types.h>
-
-
-
 
 #ifndef UDX_EXCH_DEVICE_API_COMMON
 #define UDX_EXCH_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #if   defined(CC_SYNC)
 
@@ -2668,13 +2458,9 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -2684,10 +2470,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2751,17 +2533,12 @@ void triangles_fin(Triangles *q) {
     EFREE(q);
 }
 
-
-
-
-
 #include <stdio.h>
 #include <vector_types.h>
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -2771,10 +2548,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -2946,18 +2719,12 @@ double mesh_volume_apply0(MeshVolume *q, Vectors *positions) {
     }
 }
 
-
-
-
-
-
 #include <stdio.h>
 #include <vector_types.h>
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -2967,10 +2734,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3117,24 +2880,13 @@ void mesh_scatter_fin(MeshScatter *q) {
     EFREE(q);
 }
 
-
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
-
-
 
 #ifndef UDX_MESH_DEF_COMMON
 #define UDX_MESH_DEF_COMMON
 #include "constants.cuh"
 #endif
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3150,7 +2902,6 @@ void error_abort();
 void error_print_stack();
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-
 
 #if   defined(CC_SYNC)
 
@@ -3172,14 +2923,7 @@ namespace cc {
 void check(int rc, const char *file, int line);
 }
 
-
-
-
-
-
-
 #if   defined(DEV_CUDA)
-
 
 #elif defined(DEV_CPU)
 
@@ -3207,8 +2951,6 @@ void check(int rc, const char *file, int line);
   #undef  __forceinline__
   #define __forceinline__
 #endif
-
-
 
 #ifdef __constant__
   #undef  __constant__
@@ -3287,19 +3029,6 @@ static int   warpSize = 1;
 #define UDX_EXCH_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 static void sz_check(int n) {
     if (n <            0 ) ERR("too small texo: %d", n);
@@ -3382,7 +3111,6 @@ void rig_reinit_ft(const int ns,      Rigid *ss);
 void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns,      Particle *pp, Rigid *ss);
 void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0,      Particle *pp);
 void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,      Particle *pp);
-
 
 struct float3;
 struct Particle;
@@ -3467,7 +3195,6 @@ static __device__ bool inside_box(const float r[3], float3 lo, float3 hi) {
         r[Z] >= lo.z && r[Z] <= hi.z;
 }
 
-
 __global__ void label(int pdir, const Particle *pp, const int n, const Particle *vert, const int nv,
                       Triangles tri, const float3 *minext, const float3 *maxext,
                       int lab_in,      int *labels) {
@@ -3502,7 +3229,6 @@ __global__ void label(int pdir, const Particle *pp, const int n, const Particle 
         if (in_tetrahedron(p.r, a.r, b.r, c.r, origin)) ++count;
     }
 
-
     if (count % 2) atomicExch(labels + gid, lab_in);
 }
 }
@@ -3527,28 +3253,12 @@ void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri,
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <math.h>
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -3558,10 +3268,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3651,17 +3357,12 @@ void mesh_cylindrical_apply(MeshCylindrical *q, int m, Vectors *pos,      double
     }
 }
 
-
-
-
-
 #include <stdio.h>
 #include <math.h>
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -3671,10 +3372,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -3765,14 +3462,6 @@ void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *pos,      double *r,
     }
 }
 
-
-
-
-
-
-
-
-
 #include <vector_types.h>
 #include <math.h>
 
@@ -3816,8 +3505,6 @@ static void project_t(const float *a, const float *b, const float *c, const floa
         v = (ga2 * a11 - ga1 * a12) * fac;
     }
 
-
-
     if ( (v > u - 1) && (v < u + 1) && (v > 1 - u) ) {
         const float a_ = 0.5f * (u + v - 1);
         u -= a_;
@@ -3827,7 +3514,6 @@ static void project_t(const float *a, const float *b, const float *c, const floa
         u = fmax_local(fmin_local(1.f, u), 0.f);
         v = fmax_local(fmin_local(v, 1.f-u), 0.f);
     }
-
 
     p[0] = a[0] + u * ab[0] + v * ac[0];
     p[1] = a[1] + u * ab[1] + v * ac[1];
@@ -3862,10 +3548,6 @@ float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0) {
     return dmin;
 }
 
-
-
-
-
 #include <vector_types.h>
 #include <string.h>
 
@@ -3888,8 +3570,6 @@ enum {XX, XY, XZ, YY, YZ, ZZ};
 #define Cx C[X]
 #define Cy C[Y]
 #define Cz C[Z]
-
-
 
 static void M_0(const float *A, const float *B, const float *C,      float *res) {
     *res =  (+Ax * (By * Cz -Bz * Cy)
@@ -4021,27 +3701,11 @@ void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *c
 
 #undef load_t
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -4051,10 +3715,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4166,7 +3826,6 @@ struct MeshEngJulicher {
     int max_nm;
     int nv, ne;
 
-
     double *lens, *angles, *areas, *curvs_edg, *curvs_vert;
 
     MeshEdgLen *len;
@@ -4244,17 +3903,12 @@ void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb
     mesh_vert_area_apply(q->area, nm, pos,      areas);
 }
 
-
-
-
-
 #include <stdio.h>
 #include <math.h>
 
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -4264,10 +3918,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4391,13 +4041,6 @@ void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, do
     }
 }
 
-
-
-
-
-
-
-
 #include "kantor.cuh"
 
 #include <math.h>
@@ -4405,11 +4048,6 @@ void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, do
 #include <stdio.h>
 #include <assert.h>
 #include <vector_types.h>
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4474,7 +4112,6 @@ _S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
     PRINT("%g %g %g\n", c.x, c.y, c.z);
     PRINT("%g %g %g\n", d.x, d.y, d.z);
 }
-
 
 template <int update>
 _S_ double3 dih0(double phi, double kb,
@@ -4558,9 +4195,6 @@ END
 #undef BEGIN
 #undef END
 
-
-
-
 #include "kantor.cuh"
 
 #include <math.h>
@@ -4568,11 +4202,6 @@ END
 #include <stdio.h>
 #include <assert.h>
 #include <vector_types.h>
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4739,22 +4368,8 @@ END
 #undef BEGIN
 #undef END
 
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <string.h>
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -4771,7 +4386,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -4814,8 +4428,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -4829,12 +4441,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -4961,16 +4570,9 @@ void matrices_log(const Matrices *q) {
 
 void matrices_fin(Matrices *q) { EFREE(q->m); EFREE(q); }
 
-
-
-
-
 #include <stdio.h>
 #include <assert.h>
 #include <mpi.h>
-
-
-
 
 struct Coords;
 struct Coords_v;
@@ -5003,8 +4605,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -5018,12 +4618,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -5038,11 +4635,6 @@ int coords_size(const Coords *c);
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5060,7 +4652,6 @@ void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
 
-
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
@@ -5069,7 +4660,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
 
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -5119,7 +4709,6 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -5143,7 +4732,6 @@ const int4  *mesh_read_get_tri(const MeshRead*);
 const float *mesh_read_get_vert(const MeshRead*);
 const int4  *mesh_read_get_dih(MeshRead*);
 
-
 struct Matrices;
 struct Coords;
 
@@ -5159,7 +4747,6 @@ void matrices_fin(Matrices*);
 struct Coords;
 struct Particle;
 struct Matrices;
-
 
 int  mesh_gen_from_file(const Coords*, const float *vv, const char *ic, int nv,      Particle*);
 void mesh_gen_from_matrices(int nv, const float *vv, const Matrices*,      int *pn, Particle*);
@@ -5232,26 +4819,14 @@ int mesh_gen_from_file(const Coords *coords, const float *rr0, const char *path,
     return n / nv;
 }
 
-
-
-
-
-
-
-
-
 #include <assert.h>
 #include <stdio.h>
-
-
-
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
@@ -5261,10 +4836,6 @@ void efgets(char *s, int size, FILE*);
 
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -5279,23 +4850,10 @@ void error_abort();
 
 void error_print_stack();
 
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef UDX_EXCH_KL_COMMON
 #define UDX_EXCH_KL_COMMON
 #include "launch.cuh"
 #endif
-
 
 #if   defined(CC_SYNC)
 
@@ -5316,9 +4874,6 @@ void error_print_stack();
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-
-
 
 #ifndef UDX_EXCH_TYPE_COMMON
 #define UDX_EXCH_TYPE_COMMON
@@ -5363,7 +4918,6 @@ struct MeshBB {
     int *idcol;
 };
 
-
 enum {MAX_COL = 4};
 
 #define make_enum(a) a ,
@@ -5389,8 +4943,6 @@ enum BBState {
 #define _S_ static __device__
 
 namespace mesh_bounce_dev {
-
-
 
 typedef float   real_t;
 typedef float3 real3_t;
@@ -5456,11 +5008,6 @@ _I_ bool quadratic(real a, real b, real c, real *h0, real *h1) {
     return true;
 }
 
-
-
-
-
-
 template <typename real>
 _I_ int cubic(real a, real b, real c,
                      real *x0, real *x1, real *x2) {
@@ -5484,12 +5031,6 @@ _I_ int cubic(real a, real b, real c,
     }
     else if (CR2 == CQ3) {
 
-
-
-
-
-
-
         real sqrtQ = sqrt (Q);
 
         if (R > 0) {
@@ -5511,8 +5052,6 @@ _I_ int cubic(real a, real b, real c,
         *x1 = norm * cos ((theta + 2.0 * M_PI) / 3) - a / 3;
         *x2 = norm * cos ((theta - 2.0 * M_PI) / 3) - a / 3;
 
-
-
         if (*x0 > *x1)
             SWAP(*x0, *x1) ;
 
@@ -5533,33 +5072,12 @@ _I_ int cubic(real a, real b, real c,
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 typedef double real;
 typedef double3 real3;
 #ifndef UDX_MESH_COORD_COMMON
 #define UDX_MESH_COORD_COMMON
 enum {X, Y, Z};
 #endif
-
 
 template <typename T> _S_ T min3(T a, T b, T c) {return min(a, min(b, c));}
 template <typename T> _S_ T max3(T a, T b, T c) {return max(a, max(b, c));}
@@ -5594,9 +5112,7 @@ _I_ int3 get_cidx(int3 L, real3_t r) {
     return c;
 }
 
-
 _I_ bool valid_time(real dt, real t) {return (t >= 0 && t <= dt);}
-
 
 _I_ void vprev(real dt, const real3_t *r1, const real3_t *r0,      real3_t *v0) {
     v0->x = (r1->x - r0->x) / dt;
@@ -5663,7 +5179,6 @@ _I_ void ang_mom_change(float m, real3_t rc, real3_t r0, real3_t v0, real3_t r1,
     dL[Z] = - m * (r1.x * v1.y - r1.y * v1.x  -  r0.x * v0.y + r0.y - v0.x);
 }
 
-
 _I_ void mom_shift_ref(const real3_t r,      Momentum *m) {
     m->L[X] -= r.y * m->P[Z] - r.z * m->P[Y];
     m->L[Y] -= r.z * m->P[X] - r.x * m->P[Z];
@@ -5678,8 +5193,6 @@ _I_ bool nonzero(const Momentum *m) {
 }
 
 enum {XX, XY, XZ, YY, YZ, ZZ};
-
-
 
 _S_ void compute_I(float mass, const real3_t a, const real3_t b, const real3_t c,      real_t I[6]) {
 
@@ -5710,11 +5223,9 @@ _S_ void compute_I(float mass, const real3_t a, const real3_t b, const real3_t c
 
 _S_ void inverse(const real_t A[6],      real_t I[6]) {
 
-
     const real_t mx = A[YY] * A[ZZ] - A[YZ] * A[YZ];
     const real_t my = A[XY] * A[ZZ] - A[XZ] * A[YZ];
     const real_t mz = A[XY] * A[YZ] - A[XZ] * A[YY];
-
 
     real_t idet = mx * A[XX] - my * A[XY] + mz * A[XZ];
 
@@ -5745,17 +5256,14 @@ _I_ void rbc_M2v(float mass, const Momentum m, real3_t a, real3_t b, real3_t c,
     compute_I(mass, a, b, c,      I);
     inverse(I,      Iinv);
 
-
     om.x = one_third * (Iinv[XX] * m.L[X] + Iinv[XY] * m.L[Y] + Iinv[XZ] * m.L[Z]);
     om.y = one_third * (Iinv[XY] * m.L[X] + Iinv[YY] * m.L[Y] + Iinv[YZ] * m.L[Z]);
     om.z = one_third * (Iinv[XZ] * m.L[X] + Iinv[YZ] * m.L[Y] + Iinv[ZZ] * m.L[Z]);
-
 
     inv_mass = 1.0 / mass;
     v.x =  one_third * m.P[X] * inv_mass;
     v.y =  one_third * m.P[Y] * inv_mass;
     v.z =  one_third * m.P[Z] * inv_mass;
-
 
     com.x = one_third * (a.x + b.x + c.x);
     com.y = one_third * (a.y + b.y + c.y);
@@ -5797,7 +5305,6 @@ static __device__ bool cubic_root(real dt, real a, real b, real c, real d,      
     return false;
 }
 
-
 _I_ BBState intersect_triangle(real dt,
                                const real3_t *s10, const real3_t *s20, const real3_t *s30,
                                const real3_t *vs1, const real3_t *vs2, const real3_t *vs3,
@@ -5811,7 +5318,6 @@ _I_ BBState intersect_triangle(real dt,
     diff(vs2, vs1,      &at1);
     diff(vs3, vs1,      &at2);
 
-
     cross(&a1, &a2,      &n0);
     cross(&at1, &at2,      &ntt);
 
@@ -5820,7 +5326,6 @@ _I_ BBState intersect_triangle(real dt,
     nt.z = a1.x * at2.y - a1.y * at2.x  +  at1.x * a2.y - at1.y * a2.x;
 
     diff(&p0->r, s10,      &dr0);
-
 
     {
         real3 r1, s11, n1, dr1;
@@ -5838,13 +5343,11 @@ _I_ BBState intersect_triangle(real dt,
         b0 = dot<real>(&dr0, &n0);
         b1 = dot<real>(&dr1, &n1);
 
-
         *s = b0 > 0 ? 1 : -1;
 
         if (b0 * b1 > 0)
             return BB_NOCROSS;
     }
-
 
     real hl;
 
@@ -5867,7 +5370,6 @@ _I_ BBState intersect_triangle(real dt,
     real ga1, ga2, a11, a22, a12, fac, ul, vl;
 
     apxb(&p0->r, hl, &p0->v,      &rwl);
-
 
     g.x = rwl.x - s10->x - hl * vs1->x;
     g.y = rwl.y - s10->y - hl * vs1->y;
@@ -5926,7 +5428,6 @@ _S_ void rig_add_ang_mom(const float Iinv[], const float L[3], float *om) {
     atomicAdd(&om[Y], dom[Y]);
     atomicAdd(&om[Z], dom[Z]);
 }
-
 
 __global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm,      Rigid *ss) {
     int i, sid;
@@ -6119,7 +5620,6 @@ _S_ void get_collision_point(real dt,
     enum {X, Y, Z};
     float h, u, v, w;
 
-
     h = dt - dcol.x;
     revert_r(h, &A);
     revert_r(h, &B);
@@ -6197,9 +5697,6 @@ __global__ void perform_collisions(float dt, float mass,
 
     write_Part(&pn, i,      pp);
 
-
-
-
     rc.x = 0.333333 * (A.r.x + B.r.x + C.r.x);
     rc.y = 0.333333 * (A.r.y + B.r.y + C.r.y);
     rc.z = 0.333333 * (A.r.z + B.r.z + C.r.z);
@@ -6261,17 +5758,6 @@ void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Mom
 #undef _I_
 #undef _S_
 
-
-
-
-
-
-
-
-
-
-
-
 #include <stdio.h>
 
 #ifndef UDX_STRUCT_PARRAY_COMMON
@@ -6326,11 +5812,6 @@ void parray_get_view(const PaArray *a, PaCArray_v *v) {
     v->pp = a->pp;
     v->cc = a->cc;
 }
-
-
-
-
-
 
 #include <stdio.h>
 
@@ -6389,18 +5870,7 @@ void farray_get_view(const FoArray *a, FoSArray_v *v) {
     v->ss = a->ss;
 }
 
-
-
-
-
-
-
 #include <stdio.h>
-
-
-
-
-
 
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
@@ -6417,7 +5887,6 @@ void error_print_stack();
 void emalloc(size_t,      void**);
 void efree(void*);
 void *ememcpy(void *dest, const void *src, size_t n);
-
 
 void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
