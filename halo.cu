@@ -639,23 +639,8 @@ bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #ifndef UDX_DISTR_EXCH_SHFL_COMMON
 #define UDX_DISTR_EXCH_SHFL_COMMON
-#define _I_ static __device__
-
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up_sync(0xFFFFFFFF, val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl_sync(0xFFFFFFFF, val, width);
-}
-
-#undef _I_
+#define UDX_DISTR_EXCH_SHFL_COMMON
+#include "warp.cuh"
 #endif
 
 #ifndef UDX_DISTR_EXCH_DMAP_TYPE_COMMON

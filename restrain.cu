@@ -43,46 +43,7 @@ struct SchemeQQ {
     int rn;
 };
 
-#define _I_ static __device__
-
-template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
-    return __shfl_down_sync(0xFFFFFFFF, val, width);
-}
-
-template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
-    return __shfl_up_sync(0xFFFFFFFF, val, width);
-}
-template <typename T>
-_I_ T shfl(T val, unsigned int width) {
-    return __shfl_sync(0xFFFFFFFF, val, width);
-}
-
-#undef _I_
-#define _S_ static __device__
-#define _I_ static __device__
-
-template <typename T>
-_I_ T warpReduceSum(T v)
-{
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
-        v += shfl_down(v, offset);
-    return v;
-}
-
-_I_ float3 warpReduceSum(float3 val)
-{
-    for (int offset = warpSize/2; offset > 0; offset /= 2) {
-        val.x += shfl_down(val.x, offset);
-        val.y += shfl_down(val.y, offset);
-        val.z += shfl_down(val.z, offset);
-    }
-    return val;
-}
-
-#undef _S_
-#undef _I_
+#include "warp.cuh"
 
 
 #ifndef UDX_SIM_SCHEME_DEVICE_API_COMMON
