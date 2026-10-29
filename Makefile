@@ -43,7 +43,6 @@ OBJECTS = \
 	com.o \
 	rig.o \
 	grid.o \
-	diagmesh.o \
 	wallobj.o \
 	objinter.o \
 	options.o \
