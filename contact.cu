@@ -11,6 +11,7 @@
 #include "device.cuh"
 #include "launch.cuh"
 #include "fragment.cuh"
+#include "randomdev.cuh"
 
 namespace cc { void check(int code, const char *file, int line); }
 void emalloc(size_t, void **);
@@ -25,18 +26,6 @@ void error_signal(const char *file, int line, const char *fmt, ...);
 
 template <typename T1, typename T2, typename T3>
 __device__ T1 contact_dot(const T2 *a, const T3 *b) { return a->x*b->x + a->y*b->y + a->z*b->z; }
-namespace rnd {
-static __const__ int N = 18;
-static __const__ float gold=0.6180339887498948482, silver=0.4142135623730950488;
-static __const__ float bronze=0.00008877875787352212838853023, tin=0.00004602357186447026756768986;
-static __const__ float sqrt2=1.41421356237309514547;
-__inline__ __device__ float rem(float r) { return r-floorf(r); }
-__inline__ __device__ float FMA(float x,float y,float z) { return __fmaf_rz(x,y,z); }
-template<int M> __inline__ __device__ float logistic(float x) { float x2=x*x; return logistic<M-2>(FMA(FMA(8.0,x2,-8.0),x2,1.0)); }
-template<> __inline__ __device__ float logistic<1>(float x) { return FMA(2.0*x,x,-1.0); }
-template<> __inline__ __device__ float logistic<0>(float x) { return x; }
-inline __device__ float mean0var1ii(float seed,int u,int v) { float p=rem((u&0x3FF)*gold+u*bronze+(v&0x3FF)*silver+v*tin); return logistic<N>(seed-p)*sqrt2; }
-}
 struct RNDunif;
 void rnd_ini(int,int,int,int,RNDunif**);
 void rnd_fin(RNDunif*);
