@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <vector_types.h>
+#include "minmax.cuh"
 
 struct Config;
 struct float3;
@@ -1147,9 +1148,6 @@ void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long n
 void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 
 struct Particle;
-struct float3;
-void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
-
 struct Config;
 struct float3;
 struct int3;

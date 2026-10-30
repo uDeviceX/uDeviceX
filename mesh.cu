@@ -4,6 +4,7 @@
 
 #include <mpi.h>
 #include <assert.h>
+#include "minmax.cuh"
 
 void emalloc(size_t,      void**);
 void efree(void*);
@@ -73,8 +74,6 @@ void error_abort();
 void error_print_stack();
 
 struct Particle;
-struct float3;
-void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
 #include "warp.cuh"
 
 #ifndef UDX_EXCH_FRAG_IMP_COMMON
@@ -1842,9 +1841,6 @@ void mesh_angle_apply(MeshAngle *q, int m, Vectors *p,      double *angle0) {
 #include "types.cuh"
 #endif
 struct Particle;
-struct float3;
-void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
-
 struct float3;
 struct Particle;
 

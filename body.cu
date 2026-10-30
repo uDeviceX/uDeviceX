@@ -5,6 +5,7 @@
 #include <mpi.h>
 #include <string.h>
 #include <vector_types.h>
+#include "minmax.cuh"
 
 #ifndef UDX_RIG_CORE_TYPE
 #define UDX_RIG_CORE_TYPE
@@ -303,8 +304,6 @@ void emesh_wait_send(EMeshCommM *c);
 void emesh_upload(EMeshUnpackM *u);
 void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u,      Momentum *mm);
 struct Particle;
-struct float3;
-void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
 struct Triangles {
     int4 *tt;
     int nt;

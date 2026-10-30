@@ -6,6 +6,7 @@
 #include "device.cuh"
 #include "launch.cuh"
 #include "warp.cuh"
+#include "minmax.cuh"
 
 #define UDX_CONTROL_WARPSIZE_COMMON
 enum { WARPSIZE = 32 };

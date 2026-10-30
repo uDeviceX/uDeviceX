@@ -1,6 +1,7 @@
 #include "macros.cuh"
 
 #include "config.cuh"
+#include "minmax.cuh"
 
 #ifndef UDX_DISTR_EXCH_DEVICE_API_COMMON
 #define UDX_DISTR_EXCH_DEVICE_API_COMMON
@@ -2380,9 +2381,6 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
 #endif
 
 struct Particle;
-struct float3;
-void minmax(const Particle *pp, int nv, int nobj,      float3 *lo, float3 *hi);
-
 #ifndef UDX_DISTR_EXCH_DMAP_TYPE_COMMON
 #define UDX_DISTR_EXCH_DMAP_TYPE_COMMON
 
