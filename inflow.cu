@@ -149,38 +149,8 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg,      Inflow
     }
 }
 
-
-
-
 #include <stdio.h>
 #include <curand_kernel.h>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 struct Coords;
 struct Coords_v;
@@ -213,8 +183,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -228,17 +196,12 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
-
 
 void coord_stamp(const Coords *c,      char *s);
 
-
 int coords_size(const Coords *c);
 #include "vecmath.cuh"
-
-
 
 struct ParamsPlate {
     float3 o, a, b;
@@ -325,7 +288,6 @@ static __device__ void coords2vel(VParamsCircle vp, ParamsCircle p, float2 xi,  
     scal(fact * vp.u,      u);
 }
 
-
 enum Type {
     TYPE_NONE,
     TYPE_PLATE,
@@ -409,7 +371,6 @@ __global__ void inflow_cumulative_flux_kernel(float nxdt, Par params, int2 nc, c
     xcid = i % nc.x;
     ycid = i / nc.x;
 
-
     normal = get_normal(params, nc, xcid, ycid);
     u      = uu[i];
     dn = nxdt * dot<float>(&normal, &u);
@@ -432,8 +393,6 @@ static __device__ Particle create_particle(float kBT, Par params, int2 nc,
     u.x += curand_normal(rg) * sigma;
     u.y += curand_normal(rg) * sigma;
     u.z += curand_normal(rg) * sigma;
-
-
 
     return Particle({r.x, r.y, r.z, u.x, u.y, u.z});
 }
@@ -520,7 +479,6 @@ void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float
         ERR("wrong direction");
         break;
     };
-
 
     global2local(c, o,      &o);
 

@@ -53,11 +53,8 @@ bool         bop_success(BopStatus status);
 const char * bop_report_error_desc(BopStatus status);
 char *       bop_report_error_mesg();
 
-
-
 #define CBUFSIZE 256
 #define CERRSIZE 1024
-
 
 struct BopData {
     long n;
@@ -66,7 +63,6 @@ struct BopData {
     BopType type;
     void *data;
 };
-
 
 extern char bop_error_msg[CERRSIZE];
 
@@ -247,7 +243,6 @@ const void* bop_get_data(const BopData *d) {
     return d->data;
 }
 
-
 BopStatus bop_summary(const BopData *d) {
     fprintf(stderr, "(reader) found %ld entries, %d field(s)\n", d->n, d->nvars);
     fprintf(stderr, "\tformat: %s\n", type2str(d->type));
@@ -309,7 +304,6 @@ const char* bop_report_error_desc(BopStatus status) {
 char* bop_report_error_mesg() {
     return bop_error_msg;
 }
-
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -673,7 +667,6 @@ static BopStatus read_mpi(MPI_Comm comm, const char *fname, long n, MPI_Datatype
     return BOP_SUCCESS;
 }
 
-
 BopStatus bop_read_values(MPI_Comm comm, const char *dfname, BopData *d) {
     long n = d->n;
     int nvars = d->nvars;
@@ -765,7 +758,6 @@ static BopStatus write_data(const char *fnval, const BopData *d) {
     return s;
 }
 
-
 BopStatus bop_write_values(const char *name, const BopData *d) {
     char dfname[CBUFSIZE] = {0};
     sprintf(dfname, "%s.values", name);
@@ -822,7 +814,6 @@ static BopStatus read_ascii_values(const char pattern[], const char *fn, void *d
     fclose(f);
     return s;
 }
-
 
 BopStatus bop_read_values(const char *dfname, BopData *d) {
     size_t bsize;

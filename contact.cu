@@ -45,7 +45,6 @@ enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
 
-
 struct PairDPD {
     float a, g, s, spow;
 };
@@ -54,7 +53,6 @@ struct PairDPDC {
     int ncolors;
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
-
 
 struct PairDPDCM {
     int ncolors;
@@ -225,9 +223,6 @@ enum {
     DEAD  = 1
 };
 
-
-
-
 struct PartList {
     const Particle *pp;
     const int *deathlist;
@@ -253,13 +248,11 @@ void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_build_map(const int nn[],      Clist *c, ClistMap *m);
 
-
 void clist_subindex_local(int n, const PartList lp,      Clist *c, ClistMap *m);
 void clist_subindex_remote(int n, const PartList lp,      Clist *c, ClistMap *m);
 
 void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout,      Particle *ppout);
 void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout,      int *iiout);
-
 
 void clist_build(int nlo, int nout, const Particle *pplo,      Particle *ppout, Clist *c, ClistMap *m);
 #ifndef UDX_CLIST_DEV_COMMON
@@ -304,7 +297,6 @@ struct CntMap {
     int  org0, org1, org2;
     int cnt0, cnt1, cnt2;
 };
-
 
 static __device__ int cnt_endp(const CntMap m, int i) { return i >= m.cnt2; }
 

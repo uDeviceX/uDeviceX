@@ -141,19 +141,9 @@ void vcont_set_conf(const Config *cfg,      PidVCont *c) {
 
 }
 
-
-
 #include <stdio.h>
 #include <mpi.h>
 #include <assert.h>
-
-
-
-
-
-
-
-
 
 namespace scheme_move_dev {
 static __device__ void update0(float dt, float m, const float *f, float *r, float *v) {
@@ -194,24 +184,6 @@ void scheme_move_clear_vel(int n, Particle *pp) {
     KL(scheme_move_dev::clear_vel, (k_cnf(n)), (n, pp));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include "vecmath.cuh"
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
@@ -229,7 +201,6 @@ static __device__ float xl2xc(const Coords_v c, float xl) {
 static __device__ float yl2yc(const Coords_v c, float yl) {
     return yl - 0.5f * c.Ly * (c.yd - 2 * c.yc - 1);
 }
-
 
 struct Coords;
 struct Coords_v;
@@ -262,8 +233,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -277,12 +246,9 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
@@ -310,24 +276,19 @@ void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *
 void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
 void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
 
-
-
 enum {
     VCONT_TYPE_NONE,
     VCONT_TYPE_CART,
     VCONT_TYPE_RAD
 };
 
-
 struct TCart {};
 struct TRad {};
-
 
 union Trans {
     TCart cart;
     TRad  rad;
 };
-
 
 struct Sampler {
     int3 L;
@@ -351,7 +312,6 @@ struct Param {
     float3 target;
     float Kp, Ki, Kd;
 };
-
 
 struct PidVCont {
     Param param;

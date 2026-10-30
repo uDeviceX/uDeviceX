@@ -26,11 +26,6 @@ bool same_str(const char *, const char *);
 
 #include <stdio.h>
 
-
-
-
-
-
 struct Config;
 struct float3;
 struct int3;
@@ -121,36 +116,8 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
     }
 }
 
-
-
 #include <stdio.h>
 #include <curand_kernel.h>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
@@ -191,8 +158,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -206,18 +171,13 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
 
-
 void coord_stamp(const Coords *c,      char *s);
-
 
 int coords_size(const Coords *c);
 
 #include "warp.cuh"
-
-
 
 __global__ void den_kill_kernel(int maxden, const int *starts, const int *counts, int n, const int *cids,      int *ndead, int *kk) {
     int i, nd, cid, s, c, pid, j;
@@ -233,14 +193,12 @@ __global__ void den_kill_kernel(int maxden, const int *starts, const int *counts
 
     nd = max(0, c - maxden);
 
-
     if (i < n) {
         for (j = 0; j < nd; ++j) {
             pid = s + j;
             kk[pid] = 1;
         }
     }
-
 
     nd = warpReduceSum(nd);
     if (threadIdx.x % warpSize == 0)
@@ -295,7 +253,6 @@ void den_download_ndead(DCont *d) {
     CC(d::Memcpy(&d->ndead, d->ndead_dev, sizeof(int), D2H));
 
 }
-
 
 const int* den_get_deathlist(DCont *d) {return d->kk;}
 int        den_get_ndead(DCont *d)     {return d->ndead;}
@@ -377,21 +334,12 @@ void den_map_fin(DContMap *m) {
     EFREE(m);
 }
 
-
-
-
-
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 
 #include <stdio.h>
 #include <vector_types.h>
-
-
-
-
-
 
 struct Config;
 struct float3;
@@ -466,7 +414,6 @@ void outflow_download_ndead(Outflow *o);
 int* outflow_get_deathlist(Outflow *o);
 int  outflow_get_ndead(Outflow *o);
 
-
 void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
     const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
@@ -491,21 +438,7 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
     }
 }
 
-
-
 #include <stdio.h>
-
-
-
-
-
-
-
-
-
-
-
-
 
 #include "vecmath.cuh"
 
@@ -548,8 +481,6 @@ float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg,      float3 *rl);
 
-
-
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -563,29 +494,11 @@ int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
 
-
 bool is_end(const Coords *c, int dir);
-
 
 void coord_stamp(const Coords *c,      char *s);
 
-
 int coords_size(const Coords *c);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 enum {
     OFLOW_TYPE_NONE,
@@ -597,7 +510,6 @@ struct OutflowParamsCircle {
     float Rsq;
     float3 c;
 };
-
 
 struct OutflowParamsPlate {
     float a, b, c, d;
@@ -681,7 +593,6 @@ void outflow_set_params_circle(const Coords *coords, float3 c, float R, Outflow 
     enum {X, Y, Z};
     OutflowParamsCircle p;
     p.Rsq = R*R;
-
 
     global2local(coords, c,      &p.c);
 

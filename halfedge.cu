@@ -14,7 +14,6 @@ enum {MAX_STRING_SIZE = 4096};
 
 enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM};
 
-
 #define ER(fmt, ...) ERR(HE_USER, (fmt), ##__VA_ARGS__)
 #define ERR(code, fmt, ...)                                             \
     do {                                                                \
@@ -48,8 +47,6 @@ void he_msg(const char *file, int line, const char *fmt, ...) {
     fprintf(stderr, "%s:%d: %s\n", file, line, msg);
 }
 
-
-
 #include <stdio.h>
 #define MALLOC(n, pp) he_malloc((n)*sizeof(**(pp)), (void**)(pp))
 #define FREE(p) he_free(p)
@@ -65,9 +62,7 @@ typedef struct T T;
 
 int he_hash_ini(int n, T**);
 
-
 int he_hash_set(T*, int i, int j, int v);
-
 
 int he_hash_get(T*, int i, int j);
 int he_hash_fin(T*);
@@ -158,11 +153,7 @@ int he_hash_get(T *q, int i, int j) {
     return -1;
 }
 
-
-
 #include <stdio.h>
-
-
 
 #define T HeRead
 
@@ -172,9 +163,7 @@ typedef struct T T;
 
 int he_read_ini(const char *path, T**);
 
-
 int he_read_tri_ini(int nv, int nt, int *tri, T**);
-
 
 int he_read_int4_ini(int nv, int nt, const int4 *tri, T**);
 
@@ -308,7 +297,6 @@ int he_nt(T *q) { return q->nt; }
 int he_ne(T *q) { return q->ne; }
 int he_nh(T *q) { return q->nh; }
 
-
 #define V(i, n) if (0 > (i) || (i) >= n)                        \
         ERR(HE_INDEX, "%s=%d is not in [0, %d)", #i, i, n)
 int he_nxt(T *q, int h) { V(h,q->nh); return q->nxt[h]; }
@@ -327,14 +315,9 @@ int he_hdg_edg(T *q, int e) { V(e, q->ne); return q->hdg_edg[e]; }
 int he_hdg_tri(T *q, int t) { V(t, q->nt); return q->hdg_tri[t]; }
 int he_bnd(T *q, int h)     { V(h, q->nh); return q->flp[h] == -1; }
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-
-
 
 int he_malloc(int size,      void **pq) {
     void *q;
@@ -357,28 +340,16 @@ int he_memcpy(void *dest, const void *src, size_t n) {
     return HE_OK;
 }
 
-
-
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include <vector_types.h>
 
-
-
-
-
-
 int util_eq(const char *a, const char *b);
-
 
 char *util_fgets(char *s, FILE *stream);
 
-
 char *util_comment_fgets(char *s, FILE *stream);
-
-
-
 
 #define T HeRead
 #define SIZE (MAX_STRING_SIZE)
@@ -392,7 +363,6 @@ struct T {
     int *hdg_ver, *hdg_edg, *hdg_tri;
     int magic;
 };
-
 
 enum {HE_VALID_OK, HE_VALID_FAIL};
 static int valid(int n, int *a, int *b) {
@@ -648,17 +618,10 @@ int he_read_hdg_ver(T *q, int **p) { *p = q->hdg_ver; return HE_OK; };
 int he_read_hdg_edg(T *q, int **p) { *p = q->hdg_edg; return HE_OK; };
 int he_read_hdg_tri(T *q, int **p) { *p = q->hdg_tri; return HE_OK; };
 
-
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-
-
-
-
-
 
 #define  SIZE (MAX_STRING_SIZE)
 
