@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #include "macros.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
@@ -13,8 +14,6 @@
 #include "launch.cuh"
 
 namespace cc { void check(int code, const char *file, int line); }
-void emalloc(size_t, void **);
-void efree(void *);
 void error_stack_push(const char *, int);
 void error_stack_pop();
 bool error_get();

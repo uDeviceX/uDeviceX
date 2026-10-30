@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -8,9 +9,6 @@
 #include <math.h>
 #include <mpi.h>
 #include <stdio.h>
-
-void emalloc(size_t, void **);
-void efree(void *);
 void error_stack_push(const char *, int);
 void error_stack_pop();
 bool error_get();

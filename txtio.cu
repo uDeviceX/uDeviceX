@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 
@@ -7,11 +8,6 @@
 #include "constants.cuh"
 
 #include <stdio.h>
-
-void emalloc(size_t, void **);
-void efree(void *);
-void efopen(const char *, const char *, FILE **);
-void efclose(FILE *);
 void msg_print(const char *, ...);
 
 void error_stack_push(const char *, int);

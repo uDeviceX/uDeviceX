@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #include "macros.cuh"
@@ -16,8 +17,6 @@ bool error_get();
 void error_report();
 void error_abort();
 void error_signal(const char *, int, const char *, ...);
-void emalloc(size_t, void **);
-void efree(void *);
 void os_mkdir(const char *);
 namespace m { bool is_master(MPI_Comm); }
 

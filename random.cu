@@ -1,9 +1,7 @@
+#include "memory.cuh"
 #include "macros.cuh"
 #include <limits>
 #include <stdint.h>
-
-void emalloc(size_t, void**);
-void efree(void*);
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 bool error_get();

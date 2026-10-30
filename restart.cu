@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 
@@ -9,9 +10,6 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <string.h>
-
-void efopen(const char *, const char *, FILE **);
-void efclose(FILE *);
 void msg_print(const char *, ...);
 
 void error_stack_push(const char *, int);

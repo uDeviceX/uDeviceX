@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -18,9 +19,6 @@ bool error_get();
 void error_report();
 void error_abort();
 void error_signal(const char *, int, const char *, ...);
-void emalloc(size_t, void **);
-void efree(void *);
-
 #define CC(ans) do { cc::check((ans), __FILE__, __LINE__); } while (0)
 
 struct AreaVolume {

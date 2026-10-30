@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #include "macros.cuh"
@@ -12,8 +13,6 @@ bool error_get();
 void error_report();
 void error_abort();
 void error_signal(const char *, int, const char *, ...);
-void emalloc(size_t, void **);
-void efree(void *);
 namespace mpicheck { void check(int, const char *, int); }
 #include <stdlib.h>
 #include <mpi.h>
@@ -87,17 +86,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 

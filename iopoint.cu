@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -13,8 +14,6 @@
 
 void os_mkdir(const char *);
 void msg_print(const char *, ...);
-void emalloc(size_t, void **);
-void efree(void *);
 bool same_str(const char *, const char *);
 int string_nword(const char *);
 

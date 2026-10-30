@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #include "macros.cuh"
 
 #include "config.cuh"
@@ -57,16 +58,6 @@ void conf_set_string(const char *desc, const char *a, Config *cfg);
 
 void conf_write_exe(const Config *cfg, FILE *stream);
 void conf_write_history(const Config *cfg, FILE *stream);
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -227,16 +218,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -332,16 +313,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -576,17 +547,6 @@ void scheme_move_clear_vel(int n, Particle*);
 
 #include <stdio.h>
 #include <mpi.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -932,16 +892,6 @@ void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts,
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 struct Particle;
@@ -3152,17 +3102,6 @@ void objects_gen_freeze(PFarray *flu, Objects *o) {
 #define UDX_SIM_OBJECTS_DEF_COMMON
 #include "constants.cuh"
 #endif
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -3568,16 +3507,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -3694,16 +3623,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -4119,16 +4038,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 struct Coords;
@@ -4196,16 +4105,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 void msg_ini(int rank);
@@ -4243,16 +4142,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 void msg_ini(int rank);
@@ -4340,16 +4229,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 int string_nword(const char *s);
@@ -4624,17 +4503,6 @@ bool is_end(const Coords *c, int dir);
 void coord_stamp(const Coords *c,      char *s);
 
 int coords_size(const Coords *c);
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 void os_mkdir(const char* path);
@@ -4684,16 +4552,6 @@ struct float3;
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -4795,16 +4653,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 struct int4;
@@ -4891,16 +4739,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -4993,16 +4831,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 void msg_ini(int rank);
@@ -5088,16 +4916,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 void os_mkdir(const char* path);
@@ -5297,16 +5115,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 struct Coords;

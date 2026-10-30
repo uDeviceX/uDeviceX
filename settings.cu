@@ -1,12 +1,10 @@
+#include "memory.cuh"
 #include "macros.cuh"
 #include "config.cuh"
 #include "types.cuh"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-void emalloc(size_t, void **);
-void efree(void *);
 void msg_print(const char *, ...);
 void error_stack_push(const char *, int);
 void error_stack_pop();

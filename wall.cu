@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #include "macros.cuh"
 
 #include "config.cuh"
@@ -1478,16 +1479,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #ifndef UDX_WALL_DEVICE_API_COMMON
@@ -2346,17 +2337,6 @@ int status2errcode(MPI_Status *status);
 #define UDX_WALL_TYPE_COMMON
 #include "types.cuh"
 #endif
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -2967,16 +2947,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -3307,17 +3277,6 @@ void wall_label_hst(const Sdf *sdf, int n, const Particle *pp,      int *hst) {
 #define UDX_WALL_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -3611,16 +3570,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 void grid_write(int3 subGrid, int3 subDomain, MPI_Comm, const char *path, int ncmp, const float **data, const char **names);
@@ -3931,17 +3880,6 @@ void field_dump(const Field *q, const Coords *c, MPI_Comm cart) {
 #define UDX_WALL_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -4035,17 +3973,6 @@ void tex3d_to_view(const Tex3d *t,      Tex3d_v *v) { v->t = t->t; }
 
 #include <stdio.h>
 #include <vector_types.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 

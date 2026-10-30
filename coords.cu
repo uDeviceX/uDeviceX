@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #include "macros.cuh"
 #include <stdio.h>
 #include <vector_types.h>
@@ -19,9 +20,6 @@ int Cart_get(MPI_Comm comm, int maxdims, int dims[], int periods[], int coords[]
 }
 namespace mpicheck { void check(int code, const char *file, int line); }
 #define MC(ans) do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
-
-void emalloc(size_t, void**);
-void efree(void*);
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 bool error_get();

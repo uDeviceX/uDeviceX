@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #include "macros.cuh"
 #include "config.cuh"
 
@@ -253,16 +254,6 @@ enum {
 #define RBC_SPRING_CAP (0.99)
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 

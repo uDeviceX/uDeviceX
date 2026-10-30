@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #include "macros.cuh"
 #include "device.cuh"
 #include <mpi.h>
@@ -32,9 +33,6 @@ namespace cc { void check(int, const char*, int); }
 #define MC(ans) do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 #define CC(ans) do { cc::check((ans), __FILE__, __LINE__); } while (0)
 namespace mpicheck { void check(int, const char*, int); }
-
-void emalloc(size_t, void**);
-void efree(void*);
 void error_stack_push(const char*, int);
 void error_stack_pop();
 bool error_get();

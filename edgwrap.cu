@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #include "macros.cuh"
@@ -9,9 +10,6 @@ bool error_get();
 void error_report();
 void error_abort();
 void error_signal(const char *, int, const char *, ...);
-void emalloc(size_t, void **);
-void efree(void *);
-
 void edg_ini(int md, int nv, int *hx);
 void edg_set(int md, int i, int j, int val, int *hx, int *hy);
 int edg_get(int md, int i, int j, const int *hx, const int *hy);

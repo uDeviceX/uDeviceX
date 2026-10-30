@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
@@ -10,9 +11,6 @@
 
 struct Config;
 struct Force;
-
-void emalloc(size_t, void **);
-void efree(void *);
 bool same_str(const char *, const char *);
 void msg_print(const char *, ...);
 float force_stat_max(int, const Force *);

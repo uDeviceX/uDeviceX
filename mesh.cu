@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #include "macros.cuh"
 
 #include "config.cuh"
@@ -5,17 +6,6 @@
 #include <mpi.h>
 #include <assert.h>
 #include "minmax.cuh"
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 void msg_ini(int rank);
@@ -952,17 +942,6 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u,      Mo
 
 #include <mpi.h>
 #include <assert.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 void msg_ini(int rank);
@@ -1705,17 +1684,6 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw,      FoWrap *ww) 
 #include <stdio.h>
 #include <math.h>
 #include <vector_types.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -1893,17 +1861,6 @@ void mesh_get_bboxes_dev(const Particle *pp, const int nps, const int ns,      f
 
 #include <stdio.h>
 #include <vector_types.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -2038,17 +1995,6 @@ void mesh_area_apply(MeshArea *q, int m, Vectors *p, double *area0) {
 
 #include <stdio.h>
 #include <vector_types.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -2164,17 +2110,6 @@ void mesh_tri_area_apply(MeshTriArea *q, int m, Vectors *p, double *area0) {
 #include <stdio.h>
 #include <math.h>
 #include <vector_types.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -2297,17 +2232,6 @@ void mesh_edg_len_fin(MeshEdgLen *q) {
 
 #include <stdio.h>
 #include <vector_types.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -2453,17 +2377,6 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
 namespace cc {
 void check(int rc, const char *file, int line);
 }
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -2531,17 +2444,6 @@ void triangles_fin(Triangles *q) {
 
 #include <stdio.h>
 #include <vector_types.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -2717,17 +2619,6 @@ double mesh_volume_apply0(MeshVolume *q, Vectors *positions) {
 
 #include <stdio.h>
 #include <vector_types.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -3251,17 +3142,6 @@ void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri,
 
 #include <stdio.h>
 #include <math.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -3355,17 +3235,6 @@ void mesh_cylindrical_apply(MeshCylindrical *q, int m, Vectors *pos,      double
 
 #include <stdio.h>
 #include <math.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -3698,17 +3567,6 @@ void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *c
 #undef load_t
 
 #include <stdio.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -3901,17 +3759,6 @@ void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb
 
 #include <stdio.h>
 #include <math.h>
-
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -4379,16 +4226,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 void msg_ini(int rank);
@@ -4644,16 +4481,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -4820,16 +4647,6 @@ int mesh_gen_from_file(const Coords *coords, const float *rr0, const char *path,
 
 void msg_ini(int rank);
 void msg_print(const char *fmt, ...);
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
@@ -5880,16 +5697,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t,      void**);
-void efree(void*);
-void *ememcpy(void *dest, const void *src, size_t n);
-
-void efopen(const char *fname, const char *mode,      FILE**);
-void efclose(FILE*);
-void efread(void *ptr, size_t size, size_t nmemb, FILE*);
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
-void efgets(char *s, int size, FILE*);
-
 bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 

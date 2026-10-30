@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 
@@ -6,11 +7,6 @@
 #include "constants.cuh"
 
 #include <vector_types.h>
-
-void emalloc(size_t, void **);
-void efree(void *);
-void *ememcpy(void *, const void *, size_t);
-
 void error_stack_push(const char *, int);
 void error_stack_pop();
 bool error_get();

@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #include "macros.cuh"
 #include "config.cuh"
 #include "device.cuh"
@@ -16,7 +17,6 @@ void error_abort();
 static double Bytes2MBytes(size_t sz) {
     return (double) sz / (double) (1 << 20);
 }
-
 void emalloc(size_t size,      void **data) {
     *data = malloc(size);
     if (NULL == *data) {
@@ -81,8 +81,6 @@ const char* get_filename_ext(const char *filename) {
     if (!dot || dot == filename) return "";
     return dot + 1;
 }
-
-void emalloc(size_t, void **);
 void msg_print(const char *fmt, ...);
 
 void error_stack_push(const char *file, int line);

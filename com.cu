@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
 #include "macros.cuh"
@@ -15,8 +16,6 @@ bool error_get();
 void error_report();
 void error_abort();
 void error_signal(const char *, int, const char *, ...);
-void emalloc(size_t, void **);
-void efree(void *);
 struct WriteFile;
 int write_file_open(MPI_Comm, const char *, WriteFile **);
 int write_file_close(WriteFile *);

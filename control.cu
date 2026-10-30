@@ -1,3 +1,4 @@
+#include "memory.cuh"
 #include "macros.cuh"
 #define DEV_CUDA
 #define CC_RELEASE
@@ -20,10 +21,6 @@ int Comm_dup(MPI_Comm, MPI_Comm *);
 int Comm_free(MPI_Comm *);
 int Allreduce(const void *, void *, int, MPI_Datatype, MPI_Op, MPI_Comm);
 }
-void emalloc(size_t, void **);
-void efree(void *);
-void efopen(const char *, const char *, FILE **);
-void efclose(FILE *);
 void msg_print(const char *, ...);
 void error_stack_push(const char *, int);
 void error_stack_pop();

@@ -1,11 +1,9 @@
+#include "memory.cuh"
 #include "macros.cuh"
 #include <stdio.h>
 
 struct Vectors;
 void vectors_get(const Vectors*, int i, float r[3]);
-
-void emalloc(size_t, void**);
-void efree(void*);
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 bool error_get();
